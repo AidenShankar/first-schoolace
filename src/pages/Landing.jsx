@@ -6,6 +6,7 @@ import { ArrowRight, Bot, BookOpen, PenTool, BarChart, CheckCircle, GraduationCa
 import { Button } from "@/components/ui/button";
 import { User } from '@/entities/User';
 import { Contact } from '@/entities/Contact';
+import { base44 } from '@/api/base44Client';
 import { useTranslation } from '../components/i18n/useTranslation';
 import LanguageSelector from '../components/i18n/LanguageSelector';
 import AIPreviewSection from '../components/landing/AIPreviewSection';
