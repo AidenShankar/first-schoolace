@@ -2395,7 +2395,7 @@ export default function LandingPage() {
         </footer>
       </div>
 
-      <style jsx>{`
+      <style>{`
         @keyframes float-1 {
           0%, 100% { transform: translate(0px, 0px) rotate(0deg); }
           33% { transform: translate(30px, -30px) rotate(120deg); }

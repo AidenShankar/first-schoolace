@@ -168,7 +168,7 @@ export default function LessonPlanTemplates({ onUseTemplate, currentClass, curre
         return template.title.toLowerCase().includes(searchLower);
     });
 
-    const useBuiltInTemplate = (template) => {
+    const applyBuiltInTemplate = (template) => {
         // Convert built-in template to lesson format
         const lessonData = {
             title: template.title,
@@ -347,7 +347,7 @@ export default function LessonPlanTemplates({ onUseTemplate, currentClass, curre
                                                 </div>
                                             )}
                                             <Button
-                                                onClick={() => useBuiltInTemplate(template)}
+                                                onClick={() => applyBuiltInTemplate(template)}
                                                 className="w-full"
                                             >
                                                 <Copy className="w-4 h-4 mr-2" />

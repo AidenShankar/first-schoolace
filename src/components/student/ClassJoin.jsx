@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,7 +7,7 @@ import { GraduationCap, X } from "lucide-react";
 import { Class } from "@/entities/Class";
 import { ClassEnrollment } from "@/entities/ClassEnrollment";
 import { User } from "@/entities/User";
-import { createPageUrl } from "@/lib/utils"; // Assuming createPageUrl is available from utils
+import { createPageUrl } from "@/utils"; // Assuming createPageUrl is available from utils
 
 export default function ClassJoin({ onClassJoined, onCancel }) {
   const [classCode, setClassCode] = useState("");
