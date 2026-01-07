@@ -1170,12 +1170,12 @@ export default function LandingPage() {
     // The redirect URL should be the dashboard. The dashboard page itself handles
     // redirecting to the setup page if the user's setup is not complete.
     const redirectUrl = window.location.origin + createPageUrl('Dashboard');
-    await User.loginWithRedirect(redirectUrl);
+    await base44.auth.redirectToLogin(redirectUrl);
   };
 
   const handleSignInClick = async () => {
     const redirectUrl = window.location.origin + createPageUrl('Dashboard');
-    await User.loginWithRedirect(redirectUrl);
+    await base44.auth.redirectToLogin(redirectUrl);
   };
 
   const getTeacherFeatures = () => [
