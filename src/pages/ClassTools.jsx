@@ -160,7 +160,7 @@ export default function ClassTools({ user, currentClass: initialCurrentClass, al
 
             {currentClass && (
                 <Tabs value={activeTab} className="w-full" onValueChange={handleTabChange}>
-                    <TabsList className={`grid w-full grid-cols-${tabs.length} bg-slate-100 rounded-xl p-2`}>
+                    <TabsList className="grid w-full grid-flow-col auto-cols-fr bg-slate-100 rounded-xl p-2">
                         {tabs.map(tab => (
                             <TabsTrigger
                                 key={tab.id}
