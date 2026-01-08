@@ -1205,7 +1205,7 @@ You are an expert quiz question writer. Your task is to generate a set of quiz q
           }
           setConversation(prev => [...prev, {
             role: 'assistant',
-            content: `✅ Released 3 grades for "${assignmentToGrade.title}"!`
+            content: `✅ Graded 3 submissions for "${assignmentToGrade.title}"!`
           }]);
           break;
 
