@@ -28,7 +28,8 @@ import { useLanguage } from "@/components/i18n/LanguageContext";
 
 export default function AceSpaceDetail({ user }) {
     const { t } = useTranslation();
-    const { language, languageName } = useLanguage();
+    const { languageInfo } = useLanguage();
+    const languageName = languageInfo?.name || 'English';
     const [space, setSpace] = useState(null);
     const [members, setMembers] = useState([]);
     const [messages, setMessages] = useState([]);
