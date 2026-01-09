@@ -420,17 +420,43 @@ export default function AceSpaceDetail({ user }) {
                                                     {isAi ? (
                                                         <ReactMarkdown>{msg.content}</ReactMarkdown>
                                                     ) : (
-                                                        msg.content
+                                                        <>
+                                                            {/* Display Translated or Original */}
+                                                            {translations[msg.id] && !showingOriginal[msg.id] ? (
+                                                                <div className="relative">
+                                                                    <p>{translations[msg.id]}</p>
+                                                                    <div className="mt-1 text-[10px] opacity-70 border-t border-black/10 pt-1 flex items-center gap-1">
+                                                                        <Languages className="h-3 w-3" /> Translated to {languageName}
+                                                                    </div>
+                                                                </div>
+                                                            ) : (
+                                                                msg.content
+                                                            )}
+                                                        </>
                                                     )}
                                                 </div>
                                             )}
                                         </div>
                                         
-                                        {msg.type === 'ai_request' && (
-                                            <span className="text-[10px] text-indigo-400 mt-1 font-medium flex items-center gap-1">
-                                                <Bot className="h-3 w-3" /> Asked Ace AI
-                                            </span>
-                                        )}
+                                        <div className="flex items-center gap-2 mt-1">
+                                            {msg.type === 'ai_request' && (
+                                                <span className="text-[10px] text-indigo-400 font-medium flex items-center gap-1">
+                                                    <Bot className="h-3 w-3" /> {t('aceSpaces.askAce')}
+                                                </span>
+                                            )}
+                                            
+                                            {/* Translation Button */}
+                                            {!isAi && msg.type !== 'file' && !isMe && (
+                                                <button 
+                                                    onClick={() => handleTranslate(msg.id, msg.content)}
+                                                    className="text-[10px] text-slate-400 hover:text-indigo-600 flex items-center gap-1 transition-colors"
+                                                    disabled={translating[msg.id]}
+                                                >
+                                                    <Languages className="h-3 w-3" />
+                                                    {translating[msg.id] ? t('aceSpaces.translating') : (translations[msg.id] && !showingOriginal[msg.id] ? t('aceSpaces.original') : t('aceSpaces.translate'))}
+                                                </button>
+                                            )}
+                                        </div>
                                     </div>
                                 </motion.div>
                             );
