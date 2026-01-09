@@ -9,8 +9,10 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Loader2, Plus, Users, LogIn, ArrowRight } from 'lucide-react';
 import { createPageUrl } from '@/utils';
 import { motion } from 'framer-motion';
+import { useTranslation } from "@/components/i18n/useTranslation";
 
 export default function AceSpaces({ user }) {
+    const { t } = useTranslation();
     const queryClient = useQueryClient();
     const [createOpen, setCreateOpen] = useState(false);
     const [joinOpen, setJoinOpen] = useState(false);

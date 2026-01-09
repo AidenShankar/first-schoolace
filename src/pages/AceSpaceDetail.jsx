@@ -10,9 +10,9 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Loader2, Send, Paperclip, Bot, MoreVertical, Copy, File, Download, Users, ArrowLeft, StickyNote, Plus, Trash2, UserPlus, LogOut } from 'lucide-react';
+import { Loader2, Send, Paperclip, Bot, MoreVertical, Copy, File, Download, Users, ArrowLeft, StickyNote, Plus, Trash2, UserPlus, LogOut, Languages } from 'lucide-react';
 import { createPageUrl } from '@/utils';
-import { UploadFile } from '@/integrations/Core';
+import { UploadFile, InvokeLLM } from '@/integrations/Core';
 import { base44 } from '@/api/base44Client';
 import { motion } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
@@ -22,10 +22,13 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
+import { useTranslation } from "@/components/i18n/useTranslation";
+import { useLanguage } from "@/components/i18n/LanguageContext";
 
 
 export default function AceSpaceDetail({ user }) {
+    const { t } = useTranslation();
+    const { language, languageName } = useLanguage();
     const [space, setSpace] = useState(null);
     const [members, setMembers] = useState([]);
     const [messages, setMessages] = useState([]);
@@ -46,6 +49,11 @@ export default function AceSpaceDetail({ user }) {
     const [isAddMemberOpen, setIsAddMemberOpen] = useState(false);
     const [inviteEmail, setInviteEmail] = useState("");
     const [addingMember, setAddingMember] = useState(false);
+
+    // Translation state
+    const [translations, setTranslations] = useState({});
+    const [showingOriginal, setShowingOriginal] = useState({});
+    const [translating, setTranslating] = useState({});
 
     const messagesEndRef = useRef(null);
     const fileInputRef = useRef(null);
@@ -222,7 +230,8 @@ export default function AceSpaceDetail({ user }) {
                 base44.functions.invoke('invokeAceSpaceAI', {
                     space_id: spaceId,
                     user_message: content,
-                    message_id: newMessage.id
+                    message_id: newMessage.id,
+                    language: languageName || 'English'
                 }).catch(err => console.error("AI trigger failed", err));
             }
 
@@ -233,6 +242,26 @@ export default function AceSpaceDetail({ user }) {
             alert("Failed to send message");
         } finally {
             setSending(false);
+        }
+    };
+
+    const handleTranslate = async (messageId, content) => {
+        // Toggle if already exists
+        if (translations[messageId]) {
+            setShowingOriginal(prev => ({...prev, [messageId]: !prev[messageId]}));
+            return;
+        }
+
+        setTranslating(prev => ({...prev, [messageId]: true}));
+        try {
+            const prompt = `Translate the following text to ${languageName || 'English'}: "${content}". Output ONLY the translated text, nothing else.`;
+            const res = await InvokeLLM({ prompt });
+            setTranslations(prev => ({...prev, [messageId]: res}));
+            setShowingOriginal(prev => ({...prev, [messageId]: false}));
+        } catch(e) {
+            console.error("Translation error:", e);
+        } finally {
+            setTranslating(prev => ({...prev, [messageId]: false}));
         }
     };
 
@@ -248,7 +277,7 @@ export default function AceSpaceDetail({ user }) {
                 space_id: spaceId,
                 user_id: user.id,
                 user_name: user.full_name,
-                content: `Uploaded a file: ${file.name}`,
+                content: `${t('aceSpaces.uploadedFile')}: ${file.name}`,
                 type: 'file',
                 file_url: file_url,
                 file_name: file.name,
@@ -269,7 +298,7 @@ export default function AceSpaceDetail({ user }) {
     const copyCode = () => {
         if (space?.join_code) {
             navigator.clipboard.writeText(space.join_code);
-            alert("Join code copied!");
+            alert(t('aceSpaces.codeCopied'));
         }
     };
 

@@ -10,7 +10,7 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const { space_id, user_message, message_id } = await req.json();
+        const { space_id, user_message, message_id, language } = await req.json();
 
         if (!space_id || !user_message || !message_id) {
              return Response.json({ error: 'Missing parameters' }, { status: 400 });
@@ -65,6 +65,7 @@ Deno.serve(async (req) => {
 
         Keep responses concise, friendly, and suitable for a chat interface.
         Current user asking: ${user.full_name}.
+        IMPORTANT: Respond in the language: ${language || 'English'}.
         `;
 
         const messages = [
