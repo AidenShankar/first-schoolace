@@ -1,7 +1,6 @@
 import AIPersonalAgent from './pages/AIPersonalAgent';
 import AITools from './pages/AITools';
 import AceSpaceDetail from './pages/AceSpaceDetail';
-import AceSpaces from './pages/AceSpaces';
 import Chat from './pages/Chat';
 import ChooseCourses from './pages/ChooseCourses';
 import ClassTools from './pages/ClassTools';
@@ -26,7 +25,6 @@ export const PAGES = {
     "AIPersonalAgent": AIPersonalAgent,
     "AITools": AITools,
     "AceSpaceDetail": AceSpaceDetail,
-    "AceSpaces": AceSpaces,
     "Chat": Chat,
     "ChooseCourses": ChooseCourses,
     "ClassTools": ClassTools,
