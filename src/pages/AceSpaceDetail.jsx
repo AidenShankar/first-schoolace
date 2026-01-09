@@ -478,16 +478,11 @@ export default function AceSpaceDetail({ user }) {
                                                 </span>
                                             )}
                                             
-                                            {/* Translation Button */}
-                                            {!isAi && msg.type !== 'file' && !isMe && (
-                                                <button 
-                                                    onClick={() => handleTranslate(msg.id, msg.content)}
-                                                    className="text-[10px] text-slate-400 hover:text-indigo-600 flex items-center gap-1 transition-colors"
-                                                    disabled={translating[msg.id]}
-                                                >
-                                                    <Languages className="h-3 w-3" />
-                                                    {translating[msg.id] ? t('aceSpaces.translating') : (translations[msg.id] && !showingOriginal[msg.id] ? t('aceSpaces.original') : t('aceSpaces.translate'))}
-                                                </button>
+                                            {/* Translation Status */}
+                                            {translations[msg.id] && (
+                                                <span className="text-[10px] text-slate-300 flex items-center gap-1">
+                                                    <Languages className="h-2 w-2" /> Auto-translated
+                                                </span>
                                             )}
                                         </div>
                                     </div>
