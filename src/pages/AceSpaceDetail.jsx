@@ -52,8 +52,7 @@ export default function AceSpaceDetail({ user }) {
 
     // Translation state
     const [translations, setTranslations] = useState({});
-    const [showingOriginal, setShowingOriginal] = useState({});
-    const [translating, setTranslating] = useState({});
+    const [isTranslatingBatch, setIsTranslatingBatch] = useState(false);
 
     const messagesEndRef = useRef(null);
     const fileInputRef = useRef(null);
@@ -245,25 +244,60 @@ export default function AceSpaceDetail({ user }) {
         }
     };
 
-    const handleTranslate = async (messageId, content) => {
-        // Toggle if already exists
-        if (translations[messageId]) {
-            setShowingOriginal(prev => ({...prev, [messageId]: !prev[messageId]}));
-            return;
-        }
+    // Automatic batch translation
+    useEffect(() => {
+        if (!messages.length || !languageName) return;
 
-        setTranslating(prev => ({...prev, [messageId]: true}));
-        try {
-            const prompt = `Translate the following text to ${languageName || 'English'}: "${content}". Output ONLY the translated text, nothing else.`;
-            const res = await InvokeLLM({ prompt });
-            setTranslations(prev => ({...prev, [messageId]: res}));
-            setShowingOriginal(prev => ({...prev, [messageId]: false}));
-        } catch(e) {
-            console.error("Translation error:", e);
-        } finally {
-            setTranslating(prev => ({...prev, [messageId]: false}));
-        }
-    };
+        const autoTranslate = async () => {
+            // Find messages that need translation (text/ai_response types that aren't yet translated)
+            // We translate everything to ensure consistency, assuming mixed source languages
+            const untranslated = messages.filter(m => 
+                (m.type === 'text' || m.type === 'ai_response') && 
+                !translations[m.id] &&
+                m.content // has content
+            );
+
+            if (untranslated.length === 0 || isTranslatingBatch) return;
+
+            // Take the most recent 10 untranslated messages to avoid huge payloads
+            const batch = untranslated.slice(-10);
+            setIsTranslatingBatch(true);
+
+            try {
+                const messagesMap = batch.reduce((acc, msg) => {
+                    acc[msg.id] = msg.content;
+                    return acc;
+                }, {});
+
+                const prompt = `You are a translator. Translate the following messages to ${languageName}.
+                Input is a JSON object where keys are message IDs and values are the text.
+                Return ONLY a JSON object where keys are message IDs and values are the translated text.
+                Do not include markdown formatting like \`\`\`json.
+                
+                Input: ${JSON.stringify(messagesMap)}`;
+
+                const response = await InvokeLLM({ 
+                    prompt,
+                    response_json_schema: {
+                        type: "object",
+                        additionalProperties: { type: "string" }
+                    }
+                });
+
+                if (response) {
+                    setTranslations(prev => ({...prev, ...response}));
+                }
+            } catch (error) {
+                console.error("Auto-translation failed:", error);
+            } finally {
+                setIsTranslatingBatch(false);
+            }
+        };
+
+        // Debounce slightly to allow messages to settle
+        const timeoutId = setTimeout(autoTranslate, 1000);
+        return () => clearTimeout(timeoutId);
+    }, [messages, languageName, translations, isTranslatingBatch]);
 
     const handleFileUpload = async (e) => {
         const file = e.target.files[0];
@@ -417,22 +451,21 @@ export default function AceSpaceDetail({ user }) {
                                                 </a>
                                             ) : (
                                                 <div className={`markdown-content ${isAi ? 'prose prose-sm max-w-none prose-p:my-1 prose-headings:my-2' : ''}`}>
-                                                    {isAi ? (
-                                                        <ReactMarkdown>{msg.content}</ReactMarkdown>
-                                                    ) : (
-                                                        <>
-                                                            {/* Display Translated or Original */}
-                                                            {translations[msg.id] && !showingOriginal[msg.id] ? (
-                                                                <div className="relative">
-                                                                    <p>{translations[msg.id]}</p>
-                                                                    <div className="mt-1 text-[10px] opacity-70 border-t border-black/10 pt-1 flex items-center gap-1">
-                                                                        <Languages className="h-3 w-3" /> Translated to {languageName}
-                                                                    </div>
-                                                                </div>
+                                                    {/* Auto-translated content */}
+                                                    {translations[msg.id] ? (
+                                                        <div className="relative">
+                                                            {isAi ? (
+                                                                <ReactMarkdown>{translations[msg.id]}</ReactMarkdown>
                                                             ) : (
-                                                                msg.content
+                                                                <p className="whitespace-pre-wrap">{translations[msg.id]}</p>
                                                             )}
-                                                        </>
+                                                            <div className="mt-1 text-[10px] opacity-60 border-t border-black/5 pt-1 flex items-center gap-1">
+                                                                <Languages className="h-3 w-3" /> 
+                                                                {t('aceSpaces.translatedTo')} {languageName}
+                                                            </div>
+                                                        </div>
+                                                    ) : (
+                                                        isAi ? <ReactMarkdown>{msg.content}</ReactMarkdown> : <p className="whitespace-pre-wrap">{msg.content}</p>
                                                     )}
                                                 </div>
                                             )}
