@@ -18,6 +18,7 @@ import Setup from './pages/Setup';
 import TermsOfService from './pages/TermsOfService';
 import compliance from './pages/compliance';
 import examplelearningtracker from './pages/examplelearningtracker';
+import AceSpaces from './pages/AceSpaces';
 import __Layout from './Layout.jsx';
 
 
@@ -42,6 +43,7 @@ export const PAGES = {
     "TermsOfService": TermsOfService,
     "compliance": compliance,
     "examplelearningtracker": examplelearningtracker,
+    "AceSpaces": AceSpaces,
 }
 
 export const pagesConfig = {
