@@ -10,7 +10,6 @@ import { Loader2, Plus, Users, LogIn, ArrowRight } from 'lucide-react';
 import { createPageUrl } from '@/utils';
 import { motion } from 'framer-motion';
 import { useTranslation } from "@/components/i18n/useTranslation";
-import { useTranslation } from "@/components/i18n/useTranslation";
 
 export default function AceSpaces({ user }) {
     const { t } = useTranslation();
@@ -143,24 +142,24 @@ export default function AceSpaces({ user }) {
                 <div>
                     <h1 className="text-3xl font-bold text-slate-900 flex items-center gap-3">
                         <Users className="h-8 w-8 text-indigo-600" />
-                        Ace Spaces
+                        {t('aceSpaces.title')}
                     </h1>
-                    <p className="text-slate-500 mt-1">Collaborate with classmates and Ace AI in shared group chats.</p>
+                    <p className="text-slate-500 mt-1">{t('aceSpaces.subtitle')}</p>
                 </div>
                 <div className="flex gap-2">
                     <Dialog open={joinOpen} onOpenChange={setJoinOpen}>
                         <DialogTrigger asChild>
                             <Button variant="outline" className="gap-2">
-                                <LogIn className="h-4 w-4" /> Join with Code
+                                <LogIn className="h-4 w-4" /> {t('aceSpaces.joinWithCode')}
                             </Button>
                         </DialogTrigger>
                         <DialogContent>
                             <DialogHeader>
-                                <DialogTitle>Join a Space</DialogTitle>
-                                <DialogDescription>Enter the 6-character code shared by a classmate.</DialogDescription>
+                                <DialogTitle>{t('aceSpaces.joinSpace')}</DialogTitle>
+                                <DialogDescription>{t('aceSpaces.joinDesc')}</DialogDescription>
                             </DialogHeader>
                             <Input 
-                                placeholder="ENTER CODE" 
+                                placeholder={t('aceSpaces.enterCode')}
                                 value={joinCode} 
                                 onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
                                 className="text-center text-2xl tracking-widest uppercase font-mono my-4"
@@ -168,7 +167,7 @@ export default function AceSpaces({ user }) {
                             />
                             <DialogFooter>
                                 <Button onClick={handleJoinSpace} disabled={processing || joinCode.length < 6}>
-                                    {processing ? <Loader2 className="animate-spin h-4 w-4" /> : "Join Space"}
+                                    {processing ? <Loader2 className="animate-spin h-4 w-4" /> : t('aceSpaces.joinSpace')}
                                 </Button>
                             </DialogFooter>
                         </DialogContent>
@@ -177,27 +176,27 @@ export default function AceSpaces({ user }) {
                     <Dialog open={createOpen} onOpenChange={setCreateOpen}>
                         <DialogTrigger asChild>
                             <Button className="bg-indigo-600 hover:bg-indigo-700 gap-2">
-                                <Plus className="h-4 w-4" /> Create Space
+                                <Plus className="h-4 w-4" /> {t('aceSpaces.createSpace')}
                             </Button>
                         </DialogTrigger>
                         <DialogContent>
                             <DialogHeader>
-                                <DialogTitle>Create New Space</DialogTitle>
-                                <DialogDescription>Start a new group chat for your project or study group.</DialogDescription>
+                                <DialogTitle>{t('aceSpaces.createNewSpace')}</DialogTitle>
+                                <DialogDescription>{t('aceSpaces.createDesc')}</DialogDescription>
                             </DialogHeader>
                             <div className="space-y-4 py-4">
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">Space Name</label>
-                                    <Input value={newSpaceName} onChange={(e) => setNewSpaceName(e.target.value)} placeholder="e.g. Science Project Group" />
+                                    <label className="text-sm font-medium">{t('aceSpaces.spaceName')}</label>
+                                    <Input value={newSpaceName} onChange={(e) => setNewSpaceName(e.target.value)} placeholder={t('aceSpaces.spaceNamePlaceholder')} />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">Description (Optional)</label>
-                                    <Input value={newSpaceDesc} onChange={(e) => setNewSpaceDesc(e.target.value)} placeholder="What's this space for?" />
+                                    <label className="text-sm font-medium">{t('aceSpaces.descOptional')}</label>
+                                    <Input value={newSpaceDesc} onChange={(e) => setNewSpaceDesc(e.target.value)} placeholder={t('aceSpaces.whatsThisFor')} />
                                 </div>
                             </div>
                             <DialogFooter>
                                 <Button onClick={handleCreateSpace} disabled={processing || !newSpaceName}>
-                                    {processing ? <Loader2 className="animate-spin h-4 w-4" /> : "Create Space"}
+                                    {processing ? <Loader2 className="animate-spin h-4 w-4" /> : t('aceSpaces.createSpace')}
                                 </Button>
                             </DialogFooter>
                         </DialogContent>
@@ -210,9 +209,9 @@ export default function AceSpaces({ user }) {
                     <div className="bg-white p-4 rounded-full inline-flex mb-4 shadow-sm">
                         <Users className="h-8 w-8 text-slate-400" />
                     </div>
-                    <h3 className="text-xl font-semibold text-slate-900">No spaces yet</h3>
-                    <p className="text-slate-500 max-w-sm mx-auto mt-2 mb-6">Create a space to start chatting with friends and Ace AI, or ask a classmate for a join code.</p>
-                    <Button onClick={() => setCreateOpen(true)}>Create Your First Space</Button>
+                    <h3 className="text-xl font-semibold text-slate-900">{t('aceSpaces.noSpaces')}</h3>
+                    <p className="text-slate-500 max-w-sm mx-auto mt-2 mb-6">{t('aceSpaces.noSpacesDesc')}</p>
+                    <Button onClick={() => setCreateOpen(true)}>{t('aceSpaces.createFirst')}</Button>
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -261,7 +260,7 @@ export default function AceSpaces({ user }) {
                                             </div>
                                         </div>
                                         <Button variant="ghost" size="sm" className="text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 p-0 h-auto font-medium">
-                                            Open Chat <ArrowRight className="ml-1 h-3 w-3" />
+                                            {t('aceSpaces.openChat')} <ArrowRight className="ml-1 h-3 w-3" />
                                         </Button>
                                     </div>
                                 </CardContent>
