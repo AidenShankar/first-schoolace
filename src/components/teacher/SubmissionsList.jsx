@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dialog";
 
 
-import { User, FileText, Star, Send, Edit, CheckCircle, Paperclip, AlertTriangle, MessageSquare, Users, Inbox, LayoutGrid, List } from "lucide-react";
+import { User, FileText, Star, Send, Edit, CheckCircle, Paperclip, AlertTriangle, MessageSquare, Users, Inbox, LayoutGrid, List, Eye } from "lucide-react";
 import { format, subHours } from "date-fns";
 import { motion } from "framer-motion";
 import FilePreview from "../common/FilePreview";
