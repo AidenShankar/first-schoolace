@@ -268,9 +268,11 @@ export default function SubmissionsList({ submissions, assignment, onReleaseGrad
       const getGrade = (student) => {
           const latest = student.submissions[0];
           if (!latest) return -1;
-          if (latest.final_grade !== null && latest.final_grade !== undefined) return latest.final_grade;
-          if (latest.teacher_grade !== null && latest.teacher_grade !== undefined) return latest.teacher_grade;
-          if (latest.ai_grade !== null && latest.ai_grade !== undefined) return latest.ai_grade;
+          // Prioritize released grades, then draft teacher grades, then draft AI grades
+          // This ensures that even unreleased AI grades are used for sorting
+          if (latest.final_grade !== null && latest.final_grade !== undefined) return Number(latest.final_grade);
+          if (latest.teacher_grade !== null && latest.teacher_grade !== undefined) return Number(latest.teacher_grade);
+          if (latest.ai_grade !== null && latest.ai_grade !== undefined) return Number(latest.ai_grade);
           return -1;
       };
       
@@ -281,7 +283,7 @@ export default function SubmissionsList({ submissions, assignment, onReleaseGrad
       if (gradeA !== -1 && gradeB === -1) return -1;
       if (gradeA === -1 && gradeB !== -1) return 1;
       
-      // If both have grades, sort descending
+      // If both have grades, sort descending (highest score first)
       if (gradeA !== gradeB) return gradeB - gradeA;
       
       // If both ungraded or same grade, sort by name
