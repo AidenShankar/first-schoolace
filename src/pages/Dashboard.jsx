@@ -420,6 +420,7 @@ You are an expert academic grader. Your task is to grade a student's work with a
 - Be precise in your calculations.
 - If you cannot clearly read the submission, state that clearly in your feedback.
 - Provide constructive feedback that helps the student learn.
+- **If the grade is lower than the maximum points (${assignment.max_points}), you MUST explicitly state what was missing or incorrect to achieve full marks. Structure the feedback as "Good Feedback" (what they did well) followed by "Gap Feedback" (what was missing/wrong) to help them close the gap.**
 
 Output your response as JSON with:
 - grade: numerical score (0 to ${assignment.max_points})

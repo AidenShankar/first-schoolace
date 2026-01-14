@@ -1,6 +1,7 @@
 import AIPersonalAgent from './pages/AIPersonalAgent';
 import AITools from './pages/AITools';
 import AceSpaceDetail from './pages/AceSpaceDetail';
+import AceSpaces from './pages/AceSpaces';
 import Chat from './pages/Chat';
 import ChooseCourses from './pages/ChooseCourses';
 import ClassTools from './pages/ClassTools';
@@ -18,7 +19,6 @@ import Setup from './pages/Setup';
 import TermsOfService from './pages/TermsOfService';
 import compliance from './pages/compliance';
 import examplelearningtracker from './pages/examplelearningtracker';
-import AceSpaces from './pages/AceSpaces';
 import __Layout from './Layout.jsx';
 
 
@@ -26,6 +26,7 @@ export const PAGES = {
     "AIPersonalAgent": AIPersonalAgent,
     "AITools": AITools,
     "AceSpaceDetail": AceSpaceDetail,
+    "AceSpaces": AceSpaces,
     "Chat": Chat,
     "ChooseCourses": ChooseCourses,
     "ClassTools": ClassTools,
@@ -43,7 +44,6 @@ export const PAGES = {
     "TermsOfService": TermsOfService,
     "compliance": compliance,
     "examplelearningtracker": examplelearningtracker,
-    "AceSpaces": AceSpaces,
 }
 
 export const pagesConfig = {
