@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dialog";
 
 
-import { User, FileText, Star, Send, Edit, CheckCircle, Paperclip, AlertTriangle, MessageSquare, Users, Inbox } from "lucide-react";
+import { User, FileText, Star, Send, Edit, CheckCircle, Paperclip, AlertTriangle, MessageSquare, Users, Inbox, LayoutGrid, List } from "lucide-react";
 import { format, subHours } from "date-fns";
 import { motion } from "framer-motion";
 import FilePreview from "../common/FilePreview";
@@ -190,6 +190,8 @@ export default function SubmissionsList({ submissions, assignment, onReleaseGrad
   const [feedbackAttachment, setFeedbackAttachment] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [allClassStudents, setAllClassStudents] = useState([]);
+  const [viewMode, setViewMode] = useState('list'); // 'list' or 'grid'
+  const [previewSubmission, setPreviewSubmission] = useState(null);
 
   const getGradeColor = (grade, maxPoints) => {
     if (grade === null || grade === undefined) return "text-slate-600";
