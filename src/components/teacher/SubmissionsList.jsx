@@ -307,7 +307,25 @@ export default function SubmissionsList({ submissions, assignment, onReleaseGrad
     <>
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-xl font-bold text-slate-900">Submissions</h3>
+          <div className="flex items-center gap-4">
+              <h3 className="text-xl font-bold text-slate-900">Submissions</h3>
+              <div className="flex items-center bg-slate-100 rounded-lg p-1">
+                  <button 
+                      onClick={() => setViewMode('list')}
+                      className={`p-1.5 rounded-md transition-all ${viewMode === 'list' ? 'bg-white shadow-sm text-indigo-600' : 'text-slate-500 hover:text-slate-700'}`}
+                      title="List View"
+                  >
+                      <List className="w-4 h-4" />
+                  </button>
+                  <button 
+                      onClick={() => setViewMode('grid')}
+                      className={`p-1.5 rounded-md transition-all ${viewMode === 'grid' ? 'bg-white shadow-sm text-indigo-600' : 'text-slate-500 hover:text-slate-700'}`}
+                      title="Grid View"
+                  >
+                      <LayoutGrid className="w-4 h-4" />
+                  </button>
+              </div>
+          </div>
           <Badge variant="outline" className="bg-slate-50">
             {studentsWithSubmissions.length} student{studentsWithSubmissions.length !== 1 ? 's' : ''} submitted
           </Badge>
