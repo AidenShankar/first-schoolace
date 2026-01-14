@@ -571,7 +571,7 @@ export default function SubmissionsList({ submissions, assignment, onReleaseGrad
                 );
               })}
             </div>
-          )}
+          ))}
       </div>
 
       <CommentThread 
