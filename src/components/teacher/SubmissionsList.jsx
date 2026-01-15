@@ -490,71 +490,7 @@ export default function SubmissionsList({ submissions, assignment, onReleaseGrad
               )}
             </div>
           </div>
-          ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-              {studentsWithSubmissions.map(student => {
-                const submission = student.submissions[0];
-                const isImage = submission.file_name?.match(/\.(jpg|jpeg|png|gif|webp)$/i);
-                
-                return (
-                  <Card 
-                    key={student.student_id} 
-                    className="overflow-hidden hover:shadow-lg transition-all cursor-pointer group flex flex-col h-full bg-white border-slate-200"
-                    onClick={() => setPreviewSubmission(submission)}
-                    tabIndex={0}
-                    onKeyDown={(e) => {
-                        if (e.key === ' ' || e.key === 'Enter') {
-                            e.preventDefault();
-                            setPreviewSubmission(submission);
-                        }
-                    }}
-                  >
-                    <div className="aspect-square bg-slate-100 relative flex items-center justify-center overflow-hidden">
-                        {isImage ? (
-                            <img 
-                                src={submission.file_url} 
-                                alt={`Submission by ${student.student_name}`}
-                                className="w-full h-full object-cover transition-transform group-hover:scale-105"
-                            />
-                        ) : (
-                            <div className="flex flex-col items-center p-4 text-center">
-                                <FileText className="w-12 h-12 text-slate-300 mb-2" />
-                                <span className="text-xs text-slate-500 line-clamp-3 break-all">{submission.file_name}</span>
-                            </div>
-                        )}
-                        
-                        <div className="absolute top-2 right-2">
-                             <Badge className={`${statusColors[submission.grading_status]} text-[10px] px-1.5 py-0.5 shadow-sm border`}>
-                                {submission.grading_status === 'ai_graded' ? 'AI' : 
-                                 submission.grading_status === 'graded' ? 'Graded' :
-                                 submission.grading_status === 'pending' ? 'Pending' : 
-                                 submission.grading_status.replace(/_/g, ' ')}
-                             </Badge>
-                        </div>
-                        
-                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
-                            <div className="bg-white/90 rounded-full p-2 shadow-sm transform scale-90 group-hover:scale-100 transition-all">
-                                <Eye className="w-5 h-5 text-indigo-600" /> 
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div className="p-3 border-t border-slate-100 flex-1 flex flex-col justify-center">
-                        <h4 className="font-semibold text-sm truncate text-slate-900" title={student.student_name}>{student.student_name}</h4>
-                        <div className="flex items-center justify-between mt-1">
-                             <span className="text-xs text-slate-500">{format(new Date(submission.submitted_at), 'MMM d')}</span>
-                             {(submission.final_grade ?? submission.teacher_grade ?? submission.ai_grade) !== null && (
-                                <span className={`text-xs font-bold ${getGradeColor(submission.final_grade ?? submission.teacher_grade ?? submission.ai_grade, assignment.max_points)}`}>
-                                    {submission.final_grade ?? submission.teacher_grade ?? submission.ai_grade}/{assignment.max_points}
-                                </span>
-                             )}
-                        </div>
-                    </div>
-                  </Card>
-                );
-              })}
-            </div>
-          ))}
+        )}
       </div>
 
       <CommentThread 
