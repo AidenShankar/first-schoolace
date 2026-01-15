@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, useScroll, useTransform, useInView, animate } from 'framer-motion';
 import { createPageUrl } from '@/utils';
@@ -253,16 +254,15 @@ const PricingCard = ({ plan, price, features, cta, isFeatured, isPrimary, linkTo
       );
     }
 
-    // Pro tier: $9 USD / student / month, billed annually \n $20 when billed monthly
-    if (price.includes('$9 /student/mo')) {
+    // Pro tier: $21 / teacher / month
+    if (price.includes('$21')) {
       return (
         <>
           <div className="flex items-baseline gap-2 mb-1">
-            <span className="text-4xl font-extrabold text-white">$9</span>
+            <span className="text-4xl font-extrabold text-white">$21</span>
             <span className="text-sm font-normal text-slate-400">USD</span>
           </div>
-          <div className="text-base font-normal text-slate-300 mb-1">/ student / month, billed annually</div>
-          <div className="text-base font-normal text-slate-400">$12 when billed monthly</div>
+          <div className="text-base font-normal text-slate-300 mb-1">{price.replace('$21', '').trim()}</div>
         </>
       );
     }
