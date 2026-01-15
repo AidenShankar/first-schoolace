@@ -207,6 +207,15 @@ export default function SubmissionsList({ submissions, assignment, onReleaseGrad
     return "text-red-600";
   };
 
+  const getStudentGrade = (student) => {
+    const sub = student.submissions[0];
+    if (!sub) return null;
+    if (sub.is_released && sub.final_grade !== null && sub.final_grade !== undefined) return sub.final_grade;
+    if (sub.teacher_grade !== null && sub.teacher_grade !== undefined) return sub.teacher_grade;
+    if (sub.ai_grade !== null && sub.ai_grade !== undefined) return sub.ai_grade;
+    return null;
+  };
+
   const loadClassStudents = useCallback(async () => {
     try {
       const enrollments = await ClassEnrollment.filter({ class_id: assignment.class_id });
@@ -426,7 +435,9 @@ export default function SubmissionsList({ submissions, assignment, onReleaseGrad
               <h4 className="font-semibold text-slate-800 px-2 flex items-center gap-2 mb-2">
                 <Users className="w-5 h-5 text-slate-500" /> Students
               </h4>
-              {studentsWithSubmissions.map(student => (
+              {studentsWithSubmissions.map(student => {
+                const grade = getStudentGrade(student);
+                return (
                 <button
                   key={student.student_id}
                   onClick={() => setSelectedStudentId(student.student_id)}
@@ -439,6 +450,11 @@ export default function SubmissionsList({ submissions, assignment, onReleaseGrad
                     <span className="text-xs text-slate-500 truncate max-w-full">{student.submissions[0]?.student_email}</span>
                   </div>
                   <div className="flex items-center gap-2">
+                    {grade !== null && (
+                      <span className={`text-xs font-bold px-2 py-0.5 rounded-md ${student.is_released ? 'bg-green-100 text-green-700 border border-green-200' : 'bg-slate-100 text-slate-600 border border-slate-200'}`}>
+                        {grade}/{assignment.max_points}
+                      </span>
+                    )}
                     {student.is_released && <CheckCircle className="w-4 h-4 text-green-500" title="Grade Released" />}
                     <span className={`text-xs font-bold rounded-full h-6 w-6 flex items-center justify-center ${
                         selectedStudentId === student.student_id ? 'bg-indigo-200' : 'bg-slate-200'
@@ -447,7 +463,7 @@ export default function SubmissionsList({ submissions, assignment, onReleaseGrad
                     </span>
                   </div>
                 </button>
-              ))}
+              )})}
             </div>
 
             <div className="md:col-span-2 space-y-4">
@@ -551,8 +567,8 @@ export default function SubmissionsList({ submissions, assignment, onReleaseGrad
                             )}
                             
                             {submission.is_released && (
-                            <Badge className="bg-gray-100 text-gray-600 border-gray-200 text-xs px-3 py-1.5 rounded-full flex items-center gap-1.5">
-                                <CheckCircle className="w-3 h-3" /> Released on {format(new Date(submission.released_at), 'MMM d')}
+                            <Badge className="bg-green-50 text-green-700 border-green-200 text-xs px-3 py-1.5 rounded-full flex items-center gap-1.5">
+                                <CheckCircle className="w-3 h-3" /> Released: <span className="font-bold">{submission.final_grade}/{assignment.max_points}</span>
                             </Badge>
                             )}
                             
@@ -566,8 +582,8 @@ export default function SubmissionsList({ submissions, assignment, onReleaseGrad
 
                         {!isNewestSubmission && submission.is_released && (
                           <div className="pt-2 border-t border-slate-100">
-                            <Badge className="bg-gray-100 text-gray-600 border-gray-200 text-xs px-3 py-1.5 rounded-full flex items-center gap-1.5">
-                              <CheckCircle className="w-3 h-3" /> Released on {format(new Date(submission.released_at), 'MMM d')}
+                            <Badge className="bg-green-50 text-green-700 border-green-200 text-xs px-3 py-1.5 rounded-full flex items-center gap-1.5">
+                              <CheckCircle className="w-3 h-3" /> Released: <span className="font-bold">{submission.final_grade}/{assignment.max_points}</span> on {format(new Date(submission.released_at), 'MMM d')}
                             </Badge>
                           </div>
                         )}
