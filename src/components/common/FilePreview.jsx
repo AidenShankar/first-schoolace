@@ -63,7 +63,7 @@ export default function FilePreview({ fileUrl, fileName, className = "" }) {
         <DialogContent className="max-w-4xl w-full h-[90vh] flex flex-col p-0 gap-0 overflow-hidden bg-slate-900 border-slate-800">
           <DialogHeader className="p-4 bg-slate-900 border-b border-slate-800 shrink-0 flex flex-row items-center justify-between">
             <DialogTitle className="flex items-center gap-2 text-white">
-              {isPDF ? <FileText className="w-5 h-5" /> : <ImageIcon className="w-5 h-5" />}
+              {!isImage ? <FileText className="w-5 h-5" /> : <ImageIcon className="w-5 h-5" />}
               <span className="truncate max-w-md">{fileName || 'File Preview'}</span>
             </DialogTitle>
             <div className="flex items-center gap-2">
