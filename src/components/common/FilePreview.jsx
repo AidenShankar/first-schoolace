@@ -13,8 +13,9 @@ export default function FilePreview({ fileUrl, fileName, className = "" }) {
 
   if (!fileUrl) return null;
 
-  const isPDF = fileName?.toLowerCase().endsWith('.pdf');
-  const isImage = fileName?.toLowerCase().match(/\.(jpg|jpeg|png|gif|webp)$/);
+  const isImage = fileName?.toLowerCase().match(/\.(jpg|jpeg|png|gif|webp|svg)$/);
+  // Common document formats that Google Docs Viewer can handle
+  const isDoc = fileName?.toLowerCase().match(/\.(pdf|doc|docx|ppt|pptx|xls|xlsx|txt|rtf)$/);
 
   const handleDownload = (e) => {
     e.stopPropagation();
@@ -86,17 +87,17 @@ export default function FilePreview({ fileUrl, fileName, className = "" }) {
           </DialogHeader>
           
           <div className="flex-1 overflow-hidden bg-black flex items-center justify-center relative p-4">
-            {isPDF ? (
-              <iframe
-                src={fileUrl}
-                className="w-full h-full bg-white rounded-sm"
-                title={fileName}
-              />
-            ) : isImage ? (
+            {isImage ? (
               <img
                 src={fileUrl}
                 alt={fileName}
                 className="max-w-full max-h-full object-contain"
+              />
+            ) : isDoc ? (
+              <iframe
+                src={`https://docs.google.com/gview?url=${encodeURIComponent(fileUrl)}&embedded=true`}
+                className="w-full h-full bg-white rounded-sm border-none"
+                title={fileName}
               />
             ) : (
               <div className="text-center">
