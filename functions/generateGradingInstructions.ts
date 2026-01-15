@@ -31,7 +31,9 @@ Deno.serve(async (req) => {
         3. Key points to look for in student submissions.
         4. Specific grading criteria.
         
-        Format the output as clean, organized markdown text suitable for a teacher to use directly.
+        Format the output as clear, plain text paragraphs and simple lists.
+        Do NOT use markdown tables, headers (###), or complex visual formatting.
+        The goal is to produce a dense, easy-to-read block of text that serves as a system instruction for an AI grader.
         Do not include any conversational filler (like "Here are the instructions..."). Just the content.
         `;
 
