@@ -332,7 +332,7 @@ export default function AssignmentList({ assignments, onUpload, userSubmissions,
                                         <span className="text-xs text-slate-500">
                                           {format(new Date(sub.submitted_at || sub.created_date), 'MMM d, p')}
                                         </span>
-                                        {!latestSubmission?.is_released && (
+                                        {!sub.is_released && (
                                           <Button
                                             variant="ghost"
                                             size="icon"
