@@ -1,2508 +1,4526 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { motion, useScroll, useTransform, useInView, animate } from 'framer-motion';
-import { createPageUrl } from '@/utils';
-import { Link } from 'react-router-dom';
-import { ArrowRight, Bot, BookOpen, PenTool, BarChart, CheckCircle, GraduationCap, Brain, Sparkles, Users, Calendar, Activity, Crown, SlidersHorizontal, BrainCircuit, ShieldCheck, Mail, Edit, Linkedin, Shield, PlusCircle, Lock, Eye, Unlock } from 'lucide-react';
-import { Button } from "@/components/ui/button";
-import { User } from '@/entities/User';
-import { Contact } from '@/entities/Contact';
-import { base44 } from '@/api/base44Client';
-import { useTranslation } from '../components/i18n/useTranslation';
-import LanguageSelector from '../components/i18n/LanguageSelector';
-import AIPreviewSection from '../components/landing/AIPreviewSection';
-import {
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  ResponsiveContainer,
-  Tooltip,
-  LineChart,
-  Line,
-  CartesianGrid
-} from "recharts";
+// Schoolace Translations
+// Add more translations as needed
 
-// --- Enhanced Atmospheric Effects ---
+const translations = {
+  EN: {
+    // Navigation
+    nav: {
+      dashboard: "Dashboard",
+      scheduler: "Scheduler",
+      aiAgent: "AI Agent",
+      chat: "Chat",
+      classTools: "Class Tools",
+      lessonPlans: "Lesson Plans",
+      aiTools: "AI Tools",
+      powerSchool: "PowerSchool",
+      aceAI: "ACE AI",
+    },
+    // Dashboard
+    dashboard: {
+      title: "Dashboard",
+      welcome: "Welcome",
+      yourClasses: "Your Classes",
+      createClass: "Create Class",
+      joinClass: "Join Class",
+      noClasses: "No classes found",
+      assignments: "Assignments",
+      createAssignment: "Create Assignment",
+      noAssignments: "No assignments yet",
+      dueDate: "Due Date",
+      submissions: "Submissions",
+      graded: "Graded",
+      pending: "Pending",
+      viewAll: "View All",
+      recentActivity: "Recent Activity",
+      classCode: "Class Code",
+      students: "Students",
+      activeAssignments: "Active Assignments",
+      teachingHub: "Your Teaching Hub",
+      switchClass: "Switch Class",
+      joinAnotherClass: "Join Another Class",
+      loadingClassroom: "Loading your classroom...",
+      feedback: "Feedback",
+      logout: "Logout",
+      teacherDashboard: "Teacher Dashboard",
+      teacherDescription: "Create assignments and review student submissions",
+      createNewClass: "Create New Class",
+      backToDashboard: "Back to Dashboard",
+      backToAssignments: "Back to Assignments",
+      yourAssignments: "Your Assignments",
+      noAssignmentsYet: "No assignments created yet",
+      createFirstAssignment: "Create your first assignment to get started. If you are expecting assignments, please close this tab and log back in.",
+      studentPortal: "Student Portal",
+      studentDescription: "View assignments and submit your work",
+    },
+    // Class Tools
+    classTools: {
+      title: "Class Tools",
+      subtitle: "Interactive tools for your classroom",
+      selectClass: "Select Class",
+      chooseClass: "Choose a class",
+      schedule: "Schedule",
+      quizzes: "Quizzes",
+      polls: "Polls",
+      personalizedLearning: "Personalized Learning",
+      noClasses: "No classes found.",
+      goToDashboard: "Go to your dashboard to create or join a class.",
+      // Schedule
+      classSchedule: "Class Schedule",
+      weekOf: "Week of",
+      today: "Today",
+      addEvent: "Add Event",
+      deleteEventConfirm: "Are you sure you want to delete this event?",
+      // Quizzes
+      createQuiz: "Create Quiz",
+      editQuiz: "Edit Quiz",
+      noQuizzesAvailable: "No quizzes available at this time. If you are expecting a quiz, please reload your page and/or log out.",
+      draft: "Draft",
+      active: "Active",
+      closed: "Closed",
+      activate: "Activate",
+      lock: "Lock",
+      reDraft: "Re-Draft",
+      showResults: "Show Results",
+      hideResults: "Hide Results",
+      duplicate: "Duplicate",
+      edit: "Edit",
+      results: "Results",
+      delete: "Delete",
+      takeQuiz: "Take Quiz",
+      viewResults: "View Results",
+      completed: "Completed",
+      duplicateQuiz: "Duplicate Quiz",
+      duplicateQuizDesc: "Copy \"{title}\" to another class. The new quiz will be saved as a draft.",
+      destinationClass: "Destination Class",
+      selectClassToCopy: "Select a class to copy to",
+      cancel: "Cancel",
+      duplicating: "Duplicating...",
+      confirmAndCopy: "Confirm & Copy",
+      deleteQuizConfirm: "Are you sure you want to delete \"{title}\"? This will delete all questions and cannot be undone.",
+      quizCopied: "Quiz \"{title}\" successfully copied! It has been saved as a draft in the destination class.",
+      quizDeleted: "Quiz \"{title}\" has been deleted.",
+      // Quiz Builder
+      quizTitle: "Title",
+      quizTitlePlaceholder: "Quiz Title",
+      quizDescription: "Description",
+      quizDescriptionPlaceholder: "Quiz Description (optional)",
+      timeLimit: "Time Limit",
+      unlimitedTime: "Unlimited Time",
+      setTimeLimit: "Set Time Limit (mins):",
+      afterCompletion: "After Completion",
+      allowStudentsViewResults: "Allow students to view their grade and answers",
+      aiQuizGenerator: "AI Quiz Generator",
+      topic: "Topic",
+      websiteUrl: "Website URL",
+      fileUpload: "File Upload",
+      enterTopic: "Enter topic",
+      enterUrl: "Enter URL",
+      numberOfQuestions: "Number of Questions",
+      difficulty: "Difficulty",
+      easy: "Easy",
+      medium: "Medium",
+      hard: "Hard",
+      questionType: "Question Type",
+      multipleChoice: "Multiple Choice",
+      trueFalse: "True/False",
+      generateQuestions: "Generate Questions",
+      generating: "Generating...",
+      question: "Question",
+      remove: "Remove",
+      enterQuestion: "Enter your question here...",
+      answerOptions: "Answer Options",
+      correctAnswer: "Correct Answer",
+      addQuestion: "Add Question",
+      saveQuiz: "Save Quiz",
+      // Polls
+      createPoll: "Create Poll",
+      noPolls: "No polls have been created yet.",
+      noPollsStudent: "No active polls available. If you are expecting a poll, please reload the page and/or log out.",
+      createNewPoll: "Create a New Poll",
+      pollQuestion: "Poll Question",
+      options: "Options",
+      addOption: "Add Option",
+      closePoll: "Close Poll",
+      reopenPoll: "Re-open Poll",
+      totalVotes: "Total votes",
+      yourVote: "Your Vote",
+      voting: "Voting...",
+      votes: "votes",
+    },
+    // Lesson Plans
+    lessonPlans: {
+      title: "Lesson Plans",
+      createLesson: "Create Lesson",
+      searchLessons: "Search lessons...",
+      noLessons: "No lesson plans yet",
+      createFirst: "Create your first lesson plan to get started.",
+      objectives: "Objectives",
+      activities: "Activities",
+      homework: "Homework",
+      resources: "Resources",
+      released: "Released",
+      unreleased: "Unreleased",
+      noClassesFound: "No classes found. Please create or join a class first.",
+      pleaseLogin: "Please log in to access lesson plans.",
+      // Editor
+      editLessonPlan: "Edit Lesson Plan",
+      createNewLessonPlan: "Create New Lesson Plan",
+      class: "Class",
+      importFromText: "Import from Text",
+      aiAssistant: "AI Assistant",
+      cancel: "Cancel",
+      saveLesson: "Save Lesson",
+      saving: "Saving...",
+      importSuccessful: "Import Successful!",
+      lessonImported: "Your lesson plan has been imported to the pre-made lesson plans section at the bottom of the editor!",
+      gotIt: "Got it!",
+      aiLessonGenerator: "AI Lesson Generator",
+      aiPlaceholder: "Describe your lesson... e.g., 'Create a lesson about photosynthesis for 8th grade science with hands-on experiments' or 'Make an engaging math lesson about fractions with real-world examples'",
+      aiNote: "The AI will generate educational links. Please verify the links are accurate before posting.",
+      generateLesson: "Generate Lesson",
+      generating: "Generating...",
+      importLessonFromText: "Import Lesson Plan from Text",
+      importDesc: "Paste your existing lesson plan text below and AI will help organize it.",
+      pasteHere: "Paste your lesson plan here...",
+      useLessonAsIs: "Use Lesson Plan As Is",
+      processing: "Processing...",
+      importStructure: "Import & Structure Lesson",
+      beta: "BETA",
+      basicInformation: "Basic Information",
+      lessonTitle: "Lesson Title",
+      enterLessonTitle: "Enter lesson title...",
+      lessonDate: "Lesson Date",
+      lessonIsReleased: "Lesson is Released",
+      lessonIsUnreleased: "Lesson is Unreleased",
+      studentsCanView: "Students can view this lesson plan",
+      studentsCannotView: "Students cannot see this lesson plan yet",
+      learningObjectives: "Learning Objectives",
+      learningObjective: "Learning objective",
+      addObjective: "Add Objective",
+      hookOpeningActivity: "Hook/Opening Activity",
+      hookPlaceholder: "Describe an engaging opening activity to grab students' attention...",
+      classroomActivities: "Classroom Activities",
+      activityTitle: "Activity title...",
+      duration: "Duration (minutes)",
+      minutes: "minutes",
+      describeActivity: "Describe the activity...",
+      materialsNeeded: "Materials Needed",
+      material: "Material...",
+      addMaterial: "Add Material",
+      addActivity: "Add Activity",
+      homeworkAssignment: "Homework assignment",
+      addHomework: "Add Homework",
+      resourceTitle: "Resource title...",
+      urlPlaceholder: "URL (for websites, videos)...",
+      or: "or",
+      fileUploaded: "File uploaded:",
+      type: "Type",
+      uploadFile: "Upload File",
+      uploading: "Uploading...",
+      website: "Website",
+      video: "Video",
+      document: "Document",
+      book: "Book",
+      file: "File",
+      image: "Image",
+      addResource: "Add Resource",
+      assessment: "Assessment",
+      assessmentType: "Assessment type",
+      formative: "Formative",
+      summative: "Summative",
+      peerAssessment: "Peer Assessment",
+      selfAssessment: "Self Assessment",
+      describeAssessment: "Describe the assessment method...",
+      rubric: "Rubric or grading criteria...",
+      preMadeLessonPlan: "Pre-Made Lesson Plan / Additional Information",
+      additionalInfoPlaceholder: "Add any additional information for students/parents (e.g., office hours, contact information, special instructions, etc.)...",
+      differentiationStrategies: "Differentiation Strategies",
+      differentiationStrategy: "Differentiation strategy",
+      addStrategy: "Add Strategy",
+      // Viewer
+      back: "Back",
+      unrelease: "Unrelease",
+      release: "Release",
+      duplicate: "Duplicate",
+      edit: "Edit",
+      studentsWillBeAbleTo: "Students will be able to:",
+      descriptionLabel: "Description:",
+      rubricLabel: "Rubric:",
+      teacherReflectionNotes: "Teacher Reflection Notes",
+      duplicateLessonPlan: "Duplicate Lesson Plan",
+      selectClassToCopy: "Select a class to copy \"{title}\" to:",
+      chooseDestinationClass: "Choose destination class",
+      duplicating: "Duplicating...",
+      // Calendar
+      previous: "Previous",
+      weekView: "Week View",
+      next: "Next",
+      releasedStudentsCanSee: "Released (Students can see)",
+      unreleasedStudentsCannotSee: "Unreleased (Students cannot see)",
+      noLessonsForDay: "No lessons",
+      lessonsThisWeek: "Lessons This Week",
+      releasedCount: "Released",
+      unreleasedCount: "Unreleased",
+      min: "min",
+      visit: "Visit",
+      download: "Download",
+      createFirstLesson: "Create Your First Lesson",
+    },
+    // AI Tools
+    aiTools: {
+      title: "AI Tools",
+      subtitle: "Your AI-powered assistant for teaching and learning.",
+      generate: "Generate",
+      generating: "Generating...",
+      clear: "Clear",
+      copy: "Copy",
+      download: "Download",
+      pinTool: "Pin Tool",
+      unpinTool: "Unpin Tool",
+      teacherTools: "Teacher Tools",
+      studentTools: "Student Tools",
+      output: "Output",
+      outputPlaceholder: "Your generated content will appear here.",
+      select: "Select",
+      error: "Error",
+      errorRetry: "If this continues, please try again in a few minutes.",
+      translating: "Translating...",
+      locked: "AI Tools Locked",
+      lockedDescription: "You need to be logged in to access our powerful suite of AI tools for teaching and learning.",
+      signInToContinue: "Sign In to Continue",
+      loadingAITools: "Loading AI Tools...",
+      // Teacher Tools
+      emailGenerator: "Email Generator",
+      emailGeneratorDesc: "Quickly draft professional emails to parents or students.",
+      iepAccommodations: "IEP & Accommodation Generator",
+      iepAccommodationsDesc: "Generate customized accommodations and IEP goals for students.",
+      rubricGenerator: "Rubric Generator",
+      rubricGeneratorDesc: "Quickly generate a comprehensive rubric for any assignment.",
+      questionGenerator: "Assessment Question Generator",
+      questionGeneratorDesc: "Generate questions from a topic, website URL, uploaded document, or YouTube transcript.",
+      worksheetGenerator: "Worksheet Generator",
+      worksheetGeneratorDesc: "Generate a professional worksheet from a topic, website URL, uploaded document, or YouTube transcript.",
+      reportCardComments: "Report Card Comments",
+      reportCardCommentsDesc: "Generate personalized, constructive report card comments.",
+      assignmentScaffolder: "Assignment Scaffolder",
+      assignmentScaffolderDesc: "Create differentiated versions of assignments for different skill levels.",
+      teacherWellness: "Teacher Wellness Support",
+      teacherWellnessDesc: "A space to reflect on your well-being and find strategies for managing stress.",
+      aiDetector: "AI Content Detector",
+      aiDetectorDesc: "Analyze text or uploaded files to detect potential AI-generated content.",
+      // Student Tools
+      writingFeedback: "Writing Feedback Assistant",
+      writingFeedbackDesc: "Get instant, constructive feedback on your writing to help you improve.",
+      textSummarizer: "Text Summarizer",
+      textSummarizerDesc: "Summarize long articles or text into key points.",
+      checkUnderstanding: "Check Your Understanding",
+      checkUnderstandingDesc: "Generate questions from a topic, website URL, uploaded document, or YouTube transcript.",
+      conceptExplainer: "Concept Explainer",
+      conceptExplainerDesc: "Get a simple explanation of any complex topic or concept.",
+      studentEmailGenerator: "Email Generator",
+      studentEmailGeneratorDesc: "Draft a respectful and clear email to your teacher.",
+      studentWellness: "Student Wellness Support",
+      studentWellnessDesc: "A safe space to check in with your feelings and get supportive feedback.",
+      // Form Labels
+      emailTo: "Email To",
+      studentName: "Student Name",
+      emailSubject: "Email Subject",
+      keyPointsToInclude: "Key Points to Include",
+      tone: "Tone",
+      gradeLevel: "Grade Level",
+      areaOfNeed: "Area of Need",
+      describeStudentChallenges: "Describe Student's Specific Challenges",
+      whatToGenerate: "What do you want to generate?",
+      assignmentTitle: "Assignment Title",
+      gradingCriteria: "Grading Criteria (one per line)",
+      topicIfNoContent: "Topic (if no other content provided)",
+      websiteUrlOptional: "Website URL (Optional)",
+      youtubeTranscript: "YouTube Video Transcript (Optional)",
+      uploadDocumentOptional: "Upload Document (Optional)",
+      questionType: "Question Type",
+      numberOfQuestions: "Number of Questions",
+      difficulty: "Difficulty",
+      worksheetInstructions: "Worksheet Layout and Instructions",
+      studentStrengths: "Student Strengths",
+      areasForImprovement: "Areas for Improvement",
+      originalAssignment: "Original Assignment",
+      subject: "Subject",
+      teacherLastName: "Teacher's Last Name",
+      whatYouNeedToSay: "What you need to say",
+      textToAnalyze: "Text to Analyze",
+      orUploadDocument: "Or Upload Document",
+      pasteTextHere: "Paste your text here",
+      textToSummarize: "Paste the text to summarize",
+      summaryLength: "Summary Length",
+      conceptToExplain: "Concept to Explain",
+      explainLikeIm: "Explain It Like I'm...",
+      howAreYouFeelingTeacher: "Hi! How are you feeling as an educator today?",
+      howAreYouFeelingStudent: "Hi there 👋 How are you feeling today?",
+      // Select Options
+      aParentGuardian: "A Parent/Guardian",
+      aStudent: "A Student",
+      formalEncouraging: "Formal & Encouraging",
+      positiveCasual: "Positive & Casual",
+      directInformative: "Direct & Informative",
+      fullReport: "Full Report",
+      listOfAccommodations: "List of Accommodations",
+      smartGoal: "SMART Goal",
+      emailToParent: "Email to Parent",
+      multipleChoice: "Multiple Choice",
+      trueFalse: "True/False",
+      shortAnswer: "Short Answer",
+      easy: "Easy",
+      medium: "Medium",
+      hard: "Hard",
+      encouraging: "Encouraging",
+      formal: "Formal",
+      direct: "Direct",
+      shortSentences: "Short (a few sentences)",
+      mediumParagraph: "Medium (a paragraph)",
+      detailedBullets: "Detailed (bullet points)",
+      a5thGrader: "a 5th Grader",
+      aHighSchoolStudent: "a High School Student",
+      aCompleteBeginber: "a Complete Beginner",
+      // Grade Levels
+      kindergarten: "Kindergarten",
+      grade1: "1st Grade",
+      grade2: "2nd Grade",
+      grade3: "3rd Grade",
+      grade4: "4th Grade",
+      grade5: "5th Grade",
+      grade6: "6th Grade",
+      grade7: "7th Grade",
+      grade8: "8th Grade",
+      grade9: "9th Grade",
+      grade10: "10th Grade",
+      grade11: "11th Grade",
+      grade12: "12th Grade",
+    },
+    // Personalized Learning
+    personalizedLearning: {
+      title: "Your Study Companion",
+      subtitle: "Master concepts at your own pace with AI-powered guidance and insights.",
+      chatTutor: "Chat Tutor",
+      focusAreas: "Focus Areas",
+      progressOverview: "Progress Overview",
+      flashcards: "Flashcards",
+      practiceTest: "Practice Test",
+      studyGuide: "Study Guide",
+      aiStudyTools: "AI Study Tools",
+      generateContent: "Generate Content",
+      poweredByACEAI: "Powered by ACE AI",
+      preparingExperience: "Preparing your experience...",
+      gatheringData: "Gathering your learning data...",
+      chatWithAce: "Chat with Ace",
+      yourPersonalTutor: "Your personal AI tutor",
+      learningMode: "Learning Mode",
+      solutionMode: "Solution Mode",
+      aceIsThinking: "Ace is thinking...",
+      submitQuiz: "Submit Quiz",
+      uploadFile: "Upload File",
+      learningModeDesc: "Guide me step-by-step without giving answers",
+      solutionModeDesc: "Show me the full solution with answer",
+      inputPlaceholder: "Ask a question, take an interactive quiz, ask me to analyze an assignment submission, or upload a file...",
+      aiDisclaimer: "Your AI tutor can make mistakes. Powered by ACE AI. Consider checking important information.",
+      dropFilesHere: "Drop files here",
+      processingFile: "Processing file...",
+      yourStrengths: "Your Strengths",
+      buildingStrengths: "Building Strengths",
+      completeAssignments: "Complete assignments to see mastered concepts appear here.",
+      areasToFocusOn: "Areas to Focus On",
+      allLookingGreat: "All Looking Great!",
+      noFocusAreas: "No specific focus areas identified. Keep up the excellent work.",
+      introMessage: "Hi {name}! I'm Ace, your personal AI tutor. {focusText}\n\nWhat would you like to explore or work on today? We can dive deeper into a topic, review questions from a recent assignment or quiz, or you can upload a file for me to help you with!",
+      focusAreasIntro: "I noticed some of your most recent areas for practice are {concepts}.",
+      quizComplete: "Great job completing the quiz! You scored {score}/{total} ({percentage}%).",
+      questionsToWorkOn: "Here are the questions we can work on:",
+      whichToBreakDown: "Which one would you like to break down first?",
+      perfectScore: "Perfect score! You've mastered this concept. 🎉 What should we tackle next?",
+    },
+    // Chat
+    chat: {
+      title: "Class Chat",
+      typeMessage: "Type your message...",
+      send: "Send",
+      noMessages: "No messages yet",
+      startConversation: "Start the conversation!",
+      unavailable: "Chat Unavailable",
+      mustBeEnrolled: "You must be enrolled in a class to use the chat.",
+      chattingIn: "You are chatting in",
+      switchClass: "Switch class...",
+    },
+    // Quizzes
+    quizzes: {
+      title: "Quizzes",
+      createQuiz: "Create Quiz",
+      takeQuiz: "Take Quiz",
+      viewResults: "View Results",
+      timeLimit: "Time Limit",
+      minutes: "minutes",
+      questions: "Questions",
+      score: "Score",
+      completed: "Completed",
+      inProgress: "In Progress",
+      notStarted: "Not Started",
+    },
+    // Polls
+    polls: {
+      title: "Polls",
+      createPoll: "Create Poll",
+      vote: "Vote",
+      results: "Results",
+      active: "Active",
+      closed: "Closed",
+      totalVotes: "Total Votes",
+    },
+    // Assignments
+    assignments: {
+      title: "Assignments",
+      submit: "Submit",
+      submitted: "Submitted",
+      grade: "Grade",
+      feedback: "Feedback",
+      instructions: "Instructions",
+      attachments: "Attachments",
+      answerKey: "Answer Key",
+      aiGrading: "AI Grading",
+      releaseGrades: "Release Grades",
+      // Assignment Form
+      editAssignment: "Edit Assignment",
+      createNewAssignment: "Create New Assignment",
+      assignmentTitle: "Assignment Title",
+      assignmentTitlePlaceholder: "e.g., Essay on Climate Change",
+      subject: "Subject",
+      selectSubject: "Select subject",
+      mathematics: "Mathematics",
+      english: "English",
+      science: "Science",
+      history: "History",
+      art: "Art",
+      other: "Other",
+      description: "Description",
+      descriptionPlaceholder: "Brief description of the assignment...",
+      assignmentFiles: "Assignment Files (Optional)",
+      addMoreFiles: "Add More Files",
+      gradingInstructions: "Grading Instructions",
+      gradingInstructionsPlaceholder: "Detailed instructions for AI grading. Include rubric, key points to look for, grading criteria...",
+      gradingInstructionsManualPlaceholder: "Optional: Instructions for manual grading or notes about this assignment...",
+      gradingInstructionsHelp: "Be specific about what the AI should look for when grading submissions.",
+      gradingInstructionsManualHelp: "These instructions are optional when AI grading is disabled.",
+      maximumPoints: "Maximum Points",
+      dueDate: "Due Date",
+      selectDueDate: "Select due date",
+      openDateTime: "Open Date & Time (Optional)",
+      openDateHelp: "When assignment becomes visible to students",
+      closeDateTime: "Close Date & Time (Optional)",
+      closeDateHelp: "When assignment is no longer visible to students",
+      visibleToStudents: "Visible to Students",
+      visible: "Visible",
+      hidden: "Hidden",
+      allowSubmissions: "Allow Student Submissions",
+      allowSubmissionsYes: "Students can submit work",
+      allowSubmissionsNo: "Information only - no submissions",
+      allowSubmissionsHelp: "When disabled, this becomes an informational assignment without submissions or grading.",
+      aiGradingTitle: "AI Grading",
+      aiGradingDescription: "Automatically grade submissions using AI",
+      aiGradingEnabled: "AI will grade submissions automatically.",
+      uploadAnswerKey: "Upload Answer Key (Optional)",
+      changeAnswerKey: "Change Answer Key",
+      aiLeniency: "AI Leniency",
+      selectLeniency: "Select leniency level",
+      strict: "Strict",
+      neutral: "Neutral",
+      lenient: "Lenient",
+      leniencyHelp: "Choose how strictly the AI should adhere to the grading criteria.",
+      answerKeyOptional: "Answer Key (Optional)",
+      chooseFile: "Choose File",
+      answerKeyHelp: "Upload an answer key to help AI provide more accurate grading and feedback.",
+      manualGradingNote: "You will manually grade all submissions for this assignment.",
+      cancel: "Cancel",
+      creating: "Creating...",
+      updating: "Updating...",
+      createAssignmentBtn: "Create Assignment",
+      updateAssignment: "Update Assignment",
+      // Assignment Card dropdown
+      hideFromStudents: "Hide from Students",
+      showToStudents: "Show to Students",
+      reopenAssignment: "Re-open Assignment",
+      duplicateToAnotherClass: "Duplicate to Another Class",
+      duplicateAssignment: "Duplicate Assignment",
+      selectDestinationClass: "Select a class to copy",
+      chooseDestinationClass: "Choose destination class",
+      duplicating: "Duplicating...",
+      duplicate: "Duplicate",
+      viewDetails: "View Details",
+      submission: "submission",
+      submissions: "submissions",
+    },
+    // Landing Page
+    landing: {
+      signIn: "Sign In",
+      forTeachers: "For Teachers",
+      forStudents: "For Students",
+      aiCapabilities: "AI Capabilities",
+      testimonials: "Testimonials",
+      pricing: "Pricing",
+      contact: "Contact",
+      heroTitle: "Education, Supercharged by ACE AI.",
+      heroSubtitle: "Powered by {aceAI}, Schoolace enables forward-thinking educators and supercharges student learning through transparent and responsible use of AI.",
+      heroTagline: "Teachers stay in full control while students own the thinking",
+      getStartedFree: "Get Started for Free",
+      // Features Section
+      coPilotForTeachers: "Co-Pilot for Teachers",
+      coPilotDesc: "Turn hours or days of lesson planning, content creation, grading, and providing feedback into just minutes while keeping teachers fully in control.",
+      studyCompanionForStudents: "Study Companion for Students",
+      studyCompanionDesc: "Unlock full potential with a 24/7 AI companion that adapts to your learning style and helps you succeed.",
+      // AI Toolkit
+      productivityTools: "Productivity Tools",
+      productivityToolsDesc: "Built for teachers and students, ACE learns, adapts, and grows with you every step of the way.",
+      signInToDiscover: "Sign in to discover more features",
+      // Getting Started
+      teachersGetStarted: "Teacher's Get Started in 3 Simple Steps",
+      teachersGetStartedDesc: "Join the pioneering educators who are transforming their classroom.",
+      step1Title: "Create Class",
+      step1Desc: "Get a unique class code",
+      step2Title: "Create Class Material",
+      step2Desc: "Create assignments, quizzes, lesson plans, and schedules",
+      step3Title: "Invite Students",
+      step3Desc: "Students join the class using the class code",
+      // Results Section
+      measurableResults: "Measurable Results",
+      measurableResultsDesc: "Transform your teaching efficiency and student outcomes within 1 week.",
+      teacherTimeSavings: "Teacher Time Savings Improvement",
+      teacherSatisfaction: "Teacher Satisfaction",
+      lessonPrepReduction: "Lesson Prep Time Reduction",
+      studentEngagement: "Student Engagement Improvement",
+      gradingSpeedup: "Grading Speedup",
+      personalizationAccuracy: "Personalization Accuracy",
+      estimatesDisclaimer: "* Estimates shown; actual results may vary.",
+      // Privacy Section
+      privacySecurity: "Privacy & Security by Design",
+      privacySecurityDesc: "Innovation at Schoolace begins with security, privacy, safety, and trust.",
+      privacyFirstTitle: "Privacy First",
+      privacyFirstDesc: "We never sell data or show advertisements. Your information stays private, protected, and used only to enhance your learning experience.",
+      enterpriseSecurityTitle: "Enterprise-Grade Security",
+      enterpriseSecurityDesc: "All data is encrypted in transit and at rest, secured with modern authentication and access controls. ACE follows industry-standard security best practices.",
+      safeAITitle: "Safe AI",
+      safeAIDesc: "Built with strict guardrails and ethical safeguards, ACE ensures responsible AI use without student profiling or bias amplification.",
+      transparencyTitle: "Transparency",
+      transparencyDesc: "You stay in control. Clear dashboards and policies show how data is used, stored, and deleted. No black boxes, no hidden tracking.",
+      ferpaCompliant: "FERPA Compliant",
+      coppaCompliant: "COPPA Compliant",
+      // Testimonials
+      lovedByTeachersStudents: "Loved by Teachers and Students",
+      lovedByDesc: "Real stories from educators and learners who are transforming their classrooms with Schoolace.",
+      // Pricing
+      choosePlan: "Choose Your Plan",
+      choosePlanDesc: "Start free or scale up with Pro features for your class.",
+      freePlan: "Free",
+      proPlan: "Pro",
+      schoolPlan: "School",
+      freePrice: "$0 /mo",
+      proPrice: "$9 /student/mo billed yearly",
+      schoolPrice: "Contact for Pricing",
+      freeFeature1: "1 Class",
+      freeFeature2: "Max 30 Students",
+      freeFeature3: "Limited ACE AI Features",
+      freeFeature4: "Community Support",
+      proFeature1: "Full ACE AI Features & Agents",
+      proFeature2: "Personalized Learning",
+      proFeature3: "Email Support",
+      proFeature4: "Community Support",
+      schoolFeature1: "Full ACE AI Features & Agents",
+      schoolFeature2: "Personalized Learning",
+      schoolFeature3: "Email Support",
+      schoolFeature4: "Community Support",
+      schoolFeature5: "Custom school domain",
+      schoolFeature6: "Admin Dashboard",
+      schoolFeature7: "Priority Support & Training",
+      startForFree: "Start for Free",
+      getStarted: "Get Started",
+      contactSales: "Contact Sales",
+      mostPopular: "Most Popular",
+      // Contact
+      getInTouch: "Get in Touch",
+      getInTouchDesc: "Have questions? We would love to hear from you. Send us a message and we will respond within 2 working days.",
+      contactName: "Name *",
+      contactEmail: "Email *",
+      contactSubject: "Subject",
+      contactMessage: "Message *",
+      yourName: "Your name",
+      yourEmail: "your@email.com",
+      contactSubjectPlaceholder: "What is this about?",
+      contactMessagePlaceholder: "Tell us more...",
+      sendMessage: "Send Message",
+      sending: "Sending...",
+      thankYouMessage: "Thank you! Your message has been sent successfully.",
+      orEmailDirectly: "Or email us directly,",
+      // Teacher Features
+      intelligentGrading: "Intelligent Grading",
+      intelligentGradingDesc: "ACE provides instant feedback, handling multiple submissions with precision.",
+      interactiveQuizzes: "Interactive Quizzes & Polls",
+      interactiveQuizzesDesc: "Create engaging assessments with real-time results and analytics.",
+      dynamicAssignments: "Dynamic Assignments",
+      dynamicAssignmentsDesc: "Streamline assignment creation and track submissions across all classes.",
+      smartScheduling: "Smart Scheduling",
+      smartSchedulingDesc: "Dynamic schedules that auto-update with due dates and events.",
+      realTimeProgress: "Real-time Progress",
+      realTimeProgressDesc: "Track each student's progress in real time and get recommendations to act when it matters most.",
+      proactiveAIAgent: "Proactive AI Agent",
+      proactiveAIAgentDesc: "ACE automates the busywork, giving time back to teach and inspire.",
+      // Student Features
+      individualizedStudyCompanion: "Individualized Study Companion",
+      individualizedStudyCompanionDesc: "ACE adapts to your learning style, growing with you and shaping a learning personality that's uniquely yours.",
+      aceModels: "ACE Models",
+      aceModelsDesc: "A private, personalized model that develops with you from grade to grade, becoming a true long-term learning companion.",
+      longitudinalMemory: "Longitudinal Memory",
+      longitudinalMemoryDesc: "ACE tracks your learning over time, spotting patterns, gaps, and strengths so it can teach you exactly the way you need.",
+      checkYourUnderstanding: "Check Your Understanding",
+      checkYourUnderstandingDesc: "Test your knowledge with interactive quizzes and instant feedback.",
+      wellnessTools: "Wellness Tools",
+      wellnessToolsDesc: "Access mindfulness exercises and study break reminders to stay balanced.",
+      // AI Toolkit
+      worksheetGeneration: "Worksheet Generation",
+      rubricCreation: "Rubric Creation",
+      quizGeneration: "Quiz Generation",
+      reportCardComments: "Report Card Comments",
+      lessonPlanning: "Lesson Planning",
+      iepAssistance: "IEP Assistance",
+      emailDrafting: "Email Drafting",
+      reportContent: "Report Content",
+      // Testimonials
+      testimonial1: "I went from a 80% in Algebra to a 90% after using Schoolace. It broke problems down in a way my textbook never did.",
+      testimonial2: "Out of all the platforms my school has made me use, Schoolace has by far been the most effective in helping me learn.",
+      testimonial3: "It's finally time for a reliable, clean, and effective platform that can take care of school-related activities all in one place.",
+      testimonial4: "As an educator facing generative AI in middle school classrooms, I'm grateful to have a tool that offers efficiencies in grading & feedback. I'm continuously surprised by how Aiden can respond to update requests, & improvements; I'm looking forward to our collaboration & his bright future.",
+      testimonial5: "Schoolace has helped me finish my tasks more efficiently. I could ask the personalized learning AI questions about my assignments and it would enrich my learning.",
+      testimonial6: "Schoolace makes homework so much easier. If I'm stuck, it breaks things down step by step and asks me questions back so I actually get it, instead of just giving me the answer.",
+      testimonial7: "Bio used to confuse me, but Schoolace explained everything clearly, and now I actually understand the concepts and can have fun in class.",
+      testimonial8: "Schoolace helps me to do time consuming tasks like writing emails and summarizing articles and gives me back so much time to do things I am passionate about.",
+      testimonial9: "Schoolace’s AI models are amazing. Each one is specialized, so I get precise help whether I’m coding, studying STEM, or exploring new concepts. It feels like having an expert for every subject.",
+      testimonial10: "Having a personalized AI model through Schoolace is a game-changer. It fine-tunes itself to my learning habits and gives advice that actually helps me improve every time.",
+      testimonial11: "Schoolace completely changed how I learn and manage school. The personalized feedback actually helps me improve, and it saves so much time that I can focus on understanding instead of busywork. It feels like the platform was built just for me.",
+      testimonial12: "Schoolace feels like a personal tutor that actually knows me. I love that it has access to all my assignment and quiz submissions, so I can ask questions about anything I’ve ever done and get clear, personalized explanations.",
+      testimonial13: "What makes Schoolace different is that it understands my full learning history. Since it has access to all my assignments and quizzes, I can ask it anything about past work and get feedback that’s actually relevant to me.",
+      testimonial14: "Schoolace stands out because it connects directly to my assignments and learning history. Instead of generic answers, it gives help based on my actual work, which has made studying more efficient and less stressful.",
+      testimonial15: "Schoolace makes it easy to review and improve because it remembers all my assignments and feedback. I can ask questions about anything I’ve ever submitted, which helps me understand concepts faster and avoid repeating mistakes.",
+      testimonial16: "Schoolace makes learning STEM and coding actually fun. It guides me through tough concepts and helps me build projects step by step, so I feel confident trying new things.",
+      // Footer
+      platformTitle: "Platform",
+      companyTitle: "Company",
+      legalTitle: "Legal",
+      termsOfService: "Terms of Service",
+      privacyPolicy: "Privacy Policy",
+      allSystemsOperational: "All Systems Operational",
+      copyright: "Schoolace. All rights reserved.",
+    },
+    // Common
+    common: {
+      loading: "Loading...",
+      save: "Save",
+      cancel: "Cancel",
+      delete: "Delete",
+      edit: "Edit",
+      create: "Create",
+      update: "Update",
+      close: "Close",
+      back: "Back",
+      next: "Next",
+      done: "Done",
+      search: "Search",
+      filter: "Filter",
+      sort: "Sort",
+      refresh: "Refresh",
+      settings: "Settings",
+      logout: "Logout",
+      yes: "Yes",
+      no: "No",
+      confirm: "Confirm",
+      success: "Success",
+      error: "Error",
+      warning: "Warning",
+      info: "Info",
+      poweredByACE: "Powered by ACE",
+    },
+    // Class Setup
+    classSetup: {
+      welcomeTeacher: "Welcome, Teacher!",
+      createNewClass: "Create a New Class",
+      setupFirstClassroom: "Let's set up your first classroom",
+      createAnotherClass: "Create another class to organize more students and assignments.",
+      createClassPrompt: "Create a class to enroll students and post assignments.",
+      createClass: "Create Class",
+      className: "Class Name",
+      classNamePlaceholder: "e.g., Algebra 1, Period 3",
+      descriptionOptional: "Description (Optional)",
+      descriptionPlaceholder: "Brief description of your class...",
+      cancel: "Cancel",
+      creating: "Creating...",
+    },
+    // Roles
+    roles: {
+      teacher: "Teacher",
+      student: "Student",
+      admin: "Administrator",
+    },
+    // Time
+    time: {
+      today: "Today",
+      yesterday: "Yesterday",
+      tomorrow: "Tomorrow",
+      week: "Week",
+      month: "Month",
+    },
+    // AI Personal Agent
+    aiAgent: {
+      title: "AI Personal Agent",
+      subtitle: "Your intelligent assistant for everything in Schoolace",
+      closeAgent: "Close Agent",
+      loading: "Please wait while we load your content",
+      processing: "Processing...",
+      accessingData: "Accessing all class data...",
+      teacherPlaceholder: "Ask me to do anything across all your classes... e.g., 'Send a message to all my classes, saying, Homework due tomorrow!'",
+      studentPlaceholder: "Ask me anything... e.g., 'Submit my essay to the English assignment' or 'Show me my grades'",
+      fileReady: "File ready:",
+      uploadFile: "Upload File",
+      greeting: "Hello {name}! I'm your AI Personal Agent. What would you like to do?",
+    },
+    // Ace Spaces
+    aceSpaces: {
+      title: "Ace Spaces",
+      subtitle: "Collaborate with classmates and Ace AI in shared group chats.",
+      joinWithCode: "Join with Code",
+      createSpace: "Create Space",
+      joinSpace: "Join Space",
+      enterCode: "ENTER CODE",
+      joinDesc: "Enter the 6-character code shared by a classmate.",
+      createNewSpace: "Create New Space",
+      createDesc: "Start a new group chat for your project or study group.",
+      spaceName: "Space Name",
+      spaceNamePlaceholder: "e.g. Science Project Group",
+      descOptional: "Description (Optional)",
+      whatsThisFor: "What's this space for?",
+      noSpaces: "No spaces yet",
+      noSpacesDesc: "Create a space to start chatting with friends and Ace AI, or ask a classmate for a join code.",
+      createFirst: "Create Your First Space",
+      openChat: "Open Chat",
+      members: "Members",
+      addMember: "Add Member",
+      addMemberDesc: "Enter the email address of the user you want to add to this space.",
+      copyCode: "Copy Join Code",
+      leaveSpace: "Leave Space",
+      leaveConfirm: "Are you sure you want to leave \"{name}\"?",
+      people: "People",
+      files: "Files",
+      notes: "Notes",
+      sharedFiles: "Shared Files",
+      noFiles: "No files shared yet",
+      sharedNotes: "Shared Notes",
+      addNote: "Add Note",
+      createNoteDesc: "Create a note visible to all space members.",
+      saveNote: "Save Note",
+      noteTitle: "Title",
+      noteTitlePlaceholder: "e.g. Project Deadlines",
+      noteContent: "Content",
+      noteContentPlaceholder: "Type your note here...",
+      noNotes: "No notes yet. Add one!",
+      chatWithGroup: "Chat with Group",
+      chatWithAI: "Chat with AI",
+      askAce: "Ask Ace AI anything...",
+      messageGroup: "Message the group...",
+      translate: "Translate",
+      original: "Original",
+      alwaysOnline: "Always online",
+      admin: "Admin",
+      bot: "Bot",
+      member: "Member",
+      deleteNoteConfirm: "Are you sure you want to delete this note?",
+      uploadedFile: "Uploaded a file",
+      invited: "Added!",
+      codeCopied: "Join code copied!",
+      translating: "Translating...",
+    },
+    // PowerSchool
+    powerSchool: {
+      title: "PowerSchool Integration",
+      comingSoon: "Integration Coming Soon!",
+      description: "We're working hard to bring you a seamless PowerSchool integration. Soon, you'll be able to supercharge your workflow with these powerful features.",
+      syncGradesTitle: "Sync Grades Instantly",
+      syncGradesDescription: "Push assignment grades from Schoolace directly to your PowerSchool gradebook with a single click.",
+      automateTitle: "Automate Grade Input",
+      automateDescription: "Let our AI handle the grading, then automatically sync the results to PowerSchool, saving you hours of manual data entry.",
+    },
+  },
 
-const AtmosphericBackground = () =>
-  <div className="fixed inset-0 z-0 overflow-hidden">
-    {/* Grid overlay */}
-    <div className="absolute inset-0 opacity-30">
-      <div className="h-full w-full bg-grid-pattern"></div>
-    </div>
-  </div>;
+  ES: {
+    // Navigation
+    nav: {
+      dashboard: "Panel",
+      scheduler: "Horarios",
+      aiAgent: "Agente IA",
+      chat: "Chat",
+      classTools: "Herramientas",
+      lessonPlans: "Planes de Clase",
+      aiTools: "Herramientas IA",
+      powerSchool: "PowerSchool",
+      aceAI: "ACE IA",
+    },
+    // Dashboard
+    dashboard: {
+      title: "Panel",
+      welcome: "Bienvenido",
+      yourClasses: "Tus Clases",
+      createClass: "Crear Clase",
+      joinClass: "Unirse a Clase",
+      noClasses: "No se encontraron clases",
+      assignments: "Tareas",
+      createAssignment: "Crear Tarea",
+      noAssignments: "Sin tareas todavía",
+      dueDate: "Fecha de Entrega",
+      submissions: "Entregas",
+      graded: "Calificado",
+      pending: "Pendiente",
+      viewAll: "Ver Todo",
+      recentActivity: "Actividad Reciente",
+      classCode: "Código de Clase",
+      students: "Estudiantes",
+      activeAssignments: "Tareas Activas",
+      teachingHub: "Tu Centro de Enseñanza",
+      switchClass: "Cambiar Clase",
+      joinAnotherClass: "Unirse a Otra Clase",
+      loadingClassroom: "Cargando tu aula...",
+      feedback: "Comentarios",
+      logout: "Cerrar Sesión",
+      teacherDashboard: "Panel del Profesor",
+      teacherDescription: "Crear tareas y revisar entregas de estudiantes",
+      createNewClass: "Crear Nueva Clase",
+      backToDashboard: "Volver al Panel",
+      backToAssignments: "Volver a Tareas",
+      yourAssignments: "Tus Tareas",
+      noAssignmentsYet: "Aún no se han creado tareas",
+      createFirstAssignment: "Crea tu primera tarea para comenzar. Si esperas tareas, cierra esta pestaña y vuelve a iniciar sesión.",
+      studentPortal: "Portal del Estudiante",
+      studentDescription: "Ver tareas y entregar tu trabajo",
+    },
+    // Class Tools
+    classTools: {
+      title: "Herramientas de Clase",
+      subtitle: "Herramientas interactivas para tu aula",
+      selectClass: "Seleccionar Clase",
+      chooseClass: "Elige una clase",
+      schedule: "Horario",
+      quizzes: "Cuestionarios",
+      polls: "Encuestas",
+      personalizedLearning: "Aprendizaje Personalizado",
+      noClasses: "No se encontraron clases.",
+      goToDashboard: "Ve a tu panel para crear o unirte a una clase.",
+      classSchedule: "Horario de Clase",
+      weekOf: "Semana del",
+      today: "Hoy",
+      addEvent: "Agregar Evento",
+      deleteEventConfirm: "¿Estás seguro de que quieres eliminar este evento?",
+      createQuiz: "Crear Cuestionario",
+      editQuiz: "Editar Cuestionario",
+      noQuizzesAvailable: "No hay cuestionarios disponibles en este momento. Si esperas un cuestionario, recarga la página y/o cierra sesión.",
+      draft: "Borrador",
+      active: "Activo",
+      closed: "Cerrado",
+      activate: "Activar",
+      lock: "Bloquear",
+      reDraft: "Re-Borrador",
+      showResults: "Mostrar Resultados",
+      hideResults: "Ocultar Resultados",
+      duplicate: "Duplicar",
+      edit: "Editar",
+      results: "Resultados",
+      delete: "Eliminar",
+      takeQuiz: "Tomar Cuestionario",
+      viewResults: "Ver Resultados",
+      completed: "Completado",
+      duplicateQuiz: "Duplicar Cuestionario",
+      duplicateQuizDesc: "Copiar \"{title}\" a otra clase. El nuevo cuestionario se guardará como borrador.",
+      destinationClass: "Clase de Destino",
+      selectClassToCopy: "Selecciona una clase para copiar",
+      cancel: "Cancelar",
+      duplicating: "Duplicando...",
+      confirmAndCopy: "Confirmar y Copiar",
+      deleteQuizConfirm: "¿Estás seguro de que quieres eliminar \"{title}\"? Esto eliminará todas las preguntas y no se puede deshacer.",
+      quizCopied: "¡Cuestionario \"{title}\" copiado exitosamente! Se ha guardado como borrador en la clase de destino.",
+      quizDeleted: "El cuestionario \"{title}\" ha sido eliminado.",
+      quizTitle: "Título",
+      quizTitlePlaceholder: "Título del Cuestionario",
+      quizDescription: "Descripción",
+      quizDescriptionPlaceholder: "Descripción del Cuestionario (opcional)",
+      timeLimit: "Límite de Tiempo",
+      unlimitedTime: "Tiempo Ilimitado",
+      setTimeLimit: "Establecer Límite (mins):",
+      afterCompletion: "Después de Completar",
+      allowStudentsViewResults: "Permitir a los estudiantes ver su calificación y respuestas",
+      aiQuizGenerator: "Generador de Cuestionarios IA",
+      topic: "Tema",
+      websiteUrl: "URL del Sitio Web",
+      fileUpload: "Subir Archivo",
+      enterTopic: "Ingresa el tema",
+      enterUrl: "Ingresa la URL",
+      numberOfQuestions: "Número de Preguntas",
+      difficulty: "Dificultad",
+      easy: "Fácil",
+      medium: "Medio",
+      hard: "Difícil",
+      questionType: "Tipo de Pregunta",
+      multipleChoice: "Opción Múltiple",
+      trueFalse: "Verdadero/Falso",
+      generateQuestions: "Generar Preguntas",
+      generating: "Generando...",
+      question: "Pregunta",
+      remove: "Eliminar",
+      enterQuestion: "Ingresa tu pregunta aquí...",
+      answerOptions: "Opciones de Respuesta",
+      correctAnswer: "Respuesta Correcta",
+      addQuestion: "Agregar Pregunta",
+      saveQuiz: "Guardar Cuestionario",
+      createPoll: "Crear Encuesta",
+      noPolls: "Aún no se han creado encuestas.",
+      noPollsStudent: "No hay encuestas activas disponibles. Si esperas una encuesta, recarga la página y/o cierra sesión.",
+      createNewPoll: "Crear una Nueva Encuesta",
+      pollQuestion: "Pregunta de la Encuesta",
+      options: "Opciones",
+      addOption: "Agregar Opción",
+      closePoll: "Cerrar Encuesta",
+      reopenPoll: "Reabrir Encuesta",
+      totalVotes: "Votos totales",
+      yourVote: "Tu Voto",
+      voting: "Votando...",
+      votes: "votos",
+    },
+    // Lesson Plans
+    lessonPlans: {
+      title: "Planes de Clase",
+      createLesson: "Crear Lección",
+      searchLessons: "Buscar lecciones...",
+      noLessons: "Sin planes de clase todavía",
+      createFirst: "Crea tu primer plan de clase para comenzar.",
+      objectives: "Objetivos",
+      activities: "Actividades",
+      homework: "Tarea",
+      resources: "Recursos",
+      released: "Publicado",
+      unreleased: "No Publicado",
+      noClassesFound: "No se encontraron clases. Por favor, crea o únete a una clase primero.",
+      pleaseLogin: "Inicia sesión para acceder a los planes de clase.",
+      editLessonPlan: "Editar Plan de Clase",
+      createNewLessonPlan: "Crear Nuevo Plan de Clase",
+      class: "Clase",
+      importFromText: "Importar desde Texto",
+      aiAssistant: "Asistente IA",
+      cancel: "Cancelar",
+      saveLesson: "Guardar Lección",
+      saving: "Guardando...",
+      importSuccessful: "¡Importación Exitosa!",
+      lessonImported: "¡Tu plan de clase ha sido importado a la sección de planes de clase prehechos en la parte inferior del editor!",
+      gotIt: "¡Entendido!",
+      aiLessonGenerator: "Generador de Lecciones IA",
+      aiPlaceholder: "Describe tu lección... ej., 'Crea una lección sobre fotosíntesis para ciencias de 8vo grado con experimentos prácticos' o 'Haz una lección atractiva de matemáticas sobre fracciones con ejemplos del mundo real'",
+      aiNote: "La IA generará enlaces educativos. Verifica que los enlaces sean precisos antes de publicar.",
+      generateLesson: "Generar Lección",
+      generating: "Generando...",
+      importLessonFromText: "Importar Plan de Clase desde Texto",
+      importDesc: "Pega tu plan de clase existente abajo y la IA te ayudará a organizarlo.",
+      pasteHere: "Pega tu plan de clase aquí...",
+      useLessonAsIs: "Usar Plan de Clase Tal Cual",
+      processing: "Procesando...",
+      importStructure: "Importar y Estructurar Lección",
+      beta: "BETA",
+      basicInformation: "Información Básica",
+      lessonTitle: "Título de la Lección",
+      enterLessonTitle: "Ingresa el título de la lección...",
+      lessonDate: "Fecha de la Lección",
+      lessonIsReleased: "Lección Publicada",
+      lessonIsUnreleased: "Lección No Publicada",
+      studentsCanView: "Los estudiantes pueden ver este plan de clase",
+      studentsCannotView: "Los estudiantes aún no pueden ver este plan de clase",
+      learningObjectives: "Objetivos de Aprendizaje",
+      learningObjective: "Objetivo de aprendizaje",
+      addObjective: "Agregar Objetivo",
+      hookOpeningActivity: "Actividad de Apertura/Gancho",
+      hookPlaceholder: "Describe una actividad de apertura atractiva para captar la atención de los estudiantes...",
+      classroomActivities: "Actividades en el Aula",
+      activityTitle: "Título de actividad...",
+      duration: "Duración (minutos)",
+      minutes: "minutos",
+      describeActivity: "Describe la actividad...",
+      materialsNeeded: "Materiales Necesarios",
+      material: "Material...",
+      addMaterial: "Agregar Material",
+      addActivity: "Agregar Actividad",
+      homeworkAssignment: "Asignación de tarea",
+      addHomework: "Agregar Tarea",
+      resourceTitle: "Título del recurso...",
+      urlPlaceholder: "URL (para sitios web, videos)...",
+      or: "o",
+      fileUploaded: "Archivo subido:",
+      type: "Tipo",
+      uploadFile: "Subir Archivo",
+      uploading: "Subiendo...",
+      website: "Sitio Web",
+      video: "Video",
+      document: "Documento",
+      book: "Libro",
+      file: "Archivo",
+      image: "Imagen",
+      addResource: "Agregar Recurso",
+      assessment: "Evaluación",
+      assessmentType: "Tipo de evaluación",
+      formative: "Formativa",
+      summative: "Sumativa",
+      peerAssessment: "Evaluación de Pares",
+      selfAssessment: "Autoevaluación",
+      describeAssessment: "Describe el método de evaluación...",
+      rubric: "Rúbrica o criterios de calificación...",
+      preMadeLessonPlan: "Plan de Clase Prehecho / Información Adicional",
+      additionalInfoPlaceholder: "Agrega información adicional para estudiantes/padres (ej., horario de oficina, información de contacto, instrucciones especiales, etc.)...",
+      differentiationStrategies: "Estrategias de Diferenciación",
+      differentiationStrategy: "Estrategia de diferenciación",
+      addStrategy: "Agregar Estrategia",
+      back: "Atrás",
+      unrelease: "Despublicar",
+      release: "Publicar",
+      duplicate: "Duplicar",
+      edit: "Editar",
+      studentsWillBeAbleTo: "Los estudiantes podrán:",
+      descriptionLabel: "Descripción:",
+      rubricLabel: "Rúbrica:",
+      teacherReflectionNotes: "Notas de Reflexión del Profesor",
+      duplicateLessonPlan: "Duplicar Plan de Clase",
+      selectClassToCopy: "Selecciona una clase para copiar \"{title}\" a:",
+      chooseDestinationClass: "Elegir clase de destino",
+      duplicating: "Duplicando...",
+      previous: "Anterior",
+      weekView: "Vista Semanal",
+      next: "Siguiente",
+      releasedStudentsCanSee: "Publicado (Los estudiantes pueden ver)",
+      unreleasedStudentsCannotSee: "No Publicado (Los estudiantes no pueden ver)",
+      noLessonsForDay: "Sin lecciones",
+      lessonsThisWeek: "Lecciones Esta Semana",
+      releasedCount: "Publicados",
+      unreleasedCount: "No Publicados",
+      min: "min",
+      visit: "Visitar",
+      download: "Descargar",
+      createFirstLesson: "Crear Tu Primera Lección",
+    },
+    // AI Tools
+    aiTools: {
+      title: "Herramientas IA",
+      subtitle: "Tu asistente IA para enseñar y aprender.",
+      generate: "Generar",
+      generating: "Generando...",
+      clear: "Limpiar",
+      copy: "Copiar",
+      download: "Descargar",
+      pinTool: "Fijar Herramienta",
+      unpinTool: "Desfijar Herramienta",
+      teacherTools: "Herramientas para Profesores",
+      studentTools: "Herramientas para Estudiantes",
+      output: "Resultado",
+      outputPlaceholder: "Tu contenido generado aparecerá aquí.",
+      select: "Seleccionar",
+      error: "Error",
+      errorRetry: "Si continúa, inténtalo de nuevo en unos minutos.",
+      translating: "Traduciendo...",
+      locked: "Herramientas IA Bloqueadas",
+      lockedDescription: "Necesitas iniciar sesión para acceder a nuestra suite de herramientas IA para enseñanza y aprendizaje.",
+      signInToContinue: "Iniciar Sesión para Continuar",
+      loadingAITools: "Cargando Herramientas IA...",
+      emailGenerator: "Generador de Correos",
+      emailGeneratorDesc: "Redacta rápidamente correos profesionales para padres o estudiantes.",
+      iepAccommodations: "Generador de IEP y Adaptaciones",
+      iepAccommodationsDesc: "Genera adaptaciones personalizadas y objetivos IEP para estudiantes.",
+      rubricGenerator: "Generador de Rúbricas",
+      rubricGeneratorDesc: "Genera rápidamente una rúbrica completa para cualquier tarea.",
+      questionGenerator: "Generador de Preguntas de Evaluación",
+      questionGeneratorDesc: "Genera preguntas de un tema, URL, documento o transcripción de YouTube.",
+      worksheetGenerator: "Generador de Hojas de Trabajo",
+      worksheetGeneratorDesc: "Genera una hoja de trabajo profesional de un tema, URL, documento o transcripción.",
+      reportCardComments: "Comentarios de Boletín",
+      reportCardCommentsDesc: "Genera comentarios personalizados y constructivos para boletines.",
+      assignmentScaffolder: "Diferenciador de Tareas",
+      assignmentScaffolderDesc: "Crea versiones diferenciadas de tareas para diferentes niveles.",
+      teacherWellness: "Apoyo de Bienestar Docente",
+      teacherWellnessDesc: "Un espacio para reflexionar sobre tu bienestar y encontrar estrategias.",
+      aiDetector: "Detector de Contenido IA",
+      aiDetectorDesc: "Analiza texto o archivos para detectar contenido generado por IA.",
+      writingFeedback: "Asistente de Retroalimentación",
+      writingFeedbackDesc: "Obtén retroalimentación constructiva sobre tu escritura.",
+      textSummarizer: "Resumidor de Texto",
+      textSummarizerDesc: "Resume artículos largos en puntos clave.",
+      checkUnderstanding: "Verifica tu Comprensión",
+      checkUnderstandingDesc: "Genera preguntas de un tema, URL, documento o transcripción.",
+      conceptExplainer: "Explicador de Conceptos",
+      conceptExplainerDesc: "Obtén una explicación simple de cualquier tema complejo.",
+      studentEmailGenerator: "Generador de Correos",
+      studentEmailGeneratorDesc: "Redacta un correo respetuoso y claro para tu profesor.",
+      studentWellness: "Apoyo de Bienestar Estudiantil",
+      studentWellnessDesc: "Un espacio seguro para revisar tus sentimientos.",
+      emailTo: "Correo Para",
+      studentName: "Nombre del Estudiante",
+      emailSubject: "Asunto del Correo",
+      keyPointsToInclude: "Puntos Clave a Incluir",
+      tone: "Tono",
+      gradeLevel: "Nivel de Grado",
+      areaOfNeed: "Área de Necesidad",
+      describeStudentChallenges: "Describe los Desafíos del Estudiante",
+      whatToGenerate: "¿Qué quieres generar?",
+      assignmentTitle: "Título de la Tarea",
+      gradingCriteria: "Criterios de Calificación (uno por línea)",
+      topicIfNoContent: "Tema (si no hay otro contenido)",
+      websiteUrlOptional: "URL del Sitio Web (Opcional)",
+      youtubeTranscript: "Transcripción de YouTube (Opcional)",
+      uploadDocumentOptional: "Subir Documento (Opcional)",
+      questionType: "Tipo de Pregunta",
+      numberOfQuestions: "Número de Preguntas",
+      difficulty: "Dificultad",
+      worksheetInstructions: "Instrucciones de la Hoja de Trabajo",
+      studentStrengths: "Fortalezas del Estudiante",
+      areasForImprovement: "Áreas de Mejora",
+      originalAssignment: "Tarea Original",
+      subject: "Materia",
+      teacherLastName: "Apellido del Profesor",
+      whatYouNeedToSay: "Lo que necesitas decir",
+      textToAnalyze: "Texto a Analizar",
+      orUploadDocument: "O Subir Documento",
+      pasteTextHere: "Pega tu texto aquí",
+      textToSummarize: "Pega el texto a resumir",
+      summaryLength: "Longitud del Resumen",
+      conceptToExplain: "Concepto a Explicar",
+      explainLikeIm: "Explícamelo Como Si Fuera...",
+      howAreYouFeelingTeacher: "¡Hola! ¿Cómo te sientes como educador hoy?",
+      howAreYouFeelingStudent: "¡Hola! 👋 ¿Cómo te sientes hoy?",
+      aParentGuardian: "Un Padre/Tutor",
+      aStudent: "Un Estudiante",
+      formalEncouraging: "Formal y Alentador",
+      positiveCasual: "Positivo y Casual",
+      directInformative: "Directo e Informativo",
+      fullReport: "Informe Completo",
+      listOfAccommodations: "Lista de Adaptaciones",
+      smartGoal: "Objetivo SMART",
+      emailToParent: "Correo a Padres",
+      multipleChoice: "Opción Múltiple",
+      trueFalse: "Verdadero/Falso",
+      shortAnswer: "Respuesta Corta",
+      easy: "Fácil",
+      medium: "Medio",
+      hard: "Difícil",
+      encouraging: "Alentador",
+      formal: "Formal",
+      direct: "Directo",
+      shortSentences: "Corto (algunas oraciones)",
+      mediumParagraph: "Medio (un párrafo)",
+      detailedBullets: "Detallado (puntos)",
+      a5thGrader: "un Estudiante de 5to",
+      aHighSchoolStudent: "un Estudiante de Secundaria",
+      aCompleteBeginber: "un Principiante Completo",
+      kindergarten: "Jardín de Infantes",
+      grade1: "1er Grado",
+      grade2: "2do Grado",
+      grade3: "3er Grado",
+      grade4: "4to Grado",
+      grade5: "5to Grado",
+      grade6: "6to Grado",
+      grade7: "7mo Grado",
+      grade8: "8vo Grado",
+      grade9: "9no Grado",
+      grade10: "10mo Grado",
+      grade11: "11vo Grado",
+      grade12: "12vo Grado",
+    },
+    // Personalized Learning
+    personalizedLearning: {
+      title: "Tu Compañero de Estudio",
+      subtitle: "Domina conceptos a tu propio ritmo con guía impulsada por IA.",
+      chatTutor: "Tutor de Chat",
+      focusAreas: "Áreas de Enfoque",
+      progressOverview: "Resumen de Progreso",
+      flashcards: "Tarjetas",
+      practiceTest: "Examen de Práctica",
+      studyGuide: "Guía de Estudio",
+      aiStudyTools: "Herramientas de Estudio IA",
+      generateContent: "Generar Contenido",
+      poweredByACEAI: "Impulsado por ACE AI",
+      preparingExperience: "Preparando tu experiencia...",
+      gatheringData: "Recopilando tus datos de aprendizaje...",
+      chatWithAce: "Chatea con Ace",
+      yourPersonalTutor: "Tu tutor personal de IA",
+      learningMode: "Modo Aprendizaje",
+      solutionMode: "Modo Solución",
+      aceIsThinking: "Ace está pensando...",
+      submitQuiz: "Enviar Cuestionario",
+      uploadFile: "Subir Archivo",
+      learningModeDesc: "Guíame paso a paso sin dar respuestas",
+      solutionModeDesc: "Muéstrame la solución completa con respuesta",
+      inputPlaceholder: "Haz una pregunta, toma un cuestionario interactivo, pídeme que analice una entrega, o sube un archivo...",
+      aiDisclaimer: "Tu tutor de IA puede cometer errores. Impulsado por ACE AI. Considera verificar la información importante.",
+      dropFilesHere: "Suelta archivos aquí",
+      processingFile: "Procesando archivo...",
+      yourStrengths: "Tus Fortalezas",
+      buildingStrengths: "Construyendo Fortalezas",
+      completeAssignments: "Completa tareas para ver los conceptos dominados aquí.",
+      areasToFocusOn: "Áreas para Enfocarte",
+      allLookingGreat: "¡Todo Se Ve Genial!",
+      noFocusAreas: "No se identificaron áreas específicas de enfoque. Sigue con el excelente trabajo.",
+      introMessage: "¡Hola {name}! Soy Ace, tu tutor personal de IA. {focusText}\n\n¿Qué te gustaría explorar o trabajar hoy? Podemos profundizar en un tema, revisar preguntas de una tarea o cuestionario reciente, ¡o puedes subir un archivo para que te ayude!",
+      focusAreasIntro: "Noté que algunas de tus áreas más recientes para practicar son {concepts}.",
+      quizComplete: "¡Buen trabajo completando el cuestionario! Obtuviste {score}/{total} ({percentage}%).",
+      questionsToWorkOn: "Aquí están las preguntas en las que podemos trabajar:",
+      whichToBreakDown: "¿Cuál te gustaría desglosar primero?",
+      perfectScore: "¡Puntuación perfecta! Has dominado este concepto. 🎉 ¿Qué deberíamos abordar a continuación?",
+    },
+    // Chat
+    chat: {
+      title: "Chat de Clase",
+      typeMessage: "Escribe tu mensaje...",
+      send: "Enviar",
+      noMessages: "Sin mensajes todavía",
+      startConversation: "¡Inicia la conversación!",
+      unavailable: "Chat No Disponible",
+      mustBeEnrolled: "Debes estar inscrito en una clase para usar el chat.",
+      chattingIn: "Estás chateando en",
+      switchClass: "Cambiar clase...",
+    },
+    // Quizzes
+    quizzes: {
+      title: "Cuestionarios",
+      createQuiz: "Crear Cuestionario",
+      takeQuiz: "Tomar Cuestionario",
+      viewResults: "Ver Resultados",
+      timeLimit: "Límite de Tiempo",
+      minutes: "minutos",
+      questions: "Preguntas",
+      score: "Puntuación",
+      completed: "Completado",
+      inProgress: "En Progreso",
+      notStarted: "No Iniciado",
+    },
+    // Polls
+    polls: {
+      title: "Encuestas",
+      createPoll: "Crear Encuesta",
+      vote: "Votar",
+      results: "Resultados",
+      active: "Activa",
+      closed: "Cerrada",
+      totalVotes: "Votos Totales",
+    },
+    // Assignments
+    assignments: {
+      title: "Tareas",
+      submit: "Entregar",
+      submitted: "Entregado",
+      grade: "Calificación",
+      feedback: "Retroalimentación",
+      instructions: "Instrucciones",
+      attachments: "Adjuntos",
+      answerKey: "Clave de Respuestas",
+      aiGrading: "Calificación IA",
+      releaseGrades: "Publicar Calificaciones",
+      editAssignment: "Editar Tarea",
+      createNewAssignment: "Crear Nueva Tarea",
+      assignmentTitle: "Título de la Tarea",
+      assignmentTitlePlaceholder: "ej., Ensayo sobre el Cambio Climático",
+      subject: "Asignatura",
+      selectSubject: "Seleccionar asignatura",
+      mathematics: "Matemáticas",
+      english: "Inglés",
+      science: "Ciencias",
+      history: "Historia",
+      art: "Arte",
+      other: "Otro",
+      description: "Descripción",
+      descriptionPlaceholder: "Breve descripción de la tarea...",
+      assignmentFiles: "Archivos de la Tarea (Opcional)",
+      addMoreFiles: "Agregar Más Archivos",
+      gradingInstructions: "Instrucciones de Calificación",
+      gradingInstructionsPlaceholder: "Instrucciones detalladas para la calificación IA. Incluya rúbrica, puntos clave a buscar, criterios de calificación...",
+      gradingInstructionsManualPlaceholder: "Opcional: Instrucciones para calificación manual o notas sobre esta tarea...",
+      gradingInstructionsHelp: "Sea específico sobre lo que la IA debe buscar al calificar las entregas.",
+      gradingInstructionsManualHelp: "Estas instrucciones son opcionales cuando la calificación IA está deshabilitada.",
+      maximumPoints: "Puntos Máximos",
+      dueDate: "Fecha de Entrega",
+      selectDueDate: "Seleccionar fecha de entrega",
+      openDateTime: "Fecha y Hora de Apertura (Opcional)",
+      openDateHelp: "Cuando la tarea se vuelve visible para los estudiantes",
+      closeDateTime: "Fecha y Hora de Cierre (Opcional)",
+      closeDateHelp: "Cuando la tarea ya no es visible para los estudiantes",
+      visibleToStudents: "Visible para Estudiantes",
+      visible: "Visible",
+      hidden: "Oculto",
+      allowSubmissions: "Permitir Entregas de Estudiantes",
+      allowSubmissionsYes: "Los estudiantes pueden entregar trabajo",
+      allowSubmissionsNo: "Solo información - sin entregas",
+      allowSubmissionsHelp: "Cuando está deshabilitado, esto se convierte en una tarea informativa sin entregas ni calificación.",
+      aiGradingTitle: "Calificación IA",
+      aiGradingDescription: "Calificar entregas automáticamente usando IA",
+      aiGradingEnabled: "La IA calificará las entregas automáticamente.",
+      uploadAnswerKey: "Subir Clave de Respuestas (Opcional)",
+      changeAnswerKey: "Cambiar Clave de Respuestas",
+      aiLeniency: "Tolerancia de IA",
+      selectLeniency: "Seleccionar nivel de tolerancia",
+      strict: "Estricto",
+      neutral: "Neutral",
+      lenient: "Tolerante",
+      leniencyHelp: "Elija qué tan estrictamente la IA debe adherirse a los criterios de calificación.",
+      answerKeyOptional: "Clave de Respuestas (Opcional)",
+      chooseFile: "Elegir Archivo",
+      answerKeyHelp: "Suba una clave de respuestas para ayudar a la IA a proporcionar calificación y retroalimentación más precisas.",
+      manualGradingNote: "Usted calificará manualmente todas las entregas de esta tarea.",
+      cancel: "Cancelar",
+      creating: "Creando...",
+      updating: "Actualizando...",
+      createAssignmentBtn: "Crear Tarea",
+      updateAssignment: "Actualizar Tarea",
+      hideFromStudents: "Ocultar de Estudiantes",
+      showToStudents: "Mostrar a Estudiantes",
+      reopenAssignment: "Reabrir Tarea",
+      duplicateToAnotherClass: "Duplicar a Otra Clase",
+      duplicateAssignment: "Duplicar Tarea",
+      selectDestinationClass: "Selecciona una clase para copiar",
+      chooseDestinationClass: "Elegir clase de destino",
+      duplicating: "Duplicando...",
+      duplicate: "Duplicar",
+      viewDetails: "Ver Detalles",
+      submission: "entrega",
+      submissions: "entregas",
+    },
+    // Landing Page
+    landing: {
+      signIn: "Iniciar Sesión",
+      forTeachers: "Para Profesores",
+      forStudents: "Para Estudiantes",
+      aiCapabilities: "Capacidades de IA",
+      testimonials: "Testimonios",
+      pricing: "Precios",
+      contact: "Contacto",
+      heroTitle: "Educación, Potenciada por ACE IA.",
+      heroSubtitle: "Impulsado por {aceAI}, Schoolace permite a educadores visionarios y potencia el aprendizaje estudiantil mediante el uso transparente y responsable de la IA.",
+      heroTagline: "Los profesores mantienen el control total mientras los estudiantes poseen el pensamiento",
+      getStartedFree: "Comenzar Gratis",
+      coPilotForTeachers: "Co-Piloto para Profesores",
+      coPilotDesc: "Convierte horas o días de planificación de lecciones, creación de contenido, calificación y proporcionar retroalimentación en solo minutos mientras mantienes el control total.",
+      studyCompanionForStudents: "Compañero de Estudio para Estudiantes",
+      studyCompanionDesc: "Desbloquea todo tu potencial con un compañero de IA 24/7 que se adapta a tu estilo de aprendizaje y te ayuda a tener éxito.",
+      productivityTools: "Herramientas de Productividad",
+      productivityToolsDesc: "Diseñado para profesores y estudiantes, ACE aprende, se adapta y crece contigo en cada paso del camino.",
+      signInToDiscover: "Inicia sesión para descubrir más funciones",
+      teachersGetStarted: "Los Profesores Comienzan en 3 Sencillos Pasos",
+      teachersGetStartedDesc: "Únete a los educadores pioneros que están transformando su aula.",
+      step1Title: "Crear Clase",
+      step1Desc: "Obtén un código de clase único",
+      step2Title: "Crear Material de Clase",
+      step2Desc: "Crea tareas, cuestionarios, planes de clase y horarios",
+      step3Title: "Invitar Estudiantes",
+      step3Desc: "Los estudiantes se unen a la clase usando el código de clase",
+      measurableResults: "Resultados Medibles",
+      measurableResultsDesc: "Transforma tu eficiencia docente y resultados estudiantiles en 1 semana.",
+      teacherTimeSavings: "Mejora en Ahorro de Tiempo del Profesor",
+      teacherSatisfaction: "Satisfacción del Profesor",
+      lessonPrepReduction: "Reducción del Tiempo de Preparación",
+      studentEngagement: "Mejora en la Participación Estudiantil",
+      gradingSpeedup: "Aceleración de Calificación",
+      personalizationAccuracy: "Precisión de Personalización",
+      estimatesDisclaimer: "* Estimaciones mostradas; los resultados reales pueden variar.",
+      privacySecurity: "Privacidad y Seguridad por Diseño",
+      privacySecurityDesc: "La innovación en Schoolace comienza con seguridad, privacidad, protección y confianza.",
+      privacyFirstTitle: "Privacidad Primero",
+      privacyFirstDesc: "Nunca vendemos datos ni mostramos anuncios. Tu información permanece privada, protegida y se usa solo para mejorar tu experiencia de aprendizaje.",
+      enterpriseSecurityTitle: "Seguridad de Nivel Empresarial",
+      enterpriseSecurityDesc: "Todos los datos están cifrados en tránsito y en reposo, asegurados con autenticación moderna y controles de acceso. ACE sigue las mejores prácticas de seguridad estándar de la industria.",
+      safeAITitle: "IA Segura",
+      safeAIDesc: "Construido con barreras estrictas y salvaguardas éticas, ACE garantiza el uso responsable de la IA sin perfiles de estudiantes ni amplificación de sesgos.",
+      transparencyTitle: "Transparencia",
+      transparencyDesc: "Tú mantienes el control. Paneles y políticas claros muestran cómo se usan, almacenan y eliminan los datos. Sin cajas negras, sin rastreo oculto.",
+      ferpaCompliant: "Cumple con FERPA",
+      coppaCompliant: "Cumple con COPPA",
+      lovedByTeachersStudents: "Amado por Profesores y Estudiantes",
+      lovedByDesc: "Historias reales de educadores y estudiantes que están transformando sus aulas con Schoolace.",
+      choosePlan: "Elige tu Plan",
+      choosePlanDesc: "Comienza gratis o escala con funciones Pro para tu clase.",
+      freePlan: "Gratis",
+      proPlan: "Pro",
+      schoolPlan: "Escuela",
+      freePrice: "$0 /mes",
+      proPrice: "$9 /estudiante/mes facturado anualmente",
+      schoolPrice: "Contactar para Precios",
+      freeFeature1: "1 Clase",
+      freeFeature2: "Máx 30 Estudiantes",
+      freeFeature3: "Funciones ACE AI Limitadas",
+      freeFeature4: "Soporte Comunitario",
+      proFeature1: "Funciones ACE AI Completas y Agentes",
+      proFeature2: "Aprendizaje Personalizado",
+      proFeature3: "Soporte por Email",
+      proFeature4: "Soporte Comunitario",
+      schoolFeature1: "Funciones ACE AI Completas y Agentes",
+      schoolFeature2: "Aprendizaje Personalizado",
+      schoolFeature3: "Soporte por Email",
+      schoolFeature4: "Soporte Comunitario",
+      schoolFeature5: "Dominio escolar personalizado",
+      schoolFeature6: "Panel de Administrador",
+      schoolFeature7: "Soporte Prioritario y Capacitación",
+      startForFree: "Comenzar Gratis",
+      getStarted: "Comenzar",
+      contactSales: "Contactar Ventas",
+      mostPopular: "Más Popular",
+      getInTouch: "Ponte en Contacto",
+      getInTouchDesc: "¿Tienes preguntas? Nos encantaría escucharte. Envíanos un mensaje y responderemos en 2 días hábiles.",
+      contactName: "Nombre *",
+      contactEmail: "Email *",
+      contactSubject: "Asunto",
+      contactMessage: "Mensaje *",
+      yourName: "Tu nombre",
+      yourEmail: "tu@email.com",
+      contactSubjectPlaceholder: "¿De qué se trata?",
+      contactMessagePlaceholder: "Cuéntanos más...",
+      sendMessage: "Enviar Mensaje",
+      sending: "Enviando...",
+      thankYouMessage: "¡Gracias! Tu mensaje ha sido enviado con éxito.",
+      orEmailDirectly: "O escríbenos directamente,",
+      intelligentGrading: "Calificación Inteligente",
+      intelligentGradingDesc: "ACE proporciona retroalimentación instantánea, manejando múltiples entregas con precisión.",
+      interactiveQuizzes: "Cuestionarios y Encuestas Interactivas",
+      interactiveQuizzesDesc: "Cree evaluaciones atractivas con resultados y análisis en tiempo real.",
+      dynamicAssignments: "Tareas Dinámicas",
+      dynamicAssignmentsDesc: "Optimice la creación de tareas y realice un seguimiento de las entregas en todas las clases.",
+      smartScheduling: "Programación Inteligente",
+      smartSchedulingDesc: "Horarios dinámicos que se actualizan automáticamente con fechas de entrega y eventos.",
+      realTimeProgress: "Progreso en Tiempo Real",
+      realTimeProgressDesc: "Realice un seguimiento del progreso de cada estudiante en tiempo real y obtenga recomendaciones para actuar cuando más importa.",
+      proactiveAIAgent: "Agente IA Proactivo",
+      proactiveAIAgentDesc: "ACE automatiza el trabajo pesado, devolviendo tiempo para enseñar e inspirar.",
+      individualizedStudyCompanion: "Compañero de Estudio Individualizado",
+      individualizedStudyCompanionDesc: "ACE se adapta a tu estilo de aprendizaje, creciendo contigo y formando una personalidad de aprendizaje que es únicamente tuya.",
+      aceModels: "Modelos ACE",
+      aceModelsDesc: "Un modelo privado y personalizado que se desarrolla contigo de grado en grado, convirtiéndose en un verdadero compañero de aprendizaje a largo plazo.",
+      longitudinalMemory: "Memoria Longitudinal",
+      longitudinalMemoryDesc: "ACE rastrea tu aprendizaje a lo largo del tiempo, detectando patrones, brechas y fortalezas para enseñarte exactamente de la manera que necesitas.",
+      checkYourUnderstanding: "Verifica tu Comprensión",
+      checkYourUnderstandingDesc: "Pon a prueba tu conocimiento con cuestionarios interactivos y retroalimentación instantánea.",
+      wellnessTools: "Herramientas de Bienestar",
+      wellnessToolsDesc: "Accede a ejercicios de atención plena y recordatorios de descanso para mantenerte equilibrado.",
+      worksheetGeneration: "Generación de Hojas de Trabajo",
+      rubricCreation: "Creación de Rúbricas",
+      quizGeneration: "Generación de Cuestionarios",
+      reportCardComments: "Comentarios de Boletín",
+      lessonPlanning: "Planificación de Lecciones",
+      iepAssistance: "Asistencia IEP",
+      emailDrafting: "Redacción de Correos",
+      reportContent: "Reportar Contenido",
+      testimonial1: "Pasé de un 80% en Álgebra a un 90% después de usar Schoolace. Desglosó los problemas de una manera que mi libro de texto nunca hizo.",
+      testimonial2: "De todas las plataformas que mi escuela me ha hecho usar, Schoolace ha sido, con mucho, la más efectiva para ayudarme a aprender.",
+      testimonial3: "Finalmente es momento de una plataforma confiable, limpia y efectiva que pueda encargarse de todas las actividades escolares en un solo lugar.",
+      testimonial4: "Como educador que enfrenta la IA generativa en aulas de secundaria, agradezco tener una herramienta que ofrece eficiencias en calificación y retroalimentación. Me sorprende continuamente cómo Aiden puede responder a solicitudes de actualización y mejoras; espero con ansias nuestra colaboración y su brillante futuro.",
+      testimonial5: "Schoolace me ha ayudado a terminar mis tareas de manera más eficiente. Podía hacerle preguntas a la IA de aprendizaje personalizado sobre mis tareas y enriquecería mi aprendizaje.",
+      testimonial6: "Schoolace hace que la tarea sea mucho más fácil. Si estoy atascado, lo desglosa paso a paso y me hace preguntas para que realmente lo entienda, en lugar de solo darme la respuesta.",
+      testimonial7: "Bio solía confundirme, pero Schoolace explicó todo claramente, y ahora realmente entiendo los conceptos y puedo divertirme en clase.",
+      testimonial8: "Schoolace me ayuda a hacer tareas que consumen mucho tiempo como escribir correos y resumir artículos, y me devuelve mucho tiempo para hacer cosas que me apasionan.",
+      platformTitle: "Plataforma",
+      companyTitle: "Empresa",
+      legalTitle: "Legal",
+      termsOfService: "Términos de Servicio",
+      privacyPolicy: "Política de Privacidad",
+      allSystemsOperational: "Todos los Sistemas Operativos",
+      copyright: "Schoolace. Todos los derechos reservados.",
+      // Teacher Features
+      intelligentGrading: "Calificación Inteligente",
+      intelligentGradingDesc: "ACE proporciona retroalimentación instantánea, manejando múltiples entregas con precisión.",
+      interactiveQuizzes: "Cuestionarios y Encuestas Interactivas",
+      interactiveQuizzesDesc: "Cree evaluaciones atractivas con resultados y análisis en tiempo real.",
+      dynamicAssignments: "Tareas Dinámicas",
+      dynamicAssignmentsDesc: "Optimice la creación de tareas y realice un seguimiento de las entregas en todas las clases.",
+      smartScheduling: "Programación Inteligente",
+      smartSchedulingDesc: "Horarios dinámicos que se actualizan automáticamente con fechas de entrega y eventos.",
+      realTimeProgress: "Progreso en Tiempo Real",
+      realTimeProgressDesc: "Realice un seguimiento del progreso de cada estudiante en tiempo real y obtenga recomendaciones para actuar cuando más importa.",
+      proactiveAIAgent: "Agente IA Proactivo",
+      proactiveAIAgentDesc: "ACE automatiza el trabajo pesado, devolviendo tiempo para enseñar e inspirar.",
+      // Student Features
+      individualizedStudyCompanion: "Compañero de Estudio Individualizado",
+      individualizedStudyCompanionDesc: "ACE se adapta a tu estilo de aprendizaje, creciendo contigo y formando una personalidad de aprendizaje que es únicamente tuya.",
+      aceModels: "Modelos ACE",
+      aceModelsDesc: "Un modelo privado y personalizado que se desarrolla contigo de grado en grado, convirtiéndose en un verdadero compañero de aprendizaje a largo plazo.",
+      longitudinalMemory: "Memoria Longitudinal",
+      longitudinalMemoryDesc: "ACE rastrea tu aprendizaje a lo largo del tiempo, detectando patrones, brechas y fortalezas para enseñarte exactamente de la manera que necesitas.",
+      checkYourUnderstanding: "Verifica tu Comprensión",
+      checkYourUnderstandingDesc: "Pon a prueba tu conocimiento con cuestionarios interactivos y retroalimentación instantánea.",
+      wellnessTools: "Herramientas de Bienestar",
+      wellnessToolsDesc: "Accede a ejercicios de atención plena y recordatorios de descanso para mantenerte equilibrado.",
+      // Testimonials
+      testimonial1: "Pasé de un 80% en Álgebra a un 90% después de usar Schoolace. Desglosó los problemas de una manera que mi libro de texto nunca hizo.",
+      testimonial2: "De todas las plataformas que mi escuela me ha hecho usar, Schoolace ha sido, con mucho, la más efectiva para ayudarme a aprender.",
+      testimonial3: "Finalmente es momento de una plataforma confiable, limpia y efectiva que pueda encargarse de todas las actividades escolares en un solo lugar.",
+      testimonial4: "Como educador que enfrenta la IA generativa en aulas de secundaria, agradezco tener una herramienta que ofrece eficiencias en calificación y retroalimentación. Me sorprende continuamente cómo Aiden puede responder a solicitudes de actualización y mejoras; espero con ansias nuestra colaboración y su brillante futuro.",
+      testimonial5: "Schoolace me ha ayudado a terminar mis tareas de manera más eficiente. Podía hacerle preguntas a la IA de aprendizaje personalizado sobre mis tareas y enriquecería mi aprendizaje.",
+      testimonial6: "Schoolace hace que la tarea sea mucho más fácil. Si estoy atascado, lo desglosa paso a paso y me hace preguntas para que realmente lo entienda, en lugar de solo darme la respuesta.",
+      testimonial7: "Bio solía confundirme, pero Schoolace explicó todo claramente, y ahora realmente entiendo los conceptos y puedo divertirme en clase.",
+      testimonial8: "Schoolace me ayuda a hacer tareas que consumen mucho tiempo como escribir correos y resumir artículos, y me devuelve mucho tiempo para hacer cosas que me apasionan.",
+      testimonial9: "Los modelos de IA de Schoolace son increíbles. Cada uno está especializado, por lo que recibo ayuda precisa ya sea que esté programando, estudiando STEM o explorando nuevos conceptos. Se siente como tener un experto para cada materia.",
+      testimonial10: "Tener un modelo de IA personalizado a través de Schoolace cambia el juego. Se adapta a mis hábitos de aprendizaje y me da consejos que realmente me ayudan a mejorar cada vez.",
+      testimonial11: "Schoolace cambió por completo mi forma de aprender y administrar la escuela. La retroalimentación personalizada realmente me ayuda a mejorar, y ahorra tanto tiempo que puedo concentrarme en comprender en lugar de tareas pesadas. Se siente como si la plataforma hubiera sido construida solo para mí.",
+      testimonial12: "Schoolace se siente como un tutor personal que realmente me conoce. Me encanta que tenga acceso a todas mis entregas de tareas y cuestionarios, así puedo hacer preguntas sobre cualquier cosa que haya hecho y obtener explicaciones claras y personalizadas.",
+      testimonial13: "Lo que hace diferente a Schoolace es que entiende mi historial de aprendizaje completo. Dado que tiene acceso a todas mis tareas y cuestionarios, puedo preguntarle cualquier cosa sobre trabajos pasados y obtener comentarios que son realmente relevantes para mí.",
+      testimonial14: "Schoolace se destaca porque se conecta directamente con mis tareas e historial de aprendizaje. En lugar de respuestas genéricas, me brinda ayuda basada en mi trabajo real, lo que ha hecho que estudiar sea más eficiente y menos estresante.",
+      testimonial15: "Schoolace facilita la revisión y mejora porque recuerda todas mis tareas y comentarios. Puedo hacer preguntas sobre cualquier cosa que haya enviado, lo que me ayuda a entender los conceptos más rápido y evitar repetir errores.",
+      testimonial16: "Schoolace hace que aprender STEM y programación sea realmente divertido. Me guía a través de conceptos difíciles y me ayuda a construir proyectos paso a paso, por lo que me siento seguro al probar cosas nuevas.",
+    },
+    // Common
+    common: {
+      loading: "Cargando...",
+      save: "Guardar",
+      cancel: "Cancelar",
+      delete: "Eliminar",
+      edit: "Editar",
+      create: "Crear",
+      update: "Actualizar",
+      close: "Cerrar",
+      back: "Atrás",
+      next: "Siguiente",
+      done: "Hecho",
+      search: "Buscar",
+      filter: "Filtrar",
+      sort: "Ordenar",
+      refresh: "Actualizar",
+      settings: "Configuración",
+      logout: "Cerrar Sesión",
+      yes: "Sí",
+      no: "No",
+      confirm: "Confirmar",
+      success: "Éxito",
+      error: "Error",
+      warning: "Advertencia",
+      info: "Info",
+      poweredByACE: "Impulsado por ACE",
+    },
+    classSetup: {
+      welcomeTeacher: "¡Bienvenido, Profesor!",
+      createNewClass: "Crear una Nueva Clase",
+      setupFirstClassroom: "Configuremos tu primer aula",
+      createAnotherClass: "Crea otra clase para organizar más estudiantes y tareas.",
+      createClassPrompt: "Crea una clase para inscribir estudiantes y publicar tareas.",
+      createClass: "Crear Clase",
+      className: "Nombre de la Clase",
+      classNamePlaceholder: "ej., Álgebra 1, Período 3",
+      descriptionOptional: "Descripción (Opcional)",
+      descriptionPlaceholder: "Breve descripción de tu clase...",
+      cancel: "Cancelar",
+      creating: "Creando...",
+    },
+    // Roles
+    roles: {
+      teacher: "Profesor",
+      student: "Estudiante",
+      admin: "Administrador",
+    },
+    // Time
+    time: {
+      today: "Hoy",
+      yesterday: "Ayer",
+      tomorrow: "Mañana",
+      week: "Semana",
+      month: "Mes",
+    },
+    // AI Personal Agent
+    aiAgent: {
+      title: "Agente Personal de IA",
+      subtitle: "Tu asistente inteligente para todo en Schoolace",
+      closeAgent: "Cerrar Agente",
+      loading: "Por favor espera mientras cargamos tu contenido",
+      processing: "Procesando...",
+      accessingData: "Accediendo a datos de todas las clases...",
+      teacherPlaceholder: "Pídeme que haga cualquier cosa en todas tus clases... ej., '¡Envía un mensaje a todas mis clases diciendo que la tarea es para mañana!'",
+      studentPlaceholder: "Pregúntame lo que quieras... ej., 'Envía mi ensayo a la tarea de Inglés' o 'Muéstrame mis calificaciones'",
+      fileReady: "Archivo listo:",
+      uploadFile: "Subir Archivo",
+      greeting: "¡Hola {name}! Soy tu Agente Personal de IA. ¿Qué te gustaría hacer?",
+    },
+    // Ace Spaces
+    aceSpaces: {
+      title: "Espacios Ace",
+      subtitle: "Colabora con compañeros y Ace IA en chats grupales compartidos.",
+      joinWithCode: "Unirse con Código",
+      createSpace: "Crear Espacio",
+      joinSpace: "Unirse a Espacio",
+      enterCode: "INGRESAR CÓDIGO",
+      joinDesc: "Ingresa el código de 6 caracteres compartido por un compañero.",
+      createNewSpace: "Crear Nuevo Espacio",
+      createDesc: "Inicia un nuevo chat grupal para tu proyecto o grupo de estudio.",
+      spaceName: "Nombre del Espacio",
+      spaceNamePlaceholder: "ej., Grupo de Proyecto de Ciencias",
+      descOptional: "Descripción (Opcional)",
+      whatsThisFor: "¿Para qué es este espacio?",
+      noSpaces: "Aún no hay espacios",
+      noSpacesDesc: "Crea un espacio para comenzar a chatear con amigos y Ace IA, o pide un código de unión a un compañero.",
+      createFirst: "Crea Tu Primer Espacio",
+      openChat: "Abrir Chat",
+      members: "Miembros",
+      addMember: "Agregar Miembro",
+      addMemberDesc: "Ingresa la dirección de correo electrónico del usuario que deseas agregar.",
+      copyCode: "Copiar Código",
+      leaveSpace: "Salir del Espacio",
+      leaveConfirm: "¿Estás seguro de que quieres salir de \"{name}\"?",
+      people: "Personas",
+      files: "Archivos",
+      notes: "Notas",
+      sharedFiles: "Archivos Compartidos",
+      noFiles: "Aún no hay archivos compartidos",
+      sharedNotes: "Notas Compartidas",
+      addNote: "Agregar Nota",
+      createNoteDesc: "Crea una nota visible para todos los miembros del espacio.",
+      saveNote: "Guardar Nota",
+      noteTitle: "Título",
+      noteTitlePlaceholder: "ej., Fechas Límite del Proyecto",
+      noteContent: "Contenido",
+      noteContentPlaceholder: "Escribe tu nota aquí...",
+      noNotes: "Aún no hay notas. ¡Agrega una!",
+      chatWithGroup: "Chat con Grupo",
+      chatWithAI: "Chat con IA",
+      askAce: "Pregúntale cualquier cosa a Ace IA...",
+      messageGroup: "Mensaje al grupo...",
+      translate: "Traducir",
+      original: "Original",
+      alwaysOnline: "Siempre en línea",
+      admin: "Admin",
+      bot: "Bot",
+      member: "Miembro",
+      deleteNoteConfirm: "¿Estás seguro de que quieres eliminar esta nota?",
+      uploadedFile: "Subió un archivo",
+      invited: "¡Agregado!",
+      codeCopied: "¡Código copiado!",
+      translating: "Traduciendo...",
+    },
+    // PowerSchool
+    powerSchool: {
+      title: "Integración PowerSchool",
+      comingSoon: "¡Integración Próximamente!",
+      description: "Estamos trabajando arduamente para ofrecerte una integración perfecta con PowerSchool. Pronto podrás potenciar tu flujo de trabajo con estas poderosas funciones.",
+      syncGradesTitle: "Sincronizar Calificaciones Instantáneamente",
+      syncGradesDescription: "Envía las calificaciones de tareas de Schoolace directamente a tu libro de calificaciones de PowerSchool con un solo clic.",
+      automateTitle: "Automatizar Ingreso de Calificaciones",
+      automateDescription: "Deja que nuestra IA maneje la calificación, luego sincroniza automáticamente los resultados con PowerSchool, ahorrándote horas de entrada de datos manual.",
+    },
+  },
 
+  ZH: {
+    // Navigation
+    nav: {
+      dashboard: "仪表板",
+      scheduler: "课程表",
+      aiAgent: "AI助手",
+      chat: "聊天",
+      classTools: "课堂工具",
+      lessonPlans: "教案",
+      aiTools: "AI工具",
+      powerSchool: "PowerSchool",
+      aceAI: "ACE AI",
+    },
+    // Dashboard
+    dashboard: {
+      title: "仪表板",
+      welcome: "欢迎",
+      yourClasses: "您的班级",
+      createClass: "创建班级",
+      joinClass: "加入班级",
+      noClasses: "未找到班级",
+      assignments: "作业",
+      createAssignment: "创建作业",
+      noAssignments: "暂无作业",
+      dueDate: "截止日期",
+      submissions: "提交",
+      graded: "已批改",
+      pending: "待处理",
+      viewAll: "查看全部",
+      recentActivity: "最近活动",
+      classCode: "班级代码",
+      students: "学生",
+      activeAssignments: "进行中的作业",
+      teachingHub: "您的教学中心",
+      switchClass: "切换班级",
+      joinAnotherClass: "加入其他班级",
+      loadingClassroom: "正在加载您的教室...",
+      feedback: "反馈",
+      logout: "登出",
+      teacherDashboard: "教师仪表板",
+      teacherDescription: "创建作业并审核学生提交",
+      createNewClass: "创建新班级",
+      backToDashboard: "返回仪表板",
+      backToAssignments: "返回作业",
+      yourAssignments: "您的作业",
+      noAssignmentsYet: "尚未创建作业",
+      createFirstAssignment: "创建您的第一个作业开始。如果您期待作业，请关闭此标签并重新登录。",
+      studentPortal: "学生门户",
+      studentDescription: "查看作业并提交您的工作",
+    },
+    // Class Tools
+    classTools: {
+      title: "课堂工具",
+      subtitle: "为您的课堂提供互动工具",
+      selectClass: "选择班级",
+      chooseClass: "选择一个班级",
+      schedule: "日程",
+      quizzes: "测验",
+      polls: "投票",
+      personalizedLearning: "个性化学习",
+      noClasses: "未找到班级。",
+      goToDashboard: "前往仪表板创建或加入班级。",
+      classSchedule: "班级日程",
+      weekOf: "周",
+      today: "今天",
+      addEvent: "添加事件",
+      deleteEventConfirm: "确定要删除此事件吗？",
+      createQuiz: "创建测验",
+      editQuiz: "编辑测验",
+      noQuizzesAvailable: "目前没有可用的测验。如果您期待测验，请刷新页面和/或登出。",
+      draft: "草稿",
+      active: "活跃",
+      closed: "已关闭",
+      activate: "激活",
+      lock: "锁定",
+      reDraft: "重新草稿",
+      showResults: "显示结果",
+      hideResults: "隐藏结果",
+      duplicate: "复制",
+      edit: "编辑",
+      results: "结果",
+      delete: "删除",
+      takeQuiz: "参加测验",
+      viewResults: "查看结果",
+      completed: "已完成",
+      duplicateQuiz: "复制测验",
+      duplicateQuizDesc: "将 \"{title}\" 复制到另一个班级。新测验将保存为草稿。",
+      destinationClass: "目标班级",
+      selectClassToCopy: "选择要复制到的班级",
+      cancel: "取消",
+      duplicating: "复制中...",
+      confirmAndCopy: "确认并复制",
+      deleteQuizConfirm: "确定要删除 \"{title}\" 吗？这将删除所有问题且无法撤销。",
+      quizCopied: "测验 \"{title}\" 复制成功！已保存为目标班级的草稿。",
+      quizDeleted: "测验 \"{title}\" 已删除。",
+      quizTitle: "标题",
+      quizTitlePlaceholder: "测验标题",
+      quizDescription: "描述",
+      quizDescriptionPlaceholder: "测验描述（可选）",
+      timeLimit: "时间限制",
+      unlimitedTime: "无限时间",
+      setTimeLimit: "设置时间限制（分钟）：",
+      afterCompletion: "完成后",
+      allowStudentsViewResults: "允许学生查看成绩和答案",
+      aiQuizGenerator: "AI测验生成器",
+      topic: "主题",
+      websiteUrl: "网站URL",
+      fileUpload: "文件上传",
+      enterTopic: "输入主题",
+      enterUrl: "输入URL",
+      numberOfQuestions: "问题数量",
+      difficulty: "难度",
+      easy: "简单",
+      medium: "中等",
+      hard: "困难",
+      questionType: "问题类型",
+      multipleChoice: "多选",
+      trueFalse: "判断题",
+      generateQuestions: "生成问题",
+      generating: "生成中...",
+      question: "问题",
+      remove: "删除",
+      enterQuestion: "在此输入问题...",
+      answerOptions: "答案选项",
+      correctAnswer: "正确答案",
+      addQuestion: "添加问题",
+      saveQuiz: "保存测验",
+      createPoll: "创建投票",
+      noPolls: "尚未创建投票。",
+      noPollsStudent: "没有可用的活跃投票。如果您期待投票，请刷新页面和/或登出。",
+      createNewPoll: "创建新投票",
+      pollQuestion: "投票问题",
+      options: "选项",
+      addOption: "添加选项",
+      closePoll: "关闭投票",
+      reopenPoll: "重新开放投票",
+      totalVotes: "总票数",
+      yourVote: "您的投票",
+      voting: "投票中...",
+      votes: "票",
+    },
+    // Lesson Plans
+    lessonPlans: {
+      title: "教案",
+      createLesson: "创建课程",
+      searchLessons: "搜索课程...",
+      noLessons: "暂无教案",
+      createFirst: "创建您的第一个教案开始。",
+      objectives: "学习目标",
+      activities: "活动",
+      homework: "作业",
+      resources: "资源",
+      released: "已发布",
+      unreleased: "未发布",
+      noClassesFound: "未找到班级。请先创建或加入班级。",
+      pleaseLogin: "请登录以访问教案。",
+      editLessonPlan: "编辑教案",
+      createNewLessonPlan: "创建新教案",
+      class: "班级",
+      importFromText: "从文本导入",
+      aiAssistant: "AI助手",
+      cancel: "取消",
+      saveLesson: "保存课程",
+      saving: "保存中...",
+      importSuccessful: "导入成功！",
+      lessonImported: "您的教案已导入到编辑器底部的预制教案部分！",
+      gotIt: "知道了！",
+      aiLessonGenerator: "AI教案生成器",
+      aiPlaceholder: "描述您的课程... 例如，'为8年级科学创建关于光合作用的课程，包含实践实验' 或 '制作一个引人入胜的数学课程，关于分数和现实世界的例子'",
+      aiNote: "AI将生成教育链接。请在发布前验证链接是否准确。",
+      generateLesson: "生成课程",
+      generating: "生成中...",
+      importLessonFromText: "从文本导入教案",
+      importDesc: "在下方粘贴您现有的教案文本，AI将帮助组织它。",
+      pasteHere: "在此粘贴您的教案...",
+      useLessonAsIs: "按原样使用教案",
+      processing: "处理中...",
+      importStructure: "导入并构建课程",
+      beta: "测试版",
+      basicInformation: "基本信息",
+      lessonTitle: "课程标题",
+      enterLessonTitle: "输入课程标题...",
+      lessonDate: "课程日期",
+      lessonIsReleased: "课程已发布",
+      lessonIsUnreleased: "课程未发布",
+      studentsCanView: "学生可以查看此教案",
+      studentsCannotView: "学生暂时无法看到此教案",
+      learningObjectives: "学习目标",
+      learningObjective: "学习目标",
+      addObjective: "添加目标",
+      hookOpeningActivity: "开场活动/引入",
+      hookPlaceholder: "描述一个吸引学生注意力的引人入胜的开场活动...",
+      classroomActivities: "课堂活动",
+      activityTitle: "活动标题...",
+      duration: "持续时间（分钟）",
+      minutes: "分钟",
+      describeActivity: "描述活动...",
+      materialsNeeded: "所需材料",
+      material: "材料...",
+      addMaterial: "添加材料",
+      addActivity: "添加活动",
+      homeworkAssignment: "作业",
+      addHomework: "添加作业",
+      resourceTitle: "资源标题...",
+      urlPlaceholder: "URL（用于网站、视频）...",
+      or: "或",
+      fileUploaded: "文件已上传：",
+      type: "类型",
+      uploadFile: "上传文件",
+      uploading: "上传中...",
+      website: "网站",
+      video: "视频",
+      document: "文档",
+      book: "书籍",
+      file: "文件",
+      image: "图片",
+      addResource: "添加资源",
+      assessment: "评估",
+      assessmentType: "评估类型",
+      formative: "形成性",
+      summative: "总结性",
+      peerAssessment: "同伴评估",
+      selfAssessment: "自我评估",
+      describeAssessment: "描述评估方法...",
+      rubric: "评分标准或评分准则...",
+      preMadeLessonPlan: "预制教案/附加信息",
+      additionalInfoPlaceholder: "为学生/家长添加任何附加信息（例如，办公时间、联系信息、特殊说明等）...",
+      differentiationStrategies: "差异化策略",
+      differentiationStrategy: "差异化策略",
+      addStrategy: "添加策略",
+      back: "返回",
+      unrelease: "取消发布",
+      release: "发布",
+      duplicate: "复制",
+      edit: "编辑",
+      studentsWillBeAbleTo: "学生将能够：",
+      descriptionLabel: "描述：",
+      rubricLabel: "评分标准：",
+      teacherReflectionNotes: "教师反思笔记",
+      duplicateLessonPlan: "复制教案",
+      selectClassToCopy: "选择要复制 \"{title}\" 到的班级：",
+      chooseDestinationClass: "选择目标班级",
+      duplicating: "复制中...",
+      previous: "上一周",
+      weekView: "周视图",
+      next: "下一周",
+      releasedStudentsCanSee: "已发布（学生可以看到）",
+      unreleasedStudentsCannotSee: "未发布（学生看不到）",
+      noLessonsForDay: "无课程",
+      lessonsThisWeek: "本周课程",
+      releasedCount: "已发布",
+      unreleasedCount: "未发布",
+      min: "分钟",
+      visit: "访问",
+      download: "下载",
+      createFirstLesson: "创建您的第一节课",
+    },
+    // AI Tools
+    aiTools: {
+      title: "AI工具",
+      subtitle: "您的AI教学和学习助手。",
+      generate: "生成",
+      generating: "生成中...",
+      clear: "清除",
+      copy: "复制",
+      download: "下载",
+      pinTool: "固定工具",
+      unpinTool: "取消固定",
+      teacherTools: "教师工具",
+      studentTools: "学生工具",
+      output: "输出",
+      outputPlaceholder: "生成的内容将显示在这里。",
+      select: "选择",
+      error: "错误",
+      errorRetry: "如果问题持续，请稍后重试。",
+      translating: "翻译中...",
+      locked: "AI工具已锁定",
+      lockedDescription: "您需要登录才能访问我们强大的教学和学习AI工具套件。",
+      signInToContinue: "登录以继续",
+      loadingAITools: "加载AI工具中...",
+      emailGenerator: "邮件生成器",
+      emailGeneratorDesc: "快速起草给家长或学生的专业邮件。",
+      iepAccommodations: "IEP和适应计划生成器",
+      iepAccommodationsDesc: "为学生生成定制的适应措施和IEP目标。",
+      rubricGenerator: "评分标准生成器",
+      rubricGeneratorDesc: "快速为任何作业生成全面的评分标准。",
+      questionGenerator: "评估问题生成器",
+      questionGeneratorDesc: "从主题、网址、文档或YouTube转录中生成问题。",
+      worksheetGenerator: "工作表生成器",
+      worksheetGeneratorDesc: "从主题、网址、文档或转录生成专业工作表。",
+      reportCardComments: "成绩报告评语",
+      reportCardCommentsDesc: "生成个性化、建设性的成绩报告评语。",
+      assignmentScaffolder: "作业分层器",
+      assignmentScaffolderDesc: "为不同技能水平创建差异化版本的作业。",
+      teacherWellness: "教师健康支持",
+      teacherWellnessDesc: "反思您的身心健康并找到管理压力策略的空间。",
+      aiDetector: "AI内容检测器",
+      aiDetectorDesc: "分析文本或文件以检测AI生成的内容。",
+      writingFeedback: "写作反馈助手",
+      writingFeedbackDesc: "获得即时、建设性的写作反馈。",
+      textSummarizer: "文本摘要器",
+      textSummarizerDesc: "将长文章总结为关键点。",
+      checkUnderstanding: "检验你的理解",
+      checkUnderstandingDesc: "从主题、网址、文档或转录中生成问题。",
+      conceptExplainer: "概念解释器",
+      conceptExplainerDesc: "获取任何复杂主题的简单解释。",
+      studentEmailGenerator: "邮件生成器",
+      studentEmailGeneratorDesc: "给老师起草一封尊重且清晰的邮件。",
+      studentWellness: "学生健康支持",
+      studentWellnessDesc: "一个安全的空间来检查您的感受。",
+      emailTo: "收件人",
+      studentName: "学生姓名",
+      emailSubject: "邮件主题",
+      keyPointsToInclude: "要包含的要点",
+      tone: "语气",
+      gradeLevel: "年级",
+      areaOfNeed: "需求领域",
+      describeStudentChallenges: "描述学生的具体挑战",
+      whatToGenerate: "您想生成什么？",
+      assignmentTitle: "作业标题",
+      gradingCriteria: "评分标准（每行一个）",
+      topicIfNoContent: "主题（如果没有其他内容）",
+      websiteUrlOptional: "网站URL（可选）",
+      youtubeTranscript: "YouTube视频转录（可选）",
+      uploadDocumentOptional: "上传文档（可选）",
+      questionType: "问题类型",
+      numberOfQuestions: "问题数量",
+      difficulty: "难度",
+      worksheetInstructions: "工作表布局和说明",
+      studentStrengths: "学生优势",
+      areasForImprovement: "需要改进的领域",
+      originalAssignment: "原始作业",
+      subject: "科目",
+      teacherLastName: "老师姓氏",
+      whatYouNeedToSay: "您需要说的内容",
+      textToAnalyze: "要分析的文本",
+      orUploadDocument: "或上传文档",
+      pasteTextHere: "在此粘贴您的文本",
+      textToSummarize: "粘贴要总结的文本",
+      summaryLength: "摘要长度",
+      conceptToExplain: "要解释的概念",
+      explainLikeIm: "把我当作...来解释",
+      howAreYouFeelingTeacher: "您好！作为教育工作者，您今天感觉如何？",
+      howAreYouFeelingStudent: "你好 👋 你今天感觉怎么样？",
+      aParentGuardian: "家长/监护人",
+      aStudent: "学生",
+      formalEncouraging: "正式且鼓励",
+      positiveCasual: "积极且随意",
+      directInformative: "直接且信息丰富",
+      fullReport: "完整报告",
+      listOfAccommodations: "适应措施列表",
+      smartGoal: "SMART目标",
+      emailToParent: "给家长的邮件",
+      multipleChoice: "多选",
+      trueFalse: "判断题",
+      shortAnswer: "简答",
+      easy: "简单",
+      medium: "中等",
+      hard: "困难",
+      encouraging: "鼓励",
+      formal: "正式",
+      direct: "直接",
+      shortSentences: "简短（几句话）",
+      mediumParagraph: "中等（一段话）",
+      detailedBullets: "详细（要点）",
+      a5thGrader: "五年级学生",
+      aHighSchoolStudent: "高中生",
+      aCompleteBeginber: "完全初学者",
+      kindergarten: "幼儿园",
+      grade1: "一年级",
+      grade2: "二年级",
+      grade3: "三年级",
+      grade4: "四年级",
+      grade5: "五年级",
+      grade6: "六年级",
+      grade7: "七年级",
+      grade8: "八年级",
+      grade9: "九年级",
+      grade10: "十年级",
+      grade11: "十一年级",
+      grade12: "十二年级",
+    },
+    // Personalized Learning
+    personalizedLearning: {
+      title: "您的学习伙伴",
+      subtitle: "通过AI指导按自己的节奏掌握概念。",
+      chatTutor: "聊天导师",
+      focusAreas: "重点领域",
+      progressOverview: "进度概览",
+      flashcards: "闪卡",
+      practiceTest: "练习测试",
+      studyGuide: "学习指南",
+      aiStudyTools: "AI学习工具",
+      generateContent: "生成内容",
+      poweredByACEAI: "由 ACE AI 驱动",
+      preparingExperience: "正在准备您的体验...",
+      gatheringData: "正在收集您的学习数据...",
+      chatWithAce: "与 Ace 聊天",
+      yourPersonalTutor: "您的私人AI导师",
+      learningMode: "学习模式",
+      solutionMode: "解答模式",
+      aceIsThinking: "Ace 正在思考...",
+      submitQuiz: "提交测验",
+      uploadFile: "上传文件",
+      learningModeDesc: "引导我一步步学习，不直接给出答案",
+      solutionModeDesc: "展示完整的解答和答案",
+      inputPlaceholder: "提问、参加互动测验、让我分析作业提交，或上传文件...",
+      aiDisclaimer: "您的AI导师可能会犯错。由 ACE AI 驱动。请考虑核实重要信息。",
+      dropFilesHere: "将文件拖放到这里",
+      processingFile: "正在处理文件...",
+      yourStrengths: "您的优势",
+      buildingStrengths: "正在建立优势",
+      completeAssignments: "完成作业以查看您掌握的概念。",
+      areasToFocusOn: "需要关注的领域",
+      allLookingGreat: "一切看起来都很好！",
+      noFocusAreas: "没有发现需要特别关注的领域。继续保持出色的工作。",
+      introMessage: "你好 {name}！我是 Ace，你的私人AI导师。{focusText}\n\n今天你想探索或学习什么？我们可以深入研究某个主题，复习最近作业或测验中的问题，或者你可以上传文件让我帮助你！",
+      focusAreasIntro: "我注意到你最近需要练习的一些领域是 {concepts}。",
+      quizComplete: "完成测验做得好！你得了 {score}/{total} ({percentage}%)。",
+      questionsToWorkOn: "以下是我们可以练习的问题：",
+      whichToBreakDown: "你想先分析哪一个？",
+      perfectScore: "满分！你已经掌握了这个概念。🎉 接下来我们该学什么？",
+    },
+    // Chat
+    chat: {
+      title: "班级聊天",
+      typeMessage: "输入您的消息...",
+      send: "发送",
+      noMessages: "暂无消息",
+      startConversation: "开始对话！",
+      unavailable: "聊天不可用",
+      mustBeEnrolled: "您必须加入班级才能使用聊天。",
+      chattingIn: "您正在聊天",
+      switchClass: "切换班级...",
+    },
+    // Quizzes
+    quizzes: {
+      title: "测验",
+      createQuiz: "创建测验",
+      takeQuiz: "参加测验",
+      viewResults: "查看结果",
+      timeLimit: "时间限制",
+      minutes: "分钟",
+      questions: "问题",
+      score: "分数",
+      completed: "已完成",
+      inProgress: "进行中",
+      notStarted: "未开始",
+    },
+    // Polls
+    polls: {
+      title: "投票",
+      createPoll: "创建投票",
+      vote: "投票",
+      results: "结果",
+      active: "进行中",
+      closed: "已结束",
+      totalVotes: "总票数",
+    },
+    // Assignments
+    assignments: {
+      title: "作业",
+      submit: "提交",
+      submitted: "已提交",
+      grade: "成绩",
+      feedback: "反馈",
+      instructions: "说明",
+      attachments: "附件",
+      answerKey: "答案",
+      aiGrading: "AI批改",
+      releaseGrades: "发布成绩",
+      editAssignment: "编辑作业",
+      createNewAssignment: "创建新作业",
+      assignmentTitle: "作业标题",
+      assignmentTitlePlaceholder: "例如，关于气候变化的论文",
+      subject: "科目",
+      selectSubject: "选择科目",
+      mathematics: "数学",
+      english: "英语",
+      science: "科学",
+      history: "历史",
+      art: "艺术",
+      other: "其他",
+      description: "描述",
+      descriptionPlaceholder: "作业的简要描述...",
+      assignmentFiles: "作业文件（可选）",
+      addMoreFiles: "添加更多文件",
+      gradingInstructions: "批改说明",
+      gradingInstructionsPlaceholder: "AI批改的详细说明。包括评分标准、关键点、批改标准...",
+      gradingInstructionsManualPlaceholder: "可选：手动批改说明或关于此作业的备注...",
+      gradingInstructionsHelp: "具体说明AI在批改提交时应该注意什么。",
+      gradingInstructionsManualHelp: "禁用AI批改时，这些说明是可选的。",
+      maximumPoints: "最高分数",
+      dueDate: "截止日期",
+      selectDueDate: "选择截止日期",
+      openDateTime: "开放日期和时间（可选）",
+      openDateHelp: "作业对学生可见的时间",
+      closeDateTime: "关闭日期和时间（可选）",
+      closeDateHelp: "作业对学生不再可见的时间",
+      visibleToStudents: "对学生可见",
+      visible: "可见",
+      hidden: "隐藏",
+      allowSubmissions: "允许学生提交",
+      allowSubmissionsYes: "学生可以提交作业",
+      allowSubmissionsNo: "仅信息 - 无提交",
+      allowSubmissionsHelp: "禁用时，这将成为一个没有提交或批改的信息性作业。",
+      aiGradingTitle: "AI批改",
+      aiGradingDescription: "使用AI自动批改提交",
+      aiGradingEnabled: "AI将自动批改提交。",
+      uploadAnswerKey: "上传答案（可选）",
+      changeAnswerKey: "更改答案",
+      aiLeniency: "AI宽松度",
+      selectLeniency: "选择宽松度级别",
+      strict: "严格",
+      neutral: "中等",
+      lenient: "宽松",
+      leniencyHelp: "选择AI应该多严格地遵守批改标准。",
+      answerKeyOptional: "答案（可选）",
+      chooseFile: "选择文件",
+      answerKeyHelp: "上传答案以帮助AI提供更准确的批改和反馈。",
+      manualGradingNote: "您将手动批改此作业的所有提交。",
+      cancel: "取消",
+      creating: "创建中...",
+      updating: "更新中...",
+      createAssignmentBtn: "创建作业",
+      updateAssignment: "更新作业",
+      hideFromStudents: "对学生隐藏",
+      showToStudents: "对学生显示",
+      reopenAssignment: "重新开放作业",
+      duplicateToAnotherClass: "复制到其他班级",
+      duplicateAssignment: "复制作业",
+      selectDestinationClass: "选择要复制到的班级",
+      chooseDestinationClass: "选择目标班级",
+      duplicating: "复制中...",
+      duplicate: "复制",
+      viewDetails: "查看详情",
+      submission: "提交",
+      submissions: "提交",
+    },
+    // Landing Page
+    landing: {
+      signIn: "登录",
+      forTeachers: "教师功能",
+      forStudents: "学生功能",
+      aiCapabilities: "AI功能",
+      testimonials: "用户评价",
+      pricing: "价格",
+      contact: "联系我们",
+      heroTitle: "教育，由ACE AI超级加持。",
+      heroSubtitle: "由{aceAI}驱动，Schoolace通过透明和负责任地使用AI，赋能前瞻性教育者并提升学生学习效果。",
+      heroTagline: "教师保持完全控制，学生拥有思考权",
+      getStartedFree: "免费开始",
+      coPilotForTeachers: "教师副驾驶",
+      coPilotDesc: "将数小时或数天的课程规划、内容创建、评分和提供反馈转变为几分钟，同时让教师保持完全控制。",
+      studyCompanionForStudents: "学生学习伙伴",
+      studyCompanionDesc: "释放全部潜力，拥有24/7 AI伙伴，适应您的学习风格并帮助您成功。",
+      productivityTools: "生产力工具",
+      productivityToolsDesc: "为教师和学生打造，ACE在每一步都学习、适应并与您一起成长。",
+      signInToDiscover: "登录以发现更多功能",
+      teachersGetStarted: "教师3步快速开始",
+      teachersGetStartedDesc: "加入正在改变课堂的先锋教育者。",
+      step1Title: "创建班级",
+      step1Desc: "获取唯一的班级代码",
+      step2Title: "创建课堂材料",
+      step2Desc: "创建作业、测验、教案和日程",
+      step3Title: "邀请学生",
+      step3Desc: "学生使用班级代码加入班级",
+      measurableResults: "可衡量的结果",
+      measurableResultsDesc: "在1周内改变您的教学效率和学生成果。",
+      teacherTimeSavings: "教师时间节省提升",
+      teacherSatisfaction: "教师满意度",
+      lessonPrepReduction: "课程准备时间减少",
+      studentEngagement: "学生参与度提升",
+      gradingSpeedup: "评分加速",
+      personalizationAccuracy: "个性化准确度",
+      estimatesDisclaimer: "* 显示的是估计值；实际结果可能有所不同。",
+      privacySecurity: "设计中的隐私与安全",
+      privacySecurityDesc: "Schoolace的创新始于安全、隐私、保护和信任。",
+      privacyFirstTitle: "隐私优先",
+      privacyFirstDesc: "我们从不出售数据或显示广告。您的信息保持私密、受保护，仅用于增强您的学习体验。",
+      enterpriseSecurityTitle: "企业级安全",
+      enterpriseSecurityDesc: "所有数据在传输和静止状态下都已加密，使用现代身份验证和访问控制进行保护。ACE遵循行业标准的安全最佳实践。",
+      safeAITitle: "安全AI",
+      safeAIDesc: "配备严格的护栏和道德保障，ACE确保负责任的AI使用，没有学生分析或偏见放大。",
+      transparencyTitle: "透明度",
+      transparencyDesc: "您保持控制。清晰的仪表板和政策显示数据如何使用、存储和删除。没有黑盒子，没有隐藏跟踪。",
+      ferpaCompliant: "符合FERPA",
+      coppaCompliant: "符合COPPA",
+      // Teacher Features
+      intelligentGrading: "智能评分",
+      intelligentGradingDesc: "ACE提供即时反馈，精确处理多个提交。",
+      interactiveQuizzes: "互动测验和投票",
+      interactiveQuizzesDesc: "创建具有实时结果和分析的引人入胜的评估。",
+      dynamicAssignments: "动态作业",
+      dynamicAssignmentsDesc: "简化作业创建并跟踪所有班级的提交情况。",
+      smartScheduling: "智能调度",
+      smartSchedulingDesc: "自动更新截止日期和事件的动态时间表。",
+      realTimeProgress: "实时进度",
+      realTimeProgressDesc: "实时跟踪每个学生的进度，并在最重要的时候获得行动建议。",
+      proactiveAIAgent: "主动AI代理",
+      proactiveAIAgentDesc: "ACE自动化繁重的工作，让您有时间教学和启发。",
+      // Student Features
+      individualizedStudyCompanion: "个性化学习伙伴",
+      individualizedStudyCompanionDesc: "ACE适应您的学习风格，与您一起成长，塑造独特的学习个性。",
+      aceModels: "ACE模型",
+      aceModelsDesc: "一个私人的、个性化的模型，从年级到年级与您一起发展，成为真正的长期学习伙伴。",
+      longitudinalMemory: "纵向记忆",
+      longitudinalMemoryDesc: "ACE随时间跟踪您的学习，发现模式、差距和优势，以便以您需要的方式教您。",
+      checkYourUnderstanding: "检验你的理解",
+      checkYourUnderstandingDesc: "通过互动测验和即时反馈测试您的知识。",
+      wellnessTools: "健康工具",
+      wellnessToolsDesc: "获取正念练习和学习休息提醒以保持平衡。",
+      // AI Toolkit
+      worksheetGeneration: "工作表生成",
+      rubricCreation: "评分标准创建",
+      quizGeneration: "测验生成",
+      reportCardComments: "成绩报告评语",
+      lessonPlanning: "课程规划",
+      iepAssistance: "IEP协助",
+      emailDrafting: "邮件起草",
+      reportContent: "报告内容",
+      lovedByTeachersStudents: "受教师和学生喜爱",
+      lovedByDesc: "来自正在用Schoolace改变课堂的教育者和学习者的真实故事。",
+      choosePlan: "选择您的计划",
+      choosePlanDesc: "免费开始或升级到Pro功能。",
+      freePlan: "免费",
+      proPlan: "专业版",
+      schoolPlan: "学校版",
+      freePrice: "$0 /月",
+      proPrice: "$9 /学生/月，按年计费",
+      schoolPrice: "联系获取价格",
+      freeFeature1: "1个班级",
+      freeFeature2: "最多30名学生",
+      freeFeature3: "有限的ACE AI功能",
+      freeFeature4: "社区支持",
+      proFeature1: "完整的ACE AI功能和代理",
+      proFeature2: "个性化学习",
+      proFeature3: "电子邮件支持",
+      proFeature4: "社区支持",
+      schoolFeature1: "完整的ACE AI功能和代理",
+      schoolFeature2: "个性化学习",
+      schoolFeature3: "电子邮件支持",
+      schoolFeature4: "社区支持",
+      schoolFeature5: "自定义学校域名",
+      schoolFeature6: "管理员仪表板",
+      schoolFeature7: "优先支持和培训",
+      startForFree: "免费开始",
+      getStarted: "开始使用",
+      contactSales: "联系销售",
+      mostPopular: "最受欢迎",
+      getInTouch: "联系我们",
+      getInTouchDesc: "有问题吗？我们很乐意听到您的声音。给我们发送消息，我们将在2个工作日内回复。",
+      contactName: "姓名 *",
+      contactEmail: "邮箱 *",
+      contactSubject: "主题",
+      contactMessage: "消息 *",
+      yourName: "您的姓名",
+      yourEmail: "您的@邮箱.com",
+      contactSubjectPlaceholder: "这是关于什么？",
+      contactMessagePlaceholder: "告诉我们更多...",
+      sendMessage: "发送消息",
+      sending: "发送中...",
+      thankYouMessage: "谢谢！您的消息已成功发送。",
+      orEmailDirectly: "或直接发送电子邮件至，",
+      platformTitle: "平台",
+      companyTitle: "公司",
+      legalTitle: "法律",
+      termsOfService: "服务条款",
+      privacyPolicy: "隐私政策",
+      allSystemsOperational: "所有系统正常运行",
+      copyright: "Schoolace. 保留所有权利。",
+      // Teacher Features
+      intelligentGrading: "智能评分",
+      intelligentGradingDesc: "ACE提供即时反馈，精确处理多个提交。",
+      interactiveQuizzes: "互动测验和投票",
+      interactiveQuizzesDesc: "创建具有实时结果和分析的引人入胜的评估。",
+      dynamicAssignments: "动态作业",
+      dynamicAssignmentsDesc: "简化作业创建并跟踪所有班级的提交情况。",
+      smartScheduling: "智能调度",
+      smartSchedulingDesc: "自动更新截止日期和事件的动态时间表。",
+      realTimeProgress: "实时进度",
+      realTimeProgressDesc: "实时跟踪每个学生的进度，并在最重要的时候获得行动建议。",
+      proactiveAIAgent: "主动AI代理",
+      proactiveAIAgentDesc: "ACE自动化繁重的工作，让您有时间教学和启发。",
+      // Student Features
+      individualizedStudyCompanion: "个性化学习伙伴",
+      individualizedStudyCompanionDesc: "ACE适应您的学习风格，与您一起成长，塑造独特的学习个性。",
+      aceModels: "ACE模型",
+      aceModelsDesc: "一个私人的、个性化的模型，从年级到年级与您一起发展，成为真正的长期学习伙伴。",
+      longitudinalMemory: "纵向记忆",
+      longitudinalMemoryDesc: "ACE随时间跟踪您的学习，发现模式、差距和优势，以便以您需要的方式教您。",
+      checkYourUnderstanding: "检验你的理解",
+      checkYourUnderstandingDesc: "通过互动测验和即时反馈测试您的知识。",
+      wellnessTools: "健康工具",
+      wellnessToolsDesc: "获取正念练习和学习休息提醒以保持平衡。",
+      // Testimonials
+      testimonial1: "使用Schoolace后，我的代数成绩从80%提高到了90%。它以教科书从未做到的方式分解了问题。",
+      testimonial2: "在学校让我使用的所有平台中，Schoolace是帮助我学习最有效的。",
+      testimonial3: "终于有了一个可靠、简洁且有效的平台，可以在一个地方处理所有与学校相关的活动。",
+      testimonial4: "作为一名在中学课堂上面对生成式AI的教育工作者，我很感激有一个工具可以提高评分和反馈的效率。我不断惊讶于Aiden如何响应更新请求和改进；我期待着我们的合作和他光明的未来。",
+      testimonial5: "Schoolace帮助我更高效地完成任务。我可以向个性化学习AI询问有关作业的问题，它会丰富我的学习。",
+      testimonial6: "Schoolace让作业变得容易多了。如果我卡住了，它会一步一步分解，并反问我问题，这样我真的能理解，而不仅仅是给我答案。",
+      testimonial7: "生物曾经让我困惑，但Schoolace清楚地解释了一切，现在我真正理解了概念，可以在课堂上玩得开心。",
+      testimonial8: "Schoolace帮助我完成写邮件和总结文章等耗时的任务，并让我有很多时间去做我热爱的事情。",
+      testimonial9: "Schoolace的AI模型太棒了。每一个都是专门化的，所以无论我是在编程、学习STEM还是探索新概念，都能得到精确的帮助。感觉就像每一科都有专家指导。",
+      testimonial10: "通过Schoolace拥有个性化的AI模型是一个改变游戏规则的体验。它会根据我的学习习惯进行微调，并提供确实能帮助我每次进步的建议。",
+      testimonial11: "Schoolace彻底改变了我的学习和学校管理方式。个性化的反馈确实帮助我进步，而且它节省了大量时间，使我可以专注于理解而不是忙碌的工作。感觉这个平台就是为我量身定做的。",
+      testimonial12: "Schoolace感觉就像是一个真正了解我的私人导师。我喜欢它可以访问我所有的作业和测验提交，所以我可以询问我做过的任何事情，并获得清晰、个性化的解释。",
+      testimonial13: "让Schoolace与众不同的是它了解我完整的学习历史。因为它能访问我所有的作业和测验，我可以问它关于过去工作的任何问题，并获得对我真正相关的反馈。",
+      testimonial14: "Schoolace之所以脱颖而出，是因为它直接连接到我的作业和学习历史。它不是给出通用的答案，而是基于我的实际工作提供帮助，这让学习变得更高效，压力更小。",
+      testimonial15: "Schoolace让复习和改进变得容易，因为它记住了我所有的作业和反馈。我可以询问我提交过的任何内容，这帮助我更快地理解概念并避免重复错误。",
+      testimonial16: "Schoolace让学习STEM和编程变得真正有趣。它引导我通过艰难的概念，并帮助我一步步构建项目，所以我对尝试新事物充满信心。",
+    },
+    // Common
+    common: {
+      loading: "加载中...",
+      save: "保存",
+      cancel: "取消",
+      delete: "删除",
+      edit: "编辑",
+      create: "创建",
+      update: "更新",
+      close: "关闭",
+      back: "返回",
+      next: "下一步",
+      done: "完成",
+      search: "搜索",
+      filter: "筛选",
+      sort: "排序",
+      refresh: "刷新",
+      settings: "设置",
+      logout: "登出",
+      yes: "是",
+      no: "否",
+      confirm: "确认",
+      success: "成功",
+      error: "错误",
+      warning: "警告",
+      info: "信息",
+      poweredByACE: "由ACE驱动",
+    },
+    classSetup: {
+      welcomeTeacher: "欢迎，老师！",
+      createNewClass: "创建新班级",
+      setupFirstClassroom: "让我们设置您的第一个教室",
+      createAnotherClass: "创建另一个班级以组织更多学生和作业。",
+      createClassPrompt: "创建一个班级以招收学生和发布作业。",
+      createClass: "创建班级",
+      className: "班级名称",
+      classNamePlaceholder: "例如，代数1，第3节",
+      descriptionOptional: "描述（可选）",
+      descriptionPlaceholder: "您班级的简要描述...",
+      cancel: "取消",
+      creating: "创建中...",
+    },
+    // Roles
+    roles: {
+      teacher: "教师",
+      student: "学生",
+      admin: "管理员",
+    },
+    // Time
+    time: {
+      today: "今天",
+      yesterday: "昨天",
+      tomorrow: "明天",
+      week: "周",
+      month: "月",
+    },
+    // AI Personal Agent
+    aiAgent: {
+      title: "AI个人助理",
+      subtitle: "您在Schoolace的智能助手",
+      closeAgent: "关闭助理",
+      loading: "请稍候，正在加载您的内容",
+      processing: "处理中...",
+      accessingData: "正在访问所有班级数据...",
+      teacherPlaceholder: "让我在您的所有班级中做任何事情... 例如，'向我所有的班级发送消息，说作业明天交！'",
+      studentPlaceholder: "问我任何问题... 例如，'把我的论文提交到英语作业' 或 '显示我的成绩'",
+      fileReady: "文件就绪：",
+      uploadFile: "上传文件",
+      greeting: "你好 {name}！我是你的AI个人助理。你想做什么？",
+    },
+    // Ace Spaces
+    aceSpaces: {
+      title: "Ace 空间",
+      subtitle: "在共享群聊中与同学和 Ace AI 协作。",
+      joinWithCode: "使用代码加入",
+      createSpace: "创建空间",
+      joinSpace: "加入空间",
+      enterCode: "输入代码",
+      joinDesc: "输入同学分享的6位字符代码。",
+      createNewSpace: "创建新空间",
+      createDesc: "为您的项目或学习小组开始新的群聊。",
+      spaceName: "空间名称",
+      spaceNamePlaceholder: "例如：科学项目组",
+      descOptional: "描述（可选）",
+      whatsThisFor: "这个空间是做什么的？",
+      noSpaces: "暂无空间",
+      noSpacesDesc: "创建一个空间开始与朋友和 Ace AI 聊天，或向同学索要加入代码。",
+      createFirst: "创建您的第一个空间",
+      openChat: "打开聊天",
+      members: "成员",
+      addMember: "添加成员",
+      addMemberDesc: "输入您想添加到此空间的用户电子邮件地址。",
+      copyCode: "复制加入代码",
+      leaveSpace: "离开空间",
+      leaveConfirm: "确定要离开 \"{name}\" 吗？",
+      people: "人员",
+      files: "文件",
+      notes: "笔记",
+      sharedFiles: "共享文件",
+      noFiles: "暂无共享文件",
+      sharedNotes: "共享笔记",
+      addNote: "添加笔记",
+      createNoteDesc: "创建一条所有空间成员可见的笔记。",
+      saveNote: "保存笔记",
+      noteTitle: "标题",
+      noteTitlePlaceholder: "例如：项目截止日期",
+      noteContent: "内容",
+      noteContentPlaceholder: "在此输入您的笔记...",
+      noNotes: "暂无笔记。添加一条！",
+      chatWithGroup: "与群组聊天",
+      chatWithAI: "与 AI 聊天",
+      askAce: "问 Ace AI 任何问题...",
+      messageGroup: "给群组发消息...",
+      translate: "翻译",
+      original: "原文",
+      alwaysOnline: "一直在线",
+      admin: "管理员",
+      bot: "机器人",
+      member: "成员",
+      deleteNoteConfirm: "确定要删除这条笔记吗？",
+      uploadedFile: "上传了一个文件",
+      invited: "已添加！",
+      codeCopied: "加入代码已复制！",
+      translating: "翻译中...",
+    },
+    // Ace Spaces
+    aceSpaces: {
+      title: "Ace 空间",
+      subtitle: "在共享群聊中与同学和 Ace AI 协作。",
+      joinWithCode: "使用代码加入",
+      createSpace: "创建空间",
+      joinSpace: "加入空间",
+      enterCode: "输入代码",
+      joinDesc: "输入同学分享的6位字符代码。",
+      createNewSpace: "创建新空间",
+      createDesc: "为您的项目或学习小组开始新的群聊。",
+      spaceName: "空间名称",
+      spaceNamePlaceholder: "例如：科学项目组",
+      descOptional: "描述（可选）",
+      whatsThisFor: "这个空间是做什么的？",
+      noSpaces: "暂无空间",
+      noSpacesDesc: "创建一个空间开始与朋友和 Ace AI 聊天，或向同学索要加入代码。",
+      createFirst: "创建您的第一个空间",
+      openChat: "打开聊天",
+      members: "成员",
+      addMember: "添加成员",
+      addMemberDesc: "输入您想添加到此空间的用户电子邮件地址。",
+      copyCode: "复制加入代码",
+      leaveSpace: "离开空间",
+      leaveConfirm: "确定要离开 \"{name}\" 吗？",
+      people: "人员",
+      files: "文件",
+      notes: "笔记",
+      sharedFiles: "共享文件",
+      noFiles: "暂无共享文件",
+      sharedNotes: "共享笔记",
+      addNote: "添加笔记",
+      createNoteDesc: "创建一条所有空间成员可见的笔记。",
+      saveNote: "保存笔记",
+      noteTitle: "标题",
+      noteTitlePlaceholder: "例如：项目截止日期",
+      noteContent: "内容",
+      noteContentPlaceholder: "在此输入您的笔记...",
+      noNotes: "暂无笔记。添加一条！",
+      chatWithGroup: "与群组聊天",
+      chatWithAI: "与 AI 聊天",
+      askAce: "问 Ace AI 任何问题...",
+      messageGroup: "给群组发消息...",
+      translate: "翻译",
+      original: "原文",
+      alwaysOnline: "一直在线",
+      admin: "管理员",
+      bot: "机器人",
+      member: "成员",
+      deleteNoteConfirm: "确定要删除这条笔记吗？",
+      uploadedFile: "上传了一个文件",
+      invited: "已添加！",
+      codeCopied: "加入代码已复制！",
+      translating: "翻译中...",
+    },
+    // PowerSchool
+    powerSchool: {
+      title: "PowerSchool 集成",
+      comingSoon: "集成即将推出！",
+      description: "我们正在努力为您带来无缝的 PowerSchool 集成。很快，您将能够通过这些强大的功能来增强您的工作流程。",
+      syncGradesTitle: "即时同步成绩",
+      syncGradesDescription: "只需单击一下，即可将 Schoolace 的作业成绩直接推送到您的 PowerSchool 成绩册。",
+      automateTitle: "自动化成绩录入",
+      automateDescription: "让我们的 AI 处理评分，然后自动将结果同步到 PowerSchool，为您节省数小时的手动数据输入时间。",
+    },
+  },
 
-const ShootingStars = () => {
-  const { scrollYProgress } = useScroll();
-  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.9, 1], [1, 0, 0, 1]);
-  const stars = Array.from({ length: 0 }, (_, i) =>
-    <motion.div
-      key={i}
-      className="absolute w-1 h-1 bg-white rounded-full shadow-[0_0_15px_5px_white]"
-      initial={{
-        x: Math.random() * -200,
-        y: Math.random() * window.innerHeight * 0.8,
-        opacity: 0,
-        scale: 0
-      }}
-      animate={{
-        x: window.innerWidth + 200,
-        y: Math.random() * window.innerHeight * 0.8 + 100,
-        opacity: [0, 1, 1, 0],
-        scale: [0, 1, 1, 0]
-      }}
-      transition={{
-        duration: Math.random() * 2 + 3,
-        delay: Math.random() * 5 + i * 0.3,
-        repeat: Infinity,
-        repeatType: 'loop',
-        ease: 'linear'
-      }} />);
-  return (
-    <motion.div
-      className="fixed inset-0 z-10 pointer-events-none"
-      style={{ opacity }}>
-      {stars}
-    </motion.div>);
+  KO: {
+    // Navigation
+    nav: {
+      dashboard: "대시보드",
+      scheduler: "시간표",
+      aiAgent: "AI 에이전트",
+      chat: "채팅",
+      classTools: "수업 도구",
+      lessonPlans: "수업 계획",
+      aiTools: "AI 도구",
+      powerSchool: "PowerSchool",
+      aceAI: "ACE AI",
+    },
+    // Dashboard
+    dashboard: {
+      title: "대시보드",
+      welcome: "환영합니다",
+      yourClasses: "내 수업",
+      createClass: "수업 만들기",
+      joinClass: "수업 참가",
+      noClasses: "수업을 찾을 수 없습니다",
+      assignments: "과제",
+      createAssignment: "과제 만들기",
+      noAssignments: "아직 과제가 없습니다",
+      dueDate: "마감일",
+      submissions: "제출",
+      graded: "채점됨",
+      pending: "대기 중",
+      viewAll: "모두 보기",
+      recentActivity: "최근 활동",
+      classCode: "수업 코드",
+      students: "학생",
+      activeAssignments: "진행 중인 과제",
+      teachingHub: "교육 허브",
+      switchClass: "수업 변경",
+      joinAnotherClass: "다른 수업 참가",
+      loadingClassroom: "교실을 불러오는 중...",
+      feedback: "피드백",
+      logout: "로그아웃",
+      teacherDashboard: "교사 대시보드",
+      teacherDescription: "과제를 만들고 학생 제출물을 검토하세요",
+      createNewClass: "새 수업 만들기",
+      backToDashboard: "대시보드로 돌아가기",
+      backToAssignments: "과제로 돌아가기",
+      yourAssignments: "내 과제",
+      noAssignmentsYet: "아직 만들어진 과제가 없습니다",
+      createFirstAssignment: "첫 번째 과제를 만들어 시작하세요. 과제를 기다리고 계시다면 이 탭을 닫고 다시 로그인하세요.",
+      studentPortal: "학생 포털",
+      studentDescription: "과제를 보고 과제물을 제출하세요",
+    },
+    // Class Tools
+    classTools: {
+      title: "수업 도구",
+      subtitle: "교실을 위한 대화형 도구",
+      selectClass: "수업 선택",
+      chooseClass: "수업을 선택하세요",
+      schedule: "일정",
+      quizzes: "퀴즈",
+      polls: "투표",
+      personalizedLearning: "맞춤형 학습",
+      noClasses: "수업을 찾을 수 없습니다.",
+      goToDashboard: "대시보드로 이동하여 수업을 만들거나 참가하세요.",
+      classSchedule: "수업 일정",
+      weekOf: "주",
+      today: "오늘",
+      addEvent: "이벤트 추가",
+      deleteEventConfirm: "이 이벤트를 삭제하시겠습니까?",
+      createQuiz: "퀴즈 만들기",
+      editQuiz: "퀴즈 편집",
+      noQuizzesAvailable: "현재 이용 가능한 퀴즈가 없습니다. 퀴즈를 기다리고 계시다면 페이지를 새로고침하거나 로그아웃하세요.",
+      draft: "초안",
+      active: "활성",
+      closed: "종료됨",
+      activate: "활성화",
+      lock: "잠금",
+      reDraft: "초안으로",
+      showResults: "결과 표시",
+      hideResults: "결과 숨기기",
+      duplicate: "복제",
+      edit: "편집",
+      results: "결과",
+      delete: "삭제",
+      takeQuiz: "퀴즈 풀기",
+      viewResults: "결과 보기",
+      completed: "완료됨",
+      duplicateQuiz: "퀴즈 복제",
+      duplicateQuizDesc: "\"{title}\"을(를) 다른 수업으로 복사합니다. 새 퀴즈는 초안으로 저장됩니다.",
+      destinationClass: "대상 수업",
+      selectClassToCopy: "복사할 수업 선택",
+      cancel: "취소",
+      duplicating: "복제 중...",
+      confirmAndCopy: "확인 및 복사",
+      deleteQuizConfirm: "\"{title}\"을(를) 삭제하시겠습니까? 모든 질문이 삭제되며 취소할 수 없습니다.",
+      quizCopied: "퀴즈 \"{title}\"이(가) 성공적으로 복사되었습니다! 대상 수업에 초안으로 저장되었습니다.",
+      quizDeleted: "퀴즈 \"{title}\"이(가) 삭제되었습니다.",
+      quizTitle: "제목",
+      quizTitlePlaceholder: "퀴즈 제목",
+      quizDescription: "설명",
+      quizDescriptionPlaceholder: "퀴즈 설명 (선택사항)",
+      timeLimit: "시간 제한",
+      unlimitedTime: "무제한 시간",
+      setTimeLimit: "시간 제한 설정 (분):",
+      afterCompletion: "완료 후",
+      allowStudentsViewResults: "학생들이 성적과 답안을 볼 수 있도록 허용",
+      aiQuizGenerator: "AI 퀴즈 생성기",
+      topic: "주제",
+      websiteUrl: "웹사이트 URL",
+      fileUpload: "파일 업로드",
+      enterTopic: "주제 입력",
+      enterUrl: "URL 입력",
+      numberOfQuestions: "질문 수",
+      difficulty: "난이도",
+      easy: "쉬움",
+      medium: "보통",
+      hard: "어려움",
+      questionType: "질문 유형",
+      multipleChoice: "객관식",
+      trueFalse: "참/거짓",
+      generateQuestions: "질문 생성",
+      generating: "생성 중...",
+      question: "질문",
+      remove: "제거",
+      enterQuestion: "여기에 질문을 입력하세요...",
+      answerOptions: "답안 옵션",
+      correctAnswer: "정답",
+      addQuestion: "질문 추가",
+      saveQuiz: "퀴즈 저장",
+      createPoll: "투표 만들기",
+      noPolls: "아직 투표가 생성되지 않았습니다.",
+      noPollsStudent: "이용 가능한 활성 투표가 없습니다. 투표를 기다리고 계시다면 페이지를 새로고침하거나 로그아웃하세요.",
+      createNewPoll: "새 투표 만들기",
+      pollQuestion: "투표 질문",
+      options: "옵션",
+      addOption: "옵션 추가",
+      closePoll: "투표 종료",
+      reopenPoll: "투표 다시 열기",
+      totalVotes: "총 투표 수",
+      yourVote: "내 투표",
+      voting: "투표 중...",
+      votes: "표",
+    },
+    // Lesson Plans
+    lessonPlans: {
+      title: "수업 계획",
+      createLesson: "수업 만들기",
+      searchLessons: "수업 검색...",
+      noLessons: "아직 수업 계획이 없습니다",
+      createFirst: "첫 번째 수업 계획을 만들어 시작하세요.",
+      objectives: "목표",
+      activities: "활동",
+      homework: "숙제",
+      resources: "자료",
+      released: "공개됨",
+      unreleased: "비공개",
+      noClassesFound: "수업을 찾을 수 없습니다. 먼저 수업을 만들거나 참가하세요.",
+      pleaseLogin: "수업 계획에 액세스하려면 로그인하세요.",
+      editLessonPlan: "수업 계획 편집",
+      createNewLessonPlan: "새 수업 계획 만들기",
+      class: "수업",
+      importFromText: "텍스트에서 가져오기",
+      aiAssistant: "AI 도우미",
+      cancel: "취소",
+      saveLesson: "수업 저장",
+      saving: "저장 중...",
+      importSuccessful: "가져오기 성공!",
+      lessonImported: "수업 계획이 편집기 하단의 사전 제작된 수업 계획 섹션에 가져와졌습니다!",
+      gotIt: "알겠습니다!",
+      aiLessonGenerator: "AI 수업 생성기",
+      aiPlaceholder: "수업을 설명하세요... 예: '8학년 과학을 위한 광합성 수업을 실습 실험과 함께 만들어주세요' 또는 '실생활 예시가 있는 분수에 대한 흥미로운 수학 수업 만들기'",
+      aiNote: "AI가 교육 링크를 생성합니다. 게시하기 전에 링크가 정확한지 확인하세요.",
+      generateLesson: "수업 생성",
+      generating: "생성 중...",
+      importLessonFromText: "텍스트에서 수업 계획 가져오기",
+      importDesc: "기존 수업 계획 텍스트를 아래에 붙여넣으면 AI가 구성을 도와드립니다.",
+      pasteHere: "여기에 수업 계획을 붙여넣으세요...",
+      useLessonAsIs: "수업 계획 그대로 사용",
+      processing: "처리 중...",
+      importStructure: "가져오기 및 구조화",
+      beta: "베타",
+      basicInformation: "기본 정보",
+      lessonTitle: "수업 제목",
+      enterLessonTitle: "수업 제목 입력...",
+      lessonDate: "수업 날짜",
+      lessonIsReleased: "수업이 공개됨",
+      lessonIsUnreleased: "수업이 비공개",
+      studentsCanView: "학생들이 이 수업 계획을 볼 수 있습니다",
+      studentsCannotView: "학생들이 아직 이 수업 계획을 볼 수 없습니다",
+      learningObjectives: "학습 목표",
+      learningObjective: "학습 목표",
+      addObjective: "목표 추가",
+      hookOpeningActivity: "도입/시작 활동",
+      hookPlaceholder: "학생들의 관심을 끌 매력적인 시작 활동을 설명하세요...",
+      classroomActivities: "교실 활동",
+      activityTitle: "활동 제목...",
+      duration: "시간 (분)",
+      minutes: "분",
+      describeActivity: "활동 설명...",
+      materialsNeeded: "필요한 재료",
+      material: "재료...",
+      addMaterial: "재료 추가",
+      addActivity: "활동 추가",
+      homeworkAssignment: "숙제",
+      addHomework: "숙제 추가",
+      resourceTitle: "자료 제목...",
+      urlPlaceholder: "URL (웹사이트, 비디오용)...",
+      or: "또는",
+      fileUploaded: "파일 업로드됨:",
+      type: "유형",
+      uploadFile: "파일 업로드",
+      uploading: "업로드 중...",
+      website: "웹사이트",
+      video: "비디오",
+      document: "문서",
+      book: "책",
+      file: "파일",
+      image: "이미지",
+      addResource: "자료 추가",
+      assessment: "평가",
+      assessmentType: "평가 유형",
+      formative: "형성 평가",
+      summative: "총괄 평가",
+      peerAssessment: "동료 평가",
+      selfAssessment: "자기 평가",
+      describeAssessment: "평가 방법 설명...",
+      rubric: "평가 기준 또는 채점 기준...",
+      preMadeLessonPlan: "사전 제작 수업 계획/추가 정보",
+      additionalInfoPlaceholder: "학생/학부모를 위한 추가 정보 추가 (예: 상담 시간, 연락처 정보, 특별 지침 등)...",
+      differentiationStrategies: "차별화 전략",
+      differentiationStrategy: "차별화 전략",
+      addStrategy: "전략 추가",
+      back: "뒤로",
+      unrelease: "비공개로 전환",
+      release: "공개",
+      duplicate: "복제",
+      edit: "편집",
+      studentsWillBeAbleTo: "학생들은 다음을 할 수 있습니다:",
+      descriptionLabel: "설명:",
+      rubricLabel: "평가 기준:",
+      teacherReflectionNotes: "교사 반성 노트",
+      duplicateLessonPlan: "수업 계획 복제",
+      selectClassToCopy: "\"{title}\"을(를) 복사할 수업 선택:",
+      chooseDestinationClass: "대상 수업 선택",
+      duplicating: "복제 중...",
+      previous: "이전",
+      weekView: "주간 보기",
+      next: "다음",
+      releasedStudentsCanSee: "공개됨 (학생들이 볼 수 있음)",
+      unreleasedStudentsCannotSee: "비공개 (학생들이 볼 수 없음)",
+      noLessonsForDay: "수업 없음",
+      lessonsThisWeek: "이번 주 수업",
+      releasedCount: "공개됨",
+      unreleasedCount: "비공개",
+      min: "분",
+      visit: "방문",
+      download: "다운로드",
+      createFirstLesson: "첫 번째 수업 만들기",
+    },
+    // AI Tools
+    aiTools: {
+      title: "AI 도구",
+      subtitle: "교육과 학습을 위한 AI 기반 도우미.",
+      generate: "생성",
+      generating: "생성 중...",
+      clear: "지우기",
+      copy: "복사",
+      download: "다운로드",
+      pinTool: "도구 고정",
+      unpinTool: "고정 해제",
+      teacherTools: "교사 도구",
+      studentTools: "학생 도구",
+      output: "출력",
+      outputPlaceholder: "생성된 콘텐츠가 여기에 표시됩니다.",
+      select: "선택",
+      error: "오류",
+      errorRetry: "계속되면 몇 분 후 다시 시도해 주세요.",
+      translating: "번역 중...",
+      locked: "AI 도구 잠김",
+      lockedDescription: "강력한 교육 및 학습용 AI 도구 모음에 액세스하려면 로그인해야 합니다.",
+      signInToContinue: "계속하려면 로그인",
+      loadingAITools: "AI 도구 로딩 중...",
+      emailGenerator: "이메일 생성기",
+      emailGeneratorDesc: "학부모나 학생에게 보내는 전문 이메일을 빠르게 작성하세요.",
+      iepAccommodations: "IEP 및 적응 계획 생성기",
+      iepAccommodationsDesc: "학생을 위한 맞춤형 적응 조치 및 IEP 목표를 생성합니다.",
+      rubricGenerator: "루브릭 생성기",
+      rubricGeneratorDesc: "모든 과제에 대한 종합적인 채점 기준을 빠르게 생성합니다.",
+      questionGenerator: "평가 문제 생성기",
+      questionGeneratorDesc: "주제, URL, 문서 또는 YouTube 자막에서 문제를 생성합니다.",
+      worksheetGenerator: "학습지 생성기",
+      worksheetGeneratorDesc: "주제, URL, 문서 또는 자막에서 전문적인 학습지를 생성합니다.",
+      reportCardComments: "성적표 코멘트",
+      reportCardCommentsDesc: "개인화되고 건설적인 성적표 코멘트를 생성합니다.",
+      assignmentScaffolder: "과제 차별화",
+      assignmentScaffolderDesc: "다양한 수준에 맞는 차별화된 버전의 과제를 만듭니다.",
+      teacherWellness: "교사 웰빙 지원",
+      teacherWellnessDesc: "자신의 안녕을 돌아보고 스트레스 관리 전략을 찾는 공간입니다.",
+      aiDetector: "AI 콘텐츠 감지기",
+      aiDetectorDesc: "텍스트나 파일을 분석하여 AI 생성 콘텐츠를 감지합니다.",
+      writingFeedback: "글쓰기 피드백 도우미",
+      writingFeedbackDesc: "글쓰기를 개선하는 즉각적이고 건설적인 피드백을 받으세요.",
+      textSummarizer: "텍스트 요약기",
+      textSummarizerDesc: "긴 기사나 텍스트를 핵심 포인트로 요약합니다.",
+      checkUnderstanding: "이해도 확인",
+      checkUnderstandingDesc: "주제, URL, 문서 또는 자막에서 문제를 생성합니다.",
+      conceptExplainer: "개념 설명자",
+      conceptExplainerDesc: "복잡한 주제에 대한 간단한 설명을 받으세요.",
+      studentEmailGenerator: "이메일 생성기",
+      studentEmailGeneratorDesc: "선생님께 보내는 정중하고 명확한 이메일을 작성합니다.",
+      studentWellness: "학생 웰빙 지원",
+      studentWellnessDesc: "자신의 감정을 확인하는 안전한 공간입니다.",
+      emailTo: "받는 사람",
+      studentName: "학생 이름",
+      emailSubject: "이메일 제목",
+      keyPointsToInclude: "포함할 핵심 포인트",
+      tone: "어조",
+      gradeLevel: "학년",
+      areaOfNeed: "필요 영역",
+      describeStudentChallenges: "학생의 구체적인 어려움 설명",
+      whatToGenerate: "무엇을 생성하시겠습니까?",
+      assignmentTitle: "과제 제목",
+      gradingCriteria: "채점 기준 (한 줄에 하나씩)",
+      topicIfNoContent: "주제 (다른 콘텐츠가 없는 경우)",
+      websiteUrlOptional: "웹사이트 URL (선택 사항)",
+      youtubeTranscript: "YouTube 비디오 자막 (선택 사항)",
+      uploadDocumentOptional: "문서 업로드 (선택 사항)",
+      questionType: "문제 유형",
+      numberOfQuestions: "문제 수",
+      difficulty: "난이도",
+      worksheetInstructions: "학습지 레이아웃 및 지침",
+      studentStrengths: "학생 강점",
+      areasForImprovement: "개선이 필요한 영역",
+      originalAssignment: "원본 과제",
+      subject: "과목",
+      teacherLastName: "선생님 성",
+      whatYouNeedToSay: "전달할 내용",
+      textToAnalyze: "분석할 텍스트",
+      orUploadDocument: "또는 문서 업로드",
+      pasteTextHere: "여기에 텍스트를 붙여넣으세요",
+      textToSummarize: "요약할 텍스트를 붙여넣으세요",
+      summaryLength: "요약 길이",
+      conceptToExplain: "설명할 개념",
+      explainLikeIm: "...처럼 설명해 주세요",
+      howAreYouFeelingTeacher: "안녕하세요! 오늘 교육자로서 기분이 어떠세요?",
+      howAreYouFeelingStudent: "안녕 👋 오늘 기분이 어때요?",
+      aParentGuardian: "학부모/보호자",
+      aStudent: "학생",
+      formalEncouraging: "공식적이고 격려하는",
+      positiveCasual: "긍정적이고 캐주얼한",
+      directInformative: "직접적이고 정보가 풍부한",
+      fullReport: "전체 보고서",
+      listOfAccommodations: "적응 조치 목록",
+      smartGoal: "SMART 목표",
+      emailToParent: "학부모 이메일",
+      multipleChoice: "객관식",
+      trueFalse: "참/거짓",
+      shortAnswer: "단답형",
+      easy: "쉬움",
+      medium: "보통",
+      hard: "어려움",
+      encouraging: "격려하는",
+      formal: "공식적",
+      direct: "직접적",
+      shortSentences: "짧게 (몇 문장)",
+      mediumParagraph: "중간 (한 단락)",
+      detailedBullets: "상세하게 (요점)",
+      a5thGrader: "5학년",
+      aHighSchoolStudent: "고등학생",
+      aCompleteBeginber: "완전 초보자",
+      kindergarten: "유치원",
+      grade1: "1학년",
+      grade2: "2학년",
+      grade3: "3학년",
+      grade4: "4학년",
+      grade5: "5학년",
+      grade6: "6학년",
+      grade7: "7학년",
+      grade8: "8학년",
+      grade9: "9학년",
+      grade10: "10학년",
+      grade11: "11학년",
+      grade12: "12학년",
+    },
+    // Personalized Learning
+    personalizedLearning: {
+      title: "학습 동반자",
+      subtitle: "AI 안내로 자신의 속도에 맞춰 개념을 마스터하세요.",
+      chatTutor: "채팅 튜터",
+      focusAreas: "집중 영역",
+      progressOverview: "진행 개요",
+      flashcards: "플래시카드",
+      practiceTest: "연습 시험",
+      studyGuide: "학습 가이드",
+      aiStudyTools: "AI 학습 도구",
+      generateContent: "콘텐츠 생성",
+      poweredByACEAI: "ACE AI 제공",
+      preparingExperience: "경험을 준비하는 중...",
+      gatheringData: "학습 데이터를 수집하는 중...",
+      chatWithAce: "Ace와 채팅",
+      yourPersonalTutor: "당신의 개인 AI 튜터",
+      learningMode: "학습 모드",
+      solutionMode: "해답 모드",
+      aceIsThinking: "Ace가 생각 중...",
+      submitQuiz: "퀴즈 제출",
+      uploadFile: "파일 업로드",
+      learningModeDesc: "답을 주지 않고 단계별로 안내해 주세요",
+      solutionModeDesc: "전체 해답과 답을 보여주세요",
+      inputPlaceholder: "질문하기, 대화형 퀴즈 풀기, 과제 제출 분석 요청, 또는 파일 업로드...",
+      aiDisclaimer: "AI 튜터는 실수할 수 있습니다. ACE AI 제공. 중요한 정보는 확인하세요.",
+      dropFilesHere: "여기에 파일을 놓으세요",
+      processingFile: "파일 처리 중...",
+      yourStrengths: "당신의 강점",
+      buildingStrengths: "강점 구축 중",
+      completeAssignments: "과제를 완료하면 마스터한 개념이 여기에 표시됩니다.",
+      areasToFocusOn: "집중해야 할 영역",
+      allLookingGreat: "모두 훌륭해요!",
+      noFocusAreas: "특별히 집중해야 할 영역이 없습니다. 훌륭한 작업을 계속하세요.",
+      introMessage: "안녕하세요 {name}! 저는 Ace, 당신의 개인 AI 튜터입니다. {focusText}\n\n오늘 무엇을 탐구하거나 공부하고 싶으세요? 주제를 더 깊이 파고들거나, 최근 과제나 퀴즈의 문제를 복습하거나, 파일을 업로드해서 도움을 받을 수 있어요!",
+      focusAreasIntro: "최근 연습이 필요한 영역은 {concepts}입니다.",
+      quizComplete: "퀴즈를 완료했습니다! {score}/{total} ({percentage}%)을 받았어요.",
+      questionsToWorkOn: "다음은 함께 공부할 수 있는 문제들입니다:",
+      whichToBreakDown: "어떤 것을 먼저 분석할까요?",
+      perfectScore: "만점! 이 개념을 마스터했어요. 🎉 다음엔 무엇을 공부할까요?",
+    },
+    // Chat
+    chat: {
+      title: "수업 채팅",
+      typeMessage: "메시지를 입력하세요...",
+      send: "보내기",
+      noMessages: "아직 메시지가 없습니다",
+      startConversation: "대화를 시작하세요!",
+      unavailable: "채팅 불가",
+      mustBeEnrolled: "채팅을 사용하려면 수업에 등록되어 있어야 합니다.",
+      chattingIn: "채팅 중인 수업",
+      switchClass: "수업 변경...",
+    },
+    // Quizzes
+    quizzes: {
+      title: "퀴즈",
+      createQuiz: "퀴즈 만들기",
+      takeQuiz: "퀴즈 풀기",
+      viewResults: "결과 보기",
+      timeLimit: "시간 제한",
+      minutes: "분",
+      questions: "문제",
+      score: "점수",
+      completed: "완료됨",
+      inProgress: "진행 중",
+      notStarted: "시작 안 함",
+    },
+    // Polls
+    polls: {
+      title: "투표",
+      createPoll: "투표 만들기",
+      vote: "투표하기",
+      results: "결과",
+      active: "진행 중",
+      closed: "종료됨",
+      totalVotes: "총 투표 수",
+    },
+    // Assignments
+    assignments: {
+      title: "과제",
+      submit: "제출",
+      submitted: "제출됨",
+      grade: "성적",
+      feedback: "피드백",
+      instructions: "지침",
+      attachments: "첨부파일",
+      answerKey: "정답",
+      aiGrading: "AI 채점",
+      releaseGrades: "성적 공개",
+      editAssignment: "과제 편집",
+      createNewAssignment: "새 과제 만들기",
+      assignmentTitle: "과제 제목",
+      assignmentTitlePlaceholder: "예: 기후 변화에 관한 에세이",
+      subject: "과목",
+      selectSubject: "과목 선택",
+      mathematics: "수학",
+      english: "영어",
+      science: "과학",
+      history: "역사",
+      art: "미술",
+      other: "기타",
+      description: "설명",
+      descriptionPlaceholder: "과제에 대한 간략한 설명...",
+      assignmentFiles: "과제 파일 (선택사항)",
+      addMoreFiles: "파일 추가",
+      gradingInstructions: "채점 지침",
+      gradingInstructionsPlaceholder: "AI 채점을 위한 상세 지침. 평가 기준, 주요 포인트, 채점 기준 포함...",
+      gradingInstructionsManualPlaceholder: "선택사항: 수동 채점 지침 또는 이 과제에 대한 메모...",
+      gradingInstructionsHelp: "AI가 제출물을 채점할 때 무엇을 확인해야 하는지 구체적으로 작성하세요.",
+      gradingInstructionsManualHelp: "AI 채점이 비활성화되면 이 지침은 선택사항입니다.",
+      maximumPoints: "최대 점수",
+      dueDate: "마감일",
+      selectDueDate: "마감일 선택",
+      openDateTime: "공개 날짜 및 시간 (선택사항)",
+      openDateHelp: "학생들에게 과제가 보이기 시작하는 시간",
+      closeDateTime: "마감 날짜 및 시간 (선택사항)",
+      closeDateHelp: "학생들에게 과제가 더 이상 보이지 않는 시간",
+      visibleToStudents: "학생에게 표시",
+      visible: "표시",
+      hidden: "숨김",
+      allowSubmissions: "학생 제출 허용",
+      allowSubmissionsYes: "학생들이 과제를 제출할 수 있습니다",
+      allowSubmissionsNo: "정보만 제공 - 제출 없음",
+      allowSubmissionsHelp: "비활성화하면 제출이나 채점 없이 정보 제공용 과제가 됩니다.",
+      aiGradingTitle: "AI 채점",
+      aiGradingDescription: "AI를 사용하여 자동으로 제출물 채점",
+      aiGradingEnabled: "AI가 자동으로 제출물을 채점합니다.",
+      uploadAnswerKey: "정답 업로드 (선택사항)",
+      changeAnswerKey: "정답 변경",
+      aiLeniency: "AI 관대함",
+      selectLeniency: "관대함 수준 선택",
+      strict: "엄격",
+      neutral: "보통",
+      lenient: "관대",
+      leniencyHelp: "AI가 채점 기준을 얼마나 엄격하게 따라야 하는지 선택하세요.",
+      answerKeyOptional: "정답 (선택사항)",
+      chooseFile: "파일 선택",
+      answerKeyHelp: "AI가 더 정확한 채점과 피드백을 제공하도록 정답을 업로드하세요.",
+      manualGradingNote: "이 과제의 모든 제출물을 직접 채점하게 됩니다.",
+      cancel: "취소",
+      creating: "생성 중...",
+      updating: "업데이트 중...",
+      createAssignmentBtn: "과제 만들기",
+      updateAssignment: "과제 업데이트",
+      hideFromStudents: "학생에게 숨기기",
+      showToStudents: "학생에게 표시",
+      reopenAssignment: "과제 다시 열기",
+      duplicateToAnotherClass: "다른 수업에 복제",
+      duplicateAssignment: "과제 복제",
+      selectDestinationClass: "복사할 수업 선택",
+      chooseDestinationClass: "대상 수업 선택",
+      duplicating: "복제 중...",
+      duplicate: "복제",
+      viewDetails: "세부정보 보기",
+      submission: "제출",
+      submissions: "제출",
+    },
+    // Landing Page
+    landing: {
+      signIn: "로그인",
+      forTeachers: "교사용",
+      forStudents: "학생용",
+      aiCapabilities: "AI 기능",
+      testimonials: "사용후기",
+      pricing: "가격",
+      contact: "문의하기",
+      heroTitle: "ACE AI로 강화된 교육.",
+      heroSubtitle: "{aceAI}로 구동되는 Schoolace는 투명하고 책임감 있는 AI 사용을 통해 선구적인 교육자를 지원하고 학생 학습을 강화합니다.",
+      heroTagline: "교사는 완전한 통제권을 유지하고 학생은 사고력을 소유합니다",
+      getStartedFree: "무료로 시작하기",
+      coPilotForTeachers: "교사를 위한 코파일럿",
+      coPilotDesc: "수업 계획, 콘텐츠 제작, 채점 및 피드백 제공에 걸리는 시간을 몇 분으로 단축하면서 교사가 완전한 통제권을 유지합니다.",
+      studyCompanionForStudents: "학생을 위한 학습 동반자",
+      studyCompanionDesc: "학습 스타일에 맞춰 적응하고 성공을 돕는 24/7 AI 동반자로 잠재력을 발휘하세요.",
+      productivityTools: "생산성 도구",
+      productivityToolsDesc: "교사와 학생을 위해 제작된 ACE는 모든 단계에서 학습하고 적응하며 함께 성장합니다.",
+      signInToDiscover: "로그인하여 더 많은 기능을 발견하세요",
+      teachersGetStarted: "교사 3단계 간단 시작",
+      teachersGetStartedDesc: "교실을 변화시키고 있는 선구적인 교육자들과 함께하세요.",
+      step1Title: "수업 만들기",
+      step1Desc: "고유한 수업 코드 받기",
+      step2Title: "수업 자료 만들기",
+      step2Desc: "과제, 퀴즈, 수업 계획 및 일정 만들기",
+      step3Title: "학생 초대",
+      step3Desc: "학생들이 수업 코드를 사용하여 수업에 참가",
+      measurableResults: "측정 가능한 결과",
+      measurableResultsDesc: "1주일 내에 교육 효율성과 학생 성과를 변화시키세요.",
+      teacherTimeSavings: "교사 시간 절약 개선",
+      teacherSatisfaction: "교사 만족도",
+      lessonPrepReduction: "수업 준비 시간 감소",
+      studentEngagement: "학생 참여도 향상",
+      gradingSpeedup: "채점 속도 향상",
+      personalizationAccuracy: "개인화 정확도",
+      estimatesDisclaimer: "* 표시된 추정치; 실제 결과는 다를 수 있습니다.",
+      privacySecurity: "설계된 개인정보 보호 및 보안",
+      privacySecurityDesc: "Schoolace의 혁신은 보안, 개인정보 보호, 안전 및 신뢰에서 시작됩니다.",
+      privacyFirstTitle: "개인정보 우선",
+      privacyFirstDesc: "우리는 절대 데이터를 판매하거나 광고를 표시하지 않습니다. 귀하의 정보는 비공개로 보호되며 학습 경험 향상을 위해서만 사용됩니다.",
+      enterpriseSecurityTitle: "엔터프라이즈급 보안",
+      enterpriseSecurityDesc: "모든 데이터는 전송 중 및 저장 시 암호화되며 최신 인증 및 액세스 제어로 보호됩니다. ACE는 업계 표준 보안 모범 사례를 따릅니다.",
+      safeAITitle: "안전한 AI",
+      safeAIDesc: "엄격한 가드레일과 윤리적 보호 장치로 구축된 ACE는 학생 프로파일링이나 편향 증폭 없이 책임감 있는 AI 사용을 보장합니다.",
+      transparencyTitle: "투명성",
+      transparencyDesc: "귀하가 통제권을 유지합니다. 명확한 대시보드와 정책으로 데이터가 어떻게 사용, 저장 및 삭제되는지 보여줍니다. 블랙박스나 숨겨진 추적이 없습니다.",
+      ferpaCompliant: "FERPA 준수",
+      coppaCompliant: "COPPA 준수",
+      // Teacher Features
+      intelligentGrading: "지능형 채점",
+      intelligentGradingDesc: "ACE는 정확하게 여러 제출물을 처리하며 즉각적인 피드백을 제공합니다.",
+      interactiveQuizzes: "대화형 퀴즈 및 투표",
+      interactiveQuizzesDesc: "실시간 결과 및 분석을 통해 매력적인 평가를 만드세요.",
+      dynamicAssignments: "동적 과제",
+      dynamicAssignmentsDesc: "과제 생성을 간소화하고 모든 수업에서 제출물을 추적합니다.",
+      smartScheduling: "스마트 일정 관리",
+      smartSchedulingDesc: "마감일과 이벤트로 자동 업데이트되는 동적 일정.",
+      realTimeProgress: "실시간 진행 상황",
+      realTimeProgressDesc: "각 학생의 진행 상황을 실시간으로 추적하고 가장 중요한 순간에 조치를 취하도록 권장 사항을 받으세요.",
+      proactiveAIAgent: "능동적 AI 에이전트",
+      proactiveAIAgentDesc: "ACE가 잡무를 자동화하여 가르치고 영감을 줄 시간을 되돌려줍니다.",
+      // Student Features
+      individualizedStudyCompanion: "맞춤형 학습 동반자",
+      individualizedStudyCompanionDesc: "ACE는 당신의 학습 스타일에 적응하며, 당신과 함께 성장하고 독특한 학습 성격을 형성합니다.",
+      aceModels: "ACE 모델",
+      aceModelsDesc: "학년에서 학년으로 함께 발전하는 비공개 맞춤형 모델로, 진정한 장기 학습 동반자가 됩니다.",
+      longitudinalMemory: "종단 기억",
+      longitudinalMemoryDesc: "ACE는 시간이 지남에 따라 학습을 추적하여 패턴, 격차 및 강점을 발견하므로 필요한 방식으로 정확히 가르칠 수 있습니다.",
+      checkYourUnderstanding: "이해도 확인",
+      checkYourUnderstandingDesc: "대화형 퀴즈와 즉각적인 피드백으로 지식을 테스트하세요.",
+      wellnessTools: "웰빙 도구",
+      wellnessToolsDesc: "마음챙김 운동과 학습 휴식 알림에 액세스하여 균형을 유지하세요.",
+      // AI Toolkit
+      worksheetGeneration: "학습지 생성",
+      rubricCreation: "루브릭 생성",
+      quizGeneration: "퀴즈 생성",
+      reportCardComments: "성적표 코멘트",
+      lessonPlanning: "수업 계획",
+      iepAssistance: "IEP 지원",
+      emailDrafting: "이메일 작성",
+      reportContent: "콘텐츠 신고",
+      lovedByTeachersStudents: "교사와 학생들이 사랑하는",
+      lovedByDesc: "Schoolace로 교실을 변화시키고 있는 교육자와 학습자의 실제 이야기.",
+      choosePlan: "플랜 선택",
+      choosePlanDesc: "무료로 시작하거나 수업을 위한 Pro 기능으로 확장하세요.",
+      freePlan: "무료",
+      proPlan: "프로",
+      schoolPlan: "학교",
+      freePrice: "$0 /월",
+      proPrice: "$9 /학생/월, 연간 청구",
+      schoolPrice: "가격 문의",
+      freeFeature1: "1개 수업",
+      freeFeature2: "최대 30명 학생",
+      freeFeature3: "제한된 ACE AI 기능",
+      freeFeature4: "커뮤니티 지원",
+      proFeature1: "전체 ACE AI 기능 및 에이전트",
+      proFeature2: "개인화된 학습",
+      proFeature3: "이메일 지원",
+      proFeature4: "커뮤니티 지원",
+      schoolFeature1: "전체 ACE AI 기능 및 에이전트",
+      schoolFeature2: "개인화된 학습",
+      schoolFeature3: "이메일 지원",
+      schoolFeature4: "커뮤니티 지원",
+      schoolFeature5: "맞춤 학교 도메인",
+      schoolFeature6: "관리자 대시보드",
+      schoolFeature7: "우선 지원 및 교육",
+      startForFree: "무료로 시작",
+      getStarted: "시작하기",
+      contactSales: "영업팀 문의",
+      mostPopular: "가장 인기 있는",
+      getInTouch: "문의하기",
+      getInTouchDesc: "질문이 있으신가요? 연락 주시면 감사하겠습니다. 메시지를 보내주시면 2 영업일 이내에 답변드리겠습니다.",
+      contactName: "이름 *",
+      contactEmail: "이메일 *",
+      contactSubject: "제목",
+      contactMessage: "메시지 *",
+      yourName: "귀하의 이름",
+      yourEmail: "your@email.com",
+      contactSubjectPlaceholder: "무엇에 관한 것인가요?",
+      contactMessagePlaceholder: "자세히 알려주세요...",
+      sendMessage: "메시지 보내기",
+      sending: "전송 중...",
+      thankYouMessage: "감사합니다! 메시지가 성공적으로 전송되었습니다.",
+      orEmailDirectly: "또는 직접 이메일을 보내주세요,",
+      intelligentGrading: "지능형 채점",
+      intelligentGradingDesc: "ACE는 정확하게 여러 제출물을 처리하며 즉각적인 피드백을 제공합니다.",
+      interactiveQuizzes: "대화형 퀴즈 및 투표",
+      interactiveQuizzesDesc: "실시간 결과 및 분석을 통해 매력적인 평가를 만드세요.",
+      dynamicAssignments: "동적 과제",
+      dynamicAssignmentsDesc: "과제 생성을 간소화하고 모든 수업에서 제출물을 추적합니다.",
+      smartScheduling: "스마트 일정 관리",
+      smartSchedulingDesc: "마감일과 이벤트로 자동 업데이트되는 동적 일정.",
+      realTimeProgress: "실시간 진행 상황",
+      realTimeProgressDesc: "각 학생의 진행 상황을 실시간으로 추적하고 가장 중요한 순간에 조치를 취하도록 권장 사항을 받으세요.",
+      proactiveAIAgent: "능동적 AI 에이전트",
+      proactiveAIAgentDesc: "ACE가 잡무를 자동화하여 가르치고 영감을 줄 시간을 되돌려줍니다.",
+      individualizedStudyCompanion: "맞춤형 학습 동반자",
+      individualizedStudyCompanionDesc: "ACE는 당신의 학습 스타일에 적응하며, 당신과 함께 성장하고 독특한 학습 성격을 형성합니다.",
+      aceModels: "ACE 모델",
+      aceModelsDesc: "학년에서 학년으로 함께 발전하는 비공개 맞춤형 모델로, 진정한 장기 학습 동반자가 됩니다.",
+      longitudinalMemory: "종단 기억",
+      longitudinalMemoryDesc: "ACE는 시간이 지남에 따라 학습을 추적하여 패턴, 격차 및 강점을 발견하므로 필요한 방식으로 정확히 가르칠 수 있습니다.",
+      checkYourUnderstanding: "이해도 확인",
+      checkYourUnderstandingDesc: "대화형 퀴즈와 즉각적인 피드백으로 지식을 테스트하세요.",
+      wellnessTools: "웰빙 도구",
+      wellnessToolsDesc: "마음챙김 운동과 학습 휴식 알림에 액세스하여 균형을 유지하세요.",
+      worksheetGeneration: "학습지 생성",
+      rubricCreation: "루브릭 생성",
+      quizGeneration: "퀴즈 생성",
+      reportCardComments: "성적표 코멘트",
+      lessonPlanning: "수업 계획",
+      iepAssistance: "IEP 지원",
+      emailDrafting: "이메일 작성",
+      reportContent: "콘텐츠 신고",
+      testimonial1: "Schoolace를 사용한 후 대수학 성적이 80%에서 90%로 올랐습니다. 교과서가 하지 못한 방식으로 문제를 분해했습니다.",
+      testimonial2: "학교에서 사용하게 한 모든 플랫폼 중에서 Schoolace가 학습에 가장 효과적이었습니다.",
+      testimonial3: "마침내 학교 관련 활동을 한 곳에서 처리할 수 있는 신뢰할 수 있고 깨끗하며 효과적인 플랫폼이 나왔습니다.",
+      testimonial4: "중학교 교실에서 생성형 AI에 직면한 교육자로서, 채점과 피드백의 효율성을 제공하는 도구를 갖게 되어 감사합니다. Aiden이 업데이트 요청과 개선 사항에 응답하는 방식에 계속 놀라고 있습니다. 우리의 협력과 그의 밝은 미래를 기대합니다.",
+      testimonial5: "Schoolace는 작업을 더 효율적으로 완료하는 데 도움이 되었습니다. 과제에 대해 개인화된 학습 AI에 질문할 수 있었고 학습을 풍부하게 했습니다.",
+      testimonial6: "Schoolace는 숙제를 훨씬 쉽게 만듭니다. 막히면 단계별로 분해하고 질문을 다시 해서 답을 주는 대신 실제로 이해할 수 있게 합니다.",
+      testimonial7: "생물학이 혼란스러웠지만 Schoolace가 모든 것을 명확하게 설명했고, 이제 개념을 실제로 이해하고 수업에서 즐거운 시간을 보낼 수 있습니다.",
+      testimonial8: "Schoolace는 이메일 작성 및 기사 요약과 같은 시간이 많이 걸리는 작업을 수행하도록 도와주며 제가 열정적인 일을 할 수 있는 많은 시간을 돌려줍니다.",
+      platformTitle: "플랫폼",
+      companyTitle: "회사",
+      legalTitle: "법률",
+      termsOfService: "서비스 약관",
+      privacyPolicy: "개인정보 처리방침",
+      allSystemsOperational: "모든 시스템 정상 작동",
+      copyright: "Schoolace. 모든 권리 보유.",
+      // Teacher Features
+      intelligentGrading: "지능형 채점",
+      intelligentGradingDesc: "ACE는 정확하게 여러 제출물을 처리하며 즉각적인 피드백을 제공합니다.",
+      interactiveQuizzes: "대화형 퀴즈 및 투표",
+      interactiveQuizzesDesc: "실시간 결과 및 분석을 통해 매력적인 평가를 만드세요.",
+      dynamicAssignments: "동적 과제",
+      dynamicAssignmentsDesc: "과제 생성을 간소화하고 모든 수업에서 제출물을 추적합니다.",
+      smartScheduling: "스마트 일정 관리",
+      smartSchedulingDesc: "마감일과 이벤트로 자동 업데이트되는 동적 일정.",
+      realTimeProgress: "실시간 진행 상황",
+      realTimeProgressDesc: "각 학생의 진행 상황을 실시간으로 추적하고 가장 중요한 순간에 조치를 취하도록 권장 사항을 받으세요.",
+      proactiveAIAgent: "능동적 AI 에이전트",
+      proactiveAIAgentDesc: "ACE가 잡무를 자동화하여 가르치고 영감을 줄 시간을 되돌려줍니다.",
+      // Student Features
+      individualizedStudyCompanion: "맞춤형 학습 동반자",
+      individualizedStudyCompanionDesc: "ACE는 당신의 학습 스타일에 적응하며, 당신과 함께 성장하고 독특한 학습 성격을 형성합니다.",
+      aceModels: "ACE 모델",
+      aceModelsDesc: "학년에서 학년으로 함께 발전하는 비공개 맞춤형 모델로, 진정한 장기 학습 동반자가 됩니다.",
+      longitudinalMemory: "종단 기억",
+      longitudinalMemoryDesc: "ACE는 시간이 지남에 따라 학습을 추적하여 패턴, 격차 및 강점을 발견하므로 필요한 방식으로 정확히 가르칠 수 있습니다.",
+      checkYourUnderstanding: "이해도 확인",
+      checkYourUnderstandingDesc: "대화형 퀴즈와 즉각적인 피드백으로 지식을 테스트하세요.",
+      wellnessTools: "웰빙 도구",
+      wellnessToolsDesc: "마음챙김 운동과 학습 휴식 알림에 액세스하여 균형을 유지하세요.",
+      // Testimonials
+      testimonial1: "Schoolace를 사용한 후 대수학 성적이 80%에서 90%로 올랐습니다. 교과서가 하지 못한 방식으로 문제를 분해했습니다.",
+      testimonial2: "학교에서 사용하게 한 모든 플랫폼 중에서 Schoolace가 학습에 가장 효과적이었습니다.",
+      testimonial3: "마침내 학교 관련 활동을 한 곳에서 처리할 수 있는 신뢰할 수 있고 깨끗하며 효과적인 플랫폼이 나왔습니다.",
+      testimonial4: "중학교 교실에서 생성형 AI에 직면한 교육자로서, 채점과 피드백의 효율성을 제공하는 도구를 갖게 되어 감사합니다. Aiden이 업데이트 요청과 개선 사항에 응답하는 방식에 계속 놀라고 있습니다. 우리의 협력과 그의 밝은 미래를 기대합니다.",
+      testimonial5: "Schoolace는 작업을 더 효율적으로 완료하는 데 도움이 되었습니다. 과제에 대해 개인화된 학습 AI에 질문할 수 있었고 학습을 풍부하게 했습니다.",
+      testimonial6: "Schoolace는 숙제를 훨씬 쉽게 만듭니다. 막히면 단계별로 분해하고 질문을 다시 해서 답을 주는 대신 실제로 이해할 수 있게 합니다.",
+      testimonial7: "생물학이 혼란스러웠지만 Schoolace가 모든 것을 명확하게 설명했고, 이제 개념을 실제로 이해하고 수업에서 즐거운 시간을 보낼 수 있습니다.",
+      testimonial8: "Schoolace는 이메일 작성 및 기사 요약과 같은 시간이 많이 걸리는 작업을 수행하도록 도와주며 제가 열정적인 일을 할 수 있는 많은 시간을 돌려줍니다.",
+      testimonial9: "Schoolace의 AI 모델은 놀랍습니다. 각 모델이 전문화되어 있어 코딩, STEM 공부, 새로운 개념 탐구 중 무엇을 하든 정확한 도움을 받을 수 있습니다. 모든 과목에 전문가가 있는 것 같습니다.",
+      testimonial10: "Schoolace를 통해 개인화된 AI 모델을 갖는 것은 게임 체인저입니다. 내 학습 습관에 맞춰 자체적으로 조정하고 매번 실제로 향상되는 데 도움이 되는 조언을 제공합니다.",
+      testimonial11: "Schoolace는 제가 학습하고 학교 생활을 관리하는 방식을 완전히 바꿨습니다. 맞춤형 피드백은 실제로 실력을 향상시키는 데 도움이 되며, 시간을 많이 절약해 주어 바쁜 업무 대신 이해에 집중할 수 있습니다. 마치 저를 위해 만들어진 플랫폼 같습니다.",
+      testimonial12: "Schoolace는 나를 실제로 아는 개인 튜터처럼 느껴집니다. 내 모든 과제와 퀴즈 제출물에 접근할 수 있어 내가 한 모든 것에 대해 질문하고 명확하고 개인화된 설명을 얻을 수 있어 좋습니다.",
+      testimonial13: "Schoolace가 다른 점은 내 전체 학습 기록을 이해한다는 것입니다. 내 모든 과제와 퀴즈에 접근할 수 있기 때문에 과거 작업에 대해 무엇이든 물어보고 나에게 실제로 관련된 피드백을 받을 수 있습니다.",
+      testimonial14: "Schoolace는 내 과제와 학습 기록에 직접 연결되기 때문에 돋보입니다. 일반적인 답변 대신 내 실제 작업을 기반으로 도움을 주어 공부가 더 효율적이고 스트레스를 덜 받게 되었습니다.",
+      testimonial15: "Schoolace는 내 모든 과제와 피드백을 기억하기 때문에 복습하고 개선하기가 쉽습니다. 내가 제출한 모든 것에 대해 질문할 수 있어 개념을 더 빨리 이해하고 실수를 반복하지 않는 데 도움이 됩니다.",
+      testimonial16: "Schoolace는 STEM과 코딩 학습을 실제로 재미있게 만듭니다. 어려운 개념을 안내하고 프로젝트를 단계별로 구축하도록 도와주어 새로운 것을 시도하는 데 자신감을 느낍니다.",
+    },
+    // Common
+    common: {
+      loading: "로딩 중...",
+      save: "저장",
+      cancel: "취소",
+      delete: "삭제",
+      edit: "편집",
+      create: "만들기",
+      update: "업데이트",
+      close: "닫기",
+      back: "뒤로",
+      next: "다음",
+      done: "완료",
+      search: "검색",
+      filter: "필터",
+      sort: "정렬",
+      refresh: "새로고침",
+      settings: "설정",
+      logout: "로그아웃",
+      yes: "예",
+      no: "아니오",
+      confirm: "확인",
+      success: "성공",
+      error: "오류",
+      warning: "경고",
+      info: "정보",
+      poweredByACE: "ACE 제공",
+    },
+    classSetup: {
+      welcomeTeacher: "환영합니다, 선생님!",
+      createNewClass: "새 수업 만들기",
+      setupFirstClassroom: "첫 번째 교실을 설정해 봅시다",
+      createAnotherClass: "더 많은 학생과 과제를 정리하기 위해 다른 수업을 만드세요.",
+      createClassPrompt: "학생을 등록하고 과제를 게시할 수업을 만드세요.",
+      createClass: "수업 만들기",
+      className: "수업 이름",
+      classNamePlaceholder: "예: 대수학 1, 3교시",
+      descriptionOptional: "설명 (선택사항)",
+      descriptionPlaceholder: "수업에 대한 간략한 설명...",
+      cancel: "취소",
+      creating: "생성 중...",
+    },
+    // Roles
+    roles: {
+      teacher: "교사",
+      student: "학생",
+      admin: "관리자",
+    },
+    // Time
+    time: {
+      today: "오늘",
+      yesterday: "어제",
+      tomorrow: "내일",
+      week: "주",
+      month: "월",
+    },
+    // AI Personal Agent
+    aiAgent: {
+      title: "AI 개인 에이전트",
+      subtitle: "Schoolace의 모든 것을 위한 지능형 비서",
+      closeAgent: "에이전트 닫기",
+      loading: "콘텐츠를 로드하는 동안 기다려 주세요",
+      processing: "처리 중...",
+      accessingData: "모든 수업 데이터에 접근 중...",
+      teacherPlaceholder: "모든 수업에서 무엇이든 시켜주세요... 예: '모든 수업에 메시지를 보내서 숙제가 내일까지라고 알려줘!'",
+      studentPlaceholder: "무엇이든 물어보세요... 예: '영어 과제에 에세이 제출해줘' 또는 '내 성적 보여줘'",
+      fileReady: "파일 준비됨:",
+      uploadFile: "파일 업로드",
+      greeting: "안녕하세요 {name}님! 저는 AI 개인 에이전트입니다. 무엇을 도와드릴까요?",
+    },
+    // Ace Spaces
+    aceSpaces: {
+      title: "Ace 스페이스",
+      subtitle: "공유 그룹 채팅에서 반 친구들 및 Ace AI와 협업하세요.",
+      joinWithCode: "코드로 참가",
+      createSpace: "스페이스 만들기",
+      joinSpace: "스페이스 참가",
+      enterCode: "코드 입력",
+      joinDesc: "반 친구가 공유한 6자리 코드를 입력하세요.",
+      createNewSpace: "새 스페이스 만들기",
+      createDesc: "프로젝트나 스터디 그룹을 위한 새 그룹 채팅을 시작하세요.",
+      spaceName: "스페이스 이름",
+      spaceNamePlaceholder: "예: 과학 프로젝트 그룹",
+      descOptional: "설명 (선택사항)",
+      whatsThisFor: "무엇을 위한 스페이스인가요?",
+      noSpaces: "아직 스페이스가 없습니다",
+      noSpacesDesc: "스페이스를 만들어 친구들 및 Ace AI와 채팅을 시작하거나 반 친구에게 참가 코드를 요청하세요.",
+      createFirst: "첫 번째 스페이스 만들기",
+      openChat: "채팅 열기",
+      members: "멤버",
+      addMember: "멤버 추가",
+      addMemberDesc: "이 스페이스에 추가할 사용자의 이메일 주소를 입력하세요.",
+      copyCode: "참가 코드 복사",
+      leaveSpace: "스페이스 나가기",
+      leaveConfirm: "\"{name}\"에서 나가시겠습니까?",
+      people: "사람들",
+      files: "파일",
+      notes: "노트",
+      sharedFiles: "공유 파일",
+      noFiles: "아직 공유된 파일이 없습니다",
+      sharedNotes: "공유 노트",
+      addNote: "노트 추가",
+      createNoteDesc: "모든 스페이스 멤버가 볼 수 있는 노트를 만듭니다.",
+      saveNote: "노트 저장",
+      noteTitle: "제목",
+      noteTitlePlaceholder: "예: 프로젝트 마감일",
+      noteContent: "내용",
+      noteContentPlaceholder: "여기에 내용을 입력하세요...",
+      noNotes: "아직 노트가 없습니다. 하나 추가해보세요!",
+      chatWithGroup: "그룹과 채팅",
+      chatWithAI: "AI와 채팅",
+      askAce: "Ace AI에게 무엇이든 물어보세요...",
+      messageGroup: "그룹에 메시지 보내기...",
+      translate: "번역",
+      original: "원문",
+      alwaysOnline: "항상 온라인",
+      admin: "관리자",
+      bot: "봇",
+      member: "멤버",
+      deleteNoteConfirm: "이 노트를 삭제하시겠습니까?",
+      uploadedFile: "파일을 업로드했습니다",
+      invited: "추가되었습니다!",
+      codeCopied: "참가 코드가 복사되었습니다!",
+      translating: "번역 중...",
+    },
+    // Ace Spaces
+    aceSpaces: {
+      title: "Ace 스페이스",
+      subtitle: "공유 그룹 채팅에서 반 친구들 및 Ace AI와 협업하세요.",
+      joinWithCode: "코드로 참가",
+      createSpace: "스페이스 만들기",
+      joinSpace: "스페이스 참가",
+      enterCode: "코드 입력",
+      joinDesc: "반 친구가 공유한 6자리 코드를 입력하세요.",
+      createNewSpace: "새 스페이스 만들기",
+      createDesc: "프로젝트나 스터디 그룹을 위한 새 그룹 채팅을 시작하세요.",
+      spaceName: "스페이스 이름",
+      spaceNamePlaceholder: "예: 과학 프로젝트 그룹",
+      descOptional: "설명 (선택사항)",
+      whatsThisFor: "무엇을 위한 스페이스인가요?",
+      noSpaces: "아직 스페이스가 없습니다",
+      noSpacesDesc: "스페이스를 만들어 친구들 및 Ace AI와 채팅을 시작하거나 반 친구에게 참가 코드를 요청하세요.",
+      createFirst: "첫 번째 스페이스 만들기",
+      openChat: "채팅 열기",
+      members: "멤버",
+      addMember: "멤버 추가",
+      addMemberDesc: "이 스페이스에 추가할 사용자의 이메일 주소를 입력하세요.",
+      copyCode: "참가 코드 복사",
+      leaveSpace: "스페이스 나가기",
+      leaveConfirm: "\"{name}\"에서 나가시겠습니까?",
+      people: "사람들",
+      files: "파일",
+      notes: "노트",
+      sharedFiles: "공유 파일",
+      noFiles: "아직 공유된 파일이 없습니다",
+      sharedNotes: "공유 노트",
+      addNote: "노트 추가",
+      createNoteDesc: "모든 스페이스 멤버가 볼 수 있는 노트를 만듭니다.",
+      saveNote: "노트 저장",
+      noteTitle: "제목",
+      noteTitlePlaceholder: "예: 프로젝트 마감일",
+      noteContent: "내용",
+      noteContentPlaceholder: "여기에 내용을 입력하세요...",
+      noNotes: "아직 노트가 없습니다. 하나 추가해보세요!",
+      chatWithGroup: "그룹과 채팅",
+      chatWithAI: "AI와 채팅",
+      askAce: "Ace AI에게 무엇이든 물어보세요...",
+      messageGroup: "그룹에 메시지 보내기...",
+      translate: "번역",
+      original: "원문",
+      alwaysOnline: "항상 온라인",
+      admin: "관리자",
+      bot: "봇",
+      member: "멤버",
+      deleteNoteConfirm: "이 노트를 삭제하시겠습니까?",
+      uploadedFile: "파일을 업로드했습니다",
+      invited: "추가되었습니다!",
+      codeCopied: "참가 코드가 복사되었습니다!",
+      translating: "번역 중...",
+    },
+    // PowerSchool
+    powerSchool: {
+      title: "PowerSchool 연동",
+      comingSoon: "연동 준비 중!",
+      description: "원활한 PowerSchool 연동을 제공하기 위해 열심히 작업 중입니다. 곧 이 강력한 기능으로 워크플로우를 강화할 수 있습니다.",
+      syncGradesTitle: "즉시 성적 동기화",
+      syncGradesDescription: "한 번의 클릭으로 Schoolace의 과제 성적을 PowerSchool 성적부에 직접 전송하세요.",
+      automateTitle: "성적 입력 자동화",
+      automateDescription: "AI가 채점을 처리한 후 결과를 PowerSchool에 자동으로 동기화하여 수 시간의 수동 데이터 입력을 절약하세요.",
+    },
+  },
 
+  FR: {
+    // Navigation
+    nav: {
+      dashboard: "Tableau de bord",
+      scheduler: "Emploi du temps",
+      aiAgent: "Agent IA",
+      chat: "Discussion",
+      classTools: "Outils de classe",
+      lessonPlans: "Plans de cours",
+      aiTools: "Outils IA",
+      powerSchool: "PowerSchool",
+      aceAI: "ACE IA",
+    },
+    // Dashboard
+    dashboard: {
+      title: "Tableau de bord",
+      welcome: "Bienvenue",
+      yourClasses: "Vos classes",
+      createClass: "Créer une classe",
+      joinClass: "Rejoindre une classe",
+      noClasses: "Aucune classe trouvée",
+      assignments: "Devoirs",
+      createAssignment: "Créer un devoir",
+      noAssignments: "Pas encore de devoirs",
+      dueDate: "Date limite",
+      submissions: "Soumissions",
+      graded: "Noté",
+      pending: "En attente",
+      viewAll: "Voir tout",
+      recentActivity: "Activité récente",
+      classCode: "Code de classe",
+      students: "Étudiants",
+      activeAssignments: "Devoirs actifs",
+      teachingHub: "Votre centre pédagogique",
+      switchClass: "Changer de classe",
+      joinAnotherClass: "Rejoindre une autre classe",
+      loadingClassroom: "Chargement de votre classe...",
+      feedback: "Commentaires",
+      logout: "Déconnexion",
+      teacherDashboard: "Tableau de bord enseignant",
+      teacherDescription: "Créez des devoirs et examinez les soumissions des étudiants",
+      createNewClass: "Créer une nouvelle classe",
+      backToDashboard: "Retour au tableau de bord",
+      backToAssignments: "Retour aux devoirs",
+      yourAssignments: "Vos devoirs",
+      noAssignmentsYet: "Aucun devoir créé encore",
+      createFirstAssignment: "Créez votre premier devoir pour commencer. Si vous attendez des devoirs, fermez cet onglet et reconnectez-vous.",
+      studentPortal: "Portail étudiant",
+      studentDescription: "Consultez les devoirs et soumettez votre travail",
+    },
+    // Class Tools
+    classTools: {
+      title: "Outils de classe",
+      subtitle: "Outils interactifs pour votre classe",
+      selectClass: "Sélectionner une classe",
+      chooseClass: "Choisir une classe",
+      schedule: "Calendrier",
+      quizzes: "Quiz",
+      polls: "Sondages",
+      personalizedLearning: "Apprentissage personnalisé",
+      noClasses: "Aucune classe trouvée.",
+      goToDashboard: "Accédez à votre tableau de bord pour créer ou rejoindre une classe.",
+      classSchedule: "Calendrier de classe",
+      weekOf: "Semaine du",
+      today: "Aujourd'hui",
+      addEvent: "Ajouter un événement",
+      deleteEventConfirm: "Êtes-vous sûr de vouloir supprimer cet événement ?",
+      createQuiz: "Créer un quiz",
+      editQuiz: "Modifier le quiz",
+      noQuizzesAvailable: "Aucun quiz disponible pour le moment. Si vous attendez un quiz, veuillez recharger la page et/ou vous déconnecter.",
+      draft: "Brouillon",
+      active: "Actif",
+      closed: "Fermé",
+      activate: "Activer",
+      lock: "Verrouiller",
+      reDraft: "Re-brouillon",
+      showResults: "Afficher les résultats",
+      hideResults: "Masquer les résultats",
+      duplicate: "Dupliquer",
+      edit: "Modifier",
+      results: "Résultats",
+      delete: "Supprimer",
+      takeQuiz: "Passer le quiz",
+      viewResults: "Voir les résultats",
+      completed: "Terminé",
+      duplicateQuiz: "Dupliquer le quiz",
+      duplicateQuizDesc: "Copier \"{title}\" dans une autre classe. Le nouveau quiz sera enregistré comme brouillon.",
+      destinationClass: "Classe de destination",
+      selectClassToCopy: "Sélectionnez une classe pour copier",
+      cancel: "Annuler",
+      duplicating: "Duplication...",
+      confirmAndCopy: "Confirmer et copier",
+      deleteQuizConfirm: "Êtes-vous sûr de vouloir supprimer \"{title}\" ? Cela supprimera toutes les questions et ne peut pas être annulé.",
+      quizCopied: "Quiz \"{title}\" copié avec succès ! Il a été enregistré comme brouillon dans la classe de destination.",
+      quizDeleted: "Le quiz \"{title}\" a été supprimé.",
+      quizTitle: "Titre",
+      quizTitlePlaceholder: "Titre du quiz",
+      quizDescription: "Description",
+      quizDescriptionPlaceholder: "Description du quiz (optionnel)",
+      timeLimit: "Limite de temps",
+      unlimitedTime: "Temps illimité",
+      setTimeLimit: "Définir la limite (mins) :",
+      afterCompletion: "Après complétion",
+      allowStudentsViewResults: "Permettre aux étudiants de voir leur note et leurs réponses",
+      aiQuizGenerator: "Générateur de quiz IA",
+      topic: "Sujet",
+      websiteUrl: "URL du site web",
+      fileUpload: "Télécharger un fichier",
+      enterTopic: "Entrez le sujet",
+      enterUrl: "Entrez l'URL",
+      numberOfQuestions: "Nombre de questions",
+      difficulty: "Difficulté",
+      easy: "Facile",
+      medium: "Moyen",
+      hard: "Difficile",
+      questionType: "Type de question",
+      multipleChoice: "Choix multiple",
+      trueFalse: "Vrai/Faux",
+      generateQuestions: "Générer des questions",
+      generating: "Génération...",
+      question: "Question",
+      remove: "Supprimer",
+      enterQuestion: "Entrez votre question ici...",
+      answerOptions: "Options de réponse",
+      correctAnswer: "Réponse correcte",
+      addQuestion: "Ajouter une question",
+      saveQuiz: "Enregistrer le quiz",
+      createPoll: "Créer un sondage",
+      noPolls: "Aucun sondage n'a encore été créé.",
+      noPollsStudent: "Aucun sondage actif disponible. Si vous attendez un sondage, veuillez recharger la page et/ou vous déconnecter.",
+      createNewPoll: "Créer un nouveau sondage",
+      pollQuestion: "Question du sondage",
+      options: "Options",
+      addOption: "Ajouter une option",
+      closePoll: "Fermer le sondage",
+      reopenPoll: "Rouvrir le sondage",
+      totalVotes: "Votes totaux",
+      yourVote: "Votre vote",
+      voting: "Vote...",
+      votes: "votes",
+    },
+    // Lesson Plans
+    lessonPlans: {
+      title: "Plans de cours",
+      createLesson: "Créer un cours",
+      searchLessons: "Rechercher des cours...",
+      noLessons: "Pas encore de plans de cours",
+      createFirst: "Créez votre premier plan de cours pour commencer.",
+      objectives: "Objectifs",
+      activities: "Activités",
+      homework: "Devoirs",
+      resources: "Ressources",
+      released: "Publié",
+      unreleased: "Non publié",
+      noClassesFound: "Aucune classe trouvée. Veuillez d'abord créer ou rejoindre une classe.",
+      pleaseLogin: "Veuillez vous connecter pour accéder aux plans de cours.",
+      editLessonPlan: "Modifier le Plan de Cours",
+      createNewLessonPlan: "Créer un Nouveau Plan de Cours",
+      class: "Classe",
+      importFromText: "Importer depuis Texte",
+      aiAssistant: "Assistant IA",
+      cancel: "Annuler",
+      saveLesson: "Enregistrer le Cours",
+      saving: "Enregistrement...",
+      importSuccessful: "Importation Réussie !",
+      lessonImported: "Votre plan de cours a été importé dans la section des plans de cours pré-faits en bas de l'éditeur !",
+      gotIt: "Compris !",
+      aiLessonGenerator: "Générateur de Cours IA",
+      aiPlaceholder: "Décrivez votre cours... par ex., 'Créer un cours sur la photosynthèse pour les sciences de 8e année avec des expériences pratiques' ou 'Créer un cours de mathématiques engageant sur les fractions avec des exemples concrets'",
+      aiNote: "L'IA générera des liens éducatifs. Veuillez vérifier l'exactitude des liens avant de publier.",
+      generateLesson: "Générer un Cours",
+      generating: "Génération...",
+      importLessonFromText: "Importer un Plan de Cours depuis Texte",
+      importDesc: "Collez votre texte de plan de cours existant ci-dessous et l'IA vous aidera à l'organiser.",
+      pasteHere: "Collez votre plan de cours ici...",
+      useLessonAsIs: "Utiliser le Plan Tel Quel",
+      processing: "Traitement...",
+      importStructure: "Importer et Structurer le Cours",
+      beta: "BETA",
+      basicInformation: "Informations de Base",
+      lessonTitle: "Titre du Cours",
+      enterLessonTitle: "Entrez le titre du cours...",
+      lessonDate: "Date du Cours",
+      lessonIsReleased: "Cours Publié",
+      lessonIsUnreleased: "Cours Non Publié",
+      studentsCanView: "Les étudiants peuvent voir ce plan de cours",
+      studentsCannotView: "Les étudiants ne peuvent pas encore voir ce plan de cours",
+      learningObjectives: "Objectifs d'Apprentissage",
+      learningObjective: "Objectif d'apprentissage",
+      addObjective: "Ajouter un Objectif",
+      hookOpeningActivity: "Accroche/Activité d'Ouverture",
+      hookPlaceholder: "Décrivez une activité d'ouverture engageante pour capter l'attention des étudiants...",
+      classroomActivities: "Activités en Classe",
+      activityTitle: "Titre de l'activité...",
+      duration: "Durée (minutes)",
+      minutes: "minutes",
+      describeActivity: "Décrivez l'activité...",
+      materialsNeeded: "Matériel Nécessaire",
+      material: "Matériel...",
+      addMaterial: "Ajouter du Matériel",
+      addActivity: "Ajouter une Activité",
+      homeworkAssignment: "Devoir",
+      addHomework: "Ajouter un Devoir",
+      resourceTitle: "Titre de la ressource...",
+      urlPlaceholder: "URL (pour sites web, vidéos)...",
+      or: "ou",
+      fileUploaded: "Fichier téléchargé :",
+      type: "Type",
+      uploadFile: "Télécharger un Fichier",
+      uploading: "Téléchargement...",
+      website: "Site Web",
+      video: "Vidéo",
+      document: "Document",
+      book: "Livre",
+      file: "Fichier",
+      image: "Image",
+      addResource: "Ajouter une Ressource",
+      assessment: "Évaluation",
+      assessmentType: "Type d'évaluation",
+      formative: "Formative",
+      summative: "Sommative",
+      peerAssessment: "Évaluation par les Pairs",
+      selfAssessment: "Auto-Évaluation",
+      describeAssessment: "Décrivez la méthode d'évaluation...",
+      rubric: "Grille d'évaluation ou critères de notation...",
+      preMadeLessonPlan: "Plan de Cours Pré-fait / Informations Supplémentaires",
+      additionalInfoPlaceholder: "Ajoutez des informations supplémentaires pour les étudiants/parents (par ex., heures de bureau, coordonnées, instructions spéciales, etc.)...",
+      differentiationStrategies: "Stratégies de Différenciation",
+      differentiationStrategy: "Stratégie de différenciation",
+      addStrategy: "Ajouter une Stratégie",
+      back: "Retour",
+      unrelease: "Dépublier",
+      release: "Publier",
+      duplicate: "Dupliquer",
+      edit: "Modifier",
+      studentsWillBeAbleTo: "Les étudiants seront capables de :",
+      descriptionLabel: "Description :",
+      rubricLabel: "Grille d'évaluation :",
+      teacherReflectionNotes: "Notes de Réflexion de l'Enseignant",
+      duplicateLessonPlan: "Dupliquer le Plan de Cours",
+      selectClassToCopy: "Sélectionnez une classe pour copier \"{title}\" vers :",
+      chooseDestinationClass: "Choisir la classe de destination",
+      duplicating: "Duplication...",
+      previous: "Précédent",
+      weekView: "Vue Hebdomadaire",
+      next: "Suivant",
+      releasedStudentsCanSee: "Publié (Les étudiants peuvent voir)",
+      unreleasedStudentsCannotSee: "Non publié (Les étudiants ne peuvent pas voir)",
+      noLessonsForDay: "Pas de cours",
+      lessonsThisWeek: "Cours Cette Semaine",
+      releasedCount: "Publiés",
+      unreleasedCount: "Non Publiés",
+      min: "min",
+      visit: "Visiter",
+      download: "Télécharger",
+      createFirstLesson: "Créer Votre Premier Cours",
+    },
+    // AI Tools
+    aiTools: {
+      title: "Outils IA",
+      subtitle: "Votre assistant IA pour l'enseignement et l'apprentissage.",
+      generate: "Générer",
+      generating: "Génération...",
+      clear: "Effacer",
+      copy: "Copier",
+      download: "Télécharger",
+      pinTool: "Épingler l'outil",
+      unpinTool: "Désépingler",
+      teacherTools: "Outils Enseignant",
+      studentTools: "Outils Étudiant",
+      output: "Résultat",
+      outputPlaceholder: "Votre contenu généré apparaîtra ici.",
+      select: "Sélectionner",
+      error: "Erreur",
+      errorRetry: "Si cela continue, réessayez dans quelques minutes.",
+      translating: "Traduction en cours...",
+      locked: "Outils IA Verrouillés",
+      lockedDescription: "Vous devez être connecté pour accéder à notre suite d'outils IA pour l'enseignement et l'apprentissage.",
+      signInToContinue: "Se Connecter pour Continuer",
+      loadingAITools: "Chargement des outils IA...",
+      emailGenerator: "Générateur d'Emails",
+      emailGeneratorDesc: "Rédigez rapidement des emails professionnels aux parents ou étudiants.",
+      iepAccommodations: "Générateur IEP & Adaptations",
+      iepAccommodationsDesc: "Générez des adaptations personnalisées et des objectifs IEP pour les étudiants.",
+      rubricGenerator: "Générateur de Grilles",
+      rubricGeneratorDesc: "Générez rapidement une grille d'évaluation complète pour tout devoir.",
+      questionGenerator: "Générateur de Questions",
+      questionGeneratorDesc: "Générez des questions à partir d'un sujet, URL, document ou transcription YouTube.",
+      worksheetGenerator: "Générateur de Fiches",
+      worksheetGeneratorDesc: "Générez une fiche professionnelle à partir d'un sujet, URL, document ou transcription.",
+      reportCardComments: "Commentaires de Bulletin",
+      reportCardCommentsDesc: "Générez des commentaires personnalisés et constructifs pour les bulletins.",
+      assignmentScaffolder: "Différenciateur de Devoirs",
+      assignmentScaffolderDesc: "Créez des versions différenciées de devoirs pour différents niveaux.",
+      teacherWellness: "Soutien au Bien-être Enseignant",
+      teacherWellnessDesc: "Un espace pour réfléchir à votre bien-être et trouver des stratégies.",
+      aiDetector: "Détecteur de Contenu IA",
+      aiDetectorDesc: "Analysez du texte ou des fichiers pour détecter du contenu généré par IA.",
+      writingFeedback: "Assistant de Feedback Écriture",
+      writingFeedbackDesc: "Obtenez des retours instantanés et constructifs sur votre écriture.",
+      textSummarizer: "Résumeur de Texte",
+      textSummarizerDesc: "Résumez de longs articles en points clés.",
+      checkUnderstanding: "Vérifiez Votre Compréhension",
+      checkUnderstandingDesc: "Générez des questions à partir d'un sujet, URL, document ou transcription.",
+      conceptExplainer: "Explicateur de Concepts",
+      conceptExplainerDesc: "Obtenez une explication simple de tout sujet complexe.",
+      studentEmailGenerator: "Générateur d'Emails",
+      studentEmailGeneratorDesc: "Rédigez un email respectueux et clair à votre professeur.",
+      studentWellness: "Soutien au Bien-être Étudiant",
+      studentWellnessDesc: "Un espace sûr pour vérifier vos sentiments.",
+      emailTo: "Destinataire",
+      studentName: "Nom de l'Étudiant",
+      emailSubject: "Sujet de l'Email",
+      keyPointsToInclude: "Points Clés à Inclure",
+      tone: "Ton",
+      gradeLevel: "Niveau Scolaire",
+      areaOfNeed: "Domaine de Besoin",
+      describeStudentChallenges: "Décrivez les Défis de l'Étudiant",
+      whatToGenerate: "Que voulez-vous générer ?",
+      assignmentTitle: "Titre du Devoir",
+      gradingCriteria: "Critères de Notation (un par ligne)",
+      topicIfNoContent: "Sujet (si pas d'autre contenu)",
+      websiteUrlOptional: "URL du Site Web (Optionnel)",
+      youtubeTranscript: "Transcription YouTube (Optionnel)",
+      uploadDocumentOptional: "Télécharger un Document (Optionnel)",
+      questionType: "Type de Question",
+      numberOfQuestions: "Nombre de Questions",
+      difficulty: "Difficulté",
+      worksheetInstructions: "Instructions de la Fiche",
+      studentStrengths: "Forces de l'Étudiant",
+      areasForImprovement: "Domaines à Améliorer",
+      originalAssignment: "Devoir Original",
+      subject: "Matière",
+      teacherLastName: "Nom du Professeur",
+      whatYouNeedToSay: "Ce que vous devez dire",
+      textToAnalyze: "Texte à Analyser",
+      orUploadDocument: "Ou Télécharger un Document",
+      pasteTextHere: "Collez votre texte ici",
+      textToSummarize: "Collez le texte à résumer",
+      summaryLength: "Longueur du Résumé",
+      conceptToExplain: "Concept à Expliquer",
+      explainLikeIm: "Expliquez-moi Comme Si J'étais...",
+      howAreYouFeelingTeacher: "Bonjour ! Comment vous sentez-vous en tant qu'éducateur aujourd'hui ?",
+      howAreYouFeelingStudent: "Salut 👋 Comment te sens-tu aujourd'hui ?",
+      aParentGuardian: "Un Parent/Tuteur",
+      aStudent: "Un Étudiant",
+      formalEncouraging: "Formel et Encourageant",
+      positiveCasual: "Positif et Décontracté",
+      directInformative: "Direct et Informatif",
+      fullReport: "Rapport Complet",
+      listOfAccommodations: "Liste d'Adaptations",
+      smartGoal: "Objectif SMART",
+      emailToParent: "Email aux Parents",
+      multipleChoice: "Choix Multiple",
+      trueFalse: "Vrai/Faux",
+      shortAnswer: "Réponse Courte",
+      easy: "Facile",
+      medium: "Moyen",
+      hard: "Difficile",
+      encouraging: "Encourageant",
+      formal: "Formel",
+      direct: "Direct",
+      shortSentences: "Court (quelques phrases)",
+      mediumParagraph: "Moyen (un paragraphe)",
+      detailedBullets: "Détaillé (points)",
+      a5thGrader: "un Élève de CM2",
+      aHighSchoolStudent: "un Lycéen",
+      aCompleteBeginber: "un Débutant Complet",
+      kindergarten: "Maternelle",
+      grade1: "CP",
+      grade2: "CE1",
+      grade3: "CE2",
+      grade4: "CM1",
+      grade5: "CM2",
+      grade6: "6ème",
+      grade7: "5ème",
+      grade8: "4ème",
+      grade9: "3ème",
+      grade10: "2nde",
+      grade11: "1ère",
+      grade12: "Terminale",
+    },
+    // Personalized Learning
+    personalizedLearning: {
+      title: "Votre compagnon d'étude",
+      subtitle: "Maîtrisez les concepts à votre rythme avec l'IA.",
+      chatTutor: "Tuteur chat",
+      focusAreas: "Domaines à améliorer",
+      progressOverview: "Aperçu des progrès",
+      flashcards: "Cartes mémoire",
+      practiceTest: "Test pratique",
+      studyGuide: "Guide d'étude",
+      aiStudyTools: "Outils d'étude IA",
+      generateContent: "Générer du contenu",
+      poweredByACEAI: "Propulsé par ACE AI",
+      preparingExperience: "Préparation de votre expérience...",
+      gatheringData: "Collecte de vos données d'apprentissage...",
+      chatWithAce: "Discuter avec Ace",
+      yourPersonalTutor: "Votre tuteur IA personnel",
+      learningMode: "Mode Apprentissage",
+      solutionMode: "Mode Solution",
+      aceIsThinking: "Ace réfléchit...",
+      submitQuiz: "Soumettre le Quiz",
+      uploadFile: "Télécharger un Fichier",
+      learningModeDesc: "Guidez-moi étape par étape sans donner les réponses",
+      solutionModeDesc: "Montrez-moi la solution complète avec la réponse",
+      inputPlaceholder: "Posez une question, faites un quiz interactif, demandez-moi d'analyser un devoir, ou téléchargez un fichier...",
+      aiDisclaimer: "Votre tuteur IA peut faire des erreurs. Propulsé par ACE AI. Pensez à vérifier les informations importantes.",
+      dropFilesHere: "Déposez les fichiers ici",
+      processingFile: "Traitement du fichier...",
+      yourStrengths: "Vos Points Forts",
+      buildingStrengths: "Construction des Points Forts",
+      completeAssignments: "Complétez des devoirs pour voir les concepts maîtrisés ici.",
+      areasToFocusOn: "Domaines à Travailler",
+      allLookingGreat: "Tout Va Bien !",
+      noFocusAreas: "Aucun domaine spécifique identifié. Continuez votre excellent travail.",
+      introMessage: "Bonjour {name} ! Je suis Ace, votre tuteur IA personnel. {focusText}\n\nQu'aimeriez-vous explorer ou travailler aujourd'hui ? Nous pouvons approfondir un sujet, revoir des questions d'un devoir ou quiz récent, ou vous pouvez télécharger un fichier pour que je vous aide !",
+      focusAreasIntro: "J'ai remarqué que vos domaines de pratique récents sont {concepts}.",
+      quizComplete: "Bravo pour avoir complété le quiz ! Vous avez obtenu {score}/{total} ({percentage}%).",
+      questionsToWorkOn: "Voici les questions sur lesquelles nous pouvons travailler :",
+      whichToBreakDown: "Laquelle aimeriez-vous analyser en premier ?",
+      perfectScore: "Score parfait ! Vous maîtrisez ce concept. 🎉 Que devons-nous aborder ensuite ?",
+    },
+    // Chat
+    chat: {
+      title: "Discussion de classe",
+      typeMessage: "Tapez votre message...",
+      send: "Envoyer",
+      noMessages: "Pas encore de messages",
+      startConversation: "Commencez la conversation !",
+      unavailable: "Discussion non disponible",
+      mustBeEnrolled: "Vous devez être inscrit à une classe pour utiliser la discussion.",
+      chattingIn: "Vous discutez dans",
+      switchClass: "Changer de classe...",
+    },
+    // Quizzes
+    quizzes: {
+      title: "Quiz",
+      createQuiz: "Créer un quiz",
+      takeQuiz: "Passer le quiz",
+      viewResults: "Voir les résultats",
+      timeLimit: "Limite de temps",
+      minutes: "minutes",
+      questions: "Questions",
+      score: "Score",
+      completed: "Terminé",
+      inProgress: "En cours",
+      notStarted: "Non commencé",
+    },
+    // Polls
+    polls: {
+      title: "Sondages",
+      createPoll: "Créer un sondage",
+      vote: "Voter",
+      results: "Résultats",
+      active: "Actif",
+      closed: "Fermé",
+      totalVotes: "Votes totaux",
+    },
+    // Assignments
+    assignments: {
+      title: "Devoirs",
+      submit: "Soumettre",
+      submitted: "Soumis",
+      grade: "Note",
+      feedback: "Commentaires",
+      instructions: "Instructions",
+      attachments: "Pièces jointes",
+      answerKey: "Corrigé",
+      aiGrading: "Notation IA",
+      releaseGrades: "Publier les notes",
+      editAssignment: "Modifier le devoir",
+      createNewAssignment: "Créer un nouveau devoir",
+      assignmentTitle: "Titre du devoir",
+      assignmentTitlePlaceholder: "ex., Essai sur le changement climatique",
+      subject: "Matière",
+      selectSubject: "Sélectionner une matière",
+      mathematics: "Mathématiques",
+      english: "Anglais",
+      science: "Sciences",
+      history: "Histoire",
+      art: "Art",
+      other: "Autre",
+      description: "Description",
+      descriptionPlaceholder: "Brève description du devoir...",
+      assignmentFiles: "Fichiers du devoir (Optionnel)",
+      addMoreFiles: "Ajouter plus de fichiers",
+      gradingInstructions: "Instructions de notation",
+      gradingInstructionsPlaceholder: "Instructions détaillées pour la notation IA. Inclure la grille d'évaluation, les points clés à rechercher, les critères de notation...",
+      gradingInstructionsManualPlaceholder: "Optionnel : Instructions pour la notation manuelle ou notes sur ce devoir...",
+      gradingInstructionsHelp: "Soyez précis sur ce que l'IA doit rechercher lors de la notation des soumissions.",
+      gradingInstructionsManualHelp: "Ces instructions sont optionnelles lorsque la notation IA est désactivée.",
+      maximumPoints: "Points maximum",
+      dueDate: "Date limite",
+      selectDueDate: "Sélectionner la date limite",
+      openDateTime: "Date et heure d'ouverture (Optionnel)",
+      openDateHelp: "Quand le devoir devient visible pour les étudiants",
+      closeDateTime: "Date et heure de fermeture (Optionnel)",
+      closeDateHelp: "Quand le devoir n'est plus visible pour les étudiants",
+      visibleToStudents: "Visible pour les étudiants",
+      visible: "Visible",
+      hidden: "Masqué",
+      allowSubmissions: "Autoriser les soumissions des étudiants",
+      allowSubmissionsYes: "Les étudiants peuvent soumettre leur travail",
+      allowSubmissionsNo: "Information uniquement - pas de soumissions",
+      allowSubmissionsHelp: "Lorsque désactivé, cela devient un devoir informatif sans soumissions ni notation.",
+      aiGradingTitle: "Notation IA",
+      aiGradingDescription: "Noter automatiquement les soumissions avec l'IA",
+      aiGradingEnabled: "L'IA notera automatiquement les soumissions.",
+      uploadAnswerKey: "Télécharger le corrigé (Optionnel)",
+      changeAnswerKey: "Changer le corrigé",
+      aiLeniency: "Indulgence de l'IA",
+      selectLeniency: "Sélectionner le niveau d'indulgence",
+      strict: "Strict",
+      neutral: "Neutre",
+      lenient: "Indulgent",
+      leniencyHelp: "Choisissez à quel point l'IA doit respecter strictement les critères de notation.",
+      answerKeyOptional: "Corrigé (Optionnel)",
+      chooseFile: "Choisir un fichier",
+      answerKeyHelp: "Téléchargez un corrigé pour aider l'IA à fournir une notation et des commentaires plus précis.",
+      manualGradingNote: "Vous noterez manuellement toutes les soumissions de ce devoir.",
+      cancel: "Annuler",
+      creating: "Création...",
+      updating: "Mise à jour...",
+      createAssignmentBtn: "Créer le devoir",
+      updateAssignment: "Mettre à jour le devoir",
+      hideFromStudents: "Masquer aux étudiants",
+      showToStudents: "Afficher aux étudiants",
+      reopenAssignment: "Rouvrir le devoir",
+      duplicateToAnotherClass: "Dupliquer dans une autre classe",
+      duplicateAssignment: "Dupliquer le devoir",
+      selectDestinationClass: "Sélectionnez une classe pour copier",
+      chooseDestinationClass: "Choisir la classe de destination",
+      duplicating: "Duplication...",
+      duplicate: "Dupliquer",
+      viewDetails: "Voir les détails",
+      submission: "soumission",
+      submissions: "soumissions",
+    },
+    // Landing Page
+    landing: {
+      signIn: "Se Connecter",
+      forTeachers: "Pour les Enseignants",
+      forStudents: "Pour les Étudiants",
+      aiCapabilities: "Capacités IA",
+      testimonials: "Témoignages",
+      pricing: "Tarifs",
+      contact: "Contact",
+      heroTitle: "L'éducation, surpuissante par ACE IA.",
+      heroSubtitle: "Propulsé par {aceAI}, Schoolace permet aux éducateurs avant-gardistes et surcharge l'apprentissage des étudiants grâce à une utilisation transparente et responsable de l'IA.",
+      heroTagline: "Les enseignants gardent le contrôle total tandis que les étudiants possèdent la réflexion",
+      getStartedFree: "Commencer Gratuitement",
+      coPilotForTeachers: "Co-Pilote pour les Enseignants",
+      coPilotDesc: "Transformez des heures ou des jours de planification de cours, de création de contenu, de notation et de feedback en quelques minutes tout en gardant le contrôle total.",
+      studyCompanionForStudents: "Compagnon d'Étude pour les Étudiants",
+      studyCompanionDesc: "Libérez votre plein potentiel avec un compagnon IA 24/7 qui s'adapte à votre style d'apprentissage et vous aide à réussir.",
+      productivityTools: "Outils de Productivité",
+      productivityToolsDesc: "Conçu pour les enseignants et les étudiants, ACE apprend, s'adapte et grandit avec vous à chaque étape.",
+      signInToDiscover: "Connectez-vous pour découvrir plus de fonctionnalités",
+      teachersGetStarted: "Les Enseignants Commencent en 3 Étapes Simples",
+      teachersGetStartedDesc: "Rejoignez les éducateurs pionniers qui transforment leur classe.",
+      step1Title: "Créer une Classe",
+      step1Desc: "Obtenez un code de classe unique",
+      step2Title: "Créer du Matériel de Classe",
+      step2Desc: "Créez des devoirs, quiz, plans de cours et emplois du temps",
+      step3Title: "Inviter des Étudiants",
+      step3Desc: "Les étudiants rejoignent la classe avec le code de classe",
+      measurableResults: "Résultats Mesurables",
+      measurableResultsDesc: "Transformez votre efficacité pédagogique et les résultats des étudiants en 1 semaine.",
+      teacherTimeSavings: "Amélioration du Gain de Temps Enseignant",
+      teacherSatisfaction: "Satisfaction des Enseignants",
+      lessonPrepReduction: "Réduction du Temps de Préparation",
+      studentEngagement: "Amélioration de l'Engagement Étudiant",
+      gradingSpeedup: "Accélération de la Notation",
+      personalizationAccuracy: "Précision de la Personnalisation",
+      estimatesDisclaimer: "* Estimations affichées ; les résultats réels peuvent varier.",
+      privacySecurity: "Confidentialité et Sécurité par Conception",
+      privacySecurityDesc: "L'innovation chez Schoolace commence par la sécurité, la confidentialité, la protection et la confiance.",
+      privacyFirstTitle: "Confidentialité d'Abord",
+      privacyFirstDesc: "Nous ne vendons jamais de données ni n'affichons de publicités. Vos informations restent privées, protégées et utilisées uniquement pour améliorer votre expérience d'apprentissage.",
+      enterpriseSecurityTitle: "Sécurité de Niveau Entreprise",
+      enterpriseSecurityDesc: "Toutes les données sont chiffrées en transit et au repos, sécurisées avec authentification moderne et contrôles d'accès. ACE suit les meilleures pratiques de sécurité standard de l'industrie.",
+      safeAITitle: "IA Sûre",
+      safeAIDesc: "Construit avec des garde-fous stricts et des garanties éthiques, ACE assure une utilisation responsable de l'IA sans profilage étudiant ni amplification de biais.",
+      transparencyTitle: "Transparence",
+      transparencyDesc: "Vous gardez le contrôle. Des tableaux de bord et politiques clairs montrent comment les données sont utilisées, stockées et supprimées. Pas de boîtes noires, pas de suivi caché.",
+      ferpaCompliant: "Conforme FERPA",
+      coppaCompliant: "Conforme COPPA",
+      // Teacher Features
+      intelligentGrading: "Notation Intelligente",
+      intelligentGradingDesc: "ACE fournit des commentaires instantanés, gérant plusieurs soumissions avec précision.",
+      interactiveQuizzes: "Quiz et Sondages Interactifs",
+      interactiveQuizzesDesc: "Créez des évaluations engageantes avec des résultats en temps réel et des analyses.",
+      dynamicAssignments: "Devoirs Dynamiques",
+      dynamicAssignmentsDesc: "Rationalisez la création de devoirs et suivez les soumissions dans toutes les classes.",
+      smartScheduling: "Planification Intelligente",
+      smartSchedulingDesc: "Des emplois du temps dynamiques qui se mettent à jour automatiquement avec les dates limites et les événements.",
+      realTimeProgress: "Progrès en Temps Réel",
+      realTimeProgressDesc: "Suivez les progrès de chaque étudiant en temps réel et obtenez des recommandations pour agir au moment opportun.",
+      proactiveAIAgent: "Agent IA Proactif",
+      proactiveAIAgentDesc: "ACE automatise les tâches répétitives, libérant du temps pour enseigner et inspirer.",
+      // Student Features
+      individualizedStudyCompanion: "Compagnon d'Étude Individualisé",
+      individualizedStudyCompanionDesc: "ACE s'adapte à votre style d'apprentissage, grandissant avec vous et façonnant une personnalité d'apprentissage qui vous est propre.",
+      aceModels: "Modèles ACE",
+      aceModelsDesc: "Un modèle privé et personnalisé qui se développe avec vous d'année en année, devenant un véritable compagnon d'apprentissage à long terme.",
+      longitudinalMemory: "Mémoire Longitudinale",
+      longitudinalMemoryDesc: "ACE suit votre apprentissage au fil du temps, repérant les modèles, les lacunes et les forces pour vous enseigner exactement de la manière dont vous avez besoin.",
+      checkYourUnderstanding: "Vérifiez Votre Compréhension",
+      checkYourUnderstandingDesc: "Testez vos connaissances avec des quiz interactifs et des retours instantanés.",
+      wellnessTools: "Outils de Bien-être",
+      wellnessToolsDesc: "Accédez aux exercices de pleine conscience et aux rappels de pause d'étude pour rester équilibré.",
+      // AI Toolkit
+      worksheetGeneration: "Génération de Fiches",
+      rubricCreation: "Création de Grilles",
+      quizGeneration: "Génération de Quiz",
+      reportCardComments: "Commentaires de Bulletin",
+      lessonPlanning: "Planification de Cours",
+      iepAssistance: "Assistance IEP",
+      emailDrafting: "Rédaction d'Emails",
+      reportContent: "Signaler du Contenu",
+      lovedByTeachersStudents: "Aimé par les Enseignants et les Étudiants",
+      lovedByDesc: "Histoires réelles d'éducateurs et d'apprenants qui transforment leurs salles de classe avec Schoolace.",
+      choosePlan: "Choisissez Votre Plan",
+      choosePlanDesc: "Commencez gratuitement ou montez en gamme avec les fonctionnalités Pro pour votre classe.",
+      freePlan: "Gratuit",
+      proPlan: "Pro",
+      schoolPlan: "École",
+      freePrice: "$0 /mois",
+      proPrice: "$9 /étudiant/mois facturé annuellement",
+      schoolPrice: "Contactez pour les Tarifs",
+      freeFeature1: "1 Classe",
+      freeFeature2: "Max 30 Étudiants",
+      freeFeature3: "Fonctionnalités ACE AI Limitées",
+      freeFeature4: "Support Communautaire",
+      proFeature1: "Fonctionnalités ACE AI Complètes et Agents",
+      proFeature2: "Apprentissage Personnalisé",
+      proFeature3: "Support Email",
+      proFeature4: "Support Communautaire",
+      schoolFeature1: "Fonctionnalités ACE AI Complètes et Agents",
+      schoolFeature2: "Apprentissage Personnalisé",
+      schoolFeature3: "Support Email",
+      schoolFeature4: "Support Communautaire",
+      schoolFeature5: "Domaine scolaire personnalisé",
+      schoolFeature6: "Tableau de Bord Admin",
+      schoolFeature7: "Support Prioritaire et Formation",
+      startForFree: "Commencer Gratuitement",
+      getStarted: "Commencer",
+      contactSales: "Contacter les Ventes",
+      mostPopular: "Le Plus Populaire",
+      getInTouch: "Nous Contacter",
+      getInTouchDesc: "Des questions ? Nous aimerions vous entendre. Envoyez-nous un message et nous répondrons dans les 2 jours ouvrables.",
+      contactName: "Nom *",
+      contactEmail: "Email *",
+      contactSubject: "Sujet",
+      contactMessage: "Message *",
+      yourName: "Votre nom",
+      yourEmail: "votre@email.com",
+      contactSubjectPlaceholder: "De quoi s'agit-il ?",
+      contactMessagePlaceholder: "Dites-nous en plus...",
+      sendMessage: "Envoyer le Message",
+      sending: "Envoi...",
+      thankYouMessage: "Merci ! Votre message a été envoyé avec succès.",
+      orEmailDirectly: "Ou envoyez-nous un email directement,",
+      intelligentGrading: "Notation Intelligente",
+      intelligentGradingDesc: "ACE fournit des commentaires instantanés, gérant plusieurs soumissions avec précision.",
+      interactiveQuizzes: "Quiz et Sondages Interactifs",
+      interactiveQuizzesDesc: "Créez des évaluations engageantes avec des résultats en temps réel et des analyses.",
+      dynamicAssignments: "Devoirs Dynamiques",
+      dynamicAssignmentsDesc: "Rationalisez la création de devoirs et suivez les soumissions dans toutes les classes.",
+      smartScheduling: "Planification Intelligente",
+      smartSchedulingDesc: "Des emplois du temps dynamiques qui se mettent à jour automatiquement avec les dates limites et les événements.",
+      realTimeProgress: "Progrès en Temps Réel",
+      realTimeProgressDesc: "Suivez les progrès de chaque étudiant en temps réel et obtenez des recommandations pour agir au moment opportun.",
+      proactiveAIAgent: "Agent IA Proactif",
+      proactiveAIAgentDesc: "ACE automatise les tâches répétitives, libérant du temps pour enseigner et inspirer.",
+      individualizedStudyCompanion: "Compagnon d'Étude Individualisé",
+      individualizedStudyCompanionDesc: "ACE s'adapte à votre style d'apprentissage, grandissant avec vous et façonnant une personnalité d'apprentissage qui vous est propre.",
+      aceModels: "Modèles ACE",
+      aceModelsDesc: "Un modèle privé et personnalisé qui se développe avec vous d'année en année, devenant un véritable compagnon d'apprentissage à long terme.",
+      longitudinalMemory: "Mémoire Longitudinale",
+      longitudinalMemoryDesc: "ACE suit votre apprentissage au fil du temps, repérant les modèles, les lacunes et les forces pour vous enseigner exactement de la manière dont vous avez besoin.",
+      checkYourUnderstanding: "Vérifiez Votre Compréhension",
+      checkYourUnderstandingDesc: "Testez vos connaissances avec des quiz interactifs et des retours instantanés.",
+      wellnessTools: "Outils de Bien-être",
+      wellnessToolsDesc: "Accédez aux exercices de pleine conscience et aux rappels de pause d'étude pour rester équilibré.",
+      worksheetGeneration: "Génération de Fiches",
+      rubricCreation: "Création de Grilles",
+      quizGeneration: "Génération de Quiz",
+      reportCardComments: "Commentaires de Bulletin",
+      lessonPlanning: "Planification de Cours",
+      iepAssistance: "Assistance IEP",
+      emailDrafting: "Rédaction d'Emails",
+      reportContent: "Signaler du Contenu",
+      testimonial1: "Je suis passé de 80% en algèbre à 90% après avoir utilisé Schoolace. Il a décomposé les problèmes d'une manière que mon manuel n'a jamais fait.",
+      testimonial2: "De toutes les plateformes que mon école m'a fait utiliser, Schoolace a été de loin la plus efficace pour m'aider à apprendre.",
+      testimonial3: "Il est enfin temps d'avoir une plateforme fiable, propre et efficace qui peut s'occuper de toutes les activités scolaires en un seul endroit.",
+      testimonial4: "En tant qu'éducateur confronté à l'IA générative dans les salles de classe du collège, je suis reconnaissant d'avoir un outil qui offre des gains d'efficacité en matière de notation et de feedback. Je suis continuellement surpris de la façon dont Aiden peut répondre aux demandes de mise à jour et d'améliorations ; j'attends avec impatience notre collaboration et son avenir prometteur.",
+      testimonial5: "Schoolace m'a aidé à terminer mes tâches plus efficacement. Je pouvais poser des questions à l'IA d'apprentissage personnalisé sur mes devoirs et cela enrichissait mon apprentissage.",
+      testimonial6: "Schoolace rend les devoirs beaucoup plus faciles. Si je suis bloqué, il décompose les choses étape par étape et me pose des questions en retour pour que je comprenne vraiment, au lieu de me donner la réponse.",
+      testimonial7: "La bio me confondait, mais Schoolace a tout expliqué clairement, et maintenant je comprends vraiment les concepts et je peux m'amuser en classe.",
+      testimonial8: "Schoolace m'aide à effectuer des tâches chronophages comme rédiger des e-mails et résumer des articles et me redonne beaucoup de temps pour faire des choses qui me passionnent.",
+      platformTitle: "Plateforme",
+      companyTitle: "Entreprise",
+      legalTitle: "Juridique",
+      termsOfService: "Conditions d'Utilisation",
+      privacyPolicy: "Politique de Confidentialité",
+      allSystemsOperational: "Tous les Systèmes Opérationnels",
+      copyright: "Schoolace. Tous droits réservés.",
+      // Teacher Features
+      intelligentGrading: "Notation Intelligente",
+      intelligentGradingDesc: "ACE fournit des commentaires instantanés, gérant plusieurs soumissions avec précision.",
+      interactiveQuizzes: "Quiz et Sondages Interactifs",
+      interactiveQuizzesDesc: "Créez des évaluations engageantes avec des résultats en temps réel et des analyses.",
+      dynamicAssignments: "Devoirs Dynamiques",
+      dynamicAssignmentsDesc: "Rationalisez la création de devoirs et suivez les soumissions dans toutes les classes.",
+      smartScheduling: "Planification Intelligente",
+      smartSchedulingDesc: "Des emplois du temps dynamiques qui se mettent à jour automatiquement avec les dates limites et les événements.",
+      realTimeProgress: "Progrès en Temps Réel",
+      realTimeProgressDesc: "Suivez les progrès de chaque étudiant en temps réel et obtenez des recommandations pour agir au moment opportun.",
+      proactiveAIAgent: "Agent IA Proactif",
+      proactiveAIAgentDesc: "ACE automatise les tâches répétitives, libérant du temps pour enseigner et inspirer.",
+      // Student Features
+      individualizedStudyCompanion: "Compagnon d'Étude Individualisé",
+      individualizedStudyCompanionDesc: "ACE s'adapte à votre style d'apprentissage, grandissant avec vous et façonnant une personnalité d'apprentissage qui vous est propre.",
+      aceModels: "Modèles ACE",
+      aceModelsDesc: "Un modèle privé et personnalisé qui se développe avec vous d'année en année, devenant un véritable compagnon d'apprentissage à long terme.",
+      longitudinalMemory: "Mémoire Longitudinale",
+      longitudinalMemoryDesc: "ACE suit votre apprentissage au fil du temps, repérant les modèles, les lacunes et les forces pour vous enseigner exactement de la manière dont vous avez besoin.",
+      checkYourUnderstanding: "Vérifiez Votre Compréhension",
+      checkYourUnderstandingDesc: "Testez vos connaissances avec des quiz interactifs et des retours instantanés.",
+      wellnessTools: "Outils de Bien-être",
+      wellnessToolsDesc: "Accédez aux exercices de pleine conscience et aux rappels de pause d'étude pour rester équilibré.",
+      // Testimonials
+      testimonial1: "Je suis passé de 80% en algèbre à 90% après avoir utilisé Schoolace. Il a décomposé les problèmes d'une manière que mon manuel n'a jamais fait.",
+      testimonial2: "De toutes les plateformes que mon école m'a fait utiliser, Schoolace a été de loin la plus efficace pour m'aider à apprendre.",
+      testimonial3: "Il est enfin temps d'avoir une plateforme fiable, propre et efficace qui peut s'occuper de toutes les activités scolaires en un seul endroit.",
+      testimonial4: "En tant qu'éducateur confronté à l'IA générative dans les salles de classe du collège, je suis reconnaissant d'avoir un outil qui offre des gains d'efficacité en matière de notation et de feedback. Je suis continuellement surpris de la façon dont Aiden peut répondre aux demandes de mise à jour et d'améliorations ; j'attends avec impatience notre collaboration et son avenir prometteur.",
+      testimonial5: "Schoolace m'a aidé à terminer mes tâches plus efficacement. Je pouvais poser des questions à l'IA d'apprentissage personnalisé sur mes devoirs et cela enrichissait mon apprentissage.",
+      testimonial6: "Schoolace rend les devoirs beaucoup plus faciles. Si je suis bloqué, il décompose les choses étape par étape et me pose des questions en retour pour que je comprenne vraiment, au lieu de me donner la réponse.",
+      testimonial7: "La bio me confondait, mais Schoolace a tout expliqué clairement, et maintenant je comprends vraiment les concepts et je peux m'amuser en classe.",
+      testimonial8: "Schoolace m'aide à effectuer des tâches chronophages comme rédiger des e-mails et résumer des articles et me redonne beaucoup de temps pour faire des choses qui me passionnent.",
+      testimonial9: "Les modèles d'IA de Schoolace sont incroyables. Chacun est spécialisé, donc j'obtiens une aide précise que je code, étudie les STIM ou explore de nouveaux concepts. C'est comme avoir un expert pour chaque sujet.",
+      testimonial10: "Avoir un modèle d'IA personnalisé via Schoolace change la donne. Il s'adapte à mes habitudes d'apprentissage et donne des conseils qui m'aident vraiment à m'améliorer à chaque fois.",
+      testimonial11: "Schoolace a complètement changé ma façon d'apprendre et de gérer l'école. Les commentaires personnalisés m'aident vraiment à m'améliorer, et cela me fait gagner tellement de temps que je peux me concentrer sur la compréhension plutôt que sur le travail fastidieux. J'ai l'impression que la plateforme a été construite juste pour moi.",
+      testimonial12: "Schoolace ressemble à un tuteur personnel qui me connaît vraiment. J'adore qu'il ait accès à toutes mes soumissions de devoirs et de quiz, donc je peux poser des questions sur tout ce que j'ai fait et obtenir des explications claires et personnalisées.",
+      testimonial13: "Ce qui rend Schoolace différent, c'est qu'il comprend tout mon historique d'apprentissage. Comme il a accès à tous mes devoirs et quiz, je peux lui demander n'importe quoi sur mes travaux passés et obtenir des retours qui me sont vraiment pertinents.",
+      testimonial14: "Schoolace se démarque car il se connecte directement à mes devoirs et à mon historique d'apprentissage. Au lieu de réponses génériques, il apporte une aide basée sur mon travail réel, ce qui a rendu l'étude plus efficace et moins stressante.",
+      testimonial15: "Schoolace facilite la révision et l'amélioration car il se souvient de tous mes devoirs et commentaires. Je peux poser des questions sur tout ce que j'ai soumis, ce qui m'aide à comprendre les concepts plus rapidement et à éviter de répéter les erreurs.",
+      testimonial16: "Schoolace rend l'apprentissage des STIM et du codage vraiment amusant. Il me guide à travers des concepts difficiles et m'aide à construire des projets étape par étape, donc je me sens confiant pour essayer de nouvelles choses.",
+    },
+    // Common
+    common: {
+      loading: "Chargement...",
+      save: "Enregistrer",
+      cancel: "Annuler",
+      delete: "Supprimer",
+      edit: "Modifier",
+      create: "Créer",
+      update: "Mettre à jour",
+      close: "Fermer",
+      back: "Retour",
+      next: "Suivant",
+      done: "Terminé",
+      search: "Rechercher",
+      filter: "Filtrer",
+      sort: "Trier",
+      refresh: "Actualiser",
+      settings: "Paramètres",
+      logout: "Déconnexion",
+      yes: "Oui",
+      no: "Non",
+      confirm: "Confirmer",
+      success: "Succès",
+      error: "Erreur",
+      warning: "Attention",
+      info: "Info",
+      poweredByACE: "Propulsé par ACE",
+    },
+    classSetup: {
+      welcomeTeacher: "Bienvenue, Enseignant !",
+      createNewClass: "Créer une nouvelle classe",
+      setupFirstClassroom: "Configurons votre première salle de classe",
+      createAnotherClass: "Créez une autre classe pour organiser plus d'étudiants et de devoirs.",
+      createClassPrompt: "Créez une classe pour inscrire des étudiants et publier des devoirs.",
+      createClass: "Créer une classe",
+      className: "Nom de la classe",
+      classNamePlaceholder: "ex., Algèbre 1, Période 3",
+      descriptionOptional: "Description (Optionnel)",
+      descriptionPlaceholder: "Brève description de votre classe...",
+      cancel: "Annuler",
+      creating: "Création...",
+    },
+    // Roles
+    roles: {
+      teacher: "Enseignant",
+      student: "Étudiant",
+      admin: "Administrateur",
+    },
+    // Time
+    time: {
+      today: "Aujourd'hui",
+      yesterday: "Hier",
+      tomorrow: "Demain",
+      week: "Semaine",
+      month: "Mois",
+    },
+    // AI Personal Agent
+    aiAgent: {
+      title: "Agent Personnel IA",
+      subtitle: "Votre assistant intelligent pour tout dans Schoolace",
+      closeAgent: "Fermer l'agent",
+      loading: "Veuillez patienter pendant le chargement de votre contenu",
+      processing: "Traitement...",
+      accessingData: "Accès aux données de toutes les classes...",
+      teacherPlaceholder: "Demandez-moi de faire n'importe quoi dans toutes vos classes... ex., 'Envoie un message à toutes mes classes disant que les devoirs sont pour demain !'",
+      studentPlaceholder: "Demandez-moi n'importe quoi... ex., 'Soumettre mon essai au devoir d'anglais' ou 'Montre-moi mes notes'",
+      fileReady: "Fichier prêt :",
+      uploadFile: "Télécharger un fichier",
+      greeting: "Bonjour {name} ! Je suis votre Agent Personnel IA. Que souhaitez-vous faire ?",
+    },
+    // Ace Spaces
+    aceSpaces: {
+      title: "Espaces Ace",
+      subtitle: "Collaborez avec vos camarades et Ace IA dans des chats de groupe partagés.",
+      joinWithCode: "Rejoindre avec un Code",
+      createSpace: "Créer un Espace",
+      joinSpace: "Rejoindre l'Espace",
+      enterCode: "ENTRER LE CODE",
+      joinDesc: "Entrez le code à 6 caractères partagé par un camarade.",
+      createNewSpace: "Créer un Nouvel Espace",
+      createDesc: "Démarrez un nouveau chat de groupe pour votre projet ou groupe d'étude.",
+      spaceName: "Nom de l'Espace",
+      spaceNamePlaceholder: "ex. Groupe de Projet Scientifique",
+      descOptional: "Description (Optionnel)",
+      whatsThisFor: "À quoi sert cet espace ?",
+      noSpaces: "Pas encore d'espaces",
+      noSpacesDesc: "Créez un espace pour commencer à discuter avec des amis et Ace IA, ou demandez un code à un camarade.",
+      createFirst: "Créez Votre Premier Espace",
+      openChat: "Ouvrir le Chat",
+      members: "Membres",
+      addMember: "Ajouter un Membre",
+      addMemberDesc: "Entrez l'adresse email de l'utilisateur à ajouter.",
+      copyCode: "Copier le Code",
+      leaveSpace: "Quitter l'Espace",
+      leaveConfirm: "Êtes-vous sûr de vouloir quitter \"{name}\" ?",
+      people: "Personnes",
+      files: "Fichiers",
+      notes: "Notes",
+      sharedFiles: "Fichiers Partagés",
+      noFiles: "Aucun fichier partagé pour le moment",
+      sharedNotes: "Notes Partagées",
+      addNote: "Ajouter une Note",
+      createNoteDesc: "Créez une note visible par tous les membres de l'espace.",
+      saveNote: "Enregistrer la Note",
+      noteTitle: "Titre",
+      noteTitlePlaceholder: "ex. Délais du Projet",
+      noteContent: "Contenu",
+      noteContentPlaceholder: "Tapez votre note ici...",
+      noNotes: "Pas encore de notes. Ajoutez-en une !",
+      chatWithGroup: "Discuter avec le Groupe",
+      chatWithAI: "Discuter avec l'IA",
+      askAce: "Demandez n'importe quoi à Ace IA...",
+      messageGroup: "Envoyer un message au groupe...",
+      translate: "Traduire",
+      original: "Original",
+      alwaysOnline: "Toujours en ligne",
+      admin: "Admin",
+      bot: "Bot",
+      member: "Membre",
+      deleteNoteConfirm: "Êtes-vous sûr de vouloir supprimer cette note ?",
+      uploadedFile: "A téléchargé un fichier",
+      invited: "Ajouté !",
+      codeCopied: "Code copié !",
+      translating: "Traduction...",
+    },
+    // Ace Spaces
+    aceSpaces: {
+      title: "Espaces Ace",
+      subtitle: "Collaborez avec vos camarades et Ace IA dans des chats de groupe partagés.",
+      joinWithCode: "Rejoindre avec un Code",
+      createSpace: "Créer un Espace",
+      joinSpace: "Rejoindre l'Espace",
+      enterCode: "ENTRER LE CODE",
+      joinDesc: "Entrez le code à 6 caractères partagé par un camarade.",
+      createNewSpace: "Créer un Nouvel Espace",
+      createDesc: "Démarrez un nouveau chat de groupe pour votre projet ou groupe d'étude.",
+      spaceName: "Nom de l'Espace",
+      spaceNamePlaceholder: "ex. Groupe de Projet Scientifique",
+      descOptional: "Description (Optionnel)",
+      whatsThisFor: "À quoi sert cet espace ?",
+      noSpaces: "Pas encore d'espaces",
+      noSpacesDesc: "Créez un espace pour commencer à discuter avec des amis et Ace IA, ou demandez un code à un camarade.",
+      createFirst: "Créez Votre Premier Espace",
+      openChat: "Ouvrir le Chat",
+      members: "Membres",
+      addMember: "Ajouter un Membre",
+      addMemberDesc: "Entrez l'adresse email de l'utilisateur à ajouter.",
+      copyCode: "Copier le Code",
+      leaveSpace: "Quitter l'Espace",
+      leaveConfirm: "Êtes-vous sûr de vouloir quitter \"{name}\" ?",
+      people: "Personnes",
+      files: "Fichiers",
+      notes: "Notes",
+      sharedFiles: "Fichiers Partagés",
+      noFiles: "Aucun fichier partagé pour le moment",
+      sharedNotes: "Notes Partagées",
+      addNote: "Ajouter une Note",
+      createNoteDesc: "Créez une note visible par tous les membres de l'espace.",
+      saveNote: "Enregistrer la Note",
+      noteTitle: "Titre",
+      noteTitlePlaceholder: "ex. Délais du Projet",
+      noteContent: "Contenu",
+      noteContentPlaceholder: "Tapez votre note ici...",
+      noNotes: "Pas encore de notes. Ajoutez-en une !",
+      chatWithGroup: "Discuter avec le Groupe",
+      chatWithAI: "Discuter avec l'IA",
+      askAce: "Demandez n'importe quoi à Ace IA...",
+      messageGroup: "Envoyer un message au groupe...",
+      translate: "Traduire",
+      original: "Original",
+      alwaysOnline: "Toujours en ligne",
+      admin: "Admin",
+      bot: "Bot",
+      member: "Membre",
+      deleteNoteConfirm: "Êtes-vous sûr de vouloir supprimer cette note ?",
+      uploadedFile: "A téléchargé un fichier",
+      invited: "Ajouté !",
+      codeCopied: "Code copié !",
+      translating: "Traduction...",
+    },
+    // PowerSchool
+    powerSchool: {
+      title: "Intégration PowerSchool",
+      comingSoon: "Intégration Bientôt Disponible !",
+      description: "Nous travaillons dur pour vous offrir une intégration PowerSchool transparente. Bientôt, vous pourrez dynamiser votre flux de travail avec ces fonctionnalités puissantes.",
+      syncGradesTitle: "Synchroniser les Notes Instantanément",
+      syncGradesDescription: "Envoyez les notes de devoirs de Schoolace directement vers votre carnet de notes PowerSchool en un seul clic.",
+      automateTitle: "Automatiser la Saisie des Notes",
+      automateDescription: "Laissez notre IA gérer la notation, puis synchronisez automatiquement les résultats vers PowerSchool, vous économisant des heures de saisie manuelle de données.",
+    },
+  },
 };
 
-const FloatingOrbs = () => {
-  const orbs = Array.from({ length: 0 }, (_, i) =>
-    <motion.div
-      key={i}
-      className="absolute w-2 h-2 bg-white/20 rounded-full blur-sm"
-      initial={{
-        x: Math.random() * window.innerWidth,
-        y: Math.random() * window.innerHeight
-      }}
-      animate={{
-        x: Math.random() * window.innerWidth,
-        y: Math.random() * window.innerHeight,
-        opacity: [0.2, 0.8, 0.2]
-      }}
-      transition={{
-        duration: Math.random() * 8 + 4,
-        repeat: Infinity,
-        ease: "easeInOut",
-        delay: Math.random() * 2
-      }} />);
-
-  return <div className="fixed inset-0 z-5 pointer-events-none">{orbs}</div>;
-};
-
-// New floating particles for more ambient animation
-const FloatingParticles = () => {
-  const particles = Array.from({ length: 0 }, (_, i) =>
-    <motion.div
-      key={i}
-      className="absolute w-0.5 h-0.5 bg-blue-300/30 rounded-full"
-      initial={{
-        x: Math.random() * window.innerWidth,
-        y: window.innerHeight + 20
-      }}
-      animate={{
-        y: -20,
-        x: Math.random() * window.innerWidth,
-        opacity: [0, 0.6, 0]
-      }}
-      transition={{
-        duration: Math.random() * 15 + 10,
-        repeat: Infinity,
-        delay: Math.random() * 10,
-        ease: "linear"
-      }} />);
-
-  return <div className="fixed inset-0 z-5 pointer-events-none">{particles}</div>;
-};
-
-// Animated counter
-const AnimatedCounter = ({ end, duration = 3, className, suffix = "" }) => {
-  const [count, setCount] = useState(0);
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, amount: 0.3 });
-
-  useEffect(() => {
-    if (isInView) {
-      // Use Framer Motion's animate function
-      const controls = animate(0, end, {
-        duration: duration,
-        ease: "easeIn", // This is the key change: starts slow, speeds up
-        onUpdate(value) {
-          setCount(Math.floor(value));
-        }
-      });
-
-      // Return a cleanup function to stop the animation
-      return () => controls.stop();
-    }
-  }, [isInView, end, duration]);
-
-  return <span ref={ref} className={className}>{count}{suffix}</span>;
-};
-
-// Typewriter effect component
-const TypewriterText = ({ text, className }) => {
-  const [displayedText, setDisplayedText] = useState("");
-  const [isComplete, setIsComplete] = useState(false);
-
-  useEffect(() => {
-    if (text) {
-      let i = 0;
-      setDisplayedText("");
-      setIsComplete(false);
-      const intervalId = setInterval(() => {
-        if (i < text.length) {
-          setDisplayedText(text.substring(0, i + 1));
-          i++;
+export function t(key, language = 'EN') {
+  const keys = key.split('.');
+  let value = translations[language] || translations.EN;
+  
+  for (const k of keys) {
+    if (value && value[k] !== undefined) {
+      value = value[k];
+    } else {
+      // Fallback to English
+      value = translations.EN;
+      for (const fallbackKey of keys) {
+        if (value && value[fallbackKey] !== undefined) {
+          value = value[fallbackKey];
         } else {
-          clearInterval(intervalId);
-          setIsComplete(true);
+          return key; // Return key if translation not found
         }
-      }, 50);
-
-      return () => clearInterval(intervalId);
-    }
-  }, [text]);
-
-  return (
-    <span className={className}>
-      {displayedText}
-    </span>
-  );
-};
-
-const HeaderNav = () => {
-  const { t } = useTranslation();
-  return (
-    <nav className="hidden md:flex items-center gap-8">
-      <a href="#features" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">{t('landing.forTeachers')}</a>
-      <a href="#student-features" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">{t('landing.forStudents')}</a>
-      <a href="#co-pilot" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">{t('landing.aiCapabilities')}</a>
-      <a href="#testimonials" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">{t('landing.testimonials')}</a>
-      <a href="#pricing" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">{t('landing.pricing')}</a>
-      <a href="#contact" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">{t('landing.contact')}</a>
-    </nav>
-  );
-};
-
-const Header = () => {
-  return (
-    <header className="py-6 px-4 sm:px-6 lg:px-8 sticky top-0 z-50 backdrop-blur-sm bg-black/10">
-      <div className="max-w-7xl mx-auto flex justify-between items-center">
-        <div className="flex items-center gap-8">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-              <GraduationCap className="w-6 h-6 text-white" />
-            </div>
-            <span className="text-lg font-bold text-white">Schoolace</span>
-          </div>
-
-          <HeaderNav />
-        </div>
-      </div>
-    </header>);
-
-};
-
-// Enhanced pricing card with animated email reveal
-const PricingCard = ({ plan, price, features, cta, isFeatured, isPrimary, linkTo, onCtaClick }) => {
-  const cardRef = useRef(null);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [showContactEmail, setShowContactEmail] = useState(false);
-  const [typewriterText, setTypewriterText] = useState("");
-  const { t } = useTranslation();
-
-  const handleMouseMove = (e) => {
-    if (cardRef.current) {
-      const rect = cardRef.current.getBoundingClientRect();
-      setMousePosition({
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top
-      });
-    }
-  };
-
-  const handleContactSales = () => {
-    setShowContactEmail(true);
-    const email = "contact@schoolace.org";
-    let index = 0;
-    const typewriter = setInterval(() => {
-      if (index < email.length) {
-        setTypewriterText(email.slice(0, index + 1));
-        index++;
-      } else {
-        clearInterval(typewriter);
       }
-    }, 50);
-  };
-
-  // Split price into main and suffix
-  const getPriceDisplay = () => {
-    // Free tier: $0 USD \n / month
-    if (price === t('landing.freePrice')) {
-      return (
-        <>
-          <div className="flex items-baseline gap-2 mb-1">
-            <span className="text-4xl font-extrabold text-white">$0</span>
-            <span className="text-sm font-normal text-slate-400">USD</span>
-          </div>
-          <div className="text-base font-normal text-slate-300">/ month</div>
-        </>
-      );
+      break;
     }
-
-    // Pro tier: $9 USD / student / month, billed annually \n $20 when billed monthly
-    if (price.includes('$9 /student/mo')) {
-      return (
-        <>
-          <div className="flex items-baseline gap-2 mb-1">
-            <span className="text-4xl font-extrabold text-white">$21</span>
-            <span className="text-sm font-normal text-slate-400">USD</span>
-          </div>
-          <div className="text-base font-normal text-slate-300 mb-1">/ student / month, billed annually</div>
-          <div className="text-base font-normal text-slate-400">$12 when billed monthly</div>
-        </>
-      );
-    }
-
-    // School tier or any other
-    return <div className="text-3xl font-extrabold text-white">{price}</div>;
-  };
-
-
-  // Determine button style based on plan
-  const isGreyButton = plan === t('landing.freePlan') || plan === t('landing.schoolPlan');
-  const buttonClassName = isGreyButton
-    ? 'bg-slate-700 hover:bg-slate-600 text-white'
-    : 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white shadow-2xl shadow-indigo-500/30';
-
-  return (
-    <motion.div
-      ref={cardRef}
-      onMouseMove={isFeatured ? handleMouseMove : undefined}
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.3 }}
-      transition={{ type: 'spring' }}
-      className={`relative p-8 rounded-2xl backdrop-blur-xl border overflow-hidden group ${isFeatured ? 'bg-slate-900/60 border-slate-700/50' : 'bg-slate-900/40 border-slate-700/50'}`}>
-
-
-      <div className="relative z-10 flex flex-col h-full">
-        <div className="flex items-center justify-between mb-2">
-          <h3 className="text-2xl font-bold text-white">{plan}</h3>
-          {isFeatured &&
-            <span className="flex items-center gap-1.5 text-xs font-semibold text-orange-400 bg-orange-500/20 px-2.5 py-1 rounded-full">
-              <Crown className="w-3 h-3" />
-              {t('landing.mostPopular')}
-            </span>
-          }
-        </div>
-
-        <div className="mb-6 min-h-[120px] flex flex-col justify-center">
-          {getPriceDisplay()}
-        </div>
-
-        {/* Features list - this will grow to fill available space */}
-        <ul className="space-y-4 mb-8 flex-grow">
-          {features.map((feature, i) =>
-            <li key={i} className="flex items-center gap-3 text-slate-300">
-              <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" />
-              <span>{feature}</span>
-            </li>
-          )}
-        </ul>
-
-
-        <div className="mt-auto">
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            {onCtaClick ?
-              <Button
-                onClick={onCtaClick}
-                className={`w-full py-6 text-lg font-semibold rounded-xl transition-all duration-300 flex items-center justify-center gap-2 ${buttonClassName}`}>
-                {cta}
-                <ArrowRight className="w-5 h-5" />
-              </Button> :
-              linkTo ?
-                <Link to={linkTo}>
-                  <Button className={`w-full py-6 text-lg font-semibold rounded-xl transition-all duration-300 flex items-center justify-center gap-2 ${buttonClassName}`}>
-                    {cta}
-                    <ArrowRight className="w-5 h-5" />
-                  </Button>
-                </Link> :
-
-                <Button
-                  onClick={handleContactSales}
-                  className={`w-full py-6 text-lg font-semibold rounded-xl transition-all duration-300 flex items-center justify-center gap-2 ${buttonClassName}`}>
-                  {cta}
-                  <ArrowRight className="w-5 h-5" />
-                </Button>
-            }
-          </motion.div>
-
-          {/* Contact email reveal - only for school tier, positioned below button */}
-          {showContactEmail &&
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mt-4 p-4 bg-slate-800/80 rounded-lg border border-slate-600/50">
-
-              <p className="text-sm text-slate-400 mb-2">Contact us at:</p>
-              <p className="font-mono text-cyan-400">{typewriterText}</p>
-            </motion.div>
-          }
-        </div>
-      </div>
-    </motion.div>);
-
-};
-
-
-
-const ChartCard = ({ title, value, valueColor, data, color, gradientId, isLineChart = false, maxValue, ticks }) => {
-  const containerRef = useRef(null);
-  const isInView = useInView(containerRef, { once: true, amount: 0.4 });
-  const [animationProgress, setAnimationProgress] = useState(0);
-
-  useEffect(() => {
-    if (isInView && data.length > 0) {
-
-      const duration = 6000;
-      const startTime = Date.now();
-
-      const animateProgress = () => {
-        const elapsed = Date.now() - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-
-        // Easing function for smooth animation (ease-out)
-        const easedProgress = 1 - Math.pow(1 - progress, 3);
-
-        setAnimationProgress(easedProgress);
-
-        if (progress < 1) {
-          requestAnimationFrame(animateProgress);
-        }
-      };
-
-      // Small delay before starting
-      const timeout = setTimeout(() => {
-        requestAnimationFrame(animateProgress);
-      }, 300);
-
-      return () => clearTimeout(timeout);
-    }
-  }, [isInView, data.length]); // Fix: Removed 'end' and 'duration' from dependencies
-
-  // Create animated data where values are interpolated based on progress
-  const animatedData = data.map((point, index) => {
-    const targetValue = point.val;
-    const animatedValue = targetValue * animationProgress;
-    return {
-      ...point,
-      val: animatedValue
-    };
-  });
-
-  const match = value.match(/([+])?(\d+(\.\d+)?)(.*)/); // Modified regex to capture decimals
-  let prefix = '';
-  let number = 0;
-  let suffix = '';
-
-  if (match) {
-    prefix = match[1] || '';
-    number = parseFloat(match[2]); // Use parseFloat for decimal numbers
-    suffix = match[4] || ''; // Adjusted index for suffix due to new capture group
   }
-
-  return (
-    <div ref={containerRef} className="p-6 bg-slate-900/40 border border-slate-700/50 rounded-2xl backdrop-blur-md">
-      <div className="flex justify-between items-center mb-6">
-        <h4 className="font-semibold text-white text-lg">{title}</h4>
-        <p className={`font-bold text-3xl ${valueColor}`}>
-          {prefix}
-          <AnimatedCounter end={number} duration={4.5} />
-          {suffix}
-        </p>
-      </div>
-
-      <div className="h-48">
-        <ResponsiveContainer width="100%" height="100%">
-          {isLineChart ? (
-            <LineChart data={animatedData} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
-              <defs>
-                <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor={color} stopOpacity={0.8} />
-                  <stop offset="95%" stopColor={color} stopOpacity={0.1} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.3} /> {/* Added CartesianGrid to AreaChart */}
-              <XAxis
-                dataKey="name"
-                tick={{ fill: '#94a3b8', fontSize: 12 }}
-                tickLine={false}
-                axisLine={false}
-                interval={0} />
-
-              <YAxis
-                tick={{ fill: '#94a3b8', fontSize: 12 }}
-                tickLine={false}
-                axisLine={false}
-                domain={[0, maxValue || 'dataMax + 5']}
-                ticks={ticks} />
-
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: 'rgba(15, 23, 42, 0.95)',
-                  borderColor: '#334155',
-                  borderRadius: '0.5rem',
-                  color: '#f1f5f9',
-                  fontSize: '12px'
-                }}
-                labelStyle={{ fontWeight: 'bold' }}
-                cursor={{ stroke: 'rgba(100, 116, 139, 0.3)', strokeWidth: 2 }}
-                formatter={(value) => [value.toFixed(2), '']} />
-
-              <Line
-                type="monotone"
-                dataKey="val"
-                stroke={color}
-                strokeWidth={3}
-                dot={{ stroke: color, strokeWidth: 2, r: 4, fill: color }}
-                isAnimationActive={true}
-                animationDuration={2000}
-                animationEasing="ease-out" />
-            </LineChart>
-          ) : (
-            <AreaChart data={animatedData} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
-              <defs>
-                <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor={color} stopOpacity={0.8} />
-                  <stop offset="95%" stopColor={color} stopOpacity={0.1} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.3} /> {/* Added CartesianGrid to AreaChart */}
-              <XAxis
-                dataKey="name"
-                tick={{ fill: '#94a3b8', fontSize: 12 }}
-                tickLine={false}
-                axisLine={false}
-                interval={0} />
-
-              <YAxis
-                tick={{ fill: '#94a3b8', fontSize: 12 }}
-                tickLine={false}
-                axisLine={false}
-                domain={[0, maxValue || 'dataMax + 5']}
-                ticks={ticks} />
-
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: 'rgba(15, 23, 42, 0.95)',
-                  borderColor: '#334155',
-                  borderRadius: '0.5rem',
-                  color: '#f1f5f9',
-                  fontSize: '12px'
-                }}
-                labelStyle={{ fontWeight: 'bold' }}
-                cursor={{ stroke: 'rgba(100, 116, 139, 0.3)', strokeWidth: 2 }}
-                formatter={(value) => [value.toFixed(2), '']} />
-
-              <Area
-                type="monotone"
-                dataKey="val"
-                stroke={color}
-                strokeWidth={3}
-                fill={`url(#${gradientId})`}
-                dot={false} // Only dots for LineChart, not AreaChart
-                isAnimationActive={true}
-                animationDuration={2000}
-                animationEasing="ease-out" />
-
-            </AreaChart>
-          )}
-        </ResponsiveContainer>
-      </div>
-    </div>);
-
-};
-
-
-
-const MetricCard = ({ title, value, color, delay }) => {
-  return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.9 }}
-      whileInView={{ opacity: 1, scale: 1 }}
-      viewport={{ once: true, amount: 0.5 }}
-      transition={{ duration: 0.5, delay: delay }}
-      className="p-6 bg-slate-900/40 border border-slate-700/50 rounded-2xl backdrop-blur-md text-center">
-
-      <p className={`text-4xl font-bold mb-2 ${color}`}>{value}</p>
-      <p className="text-white font-bold text-lg">{title}</p>
-    </motion.div>);
-
-};
-
-// Updated TestimonialCard component without individual entrance animations
-const TestimonialCard = ({ testimonial }) => {
-  const cardRef = useRef(null);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-
-  const handleMouseMove = (e) => {
-    if (cardRef.current) {
-      const rect = cardRef.current.getBoundingClientRect();
-      setMousePosition({
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top
-      });
-    }
-  };
-
-  return (
-    <motion.div
-      ref={cardRef}
-      onMouseMove={handleMouseMove}
-      whileHover={{
-        scale: 1.03,
-        y: -5,
-        boxShadow: "0 20px 40px rgba(0,0,0,0.4)"
-      }}
-      className="group/card relative h-full p-8 rounded-2xl backdrop-blur-xl border overflow-hidden flex flex-col bg-gradient-to-br from-slate-900/50 to-slate-800/50 border-slate-700/50">
-
-      {/* Mouse-following glow */}
-      <motion.div
-        className="absolute inset-0 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 pointer-events-none"
-        style={{
-          background: `radial-gradient(350px at ${mousePosition.x}px ${mousePosition.y}px, rgba(168, 85, 247, 0.15), transparent 80%)`
-        }} />
-
-      {/* Animated glowing border */}
-      <div className="absolute -inset-px bg-gradient-to-r from-indigo-500/0 via-purple-500/30 to-indigo-500/0 rounded-2xl opacity-0 group-hover/card:opacity-100 transition-opacity duration-500 blur-sm"></div>
-      <div className="absolute -inset-px bg-gradient-to-r from-indigo-500/0 via-purple-500/20 to-indigo-500/0 rounded-2xl opacity-0 group-hover/card:opacity-100 transition-opacity duration-500"></div>
-
-      <div className="relative z-10 flex flex-col h-full">
-        <div className="flex-grow mb-6">
-          <blockquote className="text-slate-200 leading-relaxed italic" style={{ textShadow: '0 0 4px #fff' }}>
-            "{testimonial.quote}"
-          </blockquote>
-        </div>
-        <div className="flex items-center gap-4 mt-auto pt-4 border-t border-slate-700/50">
-          {testimonial.imageUrl ?
-            <img src={testimonial.imageUrl} alt={testimonial.name} className="w-12 h-12 rounded-full object-cover shadow-lg" style={{ filter: 'drop-shadow(0 0 8px rgba(139, 92, 246, 0.4))' }} /> :
-
-            <div className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-xl
-                              ${testimonial.role === 'Teacher' ? 'bg-indigo-600' : 'bg-purple-600'}
-                              shadow-lg`}
-              style={{ filter: 'drop-shadow(0 0 8px rgba(139, 92, 246, 0.4))' }}>
-              {testimonial.name.charAt(0)}
-            </div>
-          }
-          <div>
-            <p className="font-semibold text-white text-lg">{testimonial.name}</p>
-            <p className="text-slate-400 text-sm">{testimonial.role}</p>
-          </div>
-        </div>
-      </div>
-    </motion.div>);
-
-};
-
-
-// A function to get the formatted date
-const getFormattedDate = () => {
-  const options = { year: 'numeric', month: 'long', day: 'numeric' };
-  return new Date().toLocaleDateString('en-US', options);
-};
-
-// Define specific dates for Terms and Privacy
-const specificDate = "September 1, 2025";
-const lastUpdated = "October 12, 2025";
-
-const TermsContent = () => (
-  <div className="prose prose-slate max-w-none text-slate-700">
-    <p className="text-sm text-slate-500 mb-6">
-      <strong>Effective Date:</strong> {specificDate}<br />
-      <strong>Last Updated:</strong> {lastUpdated}
-    </p>
-    <p>Welcome to SchoolAce, an all-in-one, AI-powered education platform that streamlines classroom management and enhances student learning. These Terms of Service ("Terms") govern your access to and use of SchoolAce ("Service" or "Platform"). By creating an account, accessing, or using the Service, you agree to be bound by these Terms. If you do not agree, do not use SchoolAce.</p>
-
-    <h2>1. Eligibility and School Authorization</h2>
-    <ul>
-      <li><strong>Teachers and School Staff:</strong> You must be at least 18 years old and authorized by your school or educational institution to use SchoolAce on behalf of students.</li>
-      <li><strong>Students:</strong> Student access must be authorized by the school. Students under 18 may only use the Platform under school supervision and with appropriate parental consent obtained by the school.</li>
-      <li><strong>School Authorization Model:</strong> SchoolAce operates under school authorization. Schools are responsible for obtaining necessary parental consents and ensuring compliance with applicable laws.</li>
-      <li>You are responsible for ensuring your use complies with all applicable laws, regulations, and school policies.</li>
-    </ul>
-
-    <h2>2. Accounts and Security</h2>
-    <ul>
-      <li>You must provide accurate and complete information when creating an account.</li>
-      <li>You are responsible for maintaining the confidentiality of your login credentials.</li>
-      <li>Multi-factor authentication (MFA) may be required for enhanced security.</li>
-      <li>You must immediately notify us at <a href="mailto:contact@schoolace.org">contact@schoolace.org</a> of any unauthorized access to your account.</li>
-      <li>SchoolAce is not liable for loss or damage arising from your failure to secure your account.</li>
-      <li>Access to student information is restricted to authorized school personnel with legitimate educational interests only.</li>
-    </ul>
-
-    <h2>3. Acceptable Use</h2>
-    <p>When using SchoolAce, you agree not to:</p>
-    <ol>
-      <li>Use the Service for unlawful purposes or to promote illegal activities.</li>
-      <li>Post or transmit any content that is harmful, harassing, defamatory, obscene, or otherwise inappropriate.</li>
-      <li>Attempt to access, modify, or disrupt any part of the Platform without authorization.</li>
-      <li>Upload malicious code, viruses, or any harmful software.</li>
-      <li>Misuse AI-generated content to mislead, harass, or impersonate others.</li>
-      <li>Access or attempt to access student data for which you do not have proper authorization.</li>
-      <li>Use student data for any purpose other than providing educational services authorized by the school.</li>
-    </ol>
-
-    <h2>4. Data Ownership and School Rights</h2>
-    <ul>
-      <li><strong>School Data Ownership:</strong> Schools retain full ownership and control over all student education records and data. SchoolAce acts solely as a service provider processing data on behalf of schools.</li>
-      <li><strong>Your Content:</strong> You retain ownership of all educational materials, assignments, and other content you upload. You grant SchoolAce a non-exclusive, worldwide license to host, store, and process your content solely to provide the Service.</li>
-      <li><strong>Student Data:</strong> All student data is owned by the school and is used exclusively for educational purposes. SchoolAce does not sell, rent, or share student data with third parties except as necessary to provide the Service (see Section 5).</li>
-      <li><strong>AI-Generated Content:</strong> Any AI-generated lesson plans, assignments, quizzes, or feedback produced through the Platform are provided "as is" for educational purposes. You are responsible for reviewing and verifying AI outputs before using them with students.</li>
-      <li><strong>Data Isolation:</strong> Student data from each school is kept completely separate. We do not aggregate or analyze data across schools.</li>
-      <li><strong>SchoolAce Content:</strong> All branding, software, and proprietary tools remain the property of SchoolAce and are protected by intellectual property laws.</li>
-    </ul>
-
-    <h2>5. Privacy and Data Protection</h2>
-    <ul>
-      <li><strong>Privacy Policy:</strong> Your privacy is important to us. Our Privacy Policy (linked separately) explains in detail how we collect, use, and protect your data.</li>
-      <li><strong>FERPA Compliance:</strong> SchoolAce complies with the Family Educational Rights and Privacy Act (FERPA). We act as a "school official" under FERPA's school official exception (20 U.S.C. § 1232g; 34 CFR Part 99), performing institutional services that schools would otherwise perform themselves.</li>
-      <li><strong>COPPA Compliance:</strong> SchoolAce complies with the Children's Online Privacy Protection Act (COPPA) under the school authorization exception. Schools are responsible for obtaining parental consent for students under 13.</li>
-      <li><strong>Direct School Control:</strong> Schools maintain direct control over SchoolAce's use of education records through these Terms and may terminate access at any time. Data use is limited strictly to educational purposes authorized by the school.</li>
-      <li><strong>Third-Party Service Providers:</strong> SchoolAce uses cloud service providers based in US to process the data
-      </li>
-      <li><strong>Prohibited Uses:</strong> SchoolAce will NOT:
-        <ul>
-          <li>Sell or rent student data to any third party</li>
-          <li>Use student data for behavioral advertising or marketing</li>
-          <li>Build student profiles for non-educational purposes</li>
-          <li>Share student data except as disclosed above or required by law</li>
-          <li>Use student data for product development unrelated to educational services</li>
-        </ul>
-      </li>
-      <li><strong>Data Location:</strong> All data is stored and processed within the United States.</li>
-    </ul>
-
-    <h2>6. Security Measures</h2>
-    <ul>
-      <li><strong>Encryption:</strong> All data is encrypted in transit using TLS 1.2+ and at rest using AES-256 encryption.</li>
-      <li><strong>Access Controls:</strong> Strict authentication and least-privilege access controls are enforced. All administrative actions are logged and monitored.</li>
-      <li><strong>Incident Response:</strong> In the event of a data security incident, we will immediately notify affected schools and cooperate fully in accordance with applicable laws and regulations.</li>
-    </ul>
-
-    <h2>7. Data Retention and Deletion</h2>
-    <ul>
-      <li><strong>Retention Period:</strong> Student data is retained only for the minimum period necessary to provide educational services during the active contract term with the school.</li>
-      <li><strong>Deletion Rights:</strong> Schools may request correction or deletion of student information at any time by contacting <a href="mailto:contact@schoolace.org">contact@schoolace.org</a>.</li>
-      <li><strong>Contract Termination:</strong> Upon contract termination, all student data will be securely deleted unless the school requests otherwise or retention is required by law.</li>
-      <li><strong>Data Portability:</strong> Schools may request export of their student data in a structured, usable format at any time.</li>
-      <li><strong>Post-Termination Access:</strong> Schools may request a copy of stored data within 30 days of account termination.</li>
-    </ul>
-
-    <h2>8. Parental Rights and School Responsibilities</h2>
-    <ul>
-      <li><strong>FERPA Rights:</strong> Parents have the right to inspect, review, and request amendments to their child's education records through the school. SchoolAce supports schools in fulfilling these obligations.</li>
-      <li><strong>School-Mediated Access:</strong> All parent requests regarding student data should be directed to the school. SchoolAce provides administrative tools to help schools manage these requests.</li>
-      <li><strong>Material Changes:</strong> We will notify schools at least 30 days before any material changes to our data collection or privacy practices take effect.</li>
-    </ul>
-
-    <h2>9. Payments and Subscriptions</h2>
-    <ul>
-      <li>Schools or teachers pay a subscription fee for access to premium features.</li>
-      <li>Payments are billed in advance and are non-refundable unless otherwise stated by law.</li>
-      <li>We may change pricing with at least 30 days' notice to active subscribers.</li>
-      <li>Failure to pay may result in suspension or termination of account access.</li>
-      <li>Payment processing is handled securely through Stripe and does not involve student educational data.</li>
-    </ul>
-
-    <h2>10. Service Availability and Maintenance</h2>
-    <ul>
-      <li>We aim for reliable uptime but do not guarantee uninterrupted service.</li>
-      <li>Scheduled maintenance, updates, or technical issues may cause temporary downtime.</li>
-      <li>We will provide advance notice of scheduled maintenance when possible.</li>
-      <li>While we implement robust backup systems, we are not liable for data loss. Schools should maintain local backups of critical materials.</li>
-    </ul>
-
-    <h2>11. Termination</h2>
-    <p>We may suspend or terminate your account if you:</p>
-    <ul>
-      <li>Violate these Terms or our Privacy Policy,</li>
-      <li>Engage in unlawful activity,</li>
-      <li>Compromise the platform's security or integrity,</li>
-      <li>Access student data without proper authorization, or</li>
-      <li>Use student data for unauthorized purposes.</li>
-    </ul>
-    <p>Schools may terminate their use of SchoolAce at any time. Upon termination, the school's right to use the Service ends immediately, and data deletion procedures outlined in Section 7 will be followed.</p>
-
-    <h2>12. Disclaimers</h2>
-    <ul>
-      <li>The Service and all AI-generated outputs are provided "as is" without warranties of any kind, express or implied.</li>
-      <li>We do not guarantee accuracy, completeness, or suitability of AI-generated materials for your specific educational needs.</li>
-      <li>You are responsible for reviewing and verifying all educational content, especially AI-generated content, before use with students.</li>
-      <li>SchoolAce does not guarantee specific educational outcomes or student performance improvements.</li>
-    </ul>
-
-    <h2>13. Limitation of Liability</h2>
-    <p>To the fullest extent permitted by law, SchoolAce is not liable for:</p>
-    <ul>
-      <li>Indirect, incidental, special, consequential, or punitive damages,</li>
-      <li>Loss of data, profits, revenue, or educational outcomes,</li>
-      <li>Any damages exceeding the amount paid to us in the last 12 months,</li>
-      <li>Unauthorized access resulting from user's failure to secure their account,</li>
-      <li>Issues arising from third-party service providers beyond our reasonable control.</li>
-    </ul>
-    <p>Some jurisdictions do not allow limitation of liability for certain types of damages, so these limitations may not apply to you.</p>
-
-    <h2>14. Indemnification</h2>
-    <p>You agree to indemnify and hold harmless SchoolAce from any claims, damages, or expenses arising from:</p>
-    <ul>
-      <li>Your violation of these Terms,</li>
-      <li>Your unauthorized use of student data,</li>
-      <li>Your violation of any laws or regulations,</li>
-      <li>Content you upload or share through the Service.</li>
-    </ul>
-
-    <h2>15. Compliance and Auditing</h2>
-    <ul>
-      <li>SchoolAce undergoes periodic internal compliance reviews to ensure adherence to FERPA, COPPA, and other applicable regulations.</li>
-      <li>Schools may request information about our data practices and security measures.</li>
-      <li>We maintain detailed access logs and administrative action records for security and compliance purposes.</li>
-    </ul>
-
-    <h2>16. Changes to Terms</h2>
-    <p>We may update these Terms from time to time to reflect changes in our practices, legal requirements, or Service features. If we make material changes, we will notify schools and active users by email or through prominent notice on the Platform at least 30 days before the changes take effect. Continued use after changes means you accept the updated Terms.</p>
-
-    <h2>17. Governing Law and Dispute Resolution</h2>
-    <ul>
-      <li>These Terms are governed by the laws of the State of California, without regard to conflict of law principles.</li>
-      <li>Any disputes shall be resolved in the state or federal courts located in California.</li>
-      <li>You agree to waive any right to a jury trial.</li>
-    </ul>
-
-    <h2>18. Severability</h2>
-    <p>If any provision of these Terms is found to be unenforceable or invalid, that provision will be limited or eliminated to the minimum extent necessary, and the remaining provisions will remain in full force and effect.</p>
-
-    <h2>19. Contact and Privacy Officer</h2>
-    <p>If you have questions about these Terms, our privacy practices, or data handling:</p>
-    <ul>
-      <li><strong>Email:</strong> <a href="mailto:contact@schoolace.org">contact@schoolace.org</a></li>
-      <li><strong>Privacy Officer:</strong> SchoolAce Administrator</li>
-    </ul>
-    <p>For FERPA-related concerns or to exercise parental rights, please contact your school directly. For data security incidents or breaches, contact us immediately at the email above.</p>
-
-    <h2>20. Entire Agreement</h2>
-    <p>These Terms, together with our Privacy Policy, constitute the entire agreement between you and SchoolAce regarding use of the Service and supersede all prior agreements and understandings.</p>
-
-    <hr />
-
-    <p><strong>By using SchoolAce, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service. If you are using SchoolAce on behalf of a school or educational institution, you represent that you have the authority to bind that institution to these Terms.</strong></p>
-  </div>
-);
-
-const PrivacyContent = () => (
-  <div className="prose prose-slate max-w-none text-slate-700">
-    <p className="text-sm text-slate-500 mb-6">
-      <strong>Effective Date:</strong> {specificDate}<br />
-      <strong>Last Updated:</strong> {lastUpdated}
-    </p>
-    <p>Schoolace ("we," "our," or "us") is committed to protecting the privacy of teachers, students, and all users of our platform. This Privacy Policy explains how we collect, use, store, and protect your information when you use our services. By using Schoolace, you agree to this Privacy Policy. If you do not agree, please do not use our platform.</p>
-
-    <h2>1. Our Commitment to Student Privacy</h2>
-    <p>Schoolace takes student privacy seriously and complies with all applicable federal and state student privacy laws, including:</p>
-    <ul>
-      <li><strong>FERPA (Family Educational Rights and Privacy Act):</strong> We act as a "school official" under FERPA's school official exception (20 U.S.C. § 1232g; 34 CFR Part 99), performing institutional services that schools would otherwise perform themselves. Schools maintain direct control over our use of education records.</li>
-      <li><strong>COPPA (Children's Online Privacy Protection Act):</strong> We operate under the school authorization exception (16 CFR § 312.5(c)(3)). Schools are responsible for obtaining parental consent for students under 13. Schoolace does not collect personal information directly from children.</li>
-      <li><strong>State Laws:</strong> We comply with applicable state student privacy laws, including California SOPIPA and similar regulations.</li>
-    </ul>
-
-    <h2>2. How Schoolace Operates</h2>
-    <ul>
-      <li><strong>School-Based Model:</strong> Schoolace provides services directly to schools and teachers. We do not interact directly with parents or students for data collection or consent purposes.</li>
-      <li><strong>Data Processor Role:</strong> Schools retain full ownership and control of all student education records. Schoolace acts solely as a service provider processing data on behalf of schools.</li>
-      <li><strong>Educational Purpose Only:</strong> All student data is used exclusively to provide educational services authorized by schools. We do not use student data for any commercial purposes.</li>
-    </ul>
-
-    <h2>3. Information We Collect</h2>
-    <p><strong>a. Information Provided by Schools and Teachers</strong></p>
-    <ul>
-      <li>Teacher account details (name, email, school affiliation)</li>
-      <li>Student information (names, email addresses if provided by school, grade levels)</li>
-      <li>Educational content (assignments, quizzes, schedules, classroom materials)</li>
-      <li>Academic performance data (grades, feedback, progress tracking)</li>
-      <li>Communications within the platform (teacher-student messages, comments, feedback)</li>
-    </ul>
-
-    <p><strong>b. Payment Information (Schools/Teachers Only)</strong></p>
-    <ul>
-      <li>Billing information for school or teacher subscriptions</li>
-      <li>Payment processing is handled securely by Stripe</li>
-      <li>We do not store complete credit card numbers</li>
-      <li><strong>Important:</strong> Payment data is completely separate from student educational data and is not linked to student records</li>
-    </ul>
-
-    <p><strong>c. Technical Information Collected Automatically</strong></p>
-    <ul>
-      <li>IP address, browser type, operating system</li>
-      <li>Device identifiers and usage logs</li>
-      <li>Platform activity (pages visited, features used, session duration)</li>
-      <li>Error logs and diagnostic information for service improvement</li>
-    </ul>
-
-    <p><strong>d. What We Do NOT Collect</strong></p>
-    <ul>
-      <li>Social Security Numbers or government identification numbers</li>
-      <li>Financial information from students</li>
-      <li>Health or medical information</li>
-      <li>Biometric data</li>
-      <li>Precise geolocation data</li>
-      <li>Social media information or behavioral tracking for advertising</li>
-    </ul>
-
-    <h2>4. How We Use Information</h2>
-    <p><strong>a. Educational Services (Primary Purpose)</strong></p>
-    <ul>
-      <li>Provide classroom management tools and learning features</li>
-      <li>Generate AI-assisted lesson plans, quizzes, and assignments</li>
-      <li>Provide automated grading and personalized feedback</li>
-      <li>Track student progress and generate performance analytics for teachers</li>
-      <li>Facilitate communication between teachers and students within the educational context</li>
-    </ul>
-
-    <p><strong>b. Platform Operations</strong></p>
-    <ul>
-      <li>Maintain, improve, and secure the Schoolace platform</li>
-      <li>Provide customer support to schools and teachers</li>
-      <li>Communicate service updates, maintenance notices, and security alerts</li>
-      <li>Troubleshoot technical issues and ensure platform reliability</li>
-      <li>Comply with legal obligations and respond to lawful requests</li>
-    </ul>
-
-    <p><strong>c. Data Isolation and Limitations</strong></p>
-    <ul>
-      <li>Student data from each school is kept separate and isolated at the organizational level</li>
-      <li>Personalized learning models may use individual student data to improve that student's educational experience</li>
-      <li>We do not use student data to build marketing profiles or for purposes unrelated to education</li>
-      <li>We do not use student data to build marketing profiles or for purposes unrelated to education</li>
-      <li>Platform improvements are based on aggregated, de-identified usage patterns and teacher feedback</li>
-    </ul>
-
-    <h2>5. What We Do NOT Do With Your Data</h2>
-    <p>Schoolace makes the following commitments regarding student data:</p>
-    <ul>
-      <li><strong>No Selling or Renting:</strong> We will never sell or rent student data to any third party</li>
-      <li><strong>No Behavioral Advertising:</strong> We do not use student data for targeted advertising or marketing to students</li>
-      <li><strong>No Non-Educational Profiling:</strong> We do not build student profiles for purposes unrelated to providing educational services</li>
-      <li><strong>No Unauthorized Sharing:</strong> We do not share student data with third parties except as explicitly disclosed in this policy</li>
-      <li><strong>No External AI Training:</strong> We do not provide student data to external third parties for their AI model training or sell data to AI companies</li>
-    </ul>
-
-    <h2>6. AI and Machine Learning</h2>
-    <ul>
-      <li><strong>AI-Powered Features:</strong> Schoolace uses AI and machine learning to generate lesson plans, assignments, quizzes, provide automated grading feedback, and deliver personalized learning experiences</li>
-      <li><strong>Personalization:</strong> To provide personalized educational services, our AI models may learn from student interactions, responses, and performance data. This personalization is used solely to improve the educational experience for that specific student within their school context.</li>
-      <li><strong>Educational Purpose:</strong> All AI processing and model training occurs solely to provide and improve the educational services requested by teachers and schools</li>
-      <li><strong>Data Scope:</strong> Student data used for AI features remains within the educational context and is used only to serve that student's learning needs</li>
-      <li><strong>Teacher Oversight:</strong> Teachers maintain control over AI-generated content and personalized recommendations</li>
-      <li><strong>School Control:</strong> Schools are informed about our use of AI for educational purposes and maintain control over which AI features to use</li>
-    </ul>
-
-    <h2>7. Data Sharing and Third-Party Service Providers</h2>
-    <p><strong>a. Service Providers We Use</strong></p>
-    <p>Schoolace uses US based cloud service provider to process and manage data on our behalf:</p>
-    <p>All service providers have signed data protection agreements (DPAs) and are contractually obligated to:</p>
-    <ul>
-      <li>Use data only to provide services to Schoolace</li>
-      <li>Maintain appropriate security measures</li>
-      <li>Not use data for their own purposes</li>
-      <li>Comply with applicable privacy laws</li>
-    </ul>
-
-    <p><strong>b. When We May Disclose Information</strong></p>
-    <ul>
-      <li><strong>With School Authorization:</strong> When directed by the school or required to provide requested services</li>
-      <li><strong>Legal Requirements:</strong> To comply with court orders, subpoenas, or other legal processes. We will notify schools before disclosure unless prohibited by law.</li>
-      <li><strong>Safety and Security:</strong> To protect the rights, safety, or security of Schoolace, our users, or the public</li>
-      <li><strong>Business Transfers:</strong> In the event of a merger, acquisition, or sale, user data may be transferred. Schools will be notified and may request data deletion before transfer.</li>
-    </ul>
-
-    <p><strong>c. What We Do NOT Share</strong></p>
-    <ul>
-      <li>Student data is never shared with advertisers or marketing companies</li>
-      <li>Student data is never disclosed to other schools or educational institutions without explicit school authorization</li>
-      <li>We do not participate in data broker relationships</li>
-    </ul>
-
-    <h2>8. Data Storage and Security</h2>
-    <p><strong>a. Where Data is Stored</strong></p>
-    <ul>
-      <li>All data is stored and processed within the United States</li>
-      <li>We do not transfer student data internationally</li>
-    </ul>
-
-    <p><strong>b. Security Measures</strong></p>
-    <ul>
-      <li><strong>Encryption:</strong> All data is encrypted in transit using TLS 1.2+ and at rest using AES-256 encryption</li>
-      <li><strong>Access Controls:</strong> Multi-factor authentication (MFA) and least-privilege access principles are enforced</li>
-      <li><strong>Monitoring:</strong> All administrative actions are logged and monitored for suspicious activity</li>
-      <li><strong>Regular Reviews:</strong> We conduct periodic security assessments and compliance reviews</li>
-      <li><strong>Limited Access:</strong> Only authorized Schoolace administrators have access to systems containing student data</li>
-    </ul>
-
-    <p><strong>c. Data Breach Notification</strong></p>
-    <ul>
-      <li>In the event of a data security incident, we will immediately notify affected schools</li>
-      <li>We will cooperate fully with schools and comply with applicable breach notification laws</li>
-      <li>Contact us immediately at <a href="mailto:contact@schoolace.org">contact@schoolace.org</a> if you suspect a security incident</li>
-    </ul>
-
-    <h2>9. Data Retention and Deletion</h2>
-    <p><strong>a. How Long We Keep Data</strong></p>
-    <ul>
-      <li>Student data is retained only for the minimum period necessary to provide educational services</li>
-      <li>Active accounts: Data is retained for the duration of the school's contract with Schoolace</li>
-      <li>After contract termination: Data is securely deleted unless the school requests continued retention or deletion is prohibited by law</li>
-    </ul>
-
-    <p><strong>b. Deletion Process</strong></p>
-    <ul>
-      <li>Schools may request deletion of student data at any time by contacting <a href="mailto:contact@schoolace.org">contact@schoolace.org</a></li>
-      <li>Deleted accounts are removed from active systems within 30 days</li>
-      <li>Backup copies are removed within 90 days of deletion request
-      </li>
-      <li>Some information may be retained in aggregated, de-identified form for platform improvement, but cannot be linked back to individual students</li>
-    </ul>
-
-    <p><strong>c. Data Portability</strong></p>
-    <ul>
-      <li>Schools may request export of their student data in a structured, usable format (e.g., CSV, JSON)</li>
-      <li>Contact <a href="mailto:contact@schoolace.org">contact@schoolace.org</a> to request data export</li>
-    </ul>
-
-    <h2>10. Parental Rights Under FERPA</h2>
-    <p>Parents have important rights regarding their child's education records:</p>
-    <ul>
-      <li><strong>Right to Inspect and Review:</strong> Parents may request to review their child's education records through the school</li>
-      <li><strong>Right to Request Amendment:</strong> Parents may request corrections to inaccurate or misleading information</li>
-      <li><strong>Right to Consent to Disclosures:</strong> Parents have the right to consent to certain disclosures of education records (with exceptions for school officials like Schoolace)</li>
-      <li><strong>Right to File Complaints:</strong> Parents may file complaints with the U.S. Department of Education regarding FERPA violations</li>
-    </ul>
-    <p><strong>Important:</strong> All parental rights requests should be directed to the school, not to Schoolace directly. Schools are responsible for managing parent access to student records. Schoolace provides administrative tools to support schools in fulfilling these obligations.</p>
-
-    <h2>11. School and Teacher Rights</h2>
-    <p><strong>a. School Control</strong></p>
-    <ul>
-      <li>Schools maintain complete control over student data and may terminate Schoolace access at any time</li>
-      <li>Schools determine which teachers and staff have access to student information</li>
-      <li>Schools are responsible for ensuring proper parental consent is obtained for students under 13</li>
-    </ul>
-
-    <p><strong>b. Data Access Rights</strong></p>
-    <ul>
-      <li>Schools may request copies of all student data at any time</li>
-      <li>Schools may request correction or deletion of student information</li>
-      <li>Schools may audit how Schoolace processes their data</li>
-    </ul>
-
-    <p><strong>c. Teacher Responsibilities</strong></p>
-    <ul>
-      <li>Teachers must only access student data for students in their authorized classes</li>
-      <li>Teachers are responsible for maintaining the security of their login credentials</li>
-      <li>Teachers must comply with school policies regarding student data handling</li>
-    </ul>
-
-    <h2>12. Children's Privacy (COPPA Compliance)</h2>
-    <p>Schoolace is designed for educational use under school and teacher supervision:</p>
-    <ul>
-      <li><strong>School Authorization Model:</strong> We collect student information only through schools, not directly from children</li>
-      <li><strong>No Direct Marketing to Children:</strong> We do not market to or collect information from children for commercial purposes</li>
-      <li><strong>Parental Consent:</strong> Schools are responsible for obtaining verifiable parental consent for students under 13 before allowing access to Schoolace</li>
-      <li><strong>Limited Collection:</strong> We collect only the minimum information necessary to provide educational services</li>
-      <li><strong>Parent Access:</strong> Parents may review, request deletion, or refuse further collection of their child's information through the school</li>
-    </ul>
-    <p>If we discover we have collected personal information from a child under 13 without proper school authorization, we will delete it immediately.</p>
-
-    <h2>13. Cookies and Tracking Technologies</h2>
-    <p>We use cookies and similar technologies for:</p>
-    <ul>
-      <li><strong>Authentication:</strong> To keep you logged in securely</li>
-      <li><strong>Session Management:</strong> To maintain your preferences during your session</li>
-      <li><strong>Security:</strong> To detect and prevent fraudulent activity</li>
-      <li><strong>Performance:</strong> To understand how users interact with the platform (aggregate data only)</li>
-    </ul>
-    <p><strong>What we do NOT use cookies for:</strong></p>
-    <ul>
-      <li>Behavioral advertising or ad targeting</li>
-      <li>Tracking students across other websites</li>
-      <li>Building marketing profiles</li>
-      <li>Sharing data with advertising networks</li>
-    </ul>
-    <p>You can disable cookies in your browser settings, but some platform features may not function properly.</p>
-
-    <h2>14. Material Changes to Privacy Practices</h2>
-    <p>We take changes to privacy practices seriously:</p>
-    <ul>
-      <li>We will notify schools at least 30 days before any material changes take effect</li>
-      <li>Material changes include expanding data collection, changing data use purposes, or adding new third-party service providers</li>
-      <li>Schools will have the opportunity to terminate their agreement before changes take effect</li>
-      <li>Notification will be sent via email to school administrators and posted prominently on the platform</li>
-      <li>Continued use after the notice period constitutes acceptance of the changes</li>
-    </ul>
-
-    <h2>15. Your Rights and How to Exercise Them</h2>
-    <p><strong>For Schools and Teachers:</strong></p>
-    <ul>
-      <li><strong>Access:</strong> Request a copy of all data associated with your account or school</li>
-      <li><strong>Correction:</strong> Request correction of inaccurate information</li>
-      <li><strong>Deletion:</strong> Request deletion of data (subject to legal retention requirements)</li>
-      <li><strong>Portability:</strong> Request data in a machine-readable format</li>
-      <li><strong>Restriction:</strong> Request limitation of processing in certain circumstances</li>
-    </ul>
-
-    <p><strong>For Parents/Students:</strong></p>
-    <ul>
-      <li>All rights requests should be directed to your school, not to Schoolace directly</li>
-      <li>Schools will work with Schoolace to fulfill your rights requests</li>
-      <li>The school is the appropriate point of contact for questions about student data</li>
-    </ul>
-
-    <p>To exercise rights or ask questions: <a href="mailto:contact@schoolace.org">contact@schoolace.org</a></p>
-
-    <h2>16. Compliance and Oversight</h2>
-    <ul>
-      <li><strong>Privacy Officer:</strong> The Schoolace administrator serves as our Data Protection and Privacy Officer</li>
-      <li><strong>Regular Reviews:</strong> We conduct periodic internal compliance reviews to ensure adherence to FERPA, COPPA, and other applicable laws</li>
-      <li><strong>School Audits:</strong> Schools may request information about our data practices and security measures</li>
-      <li><strong>Documentation:</strong> We maintain detailed access logs and administrative action records for compliance purposes</li>
-    </ul>
-
-    <h2>17. International Users</h2>
-    <p>Schoolace is based in the United States and currently serves U.S.-based schools. All data is stored and processed in the United States. If you access Schoolace from outside the United States, you consent to the transfer and processing of your information in the United States.</p>
-
-    <h2>18. Contact Information</h2>
-    <p><strong>General Privacy Questions:</strong> <a href="mailto:contact@schoolace.org">contact@schoolace.org</a></p>
-    <p><strong>Data Protection Officer:</strong> Schoolace Administrator</p>
-    <p><strong>Data Security Incidents:</strong> Report immediately to <a href="mailto:contact@schoolace.org">contact@schoolace.org</a></p>
-    <p><strong>FERPA Concerns:</strong> Contact your school directly (schools are responsible for FERPA compliance)</p>
-    <p><strong>Parental Rights:</strong> Contact your school to exercise rights under FERPA or COPPA</p>
-
-    <hr />
-
-    <p><strong>By using Schoolace, you acknowledge that you have read, understood, and agree to this Privacy Policy. If you are a teacher or school administrator, you represent that you have the authority to bind your school to this Privacy Policy and that you have obtained all necessary consents for student participation.</strong></p>
-  </div>
-);
-
-
-export default function LandingPage() {
-  const { t } = useTranslation();
-  const { scrollYProgress } = useScroll();
-
-  // Contact form state
-  const [contactForm, setContactForm] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: ''
-  });
-  const [contactFormSubmitting, setContactFormSubmitting] = useState(false);
-  const [contactFormSuccess, setContactFormSuccess] = useState(false);
-
-  // Google Analytics Integration
-  useEffect(() => {
-    // Only run on client-side
-    if (typeof window !== 'undefined' && !window.gtag) {
-      // Add gtag.js script
-      const script = document.createElement('script');
-      script.async = true;
-      script.src = "https://www.googletagmanager.com/gtag/js?id=G-PPPFF547QK";
-      document.head.appendChild(script);
-
-      // Initialize dataLayer and gtag function
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){window.dataLayer.push(arguments);}
-      window.gtag = gtag;
-
-      gtag('js', new Date());
-      gtag('config', 'G-PPPFF547QK');
-    }
-  }, []);
-
-  const handleContactSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!contactForm.name || !contactForm.email || !contactForm.message) {
-      alert('Please fill in all required fields');
-      return;
-    }
-
-    setContactFormSubmitting(true);
-    try {
-      // Save to Contact entity instead of sending email
-      await Contact.create({
-        name: contactForm.name,
-        email: contactForm.email,
-        subject: contactForm.subject || 'No subject provided',
-        message: contactForm.message,
-        status: 'new'
-      });
-
-      setContactFormSuccess(true);
-      setContactForm({
-        name: '',
-        email: '',
-        subject: '',
-        message: ''
-      });
-
-      // Reset success message after 5 seconds
-      setTimeout(() => setContactFormSuccess(false), 5000);
-    } catch (error) {
-      console.error('Error saving contact form:', error);
-      alert('Failed to send message. Please try again or email us directly, contact@schoolace.org');
-    } finally {
-      setContactFormSubmitting(false);
-    }
-  };
-
-  const handleGetStartedClick = async () => {
-    // The redirect URL should be the dashboard. The dashboard page itself handles
-    // redirecting to the setup page if the user's setup is not complete.
-    const redirectUrl = window.location.origin + createPageUrl('Dashboard');
-    await base44.auth.redirectToLogin(redirectUrl);
-  };
-
-  const handleSignInClick = async () => {
-    const redirectUrl = window.location.origin + createPageUrl('Dashboard');
-    await base44.auth.redirectToLogin(redirectUrl);
-  };
-
-  const getTeacherFeatures = () => [
-    { icon: <Bot />, title: t('landing.intelligentGrading'), description: t('landing.intelligentGradingDesc') },
-    { icon: <BarChart />, title: t('landing.interactiveQuizzes'), description: t('landing.interactiveQuizzesDesc') },
-    { icon: <BookOpen />, title: t('landing.dynamicAssignments'), description: t('landing.dynamicAssignmentsDesc') },
-    { icon: <Calendar />, title: t('landing.smartScheduling'), description: t('landing.smartSchedulingDesc') },
-    { icon: <Activity />, title: t('landing.realTimeProgress'), description: t('landing.realTimeProgressDesc') },
-    { icon: <Sparkles />, title: t('landing.proactiveAIAgent'), description: t('landing.proactiveAIAgentDesc') }];
-
-
-
-  const getStudentFeatures = () => [
-    {
-      icon: <Bot />,
-      title: t('landing.individualizedStudyCompanion'),
-      description: t('landing.individualizedStudyCompanionDesc'),
-      isFeatured: true
-    },
-    {
-      icon: <PenTool />,
-      title: t('landing.aceModels'),
-      description: t('landing.aceModelsDesc')
-    },
-    {
-      icon: <Bot />,
-      title: t('landing.longitudinalMemory'),
-      description: t('landing.longitudinalMemoryDesc')
-    },
-    {
-      icon: <Brain />,
-      title: t('landing.checkYourUnderstanding'),
-      description: t('landing.checkYourUnderstandingDesc')
-    },
-    {
-      icon: <Users />,
-      title: "ACE Spaces",
-      description: "Experience the future of collaboration with AI-enhanced group chats where you can brainstorm, share files, and get instant tutoring together."}];
   
-  const studentFeatures = getStudentFeatures();
-
-
-
-  const getAIToolkitFeatures = () => [
-    { icon: <PenTool />, title: t('landing.worksheetGeneration') },
-    { icon: <BarChart />, title: t('landing.rubricCreation') },
-    { icon: <BrainCircuit />, title: t('landing.quizGeneration') },
-    { icon: <GraduationCap />, title: t('landing.reportCardComments') },
-    { icon: <SlidersHorizontal />, title: t('landing.lessonPlanning') },
-    { icon: <Edit />, title: t('landing.iepAssistance') },
-    { icon: <Mail />, title: t('landing.emailDrafting') },
-    { icon: <ShieldCheck />, title: t('landing.reportContent') }];
-  
-  const aiToolkitFeatures = getAIToolkitFeatures();
-
-
-
-  const getTestimonials = () => [
-    {
-      quote: t('landing.testimonial1'),
-      name: "Ethan Chen",
-      role: t('roles.student'),
-      imageUrl: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/a4476a942_Screenshot2025-10-14at74455PM.png"
-    },
-    {
-      quote: t('landing.testimonial2'),
-      name: "Jesse Alabi",
-      role: t('roles.student'),
-      imageUrl: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/c5f3f94c4_Screenshot2025-10-14at74303PM.png"
-    },
-    {
-      quote: t('landing.testimonial3'),
-      name: "Henry He",
-      role: t('roles.student'),
-      imageUrl: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/28d23dde8_Screenshot2025-10-14at74431PM.png"
-    },
-    {
-      quote: t('landing.testimonial4'),
-      name: "Dr. Kraver",
-      role: t('roles.teacher')
-    },
-    {
-      quote: t('landing.testimonial5'),
-      name: "Kimoon Bae",
-      role: t('roles.student'),
-      imageUrl: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/754ea1c55_443E26B3-DC25-40FC-9A29-B1051EC523F5_1_201_a.jpg"
-    },
-    {
-      quote: t('landing.testimonial6'),
-      name: "Xiangting Ren",
-      role: t('roles.student'),
-      imageUrl: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/db05cdc6d_Screenshot2025-09-30at44716PM.png"
-    },
-    {
-      quote: t('landing.testimonial7'),
-      name: "Lexi Liu",
-      role: t('roles.student'),
-      imageUrl: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/200f24820_Screenshot2025-10-01at10742PM.png"
-    },
-    {
-      quote: t('landing.testimonial8'),
-      name: "Sophie He",
-      role: t('roles.student'),
-      imageUrl: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/45f8f2cf8_Screenshot2025-10-01at10931PM.png"
-    },
-    {
-      quote: t('landing.testimonial9'),
-      name: "Johnny Zhao",
-      role: t('roles.student'),
-      imageUrl: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/76f9da2e7_Screenshot2025-10-01at10830PM.png"
-    },
-    {
-      quote: t('landing.testimonial10'),
-      name: "David He",
-      role: t('roles.student'),
-      imageUrl: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/a8cd04160_Screenshot2025-12-31at95757PM.png"
-    },
-    {
-      quote: t('landing.testimonial11'),
-      name: "Jefferson Chen",
-      role: t('roles.student'),
-      imageUrl: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/6daf7e7fa_Screenshot2025-12-31at103321PM.png"
-    },
-    {
-      quote: t('landing.testimonial12'),
-      name: "Ethan Wang",
-      role: t('roles.student'),
-      imageUrl: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/4e2cb0da4_Screenshot2026-01-03at105645AM.png"
-    },
-    {
-      quote: t('landing.testimonial13'),
-      name: "Xiyao Zhou",
-      role: t('roles.student'),
-      imageUrl: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/f6f20006c_Screenshot2026-01-03at105653AM.png"
-    },
-    {
-      quote: t('landing.testimonial14'),
-      name: "Yohaan Narayanan",
-      role: t('roles.student'),
-      imageUrl: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/b64bc24dc_Screenshot2026-01-03at120431PM.png"
-    },
-    {
-      quote: t('landing.testimonial15'),
-      name: "Anish Sarangee",
-      role: t('roles.student'),
-      imageUrl: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/6ddd3f8a0_Screenshot2026-01-03at120548PM.png"
-    },
-    {
-      quote: t('landing.testimonial16'),
-      name: "Rey Sadhu",
-      role: t('roles.student'),
-      imageUrl: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/f6585736b_Screenshot2026-01-03at120832PM.png"
-    }];
-  
-  const testimonials = getTestimonials();
-
-
-  return (
-    <div className="bg-gradient-to-br from-black via-slate-950 to-purple-950 text-white min-h-screen overflow-x-hidden relative">
-      <AtmosphericBackground />
-      <ShootingStars />
-      <FloatingOrbs />
-      <FloatingParticles />
-
-      {/* Fixed Sign In Button and Language Selector - Outside Header */}
-      <div className="fixed top-6 right-2 sm:right-4 lg:right-6 z-[100] flex items-center gap-3">
-        <LanguageSelector />
-        <Button
-          variant="default"
-          className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold px-6 py-3 shadow-2xl shadow-indigo-500/50 border-0 text-base rounded-xl"
-          onClick={handleSignInClick}>
-
-          {t('landing.signIn')}
-        </Button>
-      </div>
-
-      <div className="relative z-20">
-        <Header />
-
-        <main>
-          {/* Hero Section */}
-          <section className="px-6 py-12 text-center max-w-6xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              className="mb-8">
-
-              <h1 className="text-5xl md:text-7xl font-extrabold mb-6 leading-tight text-center">
-                <TypewriterText
-                  text={t('landing.heroTitle')}
-                  className="bg-clip-text text-transparent bg-gradient-to-r from-white via-blue-100 to-indigo-300 whitespace-nowrap" />
-
-
-              </h1>
-
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1, duration: 0.8 }}
-                className="text-xl text-slate-400 max-w-3xl mx-auto leading-relaxed mb-2">
-                {t('landing.heroSubtitle').split('{aceAI}')[0]}
-                <strong className="font-bold text-2xl text-white">ACE AI</strong>
-                {t('landing.heroSubtitle').split('{aceAI}')[1] || ''}
-              </motion.p>
-
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1.2, duration: 0.8 }}
-                className="text-2xl font-bold text-white max-w-3xl mx-auto leading-relaxed mb-8">
-                {t('landing.heroTagline')}
-              </motion.p>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1.5, duration: 0.8 }}
-                className="flex justify-center">
-                <Button
-                  onClick={handleGetStartedClick}
-                  className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white border-0 rounded-full px-10 py-6 text-lg font-semibold shadow-2xl shadow-indigo-500/30">
-                  {t('landing.getStartedFree')} <ArrowRight className="w-5 h-5 ml-2" />
-                </Button>
-              </motion.div>
-            </motion.div>
-
-          </section>
-
-
-
-          {/* 1. Teacher Features Section */}
-          <section id="features" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative">
-            <div className="text-center mb-16">
-              <motion.h2
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.5 }}
-                className="text-4xl md:text-5xl font-bold mb-4">
-
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400">
-                  {t('landing.coPilotForTeachers')}
-                </span>
-              </motion.h2>
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.5 }}
-                transition={{ delay: 0.2 }} className="text-slate-300 text-lg max-w-2xl mx-auto">{t('landing.coPilotDesc')}
-
-
-              </motion.p>
-            </div>
-
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {getTeacherFeatures().map((feature, index) =>
-                <motion.div
-                  key={feature.title}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.3 }}
-                  transition={{
-                    duration: 0.6,
-                    delay: index * 0.1
-                  }}
-                  // Keep only the hover animations fast
-                  whileHover={{
-                    scale: 1.05,
-                    y: -10,
-                    transition: {
-                      duration: 0.2, // Fast hover entry
-                      ease: "easeOut",
-                      type: "tween"
-                    }
-                  }}
-                  // Fast exit when not hovering
-                  animate={{
-                    scale: 1,
-                    y: 0,
-                    transition: {
-                      duration: 0.15, // Fast exit animation
-                      ease: "easeInOut",
-                      type: "tween"
-                    }
-                  }}
-                  whileTap={{
-                    scale: 0.98,
-                    transition: { duration: 0.1 }
-                  }}
-                  className="relative bg-slate-900/40 border border-slate-700/50 p-8 rounded-2xl backdrop-blur-xl overflow-hidden group"
-                  style={{
-                    transformOrigin: "center",
-                    willChange: "transform, opacity"
-                  }}>
-
-                  {/* Rest of your component stays the same */}
-                  <div className="absolute -inset-px bg-gradient-to-r from-indigo-500/0 via-indigo-500/50 to-purple-500/0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm"></div>
-
-                  <div className="absolute -inset-px bg-gradient-to-r from-indigo-500/0 via-indigo-500/20 to-purple-500/0 rounded-2xl opacity-0 group-hover/card:opacity-100 transition-opacity duration-500"></div>
-
-                  <div className="relative z-10">
-                    <motion.div
-                      className="flex items-center justify-center w-14 h-14 mb-5 bg-slate-800/80 rounded-xl text-purple-400 group-hover:text-purple-300 transition-all duration-300 backdrop-blur-sm"
-                      whileHover={{
-                        scale: 1.1,
-                        transition: {
-                          duration: 0.6,
-                          ease: "easeInOut"
-                        }
-                      }}
-                      animate={{
-                        rotate: 0,
-                        scale: 1,
-                        transition: {
-                          duration: 0.3, // Quick rotation back
-                          ease: "easeOut"
-                        }
-                      }}
-                      style={{
-                        transformOrigin: "center",
-                        filter: 'drop-shadow(0 0 6px rgba(99, 102, 241, 0.5))'
-                      }}>
-
-                      {React.cloneElement(feature.icon, { className: "w-7 h-7" })}
-                    </motion.div>
-
-                    <h3 className="text-xl font-bold text-slate-100 mb-3 group-hover:text-white transition-colors">
-                      {feature.title}
-                    </h3>
-
-                    <p className="text-white group-hover:text-white transition-colors" style={{ textShadow: '0 0 4px #fff' }}>
-                      {feature.description}
-                    </p>
-                  </div>
-                </motion.div>
-              )}
-            </div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.5 }}
-              transition={{ delay: 0.6 }}
-              className="flex justify-center mt-12">
-              <div className="bg-slate-900/60 border border-slate-700/50 rounded-2xl px-8 py-4 backdrop-blur-xl flex items-center gap-3">
-                <div className="flex items-center justify-center w-10 h-10 bg-slate-800/80 rounded-xl">
-                  <Unlock className="w-5 h-5 text-purple-400" />
-                </div>
-                <p className="text-slate-300 text-lg font-medium">
-                  {t('landing.signInToDiscover')}
-                </p>
-              </div>
-            </motion.div>
-          </section>
-
-          {/* 2. Student AI Toolkit Section */}
-          <section id="student-features" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-            <div className="text-center mb-16">
-              <motion.h2
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.5 }}
-                className="text-4xl md:text-5xl font-bold mb-4">
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-400">{t('landing.studyCompanionForStudents')}</span>
-              </motion.h2>
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.5 }}
-                transition={{ delay: 0.2 }}
-                className="text-slate-300 text-lg max-w-2xl mx-auto">
-                {t('landing.studyCompanionDesc')}
-              </motion.p>
-            </div>
-
-            {/* Large Horizontal Featured Card - Top */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 0.6 }}
-              whileHover={{
-                scale: 1.05, // Changed from 1.02
-                y: -10, // Changed from -5
-                transition: { duration: 0.2, ease: "easeOut", type: "tween" }
-              }}
-              animate={{
-                scale: 1,
-                y: 0,
-                transition: { duration: 0.15, ease: "easeInOut", type: "tween" }
-              }}
-              whileTap={{ scale: 0.98, transition: { duration: 0.1 } }}
-              className="relative bg-slate-900/40 border border-slate-700/50 py-16 px-12 rounded-2xl backdrop-blur-xl overflow-hidden group"
-              style={{ transformOrigin: "center", willChange: "transform, opacity" }}>
-
-              <div className="absolute -inset-px bg-gradient-to-r from-purple-500/0 via-purple-500/50 to-pink-500/0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm"></div>
-              <div className="absolute -inset-px bg-gradient-to-r from-purple-500/0 via-purple-500/20 to-pink-500/0 rounded-2xl opacity-0 group-hover/card:opacity-100 transition-opacity duration-500"></div>
-
-              <div className="relative z-10 flex items-center gap-8">
-                <motion.div
-                  className="flex items-center justify-center w-20 h-20 bg-slate-800/80 rounded-xl text-purple-400 group-hover:text-purple-300 transition-all duration-300 backdrop-blur-sm"
-                  style={{ filter: 'drop-shadow(0 0 6px rgba(168, 85, 247, 0.5))' }}
-                  whileHover={{ scale: 1.1, transition: { duration: 0.6, ease: "easeInOut" } }}
-                  animate={{ rotate: 0, scale: 1, transition: { duration: 0.3, ease: "easeOut" } }}>
-
-                  <Bot className="w-10 h-10" />
-                </motion.div>
-
-                <div className="flex-grow">
-                  <h3 className="text-3xl font-bold text-slate-100 mb-4 group-hover:text-white transition-colors">
-                    {t('landing.individualizedStudyCompanion')}
-                  </h3>
-                  <p className="text-white group-hover:text-white transition-colors text-lg leading-relaxed" style={{ textShadow: '0 0 4px #fff' }}>{t('landing.individualizedStudyCompanionDesc')}
-
-                  </p>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* 2x2 Grid of Smaller Cards - Bottom */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-              {getStudentFeatures().slice(1).map((feature, index) =>
-                <motion.div
-                  key={feature.title}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.3 }}
-                  transition={{ duration: 0.6, delay: (index + 1) * 0.1 }}
-                  whileHover={{
-                    scale: 1.05,
-                    y: -10,
-                    transition: { duration: 0.2, ease: "easeOut", type: "tween" }
-                  }}
-                  animate={{
-                    scale: 1,
-                    y: 0,
-                    transition: { duration: 0.15, ease: "easeInOut", type: "tween" }
-                  }}
-                  whileTap={{ scale: 0.98, transition: { duration: 0.1 } }}
-                  className="relative bg-slate-900/40 border border-slate-700/50 p-6 rounded-2xl backdrop-blur-xl overflow-hidden group"
-                  style={{ transformOrigin: "center", willChange: "transform, opacity" }}>
-
-                  <div className="absolute -inset-px bg-gradient-to-r from-purple-500/0 via-purple-500/50 to-pink-500/0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm"></div>
-                  <div className="absolute -inset-px bg-gradient-to-r from-purple-500/0 via-purple-500/20 to-pink-500/0 rounded-2xl opacity-0 group-hover/card:opacity-100 transition-opacity duration-500"></div>
-
-                  <div className="relative z-10">
-                    <motion.div
-                      className="flex items-center justify-center w-12 h-12 mb-4 bg-slate-800/80 rounded-xl text-purple-400 group-hover:text-purple-300 transition-all duration-300 backdrop-blur-sm"
-                      style={{ filter: 'drop-shadow(0 0 6px rgba(168, 85, 247, 0.5))' }}
-                      whileHover={{ scale: 1.1, transition: { duration: 0.6, ease: "easeInOut" } }}
-                      animate={{ rotate: 0, scale: 1, transition: { duration: 0.3, ease: "easeOut" } }}>
-
-                      {React.cloneElement(feature.icon, { className: "w-6 h-6" })}
-                    </motion.div>
-
-                    <h3 className="text-lg font-bold text-slate-100 mb-2 group-hover:text-white transition-colors">
-                      {feature.title}
-                    </h3>
-
-                    <p className="text-sm text-white group-hover:text-white transition-colors" style={{ textShadow: '0 0 4px #fff' }}>
-                      {feature.description}
-                    </p>
-                  </div>
-                </motion.div>
-              )}
-            </div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.5 }}
-              transition={{ delay: 0.6 }}
-              className="flex justify-center mt-12">
-              <div className="bg-slate-900/60 border border-slate-700/50 rounded-2xl px-8 py-4 backdrop-blur-xl flex items-center gap-3">
-                <div className="flex items-center justify-center w-10 h-10 bg-slate-800/80 rounded-xl">
-                  <Unlock className="w-5 h-5 text-purple-400" />
-                </div>
-                <p className="text-slate-300 text-lg font-medium">
-                  {t('landing.signInToDiscover')}
-                </p>
-              </div>
-            </motion.div>
-          </section>
-
-          {/* AI Interface Preview Section */}
-          <section className="py-8 relative z-30 mb-16">
-            <AIPreviewSection />
-          </section>
-
-          {/* 3. AI Co-Pilot Section */}
-          <section id="co-pilot" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-            <div className="grid md:grid-cols-2 gap-16 items-center">
-              <div>
-                <motion.h2
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true, amount: 0.5 }}
-                  className="text-4xl md:text-5xl font-bold mb-6 flex items-center gap-3">
-
-                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-400 inline-block w-24">
-                    <AnimatedCounter end={30} duration={3} suffix="+" />
-                  </span>
-                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-400">
-                    {t('landing.productivityTools')}
-                  </span>
-                </motion.h2>
-
-                <motion.p
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true, amount: 0.5 }}
-                  transition={{ delay: 0.2 }} className="text-slate-300 mb-8 text-lg leading-relaxed">{t('landing.productivityToolsDesc')}
-
-
-              </motion.p>
-              </div>
-
-              {/* Continuous Vertical Scroll for AI Tools */}
-              <div className="relative h-[400px] overflow-hidden">
-                <div className="animate-vertical-scroll-seamless-loop flex flex-col">
-                  {/* First complete set */}
-                  {getAIToolkitFeatures().map((tool, i) =>
-                    <motion.div
-                      key={`tool-1-${tool.title}`}
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      whileInView={{ opacity: 1, scale: 1 }}
-                      viewport={{ once: true, amount: 0.5 }}
-                      transition={{ delay: i * 0.1 }}
-                      whileHover={{
-                        scale: 1.05,
-                        y: -5,
-                        transition: { duration: 0.2, ease: "easeOut" }
-                      }}
-                      className="flex items-center gap-3 p-4 bg-slate-900/40 border border-slate-700/50 rounded-lg backdrop-blur-md hover:bg-slate-800/50 transition-all duration-300 flex-shrink-0 mb-4">
-
-                      <div
-                        className="text-white"
-                        style={{ filter: 'drop-shadow(0 0 6px rgba(255, 255, 255, 0.7))' }}>
-
-                        {tool.icon}
-                      </div>
-                      <p
-                        className="text-white font-medium text-sm"
-                        style={{ textShadow: '0 0 6px #fff' }}>
-
-                        {tool.title}
-                      </p>
-                    </motion.div>
-                  )}
-                  {/* Second complete set for seamless loop */}
-                  {getAIToolkitFeatures().map((tool, i) =>
-                    <div
-                      key={`tool-2-${tool.title}`}
-                      className="flex items-center gap-3 p-4 bg-slate-900/40 border border-slate-700/50 rounded-lg backdrop-blur-md hover:bg-slate-800/50 transition-all duration-300 hover:scale-105 hover:-translate-y-1 flex-shrink-0 mb-4">
-
-                      <div
-                        className="text-white"
-                        style={{ filter: 'drop-shadow(0 0 6px rgba(255, 255, 255, 0.7))' }}>
-
-                        {tool.icon}
-                      </div>
-                      <p
-                        className="text-white font-medium text-sm"
-                        style={{ textShadow: '0 0 6px #fff' }}>
-
-                        {tool.title}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Getting Started Section */}
-          <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-            <div className="text-center mb-16">
-              <motion.h2
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.5 }}
-                className="text-4xl md:text-5xl font-bold mb-4">
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400">
-                  {t('landing.teachersGetStarted')}
-                </span>
-              </motion.h2>
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.5 }}
-                transition={{ delay: 0.2 }} className="text-slate-300 text-lg max-w-2xl mx-auto">{t('landing.teachersGetStartedDesc')}
-
-
-              </motion.p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-              {[
-                {
-                  number: "1",
-                  title: t('landing.step1Title'),
-                  description: t('landing.step1Desc'),
-                  icon: <PlusCircle className="w-8 h-8" />
-                },
-                {
-                  number: "2",
-                  title: t('landing.step2Title'),
-                  description: t('landing.step2Desc'),
-                  icon: <BookOpen className="w-8 h-8" />
-                },
-                {
-                  number: "3",
-                  title: t('landing.step3Title'),
-                  description: t('landing.step3Desc'),
-                  icon: <Users className="w-8 h-8" />
-                }].
-                map((step, index) =>
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true, amount: 0.3 }}
-                    transition={{ delay: index * 0.15 }}
-                    whileHover={{ scale: 1.05, y: -5 }}
-                    className="relative flex flex-col items-center p-8 bg-slate-900/40 border border-slate-700/50 rounded-xl backdrop-blur-md hover:bg-slate-800/50 transition-all duration-300 group">
-
-                    {/* Blue gradient borders on hover */}
-                    <div className="absolute -inset-px bg-gradient-to-r from-indigo-500/0 via-indigo-500/50 to-purple-500/0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm"></div>
-                    <div className="absolute -inset-px bg-gradient-to-r from-indigo-500/0 via-indigo-500/20 to-purple-500/0 rounded-xl opacity-0 group-hover/card:opacity-100 transition-opacity duration-500"></div>
-
-                    <div className="relative z-10">
-                      <motion.div
-                        className="flex items-center justify-center w-16 h-16 mb-4 bg-slate-800/80 rounded-xl text-indigo-400 group-hover:text-indigo-300 transition-all duration-300 backdrop-blur-sm relative z-10"
-                        whileHover={{
-                          scale: 1.1,
-                          transition: {
-                            duration: 0.6,
-                            ease: "easeInOut"
-                          }
-                        }}
-                        animate={{
-                          rotate: 0,
-                          scale: 1,
-                          transition: {
-                            duration: 0.3,
-                            ease: "easeOut"
-                          }
-                        }}
-                        style={{
-                          transformOrigin: "center",
-                          filter: 'drop-shadow(0 0 8px rgba(99, 102, 241, 0.6))'
-                        }}>
-                        {React.cloneElement(step.icon, { className: "w-8 h-8" })}
-                      </motion.div>
-
-                      {/* Title */}
-                      <h3
-                        className="text-2xl mb-3 text-lg font-bold relative z-10"
-                        style={{ textShadow: '0 0 8px rgba(255, 255, 255, 0.3)' }}>
-                        {step.title}
-                      </h3>
-
-                      {/* Description */}
-                      <p className="text-slate-300 text-center text-sm leading-relaxed relative z-10">
-                        {step.description}
-                      </p>
-                    </div>
-                  </motion.div>
-                )}
-            </div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.5 }}
-              transition={{ delay: 0.6 }}
-              className="flex justify-center mt-12">
-              <Button
-                onClick={handleGetStartedClick}
-                className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white border-0 rounded-full px-12 py-6 text-xl font-semibold shadow-2xl shadow-indigo-500/30">
-                {t('landing.getStartedFree')} <ArrowRight className="w-6 h-6 ml-3" />
-              </Button>
-            </motion.div>
-          </section>
-
-          {/* Measurable Results Section */}
-          <section id="impact" className="py-16 relative">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.5 }}
-                transition={{ duration: 0.5 }}
-                className="text-center">
-                <h2 className="text-4xl md:text-5xl font-bold mb-4 text-cyan-300">
-                  {t('landing.measurableResults')}<sup className="text-2xl text-white"></sup>
-                </h2>
-                <p className="text-lg text-slate-400 max-w-3xl mx-auto">
-                  {t('landing.measurableResultsDesc')}
-                </p>
-              </motion.div>
-
-              <div className="mt-16 space-y-8">
-                {/* First Row: Time Savings Chart + First Two Cards */}
-                <motion.div
-                  initial={{ opacity: 0, x: -50 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true, amount: 0.3 }}
-                  transition={{ duration: 0.7, delay: 0.2 }}
-                  className="grid grid-cols-1 lg:grid-cols-[1.5fr_1fr] gap-6">
-
-                  <ChartCard
-                    title={t('landing.teacherTimeSavings')}
-                    value="+180mins"
-                    valueColor="text-green-400"
-                    data={[
-                      { name: 'Day1', val: 22 }, { name: 'Day2', val: 50 },
-                      { name: 'Day3', val: 80 }, { name: 'Day4', val: 120 },
-                      { name: 'Day5', val: 160 }, { name: 'Day6', val: 175 },
-                      { name: 'Day7', val: 180 }, { name: 'Day8', val: 180 },
-                    ]}
-                    color="#10b981"
-                    gradientId="timeSavingsGradient"
-                    maxValue={180}
-                    ticks={[0, 30, 60, 90, 120, 150, 180]}
-                  />
-
-                  <div className="grid grid-rows-2 gap-6">
-                    <MetricCard
-                      title={t('landing.teacherSatisfaction')}
-                      value="95%"
-                      color="text-cyan-300"
-                      delay={0.3}
-                    />
-
-                    <MetricCard
-                      title={t('landing.lessonPrepReduction')}
-                      value="60%"
-                      color="text-blue-400"
-                      delay={0.4}
-                    />
-                  </div>
-                </motion.div>
-
-                {/* Second Row: Engagement Chart + Last Two Cards */}
-                <motion.div
-                  initial={{ opacity: 0, x: -50 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true, amount: 0.3 }}
-                  transition={{ duration: 0.7, delay: 0.4 }}
-                  className="grid grid-cols-1 lg:grid-cols-[1.5fr_1fr] gap-6">
-
-                  <ChartCard
-                    title={t('landing.studentEngagement')}
-                    value="+53%"
-                    valueColor="text-cyan-400"
-                    data={[
-                      { name: 'Day1', val: 10 }, { name: 'Day2', val: 15 },
-                      { name: 'Day3', val: 25 }, { name: 'Day4', val: 30 },
-                      { name: 'Day5', val: 40 }, { name: 'Day6', val: 45 },
-                      { name: 'Day7', val: 53 }, { name: 'Day38', val: 53 },
-                    ]}
-                    color="#06b6d4"
-                    gradientId="engagementGradient"
-                    maxValue={60}
-                    ticks={[0, 15, 30, 45, 60]}
-                  />
-
-                  <div className="grid grid-rows-2 gap-6">
-                    <MetricCard
-                      title={t('landing.gradingSpeedup')}
-                      value="5X"
-                      color="text-purple-400"
-                      delay={0.5}
-                    />
-
-                    <MetricCard
-                      title={t('landing.personalizationAccuracy')}
-                      value="91%"
-                      color="text-pink-400"
-                      delay={0.6}
-                    />
-                  </div>
-                </motion.div>
-              </div>
-
-              <motion.p
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true, amount: 0.5 }}
-                transition={{ duration: 0.5, delay: 0.8 }}
-                className="text-sm text-slate-500 italic text-left mt-8">
-                {t('landing.estimatesDisclaimer')}
-              </motion.p>
-            </div>
-          </section>
-
-          {/* Privacy & Security Section */}
-          <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-            <div className="text-center mb-16">
-              <motion.h2
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.5 }}
-                className="text-4xl md:text-5xl font-bold mb-4">
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-emerald-400">{t('landing.privacySecurity')}</span>
-              </motion.h2>
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.5 }}
-                transition={{ delay: 0.2 }}
-                className="text-slate-300 text-lg max-w-2xl mx-auto">
-                {t('landing.privacySecurityDesc')}
-              </motion.p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {[
-                {
-                  icon: <Shield />,
-                  title: t('landing.privacyFirstTitle'),
-                  description: t('landing.privacyFirstDesc')
-                },
-                {
-                  icon: <Lock />,
-                  title: t('landing.enterpriseSecurityTitle'),
-                  description: t('landing.enterpriseSecurityDesc')
-                },
-                {
-                  icon: <BrainCircuit />,
-                  title: t('landing.safeAITitle'),
-                  description: t('landing.safeAIDesc')
-                },
-                {
-                  icon: <Eye />,
-                  title: t('landing.transparencyTitle'),
-                  description: t('landing.transparencyDesc')
-                }
-              ].map((feature, index) => (
-                <motion.div
-                  key={feature.title}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.3 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  whileHover={{
-                    scale: 1.05,
-                    y: -10,
-                    transition: { duration: 0.2, ease: "easeOut", type: "tween" }
-                  }}
-                  animate={{
-                    scale: 1,
-                    y: 0,
-                    transition: { duration: 0.15, ease: "easeInOut", type: "tween" }
-                  }}
-                  whileTap={{ scale: 0.98, transition: { duration: 0.1 } }}
-                  className="relative bg-slate-900/40 border border-slate-700/50 p-6 rounded-2xl backdrop-blur-xl overflow-hidden group"
-                  style={{ transformOrigin: "center", willChange: "transform, opacity" }}
-                >
-                  <div className="absolute -inset-px bg-gradient-to-r from-green-500/0 via-green-500/50 to-emerald-500/0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm"></div>
-                  <div className="absolute -inset-px bg-gradient-to-r from-green-500/0 via-green-500/20 to-emerald-500/0 rounded-2xl opacity-0 group-hover/card:opacity-100 transition-opacity duration-500"></div>
-
-                  <div className="relative z-10">
-                    <motion.div
-                      className="flex items-center justify-center w-12 h-12 mb-4 bg-slate-800/80 rounded-xl text-green-400 group-hover:text-green-300 transition-all duration-300 backdrop-blur-sm"
-                      style={{ filter: 'drop-shadow(0 0 6px rgba(34, 197, 94, 0.5))' }}
-                      whileHover={{ scale: 1.1, transition: { duration: 0.6, ease: "easeInOut" } }}
-                      animate={{ rotate: 0, scale: 1, transition: { duration: 0.3, ease: "easeOut" } }}
-                    >
-                      {React.cloneElement(feature.icon, { className: "w-6 h-6" })}
-                    </motion.div>
-
-                    <h3 className="text-lg font-bold text-slate-100 mb-2 group-hover:text-white transition-colors">
-                      {feature.title}
-                    </h3>
-
-                    <p className="text-sm text-white group-hover:text-white transition-colors" style={{ textShadow: '0 0 4px #fff' }}>
-                      {feature.description}
-                    </p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-
-            {/* FERPA & COPPA Compliance Badges */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.5 }}
-              transition={{ delay: 0.6, duration: 0.6 }}
-              className="mt-12 flex justify-center gap-4"
-            >
-              <div className="inline-flex items-center gap-2 px-6 py-3 bg-green-500/10 border border-green-500/30 rounded-full text-sm">
-                <CheckCircle className="w-6 h-6 text-green-400" />
-                <span className="font-bold text-green-300 text-xl">{t('landing.ferpaCompliant')}</span>
-              </div>
-              <div className="inline-flex items-center gap-2 px-6 py-3 bg-green-500/10 border border-green-500/30 rounded-full text-sm">
-                <CheckCircle className="w-6 h-6 text-green-400" />
-                <span className="font-bold text-green-300 text-xl">{t('landing.coppaCompliant')}</span>
-              </div>
-            </motion.div>
-          </section>
-
-          {/* Testimonials Section */}
-          <section id="testimonials" className="py-12">
-            <div className="text-center mb-12 px-4">
-              <motion.h2
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.3, duration: 0.5 }}
-                className="text-4xl md:text-5xl font-bold mb-4">
-
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-400">
-                  {t('landing.lovedByTeachersStudents')}
-                </span>
-              </motion.h2>
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.5, duration: 0.5 }}
-                className="text-xl text-slate-400 max-w-3xl mx-auto">
-
-                {t('landing.lovedByDesc')}
-              </motion.p>
-            </div>
-
-            <div className="group w-full max-w-none overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
-              <div className="flex w-max animate-infinite-scroll">
-                {/* Render the testimonials twice for a seamless loop */}
-                {getTestimonials().map((testimonial, index) =>
-                  <div key={`testimonial-1-${index}`} className="w-[400px] flex-shrink-0 px-4">
-                    <TestimonialCard testimonial={testimonial} />
-                  </div>
-                )}
-                {getTestimonials().map((testimonial, index) =>
-                  <div key={`testimonial-2-${index}`} className="w-[400px] flex-shrink-0 px-4">
-                    <TestimonialCard testimonial={testimonial} />
-                  </div>
-                )}
-              </div>
-            </div>
-          </section>
-
-          {/* 6. Pricing Section */}
-          <section id="pricing" className="px-6 py-16 max-w-6xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 0.8 }}
-              className="text-center mb-16">
-
-              <h2 className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent mb-6">
-                {t('landing.choosePlan')}
-              </h2>
-              <p className="text-xl text-slate-400 max-w-2xl mx-auto">
-                {t('landing.choosePlanDesc')}
-              </p>
-            </motion.div>
-
-            <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto items-stretch">
-              <PricingCard
-                plan={t('landing.freePlan')}
-                price={t('landing.freePrice')}
-                features={[
-                  t('landing.freeFeature1'),
-                  t('landing.freeFeature2'),
-                  t('landing.freeFeature3'),
-                  t('landing.freeFeature4')]
-                }
-                cta={t('landing.startForFree')}
-                onCtaClick={handleGetStartedClick} />
-
-              <PricingCard
-                plan={t('landing.proPlan')}
-                price={t('landing.proPrice')}
-                features={[
-                  t('landing.proFeature1'),
-                  t('landing.proFeature2'),
-                  t('landing.proFeature3'),
-                  t('landing.proFeature4')]
-                }
-                cta={t('landing.getStarted')}
-                isFeatured
-                onCtaClick={handleGetStartedClick} />
-
-              <PricingCard
-                plan={t('landing.schoolPlan')}
-                price={t('landing.schoolPrice')}
-                features={[
-                  t('landing.schoolFeature1'),
-                  t('landing.schoolFeature2'),
-                  t('landing.schoolFeature3'),
-                  t('landing.schoolFeature4'),
-                  t('landing.schoolFeature5'),
-                  t('landing.schoolFeature6'),
-                  t('landing.schoolFeature7')]
-                }
-                cta={t('landing.contactSales')} />
-
-            </div>
-          </section>
-
-          {/* Contact Form Section */}
-          <section id="contact" className="px-6 py-16 max-w-4xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 0.8 }}
-              className="text-center mb-12">
-              <h2 className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent mb-6">
-                {t('landing.getInTouch')}
-              </h2>
-              <p className="text-xl text-slate-400 max-w-2xl mx-auto">
-                {t('landing.getInTouchDesc')}
-              </p>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 0.8, delay: 0.2 }}>
-
-              <div className="bg-slate-900/60 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-8 shadow-2xl">
-                {contactFormSuccess && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="mb-6 p-4 bg-green-500/10 border border-green-500/30 rounded-lg flex items-center gap-3">
-                    <CheckCircle className="w-5 h-5 text-green-400" />
-                    <p className="text-green-300">{t('landing.thankYouMessage')}</p>
-                  </motion.div>
-                )}
-
-                <form onSubmit={handleContactSubmit} className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label htmlFor="name" className="block text-sm font-medium text-slate-300 mb-2">
-                        {t('landing.contactName')}
-                      </label>
-                      <input
-                        type="text"
-                        id="name"
-                        value={contactForm.name}
-                        onChange={(e) => setContactForm({...contactForm, name: e.target.value})}
-                        className="w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                        placeholder={t('landing.yourName')}
-                        required
-                      />
-                    </div>
-
-                    <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-slate-300 mb-2">
-                        {t('landing.contactEmail')}
-                      </label>
-                      <input
-                        type="email"
-                        id="email"
-                        value={contactForm.email}
-                        onChange={(e) => setContactForm({...contactForm, email: e.target.value})}
-                        className="w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                        placeholder={t('landing.yourEmail')}
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label htmlFor="subject" className="block text-sm font-medium text-slate-300 mb-2">
-                      {t('landing.contactSubject')}
-                    </label>
-                    <input
-                      type="text"
-                      id="subject"
-                      value={contactForm.subject}
-                      onChange={(e) => setContactForm({...contactForm, subject: e.target.value})}
-                      className="w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                      placeholder={t('landing.contactSubjectPlaceholder')}
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="message" className="block text-sm font-medium text-slate-300 mb-2">
-                      {t('landing.contactMessage')}
-                    </label>
-                    <textarea
-                      id="message"
-                      rows={6}
-                      value={contactForm.message}
-                      onChange={(e) => setContactForm({...contactForm, message: e.target.value})}
-                      className="w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
-                      placeholder={t('landing.contactMessagePlaceholder')}
-                      required
-                    />
-                  </div>
-
-                  <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                    <Button
-                      type="submit"
-                      disabled={contactFormSubmitting}
-                      className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white border-0 rounded-xl py-6 text-lg font-semibold shadow-2xl shadow-indigo-500/30 disabled:opacity-50 disabled:cursor-not-allowed">
-                      {contactFormSubmitting ? (
-                        <span className="flex items-center justify-center gap-2">
-                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                          {t('landing.sending')}
-                        </span>
-                      ) : (
-                        <span className="flex items-center justify-center gap-2">
-                          <Mail className="w-5 h-5" />
-                          {t('landing.sendMessage')}
-                        </span>
-                      )}
-                    </Button>
-                  </motion.div>
-
-                  <p className="text-sm text-slate-400 text-center">
-                    {t('landing.orEmailDirectly')} {' '}
-                    <a href="mailto:contact@schoolace.org" className="text-indigo-400 hover:text-indigo-300 underline">
-                      contact@schoolace.org
-                    </a>
-                  </p>
-                </form>
-              </div>
-            </motion.div>
-          </section>
-        </main>
-
-        {/* Footer */}
-        <footer className="relative pt-12 pb-8 bg-black/20 border-t border-slate-800">
-          <div className="max-w-7xl mx-auto px-6 lg:px-8">
-            {/* Top section with columns */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
-              {/* Column 1: Logo & Tagline */}
-              <div className="col-span-2 md:col-span-1">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-                    <GraduationCap className="w-6 h-6 text-white" />
-                  </div>
-                  <span className="text-xl font-bold text-white">Schoolace</span>
-                </div>
-                <p className="text-slate-400 text-sm">Education, Supercharged by ACE AI</p>
-              </div>
-
-              {/* Column 2: Platform */}
-              <div>
-                <h4 className="font-semibold text-white mb-4">{t('landing.platformTitle')}</h4>
-                <ul className="space-y-3">
-                  <li><a href="#features" className="text-slate-400 hover:text-white transition-colors text-sm">{t('landing.forTeachers')}</a></li>
-                  <li><a href="#student-features" className="text-slate-400 hover:text-white transition-colors text-sm">{t('landing.forStudents')}</a></li>
-                  <li><a href="#co-pilot" className="text-slate-400 hover:text-white transition-colors text-sm">{t('landing.aiCapabilities')}</a></li>
-                </ul>
-              </div>
-
-              {/* Column 3: Company */}
-              <div>
-                <h4 className="font-semibold text-white mb-4">{t('landing.companyTitle')}</h4>
-                <ul className="space-y-3">
-                  <li><a href="#testimonials" className="text-slate-400 hover:text-white transition-colors text-sm">{t('landing.testimonials')}</a></li>
-                  <li><a href="mailto:contact@schoolace.org" className="text-slate-400 hover:text-white transition-colors text-sm">{t('landing.contact')}</a></li>
-                </ul>
-              </div>
-
-              {/* Column 4: Legal */}
-              <div>
-                <h4 className="font-semibold text-white mb-4">{t('landing.legalTitle')}</h4>
-                <ul className="space-y-3">
-                  <li>
-                    <Link to={createPageUrl('TermsOfService')} className="text-slate-400 hover:text-white transition-colors text-sm">
-                      {t('landing.termsOfService')}
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to={createPageUrl('PrivacyPolicy')} className="text-slate-400 hover:text-white transition-colors text-sm">
-                      {t('landing.privacyPolicy')}
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-            </div>
-
-            {/* Middle section with status and badges */}
-            <div className="flex flex-col md:flex-row items-center gap-8 mb-12">
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-slate-800/60 border border-slate-700 rounded-full text-sm">
-                <div className="w-2.5 h-2.5 bg-green-400 rounded-full animate-pulse"></div>
-                <span className="text-green-300">{t('landing.allSystemsOperational')}</span>
-              </div>
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2 text-slate-400">
-                  <ShieldCheck className="w-5 h-5" />
-                  <span className="font-medium text-sm">{t('landing.ferpaCompliant')}</span>
-                </div>
-                <div className="flex items-center gap-2 text-slate-400">
-                  <ShieldCheck className="w-5 h-5" />
-                  <span className="font-medium text-sm">{t('landing.coppaCompliant')}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Bottom section with copyright and social links */}
-            <div className="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center text-center">
-              <p className="text-slate-500 text-sm mb-4 md:mb-0">
-                &copy; {new Date().getFullYear()} {t('landing.copyright')}
-              </p>
-              <div className="flex justify-center items-center gap-6">
-                <a href="https://www.linkedin.com/company/schoolace/about/" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors">
-                  <Linkedin className="w-5 h-5" />
-                </a>
-              </div>
-            </div>
-          </div>
-        </footer>
-      </div>
-
-      <style>{`
-        @keyframes float-1 {
-          0%, 100% { transform: translate(0px, 0px) rotate(0deg); }
-          33% { transform: translate(30px, -30px) rotate(120deg); }
-          66% { transform: translate(-20px, 20px) rotate(240deg); }
-        }
-
-        @keyframes float-2 {
-          0%, 100% { transform: translate(0px, 0px) rotate(0deg); }
-          33% { transform: translate(-30px, 30px) rotate(-120deg); }
-          66% { transform: translate(20px, -20px) rotate(-240deg); }
-        }
-
-        @keyframes float-3 {
-          0%, 100% { transform: translate(0px, 0px) rotate(0deg); }
-          33% { transform: translate(20px, 20px) rotate(90deg); }
-          66% { transform: translate(-30px, -10px) rotate(180deg); }
-        }
-
-        @keyframes float-4 {
-          0%, 100% { transform: translate(0px, 0px) rotate(0deg); }
-          33% { transform: translate(-20px, -20px) rotate(-90deg); }
-          66% { transform: translate(30px, 10px) rotate(180deg); }
-        }
-
-        @keyframes pulse-slow {
-          0%, 100% { opacity: 0.4; }
-          50% { opacity: 1; }
-        }
-
-        @keyframes pulse-slower {
-          0%, 100% { opacity: 0.2; }
-          50% { opacity: 0.8; }
-        }
-
-        @keyframes slide-diagonal {
-          0% { transform: translate(-100px) translateY(-100px) rotate(45deg); }
-          100% { transform: translateX(100px) translateY(100px) rotate(45deg); }
-        }
-
-        @keyframes gradient-x {
-          0%, 100% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-        }
-
-        @keyframes border-spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-
-        @keyframes border-comet {
-          0% { transform: translate(-50%, -110%) rotate(0deg); }
-          25% { transform: translate(calc(100% + 10px), -50%) rotate(90deg); }
-          50% { transform: translate(calc(50%), calc(100% + 10px)) rotate(180deg); }
-          75% { transform: translate(-110%, 50%) rotate(270deg); }
-          100% { transform: translate(-50%, -110%) rotate(360deg); }
-        }
-
-        .animate-float-1 { animation: float-1 20s ease-in-out infinite; }
-        .animate-float-2 { animation: float-2 25s ease-in-out infinite; }
-        .animate-float-3 { animation: float-3 18s ease-in-out infinite; }
-        .animate-float-4 { animation: float-4 22s ease-in-out infinite; }
-        .animate-pulse-slow { animation: pulse-slow 4s ease-in-out infinite; }
-        .animate-pulse-slower { animation: pulse-slower 6s ease-in-out infinite; }
-        .animate-slide-diagonal { animation: slide-diagonal 8s linear infinite; }
-        .animate-gradient-x { animation: gradient-x 3s ease infinite; background-size: 200% 200%; }
-        .animate-border-spin { animation: border-spin 3s linear infinite; }
-        .animate-border-comet { animation: border-comet 4s linear infinite; }
-
-        .bg-grid-pattern {
-          --grid-color: rgba(200, 200, 255, 0.07);
-          background-image: radial-gradient(circle at 1px 1px, var(--grid-color) 1px, transparent 0);
-          background-size: 20px 20px;
-        }
-        @keyframes infinite-scroll {
-          from { transform: translateX(0); }
-          to { transform: translateX(-50%); }
-        }
-
-        .animate-infinite-scroll {
-          animation: infinite-scroll 13s linear infinite;
-        }
-
-        .group:hover .animate-infinite-scroll {
-            animation-play-state: paused;
-        }
-
-        /* Updated vertical scroll for seamless loop */
-        @keyframes vertical-scroll-seamless-loop {
-          0% {
-            transform: translateY(0);
-          }
-          100% {
-            transform: translateY(-50%);
-          }
-        }
-
-        .animate-vertical-scroll-seamless-loop {
-          animation: vertical-scroll-seamless-loop 20s linear infinite;
-        }
-
-        .animate-vertical-scroll-seamless-loop:hover {
-          animation-play-state: paused;
-        }
-        html {
-            scroll-behavior: smooth;
-        }
-      `}</style>
-    </div>);
+  return typeof value === 'string' ? value : key;
 }
+
+export default translations;
