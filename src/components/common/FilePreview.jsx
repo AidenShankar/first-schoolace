@@ -14,8 +14,9 @@ export default function FilePreview({ fileUrl, fileName, className = "" }) {
   if (!fileUrl) return null;
 
   const isImage = fileName?.toLowerCase().match(/\.(jpg|jpeg|png|gif|webp|svg)$/);
+  const isPDF = fileName?.toLowerCase().endsWith('.pdf');
   // Common document formats that Google Docs Viewer can handle
-  const isDoc = fileName?.toLowerCase().match(/\.(pdf|doc|docx|ppt|pptx|xls|xlsx|txt|rtf)$/);
+  const isDoc = fileName?.toLowerCase().match(/\.(doc|docx|ppt|pptx|xls|xlsx|txt|rtf)$/);
 
   const handleDownload = (e) => {
     e.stopPropagation();
@@ -77,7 +78,7 @@ export default function FilePreview({ fileUrl, fileName, className = "" }) {
         <DialogContent className="max-w-4xl w-full h-[90vh] flex flex-col p-0 gap-0 overflow-hidden bg-slate-900 border-slate-800">
           <DialogHeader className="p-4 bg-slate-900 border-b border-slate-800 shrink-0 flex flex-row items-center justify-between">
             <DialogTitle className="flex items-center gap-2 text-white">
-              {!isImage ? <FileText className="w-5 h-5" /> : <ImageIcon className="w-5 h-5" />}
+              {isImage ? <ImageIcon className="w-5 h-5" /> : <FileText className="w-5 h-5" />}
               <span className="truncate max-w-md">{fileName || 'File Preview'}</span>
             </DialogTitle>
             <div className="flex items-center gap-2">
@@ -106,6 +107,12 @@ export default function FilePreview({ fileUrl, fileName, className = "" }) {
                 src={fileUrl}
                 alt={fileName}
                 className="max-w-full max-h-full object-contain"
+              />
+            ) : isPDF ? (
+              <iframe
+                src={fileUrl}
+                className="w-full h-full bg-white rounded-sm border-none"
+                title={fileName}
               />
             ) : isDoc ? (
               <iframe
