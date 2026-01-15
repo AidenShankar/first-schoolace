@@ -47,15 +47,29 @@ export default function FilePreview({ fileUrl, fileName, className = "" }) {
             <h4 className="text-sm font-medium text-slate-900 truncate mb-1" title={fileName}>
                 {fileName || "Untitled File"}
             </h4>
-            <Button
-                variant="outline"
-                size="sm"
-                className="h-7 px-2 text-xs text-slate-600 hover:text-slate-900 hover:bg-white bg-white/50 border-slate-200"
-                onClick={handleDownload}
-            >
-                <Download className="w-3 h-3 mr-1.5" />
-                Download
-            </Button>
+            <div className="flex gap-2">
+                <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-7 px-2 text-xs text-slate-600 hover:text-slate-900 hover:bg-white bg-white/50 border-slate-200"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        setShowPreview(true);
+                    }}
+                >
+                    <Eye className="w-3 h-3 mr-1.5" />
+                    Preview
+                </Button>
+                <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-7 px-2 text-xs text-slate-600 hover:text-slate-900 hover:bg-white bg-white/50 border-slate-200"
+                    onClick={handleDownload}
+                >
+                    <Download className="w-3 h-3 mr-1.5" />
+                    Download
+                </Button>
+            </div>
         </div>
       </div>
 
