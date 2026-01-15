@@ -190,8 +190,7 @@ export default function SubmissionsList({ submissions, assignment, onReleaseGrad
   const [feedbackAttachment, setFeedbackAttachment] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [allClassStudents, setAllClassStudents] = useState([]);
-  const [viewMode, setViewMode] = useState('list'); // 'list' or 'grid'
-  const [previewSubmission, setPreviewSubmission] = useState(null);
+
 
   const getGradeColor = (grade, maxPoints) => {
     if (grade === null || grade === undefined) return "text-slate-600";
@@ -309,22 +308,7 @@ export default function SubmissionsList({ submissions, assignment, onReleaseGrad
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
               <h3 className="text-xl font-bold text-slate-900">Submissions</h3>
-              <div className="flex items-center bg-slate-100 rounded-lg p-1">
-                  <button 
-                      onClick={() => setViewMode('list')}
-                      className={`p-1.5 rounded-md transition-all ${viewMode === 'list' ? 'bg-white shadow-sm text-indigo-600' : 'text-slate-500 hover:text-slate-700'}`}
-                      title="List View"
-                  >
-                      <List className="w-4 h-4" />
-                  </button>
-                  <button 
-                      onClick={() => setViewMode('grid')}
-                      className={`p-1.5 rounded-md transition-all ${viewMode === 'grid' ? 'bg-white shadow-sm text-indigo-600' : 'text-slate-500 hover:text-slate-700'}`}
-                      title="Grid View"
-                  >
-                      <LayoutGrid className="w-4 h-4" />
-                  </button>
-              </div>
+
           </div>
           <Badge variant="outline" className="bg-slate-50">
             {studentsWithSubmissions.length} student{studentsWithSubmissions.length !== 1 ? 's' : ''} submitted
@@ -340,7 +324,6 @@ export default function SubmissionsList({ submissions, assignment, onReleaseGrad
             </CardContent>
           </Card>
         ) : (
-          viewMode === 'list' ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="md:col-span-1 bg-white/60 backdrop-blur-sm border border-slate-200/60 rounded-xl p-3 space-y-2 h-fit">
               <h4 className="font-semibold text-slate-800 px-2 flex items-center gap-2 mb-2">
