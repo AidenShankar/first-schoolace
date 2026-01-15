@@ -308,6 +308,15 @@ export default function AssignmentList({ assignments, onUpload, userSubmissions,
                                       <p className="text-slate-600 text-sm leading-relaxed">{latestSubmission.final_feedback}</p>
                                     </div>
                                   )}
+                                  {latestSubmission.feedback_attachment_url && (
+                                    <div className="mt-3 pt-3 border-t border-green-200/50">
+                                      <p className="font-medium text-slate-700 mb-2">Feedback Attachment:</p>
+                                      <FilePreview 
+                                        fileUrl={latestSubmission.feedback_attachment_url} 
+                                        fileName={latestSubmission.feedback_attachment_filename || "Feedback Attachment"} 
+                                      />
+                                    </div>
+                                  )}
                                 </div>
                               </div>
                             )}
