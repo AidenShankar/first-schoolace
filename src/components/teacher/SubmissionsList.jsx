@@ -646,40 +646,7 @@ export default function SubmissionsList({ submissions, assignment, onReleaseGrad
         </DialogContent>
       </Dialog>
 
-      <Dialog open={!!previewSubmission} onOpenChange={(open) => !open && setPreviewSubmission(null)}>
-        <DialogContent className="max-w-4xl w-full h-[80vh] md:h-[90vh] p-0 overflow-hidden flex flex-col bg-slate-900 border-slate-800 sm:rounded-xl">
-            <DialogHeader className="p-4 bg-slate-900 text-white border-b border-slate-800 flex flex-row items-center justify-between shrink-0 space-y-0">
-                 <div className="flex flex-col">
-                    <DialogTitle className="text-white">{previewSubmission?.student_name}</DialogTitle>
-                    <p className="text-xs text-slate-400">{previewSubmission?.file_name}</p>
-                 </div>
-                 <div className="flex gap-2">
-                    <Button variant="ghost" size="sm" onClick={() => setPreviewSubmission(null)} className="text-slate-400 hover:text-white hover:bg-white/10">Close</Button>
-                 </div>
-            </DialogHeader>
-            <div className="flex-1 bg-black flex items-center justify-center overflow-auto p-4 relative">
-                {previewSubmission && (
-                    previewSubmission.file_name?.match(/\.(jpg|jpeg|png|gif|webp)$/i) ? (
-                        <img 
-                            src={previewSubmission.file_url} 
-                            alt="Full submission" 
-                            className="max-w-full max-h-full object-contain"
-                        />
-                    ) : (
-                        <div className="text-center text-white p-8">
-                             <FileText className="w-24 h-24 text-slate-600 mx-auto mb-6" />
-                             <p className="text-xl mb-6 font-medium">{previewSubmission.file_name}</p>
-                             <Button asChild variant="secondary" size="lg" className="gap-2">
-                                <a href={previewSubmission.file_url} target="_blank" rel="noopener noreferrer">
-                                    <Eye className="w-4 h-4" /> Open / Download File
-                                </a>
-                             </Button>
-                        </div>
-                    )
-                )}
-            </div>
-        </DialogContent>
-      </Dialog>
+
     </>
   );
 }
