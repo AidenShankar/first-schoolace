@@ -398,7 +398,7 @@ export default function AssignmentForm({ onSubmit, onCancel, isSubmitting, assig
                     ) : (
                       <>
                         <Brain className="w-3 h-3 mr-1.5" />
-                        Generate with AI
+                        Generate with ACE
                       </>
                     )}
                   </Button>
