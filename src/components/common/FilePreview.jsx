@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Download, Eye, X, FileText, Image as ImageIcon } from "lucide-react";
+import { Download, Eye, X, FileText, Image as ImageIcon, ExternalLink } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -14,9 +14,8 @@ export default function FilePreview({ fileUrl, fileName, className = "" }) {
   if (!fileUrl) return null;
 
   const isImage = fileName?.toLowerCase().match(/\.(jpg|jpeg|png|gif|webp|svg)$/);
-  const isPDF = fileName?.toLowerCase().endsWith('.pdf');
   // Common document formats that Google Docs Viewer can handle
-  const isDoc = fileName?.toLowerCase().match(/\.(doc|docx|ppt|pptx|xls|xlsx|txt|rtf)$/);
+  const isDoc = fileName?.toLowerCase().match(/\.(pdf|doc|docx|ppt|pptx|xls|xlsx|txt|rtf)$/);
 
   const handleDownload = (e) => {
     e.stopPropagation();
@@ -85,6 +84,15 @@ export default function FilePreview({ fileUrl, fileName, className = "" }) {
                  <Button
                     variant="ghost"
                     size="sm"
+                    onClick={() => window.open(fileUrl, '_blank')}
+                    className="text-slate-400 hover:text-white hover:bg-white/10"
+                    title="Open in New Tab"
+                  >
+                    <ExternalLink className="w-4 h-4 mr-2" /> Open
+                  </Button>
+                 <Button
+                    variant="ghost"
+                    size="sm"
                     onClick={handleDownload}
                     className="text-slate-400 hover:text-white hover:bg-white/10"
                   >
@@ -107,12 +115,6 @@ export default function FilePreview({ fileUrl, fileName, className = "" }) {
                 src={fileUrl}
                 alt={fileName}
                 className="max-w-full max-h-full object-contain"
-              />
-            ) : isPDF ? (
-              <iframe
-                src={fileUrl}
-                className="w-full h-full bg-white rounded-sm border-none"
-                title={fileName}
               />
             ) : isDoc ? (
               <iframe
