@@ -15,6 +15,7 @@ import { format } from "date-fns";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useTranslation } from "../i18n/useTranslation";
+import { base44 } from "@/api/base44Client";
 
 const initialFormState = {
   title: "",
@@ -40,6 +41,7 @@ export default function AssignmentForm({ onSubmit, onCancel, isSubmitting, assig
   const [showAnswerKeyUpload, setShowAnswerKeyUpload] = useState(false);
   const [answerKeyFile, setAnswerKeyFile] = useState(null);
   const [answerKeyFilename, setAnswerKeyFilename] = useState("");
+  const [isGeneratingInstructions, setIsGeneratingInstructions] = useState(false);
   // const [uploadingAnswerKey, setUploadingAnswerKey] = useState(false); // This state is no longer needed here
 
   useEffect(() => {
@@ -117,6 +119,38 @@ export default function AssignmentForm({ onSubmit, onCancel, isSubmitting, assig
       setAnswerKeyFile(null);
       setAnswerKeyFilename("");
       setShowAnswerKeyUpload(false);
+    }
+  };
+
+  const handleGenerateInstructions = async () => {
+    // Strip HTML tags from description for the API call (simple approach)
+    const cleanDescription = formData.description.replace(/<[^>]*>/g, '').trim();
+
+    if (!cleanDescription) {
+      alert("Please enter an assignment description first.");
+      return;
+    }
+
+    setIsGeneratingInstructions(true);
+    try {
+      const { data, error } = await base44.functions.invoke("generateGradingInstructions", {
+        title: formData.title,
+        description: cleanDescription,
+        subject: formData.subject,
+        max_points: formData.max_points
+      });
+
+      if (error) throw new Error(error);
+
+      setFormData(prev => ({
+        ...prev,
+        instructions: prev.instructions ? prev.instructions + "\n\n" + data.instructions : data.instructions
+      }));
+    } catch (err) {
+      console.error("Failed to generate instructions:", err);
+      alert("Failed to generate grading instructions. Please try again.");
+    } finally {
+      setIsGeneratingInstructions(false);
     }
   };
 
@@ -264,9 +298,31 @@ export default function AssignmentForm({ onSubmit, onCancel, isSubmitting, assig
 
             {formData.allow_submissions && (
               <div className="space-y-3">
-                <Label htmlFor="instructions" className="text-sm font-semibold text-slate-700">
-                  {t('assignments.gradingInstructions')} {formData.use_ai_grading && <span className="text-red-500">*</span>}
-                </Label>
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="instructions" className="text-sm font-semibold text-slate-700">
+                    {t('assignments.gradingInstructions')} {formData.use_ai_grading && <span className="text-red-500">*</span>}
+                  </Label>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={handleGenerateInstructions}
+                    disabled={isGeneratingInstructions || !formData.description || formData.description === '<p><br></p>'}
+                    className="text-indigo-600 border-indigo-200 hover:bg-indigo-50 text-xs"
+                  >
+                    {isGeneratingInstructions ? (
+                      <>
+                        <Brain className="w-3 h-3 mr-1.5 animate-pulse" />
+                        Generating...
+                      </>
+                    ) : (
+                      <>
+                        <Brain className="w-3 h-3 mr-1.5" />
+                        Generate with AI
+                      </>
+                    )}
+                  </Button>
+                </div>
                 <Textarea
                   id="instructions"
                   value={formData.instructions}
