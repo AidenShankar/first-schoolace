@@ -296,6 +296,50 @@ export default function AssignmentForm({ onSubmit, onCancel, isSubmitting, assig
               </div>
             </div>
 
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {formData.allow_submissions && ( // Conditionally render Max Points
+                <div className="space-y-3">
+                  <Label htmlFor="max_points" className="text-sm font-semibold text-slate-700">
+                    {t('assignments.maximumPoints')}
+                  </Label>
+                  <Input
+                    id="max_points"
+                    type="number"
+                    min="1"
+                    max="1000"
+                    value={formData.max_points}
+                    onChange={(e) => handleInputChange("max_points", parseInt(e.target.value))}
+                    className="border-slate-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-xl"
+                  />
+                </div>
+              )}
+
+              <div className="space-y-3">
+                <Label htmlFor="due_date" className="text-sm font-semibold text-slate-700">
+                  {t('assignments.dueDate')}
+                </Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="w-full justify-start text-left border-slate-300 hover:border-indigo-500 rounded-xl"
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4 text-slate-500" />
+                      {formData.due_date ? format(formData.due_date, "PPP") : t('assignments.selectDueDate')}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={formData.due_date || undefined}
+                      onSelect={(date) => handleInputChange("due_date", date)}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
+            </div>
+
             {formData.allow_submissions && (
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
@@ -342,50 +386,6 @@ export default function AssignmentForm({ onSubmit, onCancel, isSubmitting, assig
                 </p>
               </div>
             )}
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {formData.allow_submissions && ( // Conditionally render Max Points
-                <div className="space-y-3">
-                  <Label htmlFor="max_points" className="text-sm font-semibold text-slate-700">
-                    {t('assignments.maximumPoints')}
-                  </Label>
-                  <Input
-                    id="max_points"
-                    type="number"
-                    min="1"
-                    max="1000"
-                    value={formData.max_points}
-                    onChange={(e) => handleInputChange("max_points", parseInt(e.target.value))}
-                    className="border-slate-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-xl"
-                  />
-                </div>
-              )}
-
-              <div className="space-y-3">
-                <Label htmlFor="due_date" className="text-sm font-semibold text-slate-700">
-                  {t('assignments.dueDate')}
-                </Label>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className="w-full justify-start text-left border-slate-300 hover:border-indigo-500 rounded-xl"
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4 text-slate-500" />
-                      {formData.due_date ? format(formData.due_date, "PPP") : t('assignments.selectDueDate')}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={formData.due_date || undefined}
-                      onSelect={(date) => handleInputChange("due_date", date)}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-              </div>
-            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-3">
