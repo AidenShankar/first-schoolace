@@ -19,6 +19,7 @@ import { motion } from "framer-motion";
 import FilePreview from "../common/FilePreview";
 import { AssignmentComment } from "@/entities/AssignmentComment";
 import { ClassEnrollment } from "@/entities/ClassEnrollment";
+import { Submission } from "@/entities/Submission";
 
 const statusColors = {
   pending: "bg-yellow-100 text-yellow-800 border-yellow-200",
@@ -190,6 +191,11 @@ export default function SubmissionsList({ submissions, assignment, onReleaseGrad
   const [feedbackAttachment, setFeedbackAttachment] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [allClassStudents, setAllClassStudents] = useState([]);
+  
+  // Bulk Release State
+  const [showBulkReleaseModal, setShowBulkReleaseModal] = useState(false);
+  const [bulkGradeValue, setBulkGradeValue] = useState("");
+  const [isBulkReleasing, setIsBulkReleasing] = useState(false);
 
 
   const getGradeColor = (grade, maxPoints) => {
@@ -302,6 +308,86 @@ export default function SubmissionsList({ submissions, assignment, onReleaseGrad
 
   const selectedStudentData = studentsWithSubmissions.find(s => s.student_id === selectedStudentId);
 
+  const handleBulkReleaseCurrent = async () => {
+    if (!confirm("Are you sure you want to release all current grades? This will make grades visible to all students who have a grade assigned.")) return;
+    
+    setIsBulkReleasing(true);
+    try {
+        const promises = studentsWithSubmissions.map(student => {
+            const sub = student.submissions[0];
+            if (sub.is_released) return Promise.resolve(); // Already released
+            
+            // Determine grade to release: Teacher grade takes precedence over AI grade
+            let gradeToRelease = sub.teacher_grade;
+            let feedbackToRelease = sub.teacher_feedback;
+            
+            if (gradeToRelease === null || gradeToRelease === undefined) {
+                if (sub.ai_grade !== null && sub.ai_grade !== undefined) {
+                    gradeToRelease = sub.ai_grade;
+                    feedbackToRelease = sub.ai_feedback;
+                } else {
+                    return Promise.resolve(); // No grade to release
+                }
+            }
+            
+            return Submission.update(sub.id, {
+                is_released: true,
+                released_at: new Date().toISOString(),
+                grading_status: 'released',
+                final_grade: gradeToRelease,
+                final_feedback: feedbackToRelease || ""
+            });
+        });
+        
+        await Promise.all(promises);
+        alert("All available grades released successfully!");
+        setShowBulkReleaseModal(false);
+        window.location.reload(); // Refresh to show changes
+    } catch (e) {
+        console.error("Error bulk releasing grades:", e);
+        alert("Failed to release some grades.");
+    } finally {
+        setIsBulkReleasing(false);
+    }
+  };
+
+  const handleBulkReleaseFixed = async () => {
+    if (!bulkGradeValue || isNaN(bulkGradeValue)) {
+        alert("Please enter a valid numeric grade.");
+        return;
+    }
+    
+    if (!confirm(`Are you sure you want to release a grade of ${bulkGradeValue} for ALL ${studentsWithSubmissions.length} submissions? This will overwrite existing final grades.`)) return;
+
+    setIsBulkReleasing(true);
+    try {
+        const gradeNum = parseFloat(bulkGradeValue);
+        const promises = studentsWithSubmissions.map(student => {
+            const sub = student.submissions[0];
+            return Submission.update(sub.id, {
+                is_released: true,
+                released_at: new Date().toISOString(),
+                grading_status: 'released',
+                final_grade: gradeNum,
+                teacher_grade: gradeNum, // Also update teacher grade to match
+                // Preserve existing feedback if any, or set default
+                final_feedback: sub.teacher_feedback || sub.ai_feedback || "Graded via bulk release."
+            });
+        });
+        
+        await Promise.all(promises);
+        alert(`Released grade of ${gradeNum} for all submissions!`);
+        setShowBulkReleaseModal(false);
+        setBulkGradeValue("");
+        window.location.reload(); // Refresh to show changes
+    } catch (e) {
+        console.error("Error bulk releasing fixed grades:", e);
+        alert("Failed to release grades.");
+    } finally {
+        setIsBulkReleasing(false);
+    }
+  };
+
   return (
     <>
       <div className="space-y-4">
@@ -310,9 +396,20 @@ export default function SubmissionsList({ submissions, assignment, onReleaseGrad
               <h3 className="text-xl font-bold text-slate-900">Submissions</h3>
 
           </div>
-          <Badge variant="outline" className="bg-slate-50">
-            {studentsWithSubmissions.length} student{studentsWithSubmissions.length !== 1 ? 's' : ''} submitted
-          </Badge>
+          <div className="flex items-center gap-3">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => setShowBulkReleaseModal(true)}
+                className="bg-indigo-50 text-indigo-700 border-indigo-200 hover:bg-indigo-100"
+              >
+                <Send className="w-4 h-4 mr-2" />
+                Release All
+              </Button>
+              <Badge variant="outline" className="bg-slate-50">
+                {studentsWithSubmissions.length} student{studentsWithSubmissions.length !== 1 ? 's' : ''} submitted
+              </Badge>
+          </div>
         </div>
 
         {submissions.length === 0 ? (
@@ -582,7 +679,57 @@ export default function SubmissionsList({ submissions, assignment, onReleaseGrad
         </DialogContent>
       </Dialog>
 
+      {/* Bulk Release Modal */}
+      <Dialog open={showBulkReleaseModal} onOpenChange={setShowBulkReleaseModal}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Bulk Release Grades</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-6 py-4">
+            <div className="space-y-3">
+                <h4 className="font-medium text-sm text-slate-700">Option 1: Release Current Grades</h4>
+                <p className="text-xs text-slate-500">Releases the current Teacher Grade (if set) or AI Grade for all submissions that haven't been released yet.</p>
+                <Button 
+                    onClick={handleBulkReleaseCurrent} 
+                    disabled={isBulkReleasing}
+                    className="w-full bg-indigo-600 hover:bg-indigo-700"
+                >
+                    {isBulkReleasing ? "Processing..." : "Release Current Grades"}
+                </Button>
+            </div>
 
+            <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t border-slate-200" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-white px-2 text-slate-500">Or</span>
+                </div>
+            </div>
+
+            <div className="space-y-3">
+                <h4 className="font-medium text-sm text-slate-700">Option 2: Set Same Grade for All</h4>
+                <p className="text-xs text-slate-500">Apply the same grade to every submission and release it immediately.</p>
+                <div className="flex gap-2">
+                    <Input 
+                        type="number" 
+                        placeholder={`Grade (Max ${assignment.max_points})`}
+                        value={bulkGradeValue}
+                        onChange={(e) => setBulkGradeValue(e.target.value)}
+                        className="flex-1"
+                    />
+                    <Button 
+                        onClick={handleBulkReleaseFixed}
+                        disabled={isBulkReleasing || !bulkGradeValue}
+                        variant="secondary"
+                    >
+                        Apply & Release
+                    </Button>
+                </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
