@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Calendar as CalendarIcon, FileText, Plus, X, Upload, Brain, User, Paperclip, Clock, Edit, Sparkles } from "lucide-react";
+import { Calendar as CalendarIcon, FileText, Plus, X, Upload, Brain, User, Paperclip, Clock, Edit } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Switch } from "@/components/ui/switch";
 // This import is not directly used in the modified handleSubmit but might be used elsewhere.
@@ -15,7 +15,6 @@ import { format } from "date-fns";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useTranslation } from "../i18n/useTranslation";
-import { InvokeLLM } from "@/integrations/Core";
 
 const initialFormState = {
   title: "",
@@ -42,7 +41,6 @@ export default function AssignmentForm({ onSubmit, onCancel, isSubmitting, assig
   const [answerKeyFile, setAnswerKeyFile] = useState(null);
   const [answerKeyFilename, setAnswerKeyFilename] = useState("");
   // const [uploadingAnswerKey, setUploadingAnswerKey] = useState(false); // This state is no longer needed here
-  const [isGeneratingInstructions, setIsGeneratingInstructions] = useState(false);
 
   useEffect(() => {
     if (assignmentToEdit) {
@@ -131,46 +129,6 @@ export default function AssignmentForm({ onSubmit, onCancel, isSubmitting, assig
 
   const removeExistingAttachment = (indexToRemove) => {
     setExistingAttachments(prev => prev.filter((_, i) => i !== indexToRemove));
-  };
-
-  const generateGradingInstructions = async () => {
-    // Check if description has content (stripping HTML tags from ReactQuill)
-    const descriptionText = formData.description?.replace(/<[^>]*>?/gm, '').trim();
-    
-    if (!descriptionText) {
-      alert("Please enter an assignment description first.");
-      return;
-    }
-
-    setIsGeneratingInstructions(true);
-    try {
-      const prompt = `
-        I am a teacher creating an assignment.
-        Here is the assignment description:
-        "${descriptionText}"
-
-        Please provide detailed instruction for grading, include a rubric, key points to look for , and grading criteria.
-        The output should be clear and concise, suitable for pasting directly into a grading instructions field.
-      `;
-
-      const response = await InvokeLLM({
-        prompt: prompt
-      });
-
-      // Handle potential response formats (string or object)
-      const generatedText = typeof response === 'string' ? response : (response.content || response.message || JSON.stringify(response));
-
-      setFormData(prev => ({
-        ...prev,
-        instructions: (prev.instructions ? prev.instructions + "\n\n" : "") + generatedText
-      }));
-
-    } catch (error) {
-      console.error("Error generating instructions:", error);
-      alert("Failed to generate grading instructions. Please try again.");
-    } finally {
-      setIsGeneratingInstructions(false);
-    }
   };
 
   return (
@@ -306,31 +264,9 @@ export default function AssignmentForm({ onSubmit, onCancel, isSubmitting, assig
 
             {formData.allow_submissions && (
               <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="instructions" className="text-sm font-semibold text-slate-700">
-                    {t('assignments.gradingInstructions')} {formData.use_ai_grading && <span className="text-red-500">*</span>}
-                  </Label>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={generateGradingInstructions}
-                    disabled={isGeneratingInstructions}
-                    className="text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 h-8 text-xs font-medium"
-                  >
-                    {isGeneratingInstructions ? (
-                        <>
-                            <div className="w-3 h-3 mr-1.5 animate-spin rounded-full border-2 border-indigo-600 border-t-transparent"></div>
-                            Generating...
-                        </>
-                    ) : (
-                        <>
-                            <Sparkles className="w-3 h-3 mr-1.5" />
-                            Generate with AI
-                        </>
-                    )}
-                  </Button>
-                </div>
+                <Label htmlFor="instructions" className="text-sm font-semibold text-slate-700">
+                  {t('assignments.gradingInstructions')} {formData.use_ai_grading && <span className="text-red-500">*</span>}
+                </Label>
                 <Textarea
                   id="instructions"
                   value={formData.instructions}

@@ -527,9 +527,9 @@ Output your response as JSON with:
                 await Promise.all(updatePromises);
             }
 
-            if (currentAssignment.use_ai_grading) {
+            if (assignment.use_ai_grading) {
                 setTextSubmissionState({ show: true, status: 'processing', message: 'Processing...' });
-                await gradeSubmission(submission, currentAssignment);
+                await gradeSubmission(submission, assignment);
             }
             
             setTextSubmissionState({ show: true, status: 'success', message: 'Text submission submitted!' });
@@ -781,8 +781,8 @@ Output your response as JSON with:
             }
 
             // The important part: only close modal after AI grading is done
-            if (currentAssignment.use_ai_grading) {
-                await gradeSubmission(submission, currentAssignment); // Wait for it to finish
+            if (uploadingAssignment.use_ai_grading) {
+                await gradeSubmission(submission, uploadingAssignment); // Wait for it to finish
             }
             // Now close modal and reset UI
             setShowUploadModal(false);
