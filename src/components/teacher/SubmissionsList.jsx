@@ -265,6 +265,14 @@ export default function SubmissionsList({ submissions, assignment, onReleaseGrad
     setFeedbackAttachment(null);
     setShowGradeModal(true);
   };
+
+  const openEditAiGradeModal = (submission) => {
+    setSelectedSubmission(submission);
+    setManualGrade(submission.ai_grade !== null && submission.ai_grade !== undefined ? String(submission.ai_grade) : "");
+    setManualFeedback(submission.ai_feedback || "");
+    setFeedbackAttachment(null);
+    setShowGradeModal(true);
+  };
   
   const studentsWithSubmissions = Object.values(submissions.reduce((acc, sub) => {
       if (!acc[sub.student_id]) {
@@ -550,9 +558,14 @@ export default function SubmissionsList({ submissions, assignment, onReleaseGrad
                             {(submission.grading_status === "ai_graded" || submission.grading_status === "ai_grading") && !submission.is_released && (
                             <>
                                 {submission.grading_status === "ai_graded" && (
-                                <Button size="sm" onClick={() => onReleaseGrade(submission.id, "ai")} className="bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-3 py-1 text-xs">
-                                    <Send className="w-3 h-3 mr-1.5" /> Release AI Grade
-                                </Button>
+                                  <>
+                                    <Button size="sm" onClick={() => onReleaseGrade(submission.id, "ai")} className="bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-3 py-1 text-xs">
+                                        <Send className="w-3 h-3 mr-1.5" /> Release AI Grade
+                                    </Button>
+                                    <Button size="sm" variant="outline" onClick={() => openEditAiGradeModal(submission)} className="text-blue-600 border-blue-200 hover:bg-blue-50 rounded-lg px-3 py-1 text-xs">
+                                        <Edit className="w-3 h-3 mr-1.5" /> Edit AI Grade
+                                    </Button>
+                                  </>
                                 )}
                                 <Button size="sm" variant="outline" onClick={() => openGradeModal(submission)} className="text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-lg px-3 py-1 text-xs">
                                 <Edit className="w-3 h-3 mr-1.5" /> Grade Manually
