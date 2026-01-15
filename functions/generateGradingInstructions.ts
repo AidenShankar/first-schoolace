@@ -1,5 +1,4 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
-import { InvokeLLM } from '@/integrations/Core';
 
 Deno.serve(async (req) => {
     try {
@@ -36,17 +35,11 @@ Deno.serve(async (req) => {
         Do not include any conversational filler (like "Here are the instructions..."). Just the content.
         `;
 
-        const response = await InvokeLLM({
+        // Use the SDK to call the integration
+        const response = await base44.integrations.Core.InvokeLLM({
             prompt: prompt,
             add_context_from_internet: false
         });
-
-        // InvokeLLM returns a string if no json schema is provided, or an object if it is.
-        // In the integration definition: "If response_json_schema is specified, returns a dict (so no need to parse it), otherwise returns a string."
-        
-        // However, looking at the integration definition provided in the prompt: 
-        // "If response_json_schema is specified, returns a dict (so no need to parse it), otherwise returns a string."
-        // We are NOT specifying response_json_schema, so it should return a string.
 
         return Response.json({ instructions: response });
 
