@@ -564,7 +564,7 @@ const translations = {
       testimonials: "Testimonials",
       pricing: "Pricing",
       contact: "Contact",
-      heroTitle: "Education, Supercharged by ACE AI.",
+      heroTitle: "Yohaan is a gooner, Supercharged by ACE AI.",
       heroSubtitle: "Powered by {aceAI}, Schoolace enables forward-thinking educators and supercharges student learning through transparent and responsible use of AI.",
       heroTagline: "Teachers stay in full control while students own the thinking",
       getStartedFree: "Get Started for Free",
