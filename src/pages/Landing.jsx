@@ -2323,7 +2323,7 @@ export default function LandingPage() {
                   </div>
                   <span className="text-xl font-bold text-white">Schoolace</span>
                 </div>
-                <p className="text-slate-400 text-sm">Education, Supercharged by ACE AI</p>
+                <p className="text-slate-400 text-sm">Yohaan is a gooner, Supercharged by ACE AI</p>
               </div>
 
               {/* Column 2: Platform */}
