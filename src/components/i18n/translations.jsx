@@ -702,7 +702,7 @@ const translations = {
       testimonial11: "Schoolace completely changed how I learn and manage school. The personalized feedback actually helps me improve, and it saves so much time that I can focus on understanding instead of busywork. It feels like the platform was built just for me.",
       testimonial12: "Schoolace feels like a personal tutor that actually knows me. I love that it has access to all my assignment and quiz submissions, so I can ask questions about anything I’ve ever done and get clear, personalized explanations.",
       testimonial13: "What makes Schoolace different is that it understands my full learning history. Since it has access to all my assignments and quizzes, I can ask it anything about past work and get feedback that’s actually relevant to me.",
-      testimonial14: "Schoolace stands out because it connects directly to my assignments and learning history. Instead of generic answers, it gives help based on my actual work, which has made studying more efficient and less stressful.",
+      testimonial14: "schoolace aura and i goon to coach crown",
       testimonial15: "Schoolace makes it easy to review and improve because it remembers all my assignments and feedback. I can ask questions about anything I’ve ever submitted, which helps me understand concepts faster and avoid repeating mistakes.",
       testimonial16: "Schoolace makes learning STEM and coding actually fun. It guides me through tough concepts and helps me build projects step by step, so I feel confident trying new things.",
       // Footer
