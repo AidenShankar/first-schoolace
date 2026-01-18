@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { GraduationCap, MessageSquare, BookOpen, Sparkles, SlidersHorizontal, Bot, Share2, Calendar, BrainCircuit, CalendarClock, LineChart } from "lucide-react";
+import { GraduationCap, MessageSquare, BookOpen, Sparkles, SlidersHorizontal, Bot, Share2, Calendar, BrainCircuit, CalendarClock } from "lucide-react";
 import { LanguageProvider, useLanguage } from "./components/i18n/LanguageContext";
 import { t } from "./components/i18n/translations";
 import { User } from '@/entities/User';
@@ -634,14 +634,6 @@ export default function Layout({ children, currentPageName }) {
       name: t('nav.dashboard', language), 
       href: createPageUrl("Dashboard"), 
       icon: BookOpen, 
-      blocked: isQuizModeActive, 
-      blockedReason: "Complete your quiz to access other pages.",
-      roles: ['teacher', 'student', 'admin']
-    },
-    { 
-      name: "Learner Dashboard", 
-      href: createPageUrl("LearnerDashboard"), 
-      icon: LineChart, 
       blocked: isQuizModeActive, 
       blockedReason: "Complete your quiz to access other pages.",
       roles: ['teacher', 'student', 'admin']
