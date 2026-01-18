@@ -644,7 +644,6 @@ export default function Layout({ children, currentPageName }) {
       icon: LineChart, 
       blocked: isQuizModeActive, 
       blockedReason: "Complete your quiz to access other pages.",
-      roles: ['teacher', 'student', 'admin']
     },
     { 
       name: t('nav.scheduler', language), 
