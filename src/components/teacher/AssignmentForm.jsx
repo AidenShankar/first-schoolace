@@ -649,6 +649,27 @@ export default function AssignmentForm({ onSubmit, onCancel, isSubmitting, assig
           </form>
         </CardContent>
       </Card>
+
+      <AlertDialog open={showGenerateConfirm} onOpenChange={setShowGenerateConfirm}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Generate Grading Instructions?</AlertDialogTitle>
+            <AlertDialogDescription>
+              These instructions will be created based on your description and maximum points. Do you want to proceed?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>No</AlertDialogCancel>
+            <AlertDialogAction onClick={executeGenerateInstructions}>Yes</AlertDialogAction>
+          </AlertDialogFooter>
+          <div className="mt-2 text-center">
+            <p className="text-xs text-slate-400 font-medium flex items-center justify-center">
+              <Brain className="w-3 h-3 mr-1" />
+              Powered by ACE AI
+            </p>
+          </div>
+        </AlertDialogContent>
+      </AlertDialog>
     </motion.div>
   );
 }
