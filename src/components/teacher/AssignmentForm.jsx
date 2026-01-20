@@ -138,7 +138,7 @@ export default function AssignmentForm({ onSubmit, onCancel, isSubmitting, assig
     const cleanDescription = formData.description.replace(/<[^>]*>/g, '').trim();
 
     if (!cleanDescription) {
-      alert("Please enter an assignment description first.");
+      alert("Please fill in the description box to generate instructions.");
       return;
     }
     
@@ -405,7 +405,7 @@ export default function AssignmentForm({ onSubmit, onCancel, isSubmitting, assig
                     variant="outline"
                     size="sm"
                     onClick={handleGenerateClick}
-                    disabled={isGeneratingInstructions || !formData.description || formData.description === '<p><br></p>'}
+                    disabled={isGeneratingInstructions}
                     className="text-indigo-600 border-indigo-200 hover:bg-indigo-50 text-xs"
                   >
                     {isGeneratingInstructions ? (
