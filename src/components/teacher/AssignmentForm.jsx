@@ -404,7 +404,7 @@ export default function AssignmentForm({ onSubmit, onCancel, isSubmitting, assig
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={handleGenerateInstructions}
+                    onClick={handleGenerateClick}
                     disabled={isGeneratingInstructions || !formData.description || formData.description === '<p><br></p>'}
                     className="text-indigo-600 border-indigo-200 hover:bg-indigo-50 text-xs"
                   >
