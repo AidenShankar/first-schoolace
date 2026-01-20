@@ -138,7 +138,7 @@ export default function AssignmentForm({ onSubmit, onCancel, isSubmitting, assig
     const cleanDescription = formData.description.replace(/<[^>]*>/g, '').trim();
 
     if (!cleanDescription) {
-      alert("Please fill in the description box to generate instructions.");
+      alert("Please fill in the description box with your assignement's details to generate instructions.");
       return;
     }
     
