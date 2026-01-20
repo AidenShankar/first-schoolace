@@ -10,6 +10,16 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar as CalendarIcon, FileText, Plus, X, Upload, Brain, User, Paperclip, Clock, Edit } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Switch } from "@/components/ui/switch";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 // This import is not directly used in the modified handleSubmit but might be used elsewhere.
 import { format } from "date-fns";
 import ReactQuill from "react-quill";
