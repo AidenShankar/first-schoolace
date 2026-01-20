@@ -52,6 +52,7 @@ export default function AssignmentForm({ onSubmit, onCancel, isSubmitting, assig
   const [answerKeyFile, setAnswerKeyFile] = useState(null);
   const [answerKeyFilename, setAnswerKeyFilename] = useState("");
   const [isGeneratingInstructions, setIsGeneratingInstructions] = useState(false);
+  const [showGenerateConfirm, setShowGenerateConfirm] = useState(false);
   // const [uploadingAnswerKey, setUploadingAnswerKey] = useState(false); // This state is no longer needed here
 
   useEffect(() => {
