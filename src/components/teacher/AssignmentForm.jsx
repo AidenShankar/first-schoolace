@@ -133,7 +133,7 @@ export default function AssignmentForm({ onSubmit, onCancel, isSubmitting, assig
     }
   };
 
-  const handleGenerateInstructions = async () => {
+  const handleGenerateClick = () => {
     // Strip HTML tags from description for the API call (simple approach)
     const cleanDescription = formData.description.replace(/<[^>]*>/g, '').trim();
 
@@ -141,6 +141,12 @@ export default function AssignmentForm({ onSubmit, onCancel, isSubmitting, assig
       alert("Please enter an assignment description first.");
       return;
     }
+    
+    setShowGenerateConfirm(true);
+  };
+
+  const executeGenerateInstructions = async () => {
+    const cleanDescription = formData.description.replace(/<[^>]*>/g, '').trim();
 
     setIsGeneratingInstructions(true);
     try {
@@ -162,6 +168,7 @@ export default function AssignmentForm({ onSubmit, onCancel, isSubmitting, assig
       alert("Failed to generate grading instructions. Please try again.");
     } finally {
       setIsGeneratingInstructions(false);
+      setShowGenerateConfirm(false);
     }
   };
 
