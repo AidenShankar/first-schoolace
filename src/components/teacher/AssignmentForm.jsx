@@ -655,7 +655,7 @@ export default function AssignmentForm({ onSubmit, onCancel, isSubmitting, assig
           <AlertDialogHeader>
             <AlertDialogTitle>Generate Grading Instructions?</AlertDialogTitle>
             <AlertDialogDescription>
-              These instructions will be created based on your description and maximum points. Do you want to proceed?
+              These instructions are dynamically generated from your assignment description and point allocation. Do you want to proceed?
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
