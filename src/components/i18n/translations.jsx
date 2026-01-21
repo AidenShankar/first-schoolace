@@ -566,7 +566,7 @@ const translations = {
       contact: "Contact",
       heroTitle: "Education, Supercharged by ACE AI.",
       heroSubtitle: "Powered by {aceAI}, Schoolace enables forward-thinking educators and supercharges student learning through transparent and responsible use of AI.",
-      heroTagline: "Teachers stay in full control while students own the thinking",
+      heroTagline: "",
       getStartedFree: "Get Started for Free",
       // Features Section
       coPilotForTeachers: "Co-Pilot for Teachers",
