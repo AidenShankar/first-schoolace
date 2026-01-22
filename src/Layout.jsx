@@ -433,7 +433,8 @@ export default function Layout({ children, currentPageName }) {
 
           switch (action.target) {
               case 'NAVIGATE_TO_AI_TOOL':
-                  window.location.href = createPageUrl(`AITools?tool=${action.params.tool_id}`);
+                  // window.location.href = createPageUrl(`AITools?tool=${action.params.tool_id}`);
+                  setAgentConversation(prev => [...prev, { role: 'assistant', content: `(Navigation to AI Tools is disabled)` }]);
                   break;
                   
               case 'SEND_CLASS_CHAT':
@@ -485,7 +486,8 @@ export default function Layout({ children, currentPageName }) {
                   
               case 'VIEW_QUIZ_DETAILS':
                   if (!action.params.class_id || !action.params.quiz_id) throw new Error("Missing class_id or quiz_id for viewing quiz.");
-                  window.location.href = createPageUrl(`ClassTools?classId=${action.params.class_id}&tool=quizzes&quizId=${action.params.quiz_id}`);
+                  // window.location.href = createPageUrl(`ClassTools?classId=${action.params.class_id}&tool=quizzes&quizId=${action.params.quiz_id}`);
+                  setAgentConversation(prev => [...prev, { role: 'assistant', content: `(Navigation to Quiz Details is disabled)` }]);
                   break;
 
               case 'CREATE_ASSIGNMENT':
@@ -553,8 +555,9 @@ export default function Layout({ children, currentPageName }) {
                   
               case 'SEND_AI_TOOL_MESSAGE':
                   // Navigate to tool and then send message
-                  const toolUrl = createPageUrl(`AITools?tool=${action.params.tool_id}&message=${encodeURIComponent(action.params.content)}`);
-                  window.location.href = toolUrl;
+                  // const toolUrl = createPageUrl(`AITools?tool=${action.params.tool_id}&message=${encodeURIComponent(action.params.content)}`);
+                  // window.location.href = toolUrl;
+                  setAgentConversation(prev => [...prev, { role: 'assistant', content: `(Navigation to AI Tool Message is disabled)` }]);
                   break;
                   
               case 'PIN_AI_TOOL':
@@ -600,7 +603,8 @@ export default function Layout({ children, currentPageName }) {
 
               case 'VIEW_SCHEDULE':
                   if (!targetClassId) throw new Error("Class not found or not specified.");
-                  window.location.href = createPageUrl(`ClassTools?classId=${targetClassId}&tool=schedule`);
+                  // window.location.href = createPageUrl(`ClassTools?classId=${targetClassId}&tool=schedule`);
+                  setAgentConversation(prev => [...prev, { role: 'assistant', content: `(Navigation to Schedule is disabled)` }]);
                   break;
 
               case 'SWITCH_CLASS':
