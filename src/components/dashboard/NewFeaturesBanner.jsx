@@ -45,7 +45,7 @@ const features = [
     }
 ];
 
-export default function NewFeaturesBanner() {
+export default function NewFeaturesBanner({ className = "mb-8" }) {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isOpen, setIsOpen] = useState(false);
     const [seenCount, setSeenCount] = useState(0);
@@ -77,7 +77,7 @@ export default function NewFeaturesBanner() {
     };
 
     return (
-        <div className="mb-8">
+        <div className={className}>
             <AnimatePresence mode="wait">
                 {!isOpen ? (
                     <motion.button
