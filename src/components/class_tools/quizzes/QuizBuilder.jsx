@@ -66,6 +66,7 @@ function AIGenerator({ onQuestionsGenerated, t }) {
                 topic: aiFormData.topic,
                 url: aiFormData.url,
                 file_url: uploadedFileUrl,
+                file_name: aiFormData.file ? aiFormData.file.name : null,
                 num_questions: aiFormData.num_questions,
                 question_type: aiFormData.question_type,
                 difficulty: aiFormData.difficulty

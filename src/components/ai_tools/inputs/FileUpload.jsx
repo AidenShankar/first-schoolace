@@ -8,10 +8,10 @@ export default function FileUpload({ id, label, onFileChange }) {
 
     const handleFileSelect = (selectedFile) => {
         if (selectedFile) {
-            // Check file size (max 10MB for reliable AI processing)
-            const maxSize = 10 * 1024 * 1024; // 10MB
+            // Check file size (max 20MB for reliable AI processing)
+            const maxSize = 20 * 1024 * 1024; // 20MB
             if (selectedFile.size > maxSize) {
-                alert('File is too large. Please select a file smaller than 10MB for reliable AI processing.');
+                alert('File is too large. Please select a file smaller than 20MB for reliable AI processing.');
                 return;
             }
             
@@ -70,7 +70,7 @@ export default function FileUpload({ id, label, onFileChange }) {
                         <Button type="button" variant="outline" asChild>
                             <label htmlFor={id} className="cursor-pointer">Browse File</label>
                         </Button>
-                        <p className="text-xs mt-2">Supports PDF, DOC, DOCX, TXT, PNG, JPG (max 10MB)</p>
+                        <p className="text-xs mt-2">Supports PDF, DOC, DOCX, TXT, PNG, JPG (max 20MB)</p>
                     </div>
                 ) : (
                     <div className="flex flex-col items-center justify-center gap-2 text-slate-700">
