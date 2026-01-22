@@ -1,31 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Sparkles, Trash2, Bot, Gift, ChevronRight } from 'lucide-react';
+import { X, Sparkles, Trash2, Bot, Gift, ChevronRight, FileText } from 'lucide-react';
 
 const features = [
     {
         id: 1,
-        title: "You're Supercharged!",
-        description: "Enjoy free access to the complete AI Tool Suite, your personal AI Agent for automating tasks, and personalized AI-guided learning paths for every student.",
-        icon: Bot,
-        color: "bg-gradient-to-r from-purple-500 to-pink-500 text-white",
-        badge: "Free Access"
-    },
-    {
-        id: 2,
-        title: "New: Class Deletion",
-        description: "You can now delete classes directly from your dashboard. Keep your workspace clean and organized by removing unused classes.",
-        icon: Trash2,
-        color: "bg-red-100 text-red-600",
-        badge: "New Feature"
-    },
-    {
-        id: 3,
-        title: "New: AI Grading Instructions",
-        description: "Generate detailed, custom AI grading instructions for your assignments instantly with the power of ACE AI.",
-        icon: Sparkles,
-        color: "bg-indigo-100 text-indigo-600",
-        badge: "New Feature"
+        title: "New: AI Worksheet Generator",
+        description: "Create professional, formatted worksheets instantly from any topic, URL, or YouTube video. Includes multiple question types and automatic answer keys.",
+        icon: FileText,
+        color: "bg-blue-100 text-blue-600",
+        badge: "New Tool"
     }
 ];
 
@@ -36,7 +20,7 @@ export default function NewFeaturesBanner() {
 
     useEffect(() => {
         // Load seen count from local storage on mount
-        const stored = localStorage.getItem('schoolace_features_seen_count');
+        const stored = localStorage.getItem('schoolace_features_seen_count_v2');
         if (stored) {
             setSeenCount(parseInt(stored, 10));
         }
@@ -57,7 +41,7 @@ export default function NewFeaturesBanner() {
         setIsOpen(false);
         // Mark as seen when closing
         setSeenCount(features.length);
-        localStorage.setItem('schoolace_features_seen_count', features.length.toString());
+        localStorage.setItem('schoolace_features_seen_count_v2', features.length.toString());
     };
 
     return (
