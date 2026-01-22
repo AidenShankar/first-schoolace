@@ -922,7 +922,7 @@ function LayoutContent({
           <AlertDialogHeader>
             <AlertDialogTitle>Account Reset Notification</AlertDialogTitle>
             <AlertDialogDescription>
-              Anthony Barakat's account has been reset.
+              Anthony Barakat's account has been reset as requested.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
