@@ -4,7 +4,10 @@ import { Submission } from "@/entities/Submission";
 import { Class } from "@/entities/Class";
 import { ClassEnrollment } from "@/entities/ClassEnrollment";
 import { User } from "@/entities/User";
-import { ScheduleEvent } from "@/entities/ScheduleEvent"; // New import
+import { ScheduleEvent } from "@/entities/ScheduleEvent";
+import { Message } from "@/entities/Message";
+import { Quiz } from "@/entities/Quiz";
+import { Poll } from "@/entities/Poll";
 import { UploadFile, InvokeLLM, ExtractDataFromUploadedFile } from "@/integrations/Core";
 import { useTranslation } from "../components/i18n/useTranslation";
 import { Button } from "@/components/ui/button";
@@ -873,6 +876,62 @@ Output your response as JSON with:
         }
     };
     
+    const handleDeleteClass = async () => {
+        if (!currentClass) return;
+        
+        const confirmMessage = `Are you sure you want to delete "${currentClass.name}"? This will delete all assignments, submissions, quizzes, polls, and messages associated with this class. This action cannot be undone.`;
+        if (!window.confirm(confirmMessage)) return;
+
+        const confirmCode = prompt(`To confirm deletion, please type the class code: "${currentClass.class_code}"`);
+        if (confirmCode !== currentClass.class_code) {
+            alert("Incorrect class code. Deletion cancelled.");
+            return;
+        }
+
+        setIsSubmitting(true);
+        try {
+            // 1. Delete Enrollments
+            const enrollments = await retryWithBackoff(() => ClassEnrollment.filter({ class_id: currentClass.id }));
+            await Promise.all(enrollments.map(e => retryWithBackoff(() => ClassEnrollment.delete(e.id))));
+
+            // 2. Delete Assignments & Submissions
+            const classAssignments = await retryWithBackoff(() => Assignment.filter({ class_id: currentClass.id }));
+            for (const assignment of classAssignments) {
+                 const assignmentSubmissions = await retryWithBackoff(() => Submission.filter({ assignment_id: assignment.id }));
+                 await Promise.all(assignmentSubmissions.map(s => retryWithBackoff(() => Submission.delete(s.id))));
+                 await retryWithBackoff(() => Assignment.delete(assignment.id));
+            }
+            
+            // 3. Delete Schedule Events
+            const events = await retryWithBackoff(() => ScheduleEvent.filter({ class_id: currentClass.id }));
+            await Promise.all(events.map(e => retryWithBackoff(() => ScheduleEvent.delete(e.id))));
+
+            // 4. Delete Messages
+            const messages = await retryWithBackoff(() => Message.filter({ class_id: currentClass.id }));
+            await Promise.all(messages.map(m => retryWithBackoff(() => Message.delete(m.id))));
+
+            // 5. Delete Quizzes
+            const quizzes = await retryWithBackoff(() => Quiz.filter({ class_id: currentClass.id }));
+            await Promise.all(quizzes.map(q => retryWithBackoff(() => Quiz.delete(q.id))));
+
+            // 6. Delete Polls
+            const polls = await retryWithBackoff(() => Poll.filter({ class_id: currentClass.id }));
+            await Promise.all(polls.map(p => retryWithBackoff(() => Poll.delete(p.id))));
+
+            // 7. Delete Class
+            await retryWithBackoff(() => Class.delete(currentClass.id));
+
+            alert(`Class "${currentClass.name}" has been deleted.`);
+            window.location.reload(); 
+
+        } catch (error) {
+            console.error("Error deleting class:", error);
+            alert("Failed to delete class. Please try again.");
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
     const handleDeleteAssignment = async (assignmentId) => {
         if (!window.confirm("Are you sure you want to delete this assignment? This will delete all student submissions and cannot be undone.")) {
             return;
@@ -1205,6 +1264,11 @@ Output your response as JSON with:
                                             {!showAssignmentForm && !selectedAssignment && !showCreateForm && (
                                                 <Button onClick={() => setShowCreateForm(true)} variant="outline" className="px-6 py-3 rounded-xl">
                                                     <Plus className="w-5 h-5 mr-2" /> {t('dashboard.createNewClass')}
+                                                </Button>
+                                            )}
+                                            {!showAssignmentForm && !selectedAssignment && !showCreateForm && currentClass && (
+                                                <Button onClick={handleDeleteClass} variant="destructive" className="px-6 py-3 rounded-xl bg-red-100 text-red-600 hover:bg-red-200 border border-red-200">
+                                                    <Trash2 className="w-5 h-5 mr-2" /> {t('classSetup.deleteClass') || "Delete Class"}
                                                 </Button>
                                             )}
                                             {(showAssignmentForm || selectedAssignment || showCreateForm) && (
