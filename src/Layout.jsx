@@ -609,17 +609,17 @@ export default function Layout({ children, currentPageName }) {
 
               case 'SWITCH_CLASS':
                   if (!targetClass) throw new Error("Class not found or not specified.");
-                  if (targetClass.id === currentClassId) {
-                      setAgentConversation(prev => [...prev, { role: 'assistant', content: `You are already viewing ${targetClass.name}.` }]);
-                      return;
-                  }
-                  setCurrentClass(targetClass);
-                  setCurrentClassId(targetClass.id);
-                  const newUrl = new URL(window.location);
-                  newUrl.searchParams.set('classId', targetClass.id);
-                  // Use pushState to change URL without full reload, then let useEffect handle class update
-                  window.history.pushState({}, '', newUrl.toString()); 
-                  setAgentConversation(prev => [...prev, { role: 'assistant', content: `✅ Switched to ${targetClass.name}!` }]);
+                  // if (targetClass.id === currentClassId) {
+                  //     setAgentConversation(prev => [...prev, { role: 'assistant', content: `You are already viewing ${targetClass.name}.` }]);
+                  //     return;
+                  // }
+                  // setCurrentClass(targetClass);
+                  // setCurrentClassId(targetClass.id);
+                  // const newUrl = new URL(window.location);
+                  // newUrl.searchParams.set('classId', targetClass.id);
+                  // // Use pushState to change URL without full reload, then let useEffect handle class update
+                  // window.history.pushState({}, '', newUrl.toString()); 
+                  setAgentConversation(prev => [...prev, { role: 'assistant', content: `(Switching classes is disabled)` }]);
                   break;
 
               default:
