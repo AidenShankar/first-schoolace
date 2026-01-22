@@ -756,6 +756,7 @@ const translations = {
       descriptionPlaceholder: "Brief description of your class...",
       cancel: "Cancel",
       creating: "Creating...",
+      deleteClass: "Delete Class",
     },
     // Roles
     roles: {
@@ -1611,6 +1612,7 @@ const translations = {
       descriptionPlaceholder: "Breve descripción de tu clase...",
       cancel: "Cancelar",
       creating: "Creando...",
+      deleteClass: "Eliminar Clase",
     },
     // Roles
     roles: {
@@ -2461,6 +2463,7 @@ const translations = {
       descriptionPlaceholder: "您班级的简要描述...",
       cancel: "取消",
       creating: "创建中...",
+      deleteClass: "删除班级",
     },
     // Roles
     roles: {
@@ -3404,6 +3407,7 @@ const translations = {
       descriptionPlaceholder: "수업에 대한 간략한 설명...",
       cancel: "취소",
       creating: "생성 중...",
+      deleteClass: "수업 삭제",
     },
     // Roles
     roles: {
@@ -4347,6 +4351,7 @@ const translations = {
       descriptionPlaceholder: "Brève description de votre classe...",
       cancel: "Annuler",
       creating: "Création...",
+      deleteClass: "Supprimer la classe",
     },
     // Roles
     roles: {
