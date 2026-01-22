@@ -730,17 +730,20 @@ export default function Layout({ children, currentPageName }) {
   
   // Filter links based on user role and subscription status
   const filterNavLinks = (navLinks) => navLinks.filter(link => {
-    // 1. Handle role-based visibility first
+    // 1. Check explicit hidden flag FIRST (Priority)
+    if (link.hidden) return false;
+
+    // 2. Handle role-based visibility
     if (link.roles && (!user || !link.roles.includes(user.app_role))) {
       return false; // Hide if user role doesn't match
     }
 
-    // 2. Handle subscription-based visibility
+    // 3. Handle subscription-based visibility
     if (link.requiresSupercharged) {
       // Allow teachers to access AI tools and Agent without subscription
       if (user?.app_role === 'teacher') return true;
 
-      // Special case: students always see AI Tools
+      // Special case: students always see AI Tools (unless hidden by teacher, checked in step 1)
       if (link.name === "AI Tools" && user?.app_role === 'student') {
         return true; 
       }
@@ -751,12 +754,9 @@ export default function Layout({ children, currentPageName }) {
       }
     }
 
-    // 3. Check explicit hidden flag
-    if (link.hidden) return false;
-
     // 4. If it passed all checks, show it.
     return true;
-    });
+  });
 
 
 
