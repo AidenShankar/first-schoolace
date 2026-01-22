@@ -1250,6 +1250,7 @@ Output your response as JSON with:
                                 </Button>
                             )}
                             {user.app_role === 'teacher' && <LanguageSelector />}
+                            {user.app_role === 'teacher' && <NewFeaturesBanner />}
                             {user.app_role === 'teacher' && (
                                 <Dialog>
                                     <DialogTrigger asChild>
@@ -1320,7 +1321,6 @@ Output your response as JSON with:
                                 <ClassSetup onClassReady={handleClassJoined} isFirstClass={true} />
                             ) : (
                                 <>
-                                    <NewFeaturesBanner />
                                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                                         <div className="flex items-center space-x-4">
                                             <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center"><Users className="w-6 h-6 text-indigo-600" /></div>
