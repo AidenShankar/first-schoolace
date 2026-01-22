@@ -96,7 +96,11 @@ function AIGenerator({ onQuestionsGenerated, t }) {
 
         } catch (e) {
             console.error("Error generating quiz with AI:", e);
-            alert(`AI generation failed: ${e.message || "Please check the input and try again."}. If using a large file, it may contain too much text.`);
+            let errorMessage = e.message || "Please check the input and try again.";
+            if (errorMessage.includes("500") || errorMessage.includes("timeout")) {
+                 errorMessage = "The file is too large or complex for the AI to process within the time limit. Please try a smaller file (under 10MB) or a shorter document.";
+            }
+            alert(`AI generation failed: ${errorMessage}`);
         } finally {
             setIsLoading(false);
         }

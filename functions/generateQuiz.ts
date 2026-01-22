@@ -88,7 +88,7 @@ Deno.serve(async (req) => {
             llmPayload.file_urls.push(file_url);
             // Disable internet context for file processing to reduce latency and avoid timeouts
             llmPayload.add_context_from_internet = false; 
-            llmPayload.prompt += `\n\nContext: Use the uploaded file content to generate questions. Analyze the file thoroughly before generating questions.`;
+            llmPayload.prompt += `\n\nContext: Use the uploaded file content to generate questions.`;
         } else {
              return Response.json({ error: 'Missing context for generation' }, { status: 400 });
         }
