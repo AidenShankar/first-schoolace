@@ -35,6 +35,7 @@ import SubmissionUpload from "../components/student/SubmissionUpload";
 import ProcessingModal from "../components/common/ProcessingModal"; // New import
 import ReactQuill from "react-quill"; // New import
 import LanguageSelector from "../components/i18n/LanguageSelector";
+import NewFeaturesBanner from "../components/dashboard/NewFeaturesBanner";
 
 export default function Dashboard({ user: layoutUser, allClasses: layoutAllClasses, isLayoutLoading }) {
     const { t } = useTranslation();
@@ -1199,19 +1200,11 @@ Output your response as JSON with:
                                 )}
                             {user.app_role === 'teacher' && (
                                 <Button 
-                                    onClick={handleUpgradeClick}
-                                    disabled={isUpgrading}
-                                    className={`text-white text-xs px-3 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 font-bold tracking-wider cursor-default h-10 ${
-                                    user.subscription_status === 'active' && user.subscription_tier === 'supercharged'
-                                        ? 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600'
-                                        : 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600'
-                                    }`}
+                                    onClick={() => {}} 
+                                    className="text-white text-xs px-3 py-3 rounded-full shadow-lg bg-gradient-to-r from-purple-500 to-pink-500 font-bold tracking-wider cursor-default h-10"
                                     size="sm"
                                 >
-                                    {isUpgrading ? 'LOADING...' : 
-                                    user.subscription_status === 'active' && user.subscription_tier === 'supercharged' 
-                                    ? 'SUPERCHARGED' 
-                                    : 'UPGRADE'}
+                                    SUPERCHARGED
                                 </Button>
                             )}
                             {user.app_role === 'teacher' && <LanguageSelector />}
@@ -1247,6 +1240,7 @@ Output your response as JSON with:
                                 <ClassSetup onClassReady={handleClassJoined} isFirstClass={true} />
                             ) : (
                                 <>
+                                    <NewFeaturesBanner />
                                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                                         <div className="flex items-center space-x-4">
                                             <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center"><Users className="w-6 h-6 text-indigo-600" /></div>
