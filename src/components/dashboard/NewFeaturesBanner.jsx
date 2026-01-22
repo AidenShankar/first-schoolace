@@ -85,7 +85,7 @@ export default function NewFeaturesBanner() {
                 <Button 
                     variant="outline" 
                     size="sm" 
-                    className="text-indigo-600 border-white/20 hover:bg-white/10 hover:text-white rounded-xl gap-2 h-9 min-w-[140px] justify-between px-4"
+                    className={`text-indigo-600 border-white/20 hover:bg-white/10 hover:text-white rounded-xl gap-2 h-9 ${hasNewUpdates ? 'px-4 min-w-[140px] justify-between' : 'px-3'}`}
                 >
                     <div className="flex items-center gap-2">
                         <div className="relative">
