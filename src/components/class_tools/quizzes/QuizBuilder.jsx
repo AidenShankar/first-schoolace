@@ -10,6 +10,7 @@ import { InvokeLLM, UploadFile } from '@/integrations/Core';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
+import FileUpload from '@/components/ai_tools/inputs/FileUpload';
 import { useTranslation } from '../../i18n/useTranslation';
 
 function AIGenerator({ onQuestionsGenerated, t }) {
@@ -175,10 +176,10 @@ function AIGenerator({ onQuestionsGenerated, t }) {
                 />
             )}
             {aiFormData.contextType === 'file' && (
-                <Input 
-                    type="file" 
-                    onChange={e => setAiFormData(prev => ({...prev, file: e.target.files[0]}))} 
-                    accept=".pdf,.doc,.docx,.txt"
+                <FileUpload 
+                    id="quiz-ai-file"
+                    label="Upload Content"
+                    onFileChange={(file) => setAiFormData(prev => ({...prev, file: file}))}
                 />
             )}
             <div className="grid grid-cols-2 gap-4">
