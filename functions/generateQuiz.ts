@@ -86,8 +86,8 @@ Deno.serve(async (req) => {
             llmPayload.add_context_from_internet = true;
         } else if (contextType === 'file' && file_url) {
             llmPayload.file_urls.push(file_url);
-            // Allow internet context for file processing to ensure robust handling
-            llmPayload.add_context_from_internet = true; 
+            // Disable internet context for file processing to reduce latency and avoid timeouts
+            llmPayload.add_context_from_internet = false; 
             llmPayload.prompt += `\n\nContext: Use the uploaded file content to generate questions. Analyze the file thoroughly before generating questions.`;
         } else {
              return Response.json({ error: 'Missing context for generation' }, { status: 400 });
