@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Sparkles, Trash2, Bot, Gift, ChevronRight } from 'lucide-react';
+import { Sparkles, Trash2, Bot, Gift, ChevronRight } from 'lucide-react';
 import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden"; // Assuming this might be needed for accessibility if title is hidden, but I'll add a proper title.
 
 const features = [
@@ -81,32 +82,28 @@ export default function NewFeaturesBanner() {
     return (
         <Dialog open={isOpen} onOpenChange={handleOpenChange}>
             <DialogTrigger asChild>
-                <button
-                    className="group flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white px-3 py-2 rounded-xl shadow-sm transition-all duration-300 backdrop-blur-sm"
+                <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="text-indigo-600 border-white/20 hover:bg-white/10 hover:text-white rounded-xl gap-2 h-9"
                 >
                     <div className="relative">
                         <Gift className="w-4 h-4" />
                         {hasNewUpdates && (
-                            <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full border border-white/20"></span>
+                            <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
                         )}
                     </div>
-                    <span className="text-sm font-medium">What's New</span>
+                    <span>What's New</span>
                     {hasNewUpdates && (
-                        <span className="ml-1 bg-indigo-500 text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold">
+                        <span className="ml-1 bg-indigo-100 text-indigo-600 text-[10px] px-1.5 py-0.5 rounded-full font-bold">
                             {newUpdatesCount}
                         </span>
                     )}
-                </button>
+                </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[600px] p-0 overflow-hidden bg-white rounded-2xl border-0">
                 <DialogTitle className="sr-only">What's New</DialogTitle>
-                <div className="relative h-auto min-h-[300px] flex flex-col">
-                    <div className="absolute top-2 right-2 z-10">
-                        <button onClick={() => handleOpenChange(false)} className="p-1 hover:bg-slate-100 rounded-full text-slate-400 transition-colors">
-                            <X className="w-4 h-4" />
-                        </button>
-                    </div>
-                    
+                <div className="relative h-auto min-h-[350px] flex flex-col">
                     <div className="flex-1 relative">
                         <AnimatePresence mode="wait">
                             <motion.div
@@ -115,7 +112,7 @@ export default function NewFeaturesBanner() {
                                 animate={{ opacity: 1, x: 0 }}
                                 exit={{ opacity: 0, x: -20 }}
                                 transition={{ duration: 0.3 }}
-                                className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center"
+                                className="absolute inset-0 flex flex-col items-center justify-center p-12 text-center"
                             >
                                 <div className={`w-20 h-20 rounded-3xl flex items-center justify-center mb-6 shadow-lg ${features[currentIndex].color}`}>
                                     {React.createElement(features[currentIndex].icon, { className: "w-10 h-10" })}
