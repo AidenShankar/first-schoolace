@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { base44 } from "@/api/base44Client";
 import { Assignment } from "@/entities/Assignment";
 import { Submission } from "@/entities/Submission";
 import { Class } from "@/entities/Class";
@@ -341,116 +342,29 @@ export default function Dashboard({ user: layoutUser, allClasses: layoutAllClass
     const gradeSubmission = async (submission, assignment) => {
         try {
             await retryWithBackoff(() => Submission.update(submission.id, { grading_status: "ai_grading" }));
-            loadSubmissions(); // Refresh UI to show "ai_grading" status
+            loadSubmissions(); // Refresh UI
 
-            const gradingPromise = (async () => {
-                let fileContent = 'File content could not be extracted.';
-                
-                // Handle text submissions differently
-                if (submission.submission_type === "text" && submission.text_content) {
-                    fileContent = submission.text_content;
-                } else {
-                    // Handle non-gradable file types
-                    const fileName = submission.file_name.toLowerCase();
-                    if (fileName.endsWith('.mp3') || fileName.endsWith('.mp4') || fileName.endsWith('.mov') || fileName.endsWith('.m4a')) {
-                        return retryWithBackoff(() => Submission.update(submission.id, {
-                            grading_status: "manual_review",
-                            ai_feedback: "This is a video/audio file that requires manual review by your teacher."
-                        }));
-                    }
+            const { data, error } = await base44.functions.invoke('gradeSubmission', {
+                submission: submission,
+                assignment: assignment
+            });
 
-                    if (!submission.file_url || submission.file_url.startsWith('blob:')) {
-                        return retryWithBackoff(() => Submission.update(submission.id, {
-                            grading_status: "manual_review",
-                            ai_feedback: "File processing error. This submission requires manual review by your teacher."
-                        }));
-                    }
+            if (error) throw new Error(error.message);
 
-                    try {
-                        const extraction = await ExtractDataFromUploadedFile({ 
-                            file_url: submission.file_url, 
-                            json_schema: { type: 'object', properties: { content: { type: 'string' } } } 
-                        });
-                        if (extraction.status === 'success' && extraction.output?.content) {
-                            fileContent = extraction.output.content;
-                        }
-                    } catch (e) { 
-                        console.error("File extraction failed:", e);
-                        return retryWithBackoff(() => Submission.update(submission.id, {
-                            grading_status: "manual_review",
-                            ai_feedback: "This file format requires manual review by your teacher."
-                        }));
-                    }
-                }
-
-                let answerKeyContent = 'No answer key provided.';
-                if (assignment.answer_key_url && !assignment.answer_key_url.startsWith('blob:')) {
-                    try {
-                        const keyExtraction = await ExtractDataFromUploadedFile({ 
-                            file_url: assignment.answer_key_url, 
-                            json_schema: { type: 'object', properties: { content: { type: 'string' } } } 
-                        } );
-                        if (keyExtraction.status === 'success' && keyExtraction.output?.content) {
-                            answerKeyContent = keyExtraction.output.content;
-                        }
-                    } catch (e) { 
-                        console.error("Answer key extraction failed:", e);
-                    }
-                }
-
-                const prompt = `
-You are an expert academic grader. Your task is to grade a student's work with absolute precision and accuracy based on a specific leniency level.
-
-**GRADING TASK CONTEXT:**
-- **Student's Name:** ${submission.student_name}
-- **Assignment Title:** ${assignment.title}
-- **Teacher's Instructions:** ${assignment.instructions}
-- **Maximum Points:** ${assignment.max_points}
-- **Grading Leniency:** ${assignment.leniency || 'Neutral'}. Interpret this as follows:
-    - **Strict:** Be exacting. No partial credit unless explicitly stated in instructions. Minor errors are penalized. The final grade must precisely reflect the number of correct answers.
-    - **Neutral:** Grade fairly based on the instructions. Award partial credit where it makes sense. The final grade should be a balanced reflection of the student's work.
-    - **Lenient:** Focus on understanding and effort. Be generous with partial credit. Minor errors should not significantly impact the grade.
-
-- **Answer Key:** ${answerKeyContent}
-- **Student Submission:** ${fileContent}
-
-**CRITICAL RULES:**
-- **Address the student directly by their name, ${submission.student_name}, in your feedback.**
-- If a student's answer matches the correct answer, it is CORRECT. Never say an answer is wrong when it matches the correct answer.
-- Be precise in your calculations.
-- If you cannot clearly read the submission, state that clearly in your feedback.
-- Provide constructive feedback that helps the student learn.
-- **If the grade is lower than the maximum points (${assignment.max_points}) or less than 100%, you MUST explicitly state what was missing or incorrect to achieve full marks. Structure the feedback as "Good Feedback" (what they did well) followed by "Gap Feedback" (what was missing/wrong) to help them close the gap.**
-
-Output your response as JSON with:
-- grade: numerical score (0 to ${assignment.max_points})
-- feedback: detailed explanation of what was correct/incorrect, starting with the student's name (e.g., "${submission.student_name}, you did a great job on...").
-`;
-
-                const result = await InvokeLLM({
-                    prompt: prompt,
-                    response_json_schema: {
-                        type: "object",
-                        properties: {
-                            grade: { type: "number" },
-                            feedback: { type: "string" }
-                        },
-                        required: ["grade", "feedback"]
-                    }
-                });
-
-                return retryWithBackoff(() => Submission.update(submission.id, {
-                    ai_grade: result.grade,
-                    ai_feedback: result.feedback,
+            if (data.status === 'success') {
+                await retryWithBackoff(() => Submission.update(submission.id, {
+                    ai_grade: data.grade,
+                    ai_feedback: data.feedback,
                     grading_status: "ai_graded"
                 }));
-            })();
-            
-            const timeoutPromise = new Promise((_, reject) => 
-              setTimeout(() => reject(new Error('Grading timed out after 3 minutes.')), 180000)
-            );
-
-            await Promise.race([gradingPromise, timeoutPromise]);
+            } else if (data.status === 'manual_review') {
+                await retryWithBackoff(() => Submission.update(submission.id, {
+                    grading_status: "manual_review",
+                    ai_feedback: data.reason
+                }));
+            } else {
+                 throw new Error("Unknown grading status returned");
+            }
 
         } catch (error) {
             console.error("Error grading submission:", error);
