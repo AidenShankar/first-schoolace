@@ -30,7 +30,7 @@ const features = [
     {
         id: 4,
         title: "Track AI Conversations",
-        description: "Monitor student interactions with ACE AI to ensure appropriate usage and track learning progress in real-time.",
+        description: "Monitor student interactions with ACE AI in your class tools tab to ensure appropriate usage and track learning progress in real-time.",
         icon: Bot,
         color: "bg-blue-100 text-blue-600",
         badge: "New Tool"
