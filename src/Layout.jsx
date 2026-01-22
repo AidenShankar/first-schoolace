@@ -18,6 +18,15 @@ import { ScheduleEvent } from '@/entities/ScheduleEvent';
 import { InvokeLLM, UploadFile } from '@/integrations/Core';
 import { getAgentSystemPrompt } from './components/agent/systemPrompt';
 import { syncSubscriptionStatus } from "@/functions/syncSubscriptionStatus";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 
 export default function Layout({ children, currentPageName }) {
@@ -787,6 +796,22 @@ function LayoutContent({
   const { language } = useLanguage();
   const navLinks = getNavLinks(language);
   const filteredNavLinks = filterNavLinks(navLinks);
+  const [showResetNotice, setShowResetNotice] = useState(false);
+
+  useEffect(() => {
+    if (user && user.app_role === 'teacher' && !user.seen_barakat_reset_notice) {
+      setShowResetNotice(true);
+    }
+  }, [user]);
+
+  const handleCloseResetNotice = async () => {
+    setShowResetNotice(false);
+    try {
+        await User.updateMyUserData({ seen_barakat_reset_notice: true });
+    } catch (e) {
+        console.error("Failed to mark notice as seen", e);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex flex-col">
@@ -891,6 +916,22 @@ function LayoutContent({
           })}
         </div>
       )}
+
+      <AlertDialog open={showResetNotice} onOpenChange={setShowResetNotice}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Account Reset Notification</AlertDialogTitle>
+            <AlertDialogDescription>
+              Anthony Barakat's account has been reset.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction onClick={handleCloseResetNotice}>
+              Okay
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
     </div>
   );
