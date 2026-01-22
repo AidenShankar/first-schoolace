@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -89,6 +88,7 @@ export default function QuizResults({ user, quiz, onBack }) {
                 <CardContent className="space-y-6">
                     {questions.map((question, index) => {
                         const studentAnswer = submissionAnswers.find(a => a.quiz_question_id === question.id);
+                        const isFreeResponse = question.question_type === 'free-response';
                         const isCorrect = studentAnswer?.student_answer === question.correct_answer;
                         
                         return (
@@ -97,37 +97,58 @@ export default function QuizResults({ user, quiz, onBack }) {
                                     <h4 className="font-semibold text-base">
                                         Question {index + 1}: {question.question_text}
                                     </h4>
-                                    <Badge variant={isCorrect ? "default" : "destructive"} className="flex items-center gap-1">
-                                        {isCorrect ? <CheckCircle className="w-3 h-3" /> : <XCircle className="w-3 h-3" />}
-                                        {isCorrect ? "Correct" : "Incorrect"}
-                                    </Badge>
+                                    {!isFreeResponse && (
+                                        <Badge variant={isCorrect ? "default" : "destructive"} className="flex items-center gap-1">
+                                            {isCorrect ? <CheckCircle className="w-3 h-3" /> : <XCircle className="w-3 h-3" />}
+                                            {isCorrect ? "Correct" : "Incorrect"}
+                                        </Badge>
+                                    )}
+                                    {isFreeResponse && (
+                                        <Badge variant="outline" className="flex items-center gap-1 bg-blue-50 text-blue-700 border-blue-200">
+                                            <Eye className="w-3 h-3" />
+                                            Needs Review
+                                        </Badge>
+                                    )}
                                 </div>
                                 
                                 <div className="space-y-2 ml-4">
-                                    {Object.entries(question.options).map(([key, value]) => {
-                                        const isStudentChoice = studentAnswer?.student_answer === key;
-                                        const isCorrectAnswer = question.correct_answer === key;
-                                        
-                                        return (
-                                            <div 
-                                                key={key}
-                                                className={`p-2 rounded border text-sm ${
-                                                    isCorrectAnswer ? 'bg-green-50 border-green-200' :
-                                                    isStudentChoice ? 'bg-red-50 border-red-200' :
-                                                    'bg-slate-50 border-slate-200'
-                                                }`}
-                                            >
-                                                <span className="font-semibold mr-2">{key}.</span>
-                                                {value}
-                                                {isStudentChoice && !isCorrectAnswer && (
-                                                    <span className="ml-2 text-red-600 text-xs">(Your answer)</span>
-                                                )}
-                                                {isCorrectAnswer && (
-                                                    <span className="ml-2 text-green-600 text-xs">(Correct answer)</span>
-                                                )}
+                                    {isFreeResponse ? (
+                                        <div className="space-y-3">
+                                            <div className="p-3 rounded border bg-slate-50 border-slate-200 text-sm">
+                                                <p className="font-semibold text-slate-700 mb-1">Student Answer:</p>
+                                                <p>{studentAnswer?.student_answer || "(No answer provided)"}</p>
                                             </div>
-                                        );
-                                    })}
+                                            <div className="p-3 rounded border bg-green-50 border-green-200 text-sm">
+                                                <p className="font-semibold text-green-800 mb-1">Sample / Correct Answer Key:</p>
+                                                <p className="text-green-900">{question.correct_answer}</p>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        Object.entries(question.options || {}).map(([key, value]) => {
+                                            const isStudentChoice = studentAnswer?.student_answer === key;
+                                            const isCorrectAnswer = question.correct_answer === key;
+                                            
+                                            return (
+                                                <div 
+                                                    key={key}
+                                                    className={`p-2 rounded border text-sm ${
+                                                        isCorrectAnswer ? 'bg-green-50 border-green-200' :
+                                                        isStudentChoice ? 'bg-red-50 border-red-200' :
+                                                        'bg-slate-50 border-slate-200'
+                                                    }`}
+                                                >
+                                                    <span className="font-semibold mr-2">{key}.</span>
+                                                    {value}
+                                                    {isStudentChoice && !isCorrectAnswer && (
+                                                        <span className="ml-2 text-red-600 text-xs">(Your answer)</span>
+                                                    )}
+                                                    {isCorrectAnswer && (
+                                                        <span className="ml-2 text-green-600 text-xs">(Correct answer)</span>
+                                                    )}
+                                                </div>
+                                            );
+                                        })
+                                    )}
                                 </div>
                             </div>
                         );

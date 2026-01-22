@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,6 +6,7 @@ import { QuizSubmission } from '@/entities/QuizSubmission';
 import { QuizAnswer } from '@/entities/QuizAnswer';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Clock, AlertTriangle, CheckCircle } from 'lucide-react';
 
 export default function QuizTaker({ user, quiz, onFinish }) {
@@ -293,23 +293,32 @@ export default function QuizTaker({ user, quiz, onFinish }) {
                             {currentQuestion.question_text}
                         </h3>
                         
-                        <RadioGroup 
-                            onValueChange={(val) => handleAnswerSelect(currentQuestion.id, val)} 
-                            value={answers[currentQuestion.id] || ''}
-                        >
-                            {Object.entries(currentQuestion.options).map(([key, value]) => (
-                                <div key={key} className="flex items-center space-x-3 p-3 rounded-lg hover:bg-slate-50 border border-transparent hover:border-slate-200">
-                                    <RadioGroupItem value={key} id={`${currentQuestion.id}-${key}`} />
-                                    <Label 
-                                        htmlFor={`${currentQuestion.id}-${key}`}
-                                        className="flex-1 cursor-pointer text-base"
-                                    >
-                                        <span className="font-semibold mr-2">{key}.</span>
-                                        {value}
-                                    </Label>
-                                </div>
-                            ))}
-                        </RadioGroup>
+                        {currentQuestion.question_type === 'free-response' ? (
+                            <Textarea
+                                placeholder="Type your answer here..."
+                                value={answers[currentQuestion.id] || ''}
+                                onChange={(e) => handleAnswerSelect(currentQuestion.id, e.target.value)}
+                                className="min-h-[150px] text-base"
+                            />
+                        ) : (
+                            <RadioGroup 
+                                onValueChange={(val) => handleAnswerSelect(currentQuestion.id, val)} 
+                                value={answers[currentQuestion.id] || ''}
+                            >
+                                {Object.entries(currentQuestion.options).map(([key, value]) => (
+                                    <div key={key} className="flex items-center space-x-3 p-3 rounded-lg hover:bg-slate-50 border border-transparent hover:border-slate-200">
+                                        <RadioGroupItem value={key} id={`${currentQuestion.id}-${key}`} />
+                                        <Label 
+                                            htmlFor={`${currentQuestion.id}-${key}`}
+                                            className="flex-1 cursor-pointer text-base"
+                                        >
+                                            <span className="font-semibold mr-2">{key}.</span>
+                                            {value}
+                                        </Label>
+                                    </div>
+                                ))}
+                            </RadioGroup>
+                        )}
                     </div>
                 </CardContent>
             </Card>
