@@ -1225,7 +1225,37 @@ Output your response as JSON with:
                                     >
                                         SUPERCHARGED
                                     </Button>
-                                    <LanguageSelector />
+                                    <Dialog>
+                                        <DialogTrigger asChild>
+                                            <Button 
+                                                variant="outline"
+                                                size="icon"
+                                                title="Settings"
+                                                className="text-indigo-600 border-white/20 hover:bg-white/10 hover:text-white rounded-xl h-9 w-9"
+                                            >
+                                                <Settings className="w-4 h-4" />
+                                            </Button>
+                                        </DialogTrigger>
+                                        <DialogContent>
+                                            <DialogHeader>
+                                                <DialogTitle>Settings</DialogTitle>
+                                                <DialogDescription>
+                                                    Manage your application settings
+                                                </DialogDescription>
+                                            </DialogHeader>
+                                            <div className="py-6 space-y-6">
+                                                <div className="flex items-center justify-between space-x-4">
+                                                    <div className="flex flex-col space-y-1">
+                                                        <Label className="text-base font-medium">Language</Label>
+                                                        <span className="text-sm text-slate-500">
+                                                            Change application language
+                                                        </span>
+                                                    </div>
+                                                    <LanguageSelector />
+                                                </div>
+                                            </div>
+                                        </DialogContent>
+                                    </Dialog>
                                     <Button 
                                         variant="outline"
                                         size="icon"
@@ -1250,7 +1280,6 @@ Output your response as JSON with:
                                     SUPERCHARGED
                                 </Button>
                             )}
-                            {user.app_role === 'teacher' && <LanguageSelector />}
                             {user.app_role === 'teacher' && (
                                 <Dialog>
                                     <DialogTrigger asChild>
@@ -1271,6 +1300,15 @@ Output your response as JSON with:
                                             </DialogDescription>
                                         </DialogHeader>
                                         <div className="py-6 space-y-6">
+                                            <div className="flex items-center justify-between space-x-4">
+                                                <div className="flex flex-col space-y-1">
+                                                    <Label className="text-base font-medium">Language</Label>
+                                                    <span className="text-sm text-slate-500">
+                                                        Change application language
+                                                    </span>
+                                                </div>
+                                                <LanguageSelector />
+                                            </div>
                                             <div className="flex items-center justify-between space-x-4">
                                                 <div className="flex flex-col space-y-1">
                                                     <Label htmlFor="ace-ai-toggle" className="text-base font-medium">Hide ACE AI Chat from students</Label>
