@@ -743,7 +743,7 @@ export default function Layout({ children, currentPageName }) {
       }
       
       // For all other cases (teachers, other supercharged links)
-      if (!user || user.subscription_status !== 'active' || user.subscription_tier !== 'supercharged') {
+      if ((!user || user.subscription_status !== 'active' || user.subscription_tier !== 'supercharged') && user?.app_role !== 'teacher') {
         return false; // Hide if not supercharged
       }
     }
