@@ -1,4 +1,3 @@
-
 import React, { useState, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -25,7 +24,7 @@ export default function SubmissionUpload({ assignment, onSubmit, onCancel, isSub
       "audio/mp4" // .m4a
     ];
 
-    const MAX_FILE_SIZE_MB = 25;
+    const MAX_FILE_SIZE_MB = 100;
     const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
 
     if (selectedFile.size > MAX_FILE_SIZE_BYTES) {
@@ -173,7 +172,7 @@ export default function SubmissionUpload({ assignment, onSubmit, onCancel, isSub
                         Drop your file here or click to browse
                       </p>
                       <p className="text-sm text-slate-500 mb-4">
-                        Supports PDF, DOCX, PNG, JPG, MP4, MP3, MOV, M4A (up to 25MB)
+                        Supports PDF, DOCX, PNG, JPG, MP4, MP3, MOV, M4A (up to 100MB)
                       </p>
                       <Button
                         type="button"
