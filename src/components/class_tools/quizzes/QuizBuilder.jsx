@@ -6,7 +6,8 @@ import { Label } from '@/components/ui/label';
 import { Trash2, Plus, Wand2 } from 'lucide-react';
 import { Quiz } from '@/entities/Quiz';
 import { QuizQuestion } from '@/entities/QuizQuestion';
-import { InvokeLLM, UploadFile } from '@/integrations/Core';
+import { UploadFile } from '@/integrations/Core';
+import { base44 } from "@/api/base44Client";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
@@ -27,102 +28,42 @@ function AIGenerator({ onQuestionsGenerated, t }) {
     const handleGenerate = async () => {
         setIsLoading(true);
 
-        let llmPayload = {
-            prompt: `You are an expert curriculum developer. Generate quiz questions based on the provided context.
-            
-            **Requirements:**
-            - Number of Questions: ${aiFormData.num_questions}
-            - Question Type: ${aiFormData.question_type}
-            - Difficulty: ${aiFormData.difficulty}
+        try {
+            let uploadedFileUrl = null;
 
-            **IMPORTANT:** 
-            - For multiple choice questions, you MUST provide exactly 4 written answer options (A, B, C, D) with complete text for each option.
-            - For true-false questions, correct_answer should be "A" (True) or "B" (False).
-            - For free-response questions, options should be empty or null, and correct_answer should be a sample correct answer or key points.
-            
-            Generate exactly ${aiFormData.num_questions} well-written questions. Each question should be clear and educational.
-            
-            Output format should be a JSON object with this exact structure:
-            {
-              "questions": [
-                {
-                  "question_text": "What is the capital of France?",
-                  "question_type": "multiple-choice",
-                  "options": {
-                    "A": "London",
-                    "B": "Berlin", 
-                    "C": "Paris",
-                    "D": "Madrid"
-                  },
-                  "correct_answer": "C"
-                }
-              ]
-            }
-            `,
-            add_context_from_internet: false,
-            file_urls: [],
-            response_json_schema: {
-                type: "object",
-                properties: {
-                    questions: {
-                        type: "array",
-                        items: {
-                            type: "object",
-                            properties: {
-                                question_text: { type: "string" },
-                                question_type: { type: "string", enum: ["multiple-choice", "true-false", "free-response"] },
-                                options: { 
-                                    type: "object",
-                                    properties: {
-                                        "A": { type: "string" },
-                                        "B": { type: "string" },
-                                        "C": { type: "string" },
-                                        "D": { type: "string" }
-                                    },
-                                    nullable: true
-                                },
-                                correct_answer: { type: "string" }
-                            },
-                            required: ["question_text", "question_type", "correct_answer"]
-                        }
+            // Handle context based on selection
+            if (aiFormData.contextType === 'file' && aiFormData.file) {
+                try {
+                    const { file_url } = await UploadFile({ file: aiFormData.file });
+                    if (!file_url || file_url.startsWith('blob:')) {
+                        throw new Error("Invalid file URL returned from upload.");
                     }
-                },
-                required: ["questions"]
-            }
-        };
-
-        // Handle context based on selection
-        if (aiFormData.contextType === 'topic' && aiFormData.topic) {
-            llmPayload.prompt += `\n\nTopic/Context: ${aiFormData.topic}`;
-            llmPayload.add_context_from_internet = true;
-        } else if (aiFormData.contextType === 'url' && aiFormData.url) {
-            llmPayload.prompt += `\n\nContext URL: ${aiFormData.url}`;
-            llmPayload.add_context_from_internet = true;
-        } else if (aiFormData.contextType === 'file' && aiFormData.file) {
-            try {
-                const { file_url } = await UploadFile({ file: aiFormData.file });
-                if (!file_url || file_url.startsWith('blob:')) {
-                    throw new Error("Invalid file URL returned from upload.");
+                    uploadedFileUrl = file_url;
+                } catch (error) {
+                    console.error("Error uploading file for AI quiz generation:", error);
+                    alert("Failed to upload file. Please try again.");
+                    setIsLoading(false);
+                    return;
                 }
-                llmPayload.file_urls.push(file_url);
-                llmPayload.add_context_from_internet = true; // Enable internet context to ensure file fetch works if needed
-                llmPayload.prompt += `\n\nContext: Use the uploaded file content to generate questions. Analyze the file thoroughly before generating questions.`;
-            } catch (error) {
-                console.error("Error uploading file for AI quiz generation:", error);
-                alert("Failed to upload file. Please try again.");
+            } else if (!aiFormData.topic && !aiFormData.url) {
+                alert("Please provide context (topic, URL, or file) to generate questions.");
                 setIsLoading(false);
                 return;
             }
-        } else {
-            alert("Please provide context (topic, URL, or file) to generate questions.");
-            setIsLoading(false);
-            return;
-        }
 
-        try {
-            const result = await InvokeLLM(llmPayload);
+            const { data, error } = await base44.functions.invoke("generateQuizQuestions", {
+                contextType: aiFormData.contextType,
+                topic: aiFormData.topic,
+                url: aiFormData.url,
+                file_url: uploadedFileUrl,
+                num_questions: aiFormData.num_questions,
+                question_type: aiFormData.question_type,
+                difficulty: aiFormData.difficulty
+            });
 
-            const generatedQuestions = result.questions.map((q, index) => {
+            if (error) throw new Error(error.response?.data?.error || error.message || "Unknown error");
+
+            const generatedQuestions = data.questions.map((q, index) => {
                 let options = q.options || {};
                 if (q.question_type === 'true-false') {
                     options = { A: "True", B: "False" };
