@@ -734,6 +734,9 @@ export default function Layout({ children, currentPageName }) {
 
     // 2. Handle subscription-based visibility
     if (link.requiresSupercharged) {
+      // Allow teachers to access AI tools and Agent without subscription
+      if (user?.app_role === 'teacher') return true;
+
       // Special case: students always see AI Tools
       if (link.name === "AI Tools" && user?.app_role === 'student') {
         return true; 
