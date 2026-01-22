@@ -704,6 +704,7 @@ export default function Layout({ children, currentPageName }) {
       blocked: isQuizModeActive, 
       blockedReason: "Complete your quiz to access other pages.",
       requiresSupercharged: true,
+      hidden: user?.app_role === 'student' && currentClass?.hide_ai_tools,
       roles: ['teacher', 'student']
     },
     { 

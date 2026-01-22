@@ -903,6 +903,22 @@ Output your response as JSON with:
         }
     };
 
+    const handleToggleAiTools = async (checked) => {
+        if (!currentClass) return;
+        try {
+            await retryWithBackoff(() => Class.update(currentClass.id, { hide_ai_tools: checked }));
+            // Update local state immediately for responsiveness
+            setCurrentClass(prev => ({ ...prev, hide_ai_tools: checked }));
+            // Also update in allClasses list to persist across class switches
+            setAllClasses(prev => prev.map(c => c.id === currentClass.id ? { ...c, hide_ai_tools: checked } : c));
+            // Force a layout refresh to update navigation visibility
+            window.location.reload();
+        } catch (error) {
+            console.error("Error updating class settings:", error);
+            alert("Failed to update settings. Please try again.");
+        }
+    };
+
     const handleDeleteClass = async () => {
         if (!currentClass) return;
 
@@ -1266,9 +1282,22 @@ Output your response as JSON with:
                                                     checked={currentClass?.hide_ace_ai || false}
                                                     onCheckedChange={handleToggleAceAi}
                                                 />
-                                            </div>
-                                        </div>
-                                    </DialogContent>
+                                                </div>
+                                                <div className="flex items-center justify-between space-x-4">
+                                                <div className="flex flex-col space-y-1">
+                                                    <Label htmlFor="ai-tools-toggle" className="text-base font-medium">Hide AI Tools from students</Label>
+                                                    <span className="text-sm text-slate-500">
+                                                        Prevent students in this class from accessing the AI Tools tab
+                                                    </span>
+                                                </div>
+                                                <Switch 
+                                                    id="ai-tools-toggle" 
+                                                    checked={currentClass?.hide_ai_tools || false}
+                                                    onCheckedChange={handleToggleAiTools}
+                                                />
+                                                </div>
+                                                </div>
+                                                </DialogContent>
                                 </Dialog>
                             )}
                         </div>
