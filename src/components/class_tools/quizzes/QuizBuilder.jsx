@@ -12,6 +12,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
 import FileUpload from '@/components/ai_tools/inputs/FileUpload';
 import { useTranslation } from '../../i18n/useTranslation';
+import { base44 } from '@/api/base44Client';
 
 function AIGenerator({ onQuestionsGenerated, t }) {
     const [aiFormData, setAiFormData] = useState({
@@ -60,7 +61,6 @@ function AIGenerator({ onQuestionsGenerated, t }) {
             }
 
             // Call backend function
-            import { base44 } from '@/api/base44Client';
             const { data, error } = await base44.functions.invoke('generateQuiz', {
                 contextType: aiFormData.contextType,
                 topic: aiFormData.topic,
