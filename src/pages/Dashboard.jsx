@@ -1274,7 +1274,7 @@ Output your response as JSON with:
                                                 <div className="flex flex-col space-y-1">
                                                     <Label htmlFor="ace-ai-toggle" className="text-base font-medium">Hide ACE AI Chat from students</Label>
                                                     <span className="text-sm text-slate-500">
-                                                        Prevent students in this class having conversations with ACE.
+                                                        Prevent students in this class having conversations with ACE
                                                     </span>
                                                 </div>
                                                 <Switch 
