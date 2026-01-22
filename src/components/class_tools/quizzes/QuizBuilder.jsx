@@ -27,100 +27,87 @@ function AIGenerator({ onQuestionsGenerated, t }) {
     const handleGenerate = async () => {
         setIsLoading(true);
 
-        let llmPayload = {
-            prompt: `You are an expert curriculum developer. Generate quiz questions based on the provided context.
-            
-            **Requirements:**
-            - Number of Questions: ${aiFormData.num_questions}
-            - Question Type: ${aiFormData.question_type}
-            - Difficulty: ${aiFormData.difficulty}
+        try {
+            let llmPayload = {
+                prompt: `You are an expert curriculum developer. Generate quiz questions based on the provided context.
+                
+                **Requirements:**
+                - Number of Questions: ${aiFormData.num_questions}
+                - Question Type: ${aiFormData.question_type}
+                - Difficulty: ${aiFormData.difficulty}
 
-            **IMPORTANT:** 
-            - For multiple choice questions, you MUST provide exactly 4 written answer options (A, B, C, D) with complete text for each option.
-            - For true-false questions, correct_answer should be "A" (True) or "B" (False).
-            - For free-response questions, options should be empty or null, and correct_answer should be a sample correct answer or key points.
-            
-            Generate exactly ${aiFormData.num_questions} well-written questions. Each question should be clear and educational.
-            
-            Output format should be a JSON object with this exact structure:
-            {
-              "questions": [
-                {
-                  "question_text": "What is the capital of France?",
-                  "question_type": "multiple-choice",
-                  "options": {
-                    "A": "London",
-                    "B": "Berlin", 
-                    "C": "Paris",
-                    "D": "Madrid"
-                  },
-                  "correct_answer": "C"
-                }
-              ]
-            }
-            `,
-            add_context_from_internet: false,
-            file_urls: [],
-            response_json_schema: {
-                type: "object",
-                properties: {
-                    questions: {
-                        type: "array",
-                        items: {
-                            type: "object",
-                            properties: {
-                                question_text: { type: "string" },
-                                question_type: { type: "string", enum: ["multiple-choice", "true-false", "free-response"] },
-                                options: { 
-                                    type: "object",
-                                    properties: {
-                                        "A": { type: "string" },
-                                        "B": { type: "string" },
-                                        "C": { type: "string" },
-                                        "D": { type: "string" }
+                **IMPORTANT:** 
+                - For multiple choice questions, you MUST provide exactly 4 written answer options (A, B, C, D) with complete text for each option.
+                - For true-false questions, correct_answer should be "A" (True) or "B" (False).
+                - For free-response questions, options should be empty or null, and correct_answer should be a sample correct answer or key points.
+                
+                Generate exactly ${aiFormData.num_questions} well-written questions. Each question should be clear and educational.
+                `,
+                add_context_from_internet: false,
+                file_urls: [],
+                response_json_schema: {
+                    type: "object",
+                    properties: {
+                        questions: {
+                            type: "array",
+                            items: {
+                                type: "object",
+                                properties: {
+                                    question_text: { type: "string" },
+                                    question_type: { type: "string", enum: ["multiple-choice", "true-false", "free-response"] },
+                                    options: { 
+                                        type: "object",
+                                        properties: {
+                                            "A": { type: "string" },
+                                            "B": { type: "string" },
+                                            "C": { type: "string" },
+                                            "D": { type: "string" }
+                                        },
+                                        nullable: true
                                     },
-                                    nullable: true
+                                    correct_answer: { type: "string" }
                                 },
-                                correct_answer: { type: "string" }
-                            },
-                            required: ["question_text", "question_type", "correct_answer"]
+                                required: ["question_text", "question_type", "correct_answer"]
+                            }
                         }
-                    }
-                },
-                required: ["questions"]
-            }
-        };
-
-        // Handle context based on selection
-        if (aiFormData.contextType === 'topic' && aiFormData.topic) {
-            llmPayload.prompt += `\n\nTopic/Context: ${aiFormData.topic}`;
-            llmPayload.add_context_from_internet = true;
-        } else if (aiFormData.contextType === 'url' && aiFormData.url) {
-            llmPayload.prompt += `\n\nContext URL: ${aiFormData.url}`;
-            llmPayload.add_context_from_internet = true;
-        } else if (aiFormData.contextType === 'file' && aiFormData.file) {
-            try {
-                const { file_url } = await UploadFile({ file: aiFormData.file });
-                if (!file_url || file_url.startsWith('blob:')) {
-                    throw new Error("Invalid file URL returned from upload.");
+                    },
+                    required: ["questions"]
                 }
-                llmPayload.file_urls.push(file_url);
-                llmPayload.add_context_from_internet = true; // Enable internet context to ensure file fetch works if needed
-                llmPayload.prompt += `\n\nContext: Use the uploaded file content to generate questions. Analyze the file thoroughly before generating questions.`;
-            } catch (error) {
-                console.error("Error uploading file for AI quiz generation:", error);
-                alert("Failed to upload file. Please try again.");
+            };
+
+            // Handle context based on selection
+            if (aiFormData.contextType === 'topic' && aiFormData.topic) {
+                llmPayload.prompt += `\n\nTopic/Context: ${aiFormData.topic}`;
+                llmPayload.add_context_from_internet = true;
+            } else if (aiFormData.contextType === 'url' && aiFormData.url) {
+                llmPayload.prompt += `\n\nContext URL: ${aiFormData.url}`;
+                llmPayload.add_context_from_internet = true;
+            } else if (aiFormData.contextType === 'file' && aiFormData.file) {
+                try {
+                    const { file_url } = await UploadFile({ file: aiFormData.file });
+                    if (!file_url) {
+                        throw new Error("No file URL returned from upload.");
+                    }
+                    llmPayload.file_urls = [file_url];
+                    llmPayload.add_context_from_internet = false; // Disable internet to focus on file
+                    llmPayload.prompt += `\n\nContext: Use the uploaded file content to generate questions. Analyze the file thoroughly before generating questions.`;
+                } catch (error) {
+                    console.error("Error uploading file for AI quiz generation:", error);
+                    alert(`Failed to upload file: ${error.message}`);
+                    setIsLoading(false);
+                    return;
+                }
+            } else {
+                alert("Please provide context (topic, URL, or file) to generate questions.");
                 setIsLoading(false);
                 return;
             }
-        } else {
-            alert("Please provide context (topic, URL, or file) to generate questions.");
-            setIsLoading(false);
-            return;
-        }
 
-        try {
             const result = await InvokeLLM(llmPayload);
+
+            if (!result || !result.questions) {
+                 throw new Error("Invalid response from AI");
+            }
 
             const generatedQuestions = result.questions.map((q, index) => {
                 let options = q.options || {};
@@ -143,7 +130,7 @@ function AIGenerator({ onQuestionsGenerated, t }) {
             onQuestionsGenerated(generatedQuestions);
         } catch (e) {
             console.error("Error generating quiz with AI:", e);
-            alert("AI generation failed. Please check the input and try again.");
+            alert(`AI generation failed: ${e.message || "Unknown error"}. Please check the input and try again.`);
         } finally {
             setIsLoading(false);
         }
