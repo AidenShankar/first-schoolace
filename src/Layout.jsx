@@ -721,6 +721,8 @@ export default function Layout({ children, currentPageName }) {
       requiresClass: false,
       blocked: isQuizModeActive,
       blockedReason: "Complete your quiz to access other pages.",
+      // Hide if current class has explicitly disabled it
+      hidden: user?.app_role === 'student' && currentClass?.hide_ace_ai, 
       roles: ['student']
     },
   ];
@@ -748,9 +750,12 @@ export default function Layout({ children, currentPageName }) {
       }
     }
 
-    // 3. If it passed all checks, show it.
+    // 3. Check explicit hidden flag
+    if (link.hidden) return false;
+
+    // 4. If it passed all checks, show it.
     return true;
-  });
+    });
 
 
 

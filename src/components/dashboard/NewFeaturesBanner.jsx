@@ -26,6 +26,22 @@ const features = [
         icon: Sparkles,
         color: "bg-indigo-100 text-indigo-600",
         badge: "New Feature"
+    },
+    {
+        id: 4,
+        title: "Track AI Conversations",
+        description: "Monitor student interactions with ACE AI to ensure appropriate usage and track learning progress in real-time.",
+        icon: Bot,
+        color: "bg-blue-100 text-blue-600",
+        badge: "New Tool"
+    },
+    {
+        id: 5,
+        title: "Control ACE AI Access",
+        description: "You now have the power to hide the ACE AI tab from students directly from your dashboard class settings.",
+        icon: Trash2,
+        color: "bg-slate-100 text-slate-600",
+        badge: "New Control"
     }
 ];
 

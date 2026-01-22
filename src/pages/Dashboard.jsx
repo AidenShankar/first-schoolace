@@ -11,7 +11,7 @@ import { Poll } from "@/entities/Poll";
 import { UploadFile, InvokeLLM, ExtractDataFromUploadedFile } from "@/integrations/Core";
 import { useTranslation } from "../components/i18n/useTranslation";
 import { Button } from "@/components/ui/button";
-import { Plus, BookOpen, Users, GraduationCap, LogOut, Trash2, ChevronDown, RefreshCw, MessageCircle } from "lucide-react";
+import { Plus, BookOpen, Users, GraduationCap, LogOut, Trash2, ChevronDown, RefreshCw, MessageCircle, EyeOff, Eye } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { createPageUrl } from '@/utils';
 import { createCheckoutSession } from "@/functions/createCheckoutSession";
@@ -36,6 +36,8 @@ import ProcessingModal from "../components/common/ProcessingModal"; // New impor
 import ReactQuill from "react-quill"; // New import
 import LanguageSelector from "../components/i18n/LanguageSelector";
 import NewFeaturesBanner from "../components/dashboard/NewFeaturesBanner";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 export default function Dashboard({ user: layoutUser, allClasses: layoutAllClasses, isLayoutLoading }) {
     const { t } = useTranslation();
@@ -877,9 +879,25 @@ Output your response as JSON with:
         }
     };
     
+    const handleToggleAceAi = async (checked) => {
+        if (!currentClass) return;
+        try {
+            await retryWithBackoff(() => Class.update(currentClass.id, { hide_ace_ai: checked }));
+            // Update local state immediately for responsiveness
+            setCurrentClass(prev => ({ ...prev, hide_ace_ai: checked }));
+            // Also update in allClasses list to persist across class switches
+            setAllClasses(prev => prev.map(c => c.id === currentClass.id ? { ...c, hide_ace_ai: checked } : c));
+            // Force a layout refresh to update navigation visibility
+            window.location.reload();
+        } catch (error) {
+            console.error("Error updating class settings:", error);
+            alert("Failed to update settings. Please try again.");
+        }
+    };
+
     const handleDeleteClass = async () => {
         if (!currentClass) return;
-        
+
         const confirmMessage = `Are you sure you want to delete "${currentClass.name}"? This will delete all assignments, submissions, quizzes, polls, and messages associated with this class. This action cannot be undone.`;
         if (!window.confirm(confirmMessage)) return;
 
@@ -1261,9 +1279,22 @@ Output your response as JSON with:
                                                 </Button>
                                             )}
                                             {!showAssignmentForm && !selectedAssignment && !showCreateForm && currentClass && (
-                                                <Button onClick={handleDeleteClass} variant="destructive" className="px-6 py-3 rounded-xl bg-red-100 text-red-600 hover:bg-red-200 border border-red-200">
-                                                    <Trash2 className="w-5 h-5 mr-2" /> {t('classSetup.deleteClass') || "Delete Class"}
-                                                </Button>
+                                                <div className="flex items-center gap-4">
+                                                    <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-xl border border-slate-200 shadow-sm">
+                                                        <Switch 
+                                                            id="ace-ai-toggle" 
+                                                            checked={currentClass.hide_ace_ai || false}
+                                                            onCheckedChange={handleToggleAceAi}
+                                                        />
+                                                        <Label htmlFor="ace-ai-toggle" className="text-slate-600 text-sm font-medium cursor-pointer flex items-center gap-2">
+                                                            {currentClass.hide_ace_ai ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                                            Hide ACE AI
+                                                        </Label>
+                                                    </div>
+                                                    <Button onClick={handleDeleteClass} variant="destructive" className="px-6 py-3 rounded-xl bg-red-100 text-red-600 hover:bg-red-200 border border-red-200">
+                                                        <Trash2 className="w-5 h-5 mr-2" /> {t('classSetup.deleteClass') || "Delete Class"}
+                                                    </Button>
+                                                </div>
                                             )}
                                             {(showAssignmentForm || selectedAssignment || showCreateForm) && (
                                                 <Button variant="outline" onClick={() => { setShowAssignmentForm(false); setSelectedAssignment(null); setShowCreateForm(false); setEditingAssignment(null); }} className="rounded-xl border-slate-300 hover:bg-slate-50">
