@@ -35,7 +35,10 @@ function AIGenerator({ onQuestionsGenerated, t }) {
             - Question Type: ${aiFormData.question_type}
             - Difficulty: ${aiFormData.difficulty}
 
-            **IMPORTANT:** For multiple choice questions, you MUST provide exactly 4 written answer options (A, B, C, D) with complete text for each option.
+            **IMPORTANT:** 
+            - For multiple choice questions, you MUST provide exactly 4 written answer options (A, B, C, D) with complete text for each option.
+            - For true-false questions, correct_answer should be "A" (True) or "B" (False).
+            - For free-response questions, options should be empty or null, and correct_answer should be a sample correct answer or key points.
             
             Generate exactly ${aiFormData.num_questions} well-written questions. Each question should be clear and educational.
             
@@ -67,7 +70,7 @@ function AIGenerator({ onQuestionsGenerated, t }) {
                             type: "object",
                             properties: {
                                 question_text: { type: "string" },
-                                question_type: { type: "string", enum: ["multiple-choice", "true-false"] },
+                                question_type: { type: "string", enum: ["multiple-choice", "true-false", "free-response"] },
                                 options: { 
                                     type: "object",
                                     properties: {
@@ -75,11 +78,12 @@ function AIGenerator({ onQuestionsGenerated, t }) {
                                         "B": { type: "string" },
                                         "C": { type: "string" },
                                         "D": { type: "string" }
-                                    }
+                                    },
+                                    nullable: true
                                 },
                                 correct_answer: { type: "string" }
                             },
-                            required: ["question_text", "question_type", "correct_answer", "options"]
+                            required: ["question_text", "question_type", "correct_answer"]
                         }
                     }
                 },
@@ -101,8 +105,8 @@ function AIGenerator({ onQuestionsGenerated, t }) {
                     throw new Error("Invalid file URL returned from upload.");
                 }
                 llmPayload.file_urls.push(file_url);
-                llmPayload.add_context_from_internet = false;
-                llmPayload.prompt += `\n\nContext: Use the uploaded file content to generate questions.`;
+                llmPayload.add_context_from_internet = true; // Enable internet context to ensure file fetch works if needed
+                llmPayload.prompt += `\n\nContext: Use the uploaded file content to generate questions. Analyze the file thoroughly before generating questions.`;
             } catch (error) {
                 console.error("Error uploading file for AI quiz generation:", error);
                 alert("Failed to upload file. Please try again.");
@@ -207,6 +211,7 @@ function AIGenerator({ onQuestionsGenerated, t }) {
                     <SelectContent>
                         <SelectItem value="multiple-choice">{t('classTools.multipleChoice')}</SelectItem>
                         <SelectItem value="true-false">{t('classTools.trueFalse')}</SelectItem>
+                        <SelectItem value="free-response">Free Response</SelectItem>
                     </SelectContent>
                 </Select>
             </div>
@@ -397,6 +402,7 @@ export default function QuizBuilder({ user, currentClass, quiz, onSave, onCancel
                             <SelectContent>
                                 <SelectItem value="multiple-choice">{t('classTools.multipleChoice')}</SelectItem>
                                 <SelectItem value="true-false">{t('classTools.trueFalse')}</SelectItem>
+                                <SelectItem value="free-response">Free Response</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
@@ -430,24 +436,39 @@ export default function QuizBuilder({ user, currentClass, quiz, onSave, onCancel
                             </div>
                         </div>
                     )}
+
+                    {q.question_type === 'free-response' && (
+                        <div className="bg-slate-50 p-3 rounded-md text-sm text-slate-600 italic">
+                            Students will type their own answer.
+                        </div>
+                    )}
                     
                     <div>
-                        <Label>{t('classTools.correctAnswer')}</Label>
-                        <Select value={q.correct_answer} onValueChange={(val) => handleQuestionChange(qIndex, 'correct_answer', val)}>
-                            <SelectTrigger className="w-32">
-                                <SelectValue/>
-                            </SelectTrigger>
-                            <SelectContent>
-                                {Object.keys(q.options || {}).map(optKey => (
-                                    <SelectItem key={optKey} value={optKey}>
-                                        {optKey} - {q.question_type === 'true-false' ? 
-                                            (optKey === 'A' ? 'True' : 'False') : 
-                                            (q.options[optKey] || `Option ${optKey}`)
-                                        }
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
+                        <Label>{q.question_type === 'free-response' ? 'Sample Correct Answer / Rubric Key' : t('classTools.correctAnswer')}</Label>
+                        {q.question_type === 'free-response' ? (
+                            <Textarea 
+                                value={q.correct_answer} 
+                                onChange={(e) => handleQuestionChange(qIndex, 'correct_answer', e.target.value)}
+                                placeholder="Enter a sample correct answer or key points to grade against..."
+                                className="mt-1"
+                            />
+                        ) : (
+                            <Select value={q.correct_answer} onValueChange={(val) => handleQuestionChange(qIndex, 'correct_answer', val)}>
+                                <SelectTrigger className="w-32">
+                                    <SelectValue/>
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {Object.keys(q.options || {}).map(optKey => (
+                                        <SelectItem key={optKey} value={optKey}>
+                                            {optKey} - {q.question_type === 'true-false' ? 
+                                                (optKey === 'A' ? 'True' : 'False') : 
+                                                (q.options[optKey] || `Option ${optKey}`)
+                                            }
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        )}
                     </div>
                 </div>
             ))}
