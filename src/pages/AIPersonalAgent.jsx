@@ -1101,7 +1101,8 @@ You are an expert quiz question writer. Your task is to generate a set of quiz q
         case 'VIEW_QUIZ_DETAILS':
           if (!action.params.class_name || !action.params.quiz_id) throw new Error("Missing class or quiz ID");
           // targetClass already determined by new logic
-          window.location.href = createPageUrl(`ClassTools?classId=${targetClass.id}&tool=quizzes&quizId=${action.params.quiz_id}`);
+          // window.location.href = createPageUrl(`ClassTools?classId=${targetClass.id}&tool=quizzes&quizId=${action.params.quiz_id}`);
+          setConversation(prev => [...prev, { role: 'assistant', content: `(Navigation to Quiz Details is disabled)` }]);
           break;
 
         case 'VIEW_QUIZ_RESULTS':
@@ -1110,7 +1111,8 @@ You are an expert quiz question writer. Your task is to generate a set of quiz q
             (!action.params.class_name || q.class_name.toLowerCase().includes(action.params.class_name.toLowerCase()))
           );
           if (!quizForResults) throw new Error(`Quiz "${action.params.quiz_title}" not found`);
-          window.location.href = createPageUrl(`ClassTools?classId=${quizForResults.class_id || targetClassId}&tool=quizzes&quizId=${quizForResults.id}&view=results`);
+          // window.location.href = createPageUrl(`ClassTools?classId=${quizForResults.class_id || targetClassId}&tool=quizzes&quizId=${quizForResults.id}&view=results`);
+          setConversation(prev => [...prev, { role: 'assistant', content: `(Navigation to Quiz Results is disabled)` }]);
           break;
 
         case 'CREATE_POLL':
@@ -1269,7 +1271,8 @@ You are an expert quiz question writer. Your task is to generate a set of quiz q
         case 'VIEW_SCHEDULE':
           // targetClassId already determined by new logic
           if (!targetClassId) throw new Error("No classes found to view schedule for.");
-          window.location.href = createPageUrl(`ClassTools?classId=${targetClassId}&tool=schedule`);
+          // window.location.href = createPageUrl(`ClassTools?classId=${targetClassId}&tool=schedule`);
+          setConversation(prev => [...prev, { role: 'assistant', content: `(Navigation to Schedule is disabled)` }]);
           break;
 
         case 'LIST_ASSIGNMENT_COMMENTS': // FALLBACK
@@ -1448,64 +1451,70 @@ You are an expert quiz question writer. Your task is to generate a set of quiz q
 
         case 'NAVIGATE_TO_CHAT':
           // Find the target class
-          if (!action.params?.class_name) {
-            if (allClasses.length === 1) {
-              // If only one class, navigate to it
-              window.location.href = createPageUrl(`Chat?classId=${allClasses[0].id}`);
-            } else if (allClasses.length > 1) {
-              // Multiple classes - ask user to specify
-              setConversation(prev => [...prev, {
-                role: 'assistant',
-                content: `Please specify which class you would like to open the chat for: ${allClasses.map(c => c.name).join(', ')}.`,
-                actions: allClasses.map(cls => ({
-                  type: "navigate",
-                  label: `Open Chat for ${cls.name}`,
-                  target: "NAVIGATE_TO_CHAT",
-                  params: { class_name: cls.name }
-                }))
-              }]);
-            } else {
-              // No classes available
-              throw new Error("You don't have any classes to chat in.");
-            }
-          } else {
-            const targetClass = findClassByName(action.params.class_name);
-            if (!targetClass) throw new Error("Class not found");
-            window.location.href = createPageUrl(`Chat?classId=${targetClass.id}`);
-          }
+          // if (!action.params?.class_name) {
+          //   if (allClasses.length === 1) {
+          //     // If only one class, navigate to it
+          //     window.location.href = createPageUrl(`Chat?classId=${allClasses[0].id}`);
+          //   } else if (allClasses.length > 1) {
+          //     // Multiple classes - ask user to specify
+          //     setConversation(prev => [...prev, {
+          //       role: 'assistant',
+          //       content: `Please specify which class you would like to open the chat for: ${allClasses.map(c => c.name).join(', ')}.`,
+          //       actions: allClasses.map(cls => ({
+          //         type: "navigate",
+          //         label: `Open Chat for ${cls.name}`,
+          //         target: "NAVIGATE_TO_CHAT",
+          //         params: { class_name: cls.name }
+          //       }))
+          //     }]);
+          //   } else {
+          //     // No classes available
+          //     throw new Error("You don't have any classes to chat in.");
+          //   }
+          // } else {
+          //   const targetClass = findClassByName(action.params.class_name);
+          //   if (!targetClass) throw new Error("Class not found");
+          //   window.location.href = createPageUrl(`Chat?classId=${targetClass.id}`);
+          // }
+          setConversation(prev => [...prev, { role: 'assistant', content: `(Navigation to Chat is disabled)` }]);
           break;
 
         case 'NAVIGATE_TO_AI_TOOL':
-          window.location.href = createPageUrl(`AITools?tool=${action.params.tool_id}`);
+          // window.location.href = createPageUrl(`AITools?tool=${action.params.tool_id}`);
+          setConversation(prev => [...prev, { role: 'assistant', content: `(Navigation to AI Tools is disabled)` }]);
           break;
 
         case 'OPEN_CLASS_TOOLS': // FALLBACK for AI-hallucinated action name
         case 'NAVIGATE_TO_CLASS_TOOLS':
           // targetClassId already determined by new logic
-          if (!targetClassId && allClasses.length > 0) {
-              // If no specific class is mentioned, but classes exist, navigate to the first one by default.
-              window.location.href = createPageUrl(`ClassTools?classId=${allClasses[0].id}`);
-          } else if (targetClassId) {
-              window.location.href = createPageUrl(`ClassTools?classId=${targetClassId}`);
-          } else {
-              throw new Error("You don't have any classes. Please create a class first.");
-          }
+          // if (!targetClassId && allClasses.length > 0) {
+          //     // If no specific class is mentioned, but classes exist, navigate to the first one by default.
+          //     window.location.href = createPageUrl(`ClassTools?classId=${allClasses[0].id}`);
+          // } else if (targetClassId) {
+          //     window.location.href = createPageUrl(`ClassTools?classId=${targetClassId}`);
+          // } else {
+          //     throw new Error("You don't have any classes. Please create a class first.");
+          // }
+          setConversation(prev => [...prev, { role: 'assistant', content: `(Navigation to Class Tools is disabled)` }]);
           break;
 
         case 'NAVIGATE_TO_POLLS':
           // targetClassId already determined by new logic
-          if (!targetClassId) throw new Error("No classes found");
-          window.location.href = createPageUrl(`ClassTools?classId=${targetClassId}&tool=polls`);
+          // if (!targetClassId) throw new Error("No classes found");
+          // window.location.href = createPageUrl(`ClassTools?classId=${targetClassId}&tool=polls`);
+          setConversation(prev => [...prev, { role: 'assistant', content: `(Navigation to Polls is disabled)` }]);
           break;
 
         case 'NAVIGATE_TO_QUIZZES':
           // targetClassId already determined by new logic
-          if (!targetClassId) throw new Error("No classes found");
-          window.location.href = createPageUrl(`ClassTools?classId=${targetClassId}&tool=quizzes`);
+          // if (!targetClassId) throw new Error("No classes found");
+          // window.location.href = createPageUrl(`ClassTools?classId=${targetClassId}&tool=quizzes`);
+          setConversation(prev => [...prev, { role: 'assistant', content: `(Navigation to Quizzes is disabled)` }]);
           break;
 
         case 'NAVIGATE_TO_DASHBOARD':
-          window.location.href = createPageUrl('Dashboard');
+          // window.location.href = createPageUrl('Dashboard');
+          setConversation(prev => [...prev, { role: 'assistant', content: `(Navigation to Dashboard is disabled)` }]);
           break;
 
         case 'SUBMIT_ASSIGNMENT':
@@ -1526,7 +1535,8 @@ You are an expert quiz question writer. Your task is to generate a set of quiz q
           break;
 
         case 'VIEW_QUIZ':
-            window.location.href = createPageUrl(`ClassTools?classId=${action.params.classId}&tool=quizzes&quizId=${action.params.quizId}`);
+            // window.location.href = createPageUrl(`ClassTools?classId=${action.params.classId}&tool=quizzes&quizId=${action.params.quizId}`);
+            setConversation(prev => [...prev, { role: 'assistant', content: `(Navigation to Quiz is disabled)` }]);
             break;
 
         // --- START FIX for AI hallucinating tool_ids as targets ---
@@ -1545,7 +1555,8 @@ You are an expert quiz question writer. Your task is to generate a set of quiz q
         case 'TEXT_SUMMARIZER':
         case 'CONCEPT_EXPLAINER':
         case 'POWERSCHOOL': // Added this case for PowerSchool
-          window.location.href = createPageUrl(`AITools?tool=${action.target}`);
+          // window.location.href = createPageUrl(`AITools?tool=${action.target}`);
+          setConversation(prev => [...prev, { role: 'assistant', content: `(Navigation to AI Tools is disabled)` }]);
           break;
         // --- END FIX ---
 
