@@ -1204,8 +1204,9 @@ Output your response as JSON with:
                                 )}
                             </div>
                         </div>
-                        <div className="flex items-center gap-3">
-                            <Button variant="outline" size="sm" onClick={handleFeedbackClick} className="text-indigo-600 border-white/20 hover:bg-white/10 hover:text-white rounded-xl">
+                        <div className="flex flex-col items-end gap-2">
+                            <div className="flex items-center gap-3">
+                                <Button variant="outline" size="sm" onClick={handleFeedbackClick} className="text-indigo-600 border-white/20 hover:bg-white/10 hover:text-white rounded-xl">
                                 <MessageCircle className="w-4 h-4 mr-2" />
                                 {t('dashboard.feedback')}
                             </Button>
@@ -1300,6 +1301,8 @@ Output your response as JSON with:
                                                 </DialogContent>
                                 </Dialog>
                             )}
+                            </div>
+                            {user.app_role === 'teacher' && <NewFeaturesBanner />}
                         </div>
                     </div>
                 </div>
@@ -1320,7 +1323,6 @@ Output your response as JSON with:
                                 <ClassSetup onClassReady={handleClassJoined} isFirstClass={true} />
                             ) : (
                                 <>
-                                    <NewFeaturesBanner />
                                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                                         <div className="flex items-center space-x-4">
                                             <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center"><Users className="w-6 h-6 text-indigo-600" /></div>
