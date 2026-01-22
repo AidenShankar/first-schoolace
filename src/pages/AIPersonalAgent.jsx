@@ -321,31 +321,8 @@ export default function AIPersonalAgentPage() { // Renamed from AIPersonalAgent
     const role = user?.app_role || 'user';
     const userName = user?.full_name || 'the user';
 
-    const teacherToolMap = `
-- **NAVIGATE_TO_AI_TOOL**: Use this to go to an AI tool page. Requires one parameter: \`tool_id\`.
-  **AI TOOL MAPPING (Use these exact IDs):**
-  - "Lesson Plan Generator" -> \`lesson-plan\`
-  - "Worksheet Generator" -> \`worksheet-generator\`
-  - "Rubric Generator" -> \`rubric-generator\`
-  - "Assessment Question Generator", "Question Generator" -> \`question-generator\`
-  - "Report Card Comments" -> \`report-card-comments\`
-  - "IEP & Accommodation Generator", "IEP Generator" -> \`iep-accommodations\`
-  - "Assignment Scaffolder" -> \`assignment-scaffolder\`
-  - "Email Generator" -> \`email-generator\`
-  - "Teacher Wellness Support" -> \`teacher-wellness-support\`
-  - "AI Content Detector", "AI Detector" -> \`ai-detector\`
-  - "PowerSchool" -> \`powerschool\`
-`;
-    const studentToolMap = `
-- **NAVIGATE_TO_AI_TOOL**: Use this to go to an AI tool page. Requires one parameter: \`tool_id\`.
-  **AI TOOL MAPPING (Use these exact IDs):**
-  - "Student Wellness Support" -> \`student-wellness-support\`
-  - "Writing Feedback Assistant" -> \`writing-feedback\`
-  - "Text Summarizer" -> \`text-summarizer\`
-  - "Concept Explainer" -> \`concept-explainer\`
-  - "Email Generator" -> \`email-generator\`
-  - "Question Generator" -> \`question-generator\`
-`;
+    const teacherToolMap = ``;
+    const studentToolMap = ``;
 
     let prompt = `You are GradeAI's Personal Agent, an action-oriented AI assistant. Your primary goal is to **EXECUTE** actions for the user, not just have a conversation.
 
@@ -371,14 +348,9 @@ ${uploadedFile ? `- Uploaded File: ${uploadedFile.file_name} (${uploadedFile.fil
 **AVAILABLE ACTIONS for OTHER requests:**
 
 ${role === 'teacher' ? teacherToolMap : studentToolMap}
-- NAVIGATE_TO_DASHBOARD: No params
-- NAVIGATE_TO_CHAT: class_name (opens the chat page for the specified class)
-- NAVIGATE_TO_CLASS_TOOLS: class_name
 - SEND_CLASS_CHAT: content, class_name
 - CREATE_ASSIGNMENT: title, description, instructions, max_points, due_date, class_name
 - CREATE_POLL: question, options (array), class_name
-- NAVIGATE_TO_POLLS: class_name
-- NAVIGATE_TO_QUIZZES: class_name
 - CREATE_SCHEDULE_EVENT: title, event_date, class_name
 - **CHECK_ASSIGNMENT_COMMENTS**: To check comments, you MUST use this target. It requires two parameters: \`class_name\` and \`assignment_title\`. To check comments for ALL assignments in a class, you MUST set the \`assignment_title\` parameter to the literal string "all". **DO NOT** use "all" as the action target itself.
 - VIEW_STUDENT_COMMENTS: assignment_title, class_name, student_name
@@ -388,9 +360,6 @@ ${role === 'teacher' ? teacherToolMap : studentToolMap}
 - LOCK_QUIZ: quiz_id
 - CLOSE_POLL: poll_id
 - REOPEN_POLL: poll_id
-- VIEW_SCHEDULE: class_name
-- VIEW_QUIZ_DETAILS: quiz_id, class_name
-- VIEW_QUIZ_RESULTS: quiz_title, class_name
 - SUBMIT_ASSIGNMENT: assignment_id (requires prior file upload)
 
 **Response Format:**

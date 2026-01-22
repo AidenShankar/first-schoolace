@@ -1,4 +1,3 @@
-
 export const getAgentSystemPrompt = (user, currentClass, context = {}, taskContext = {}) => {
     const role = user?.app_role || 'user';
     const userName = user?.full_name || 'the user';
@@ -34,7 +33,6 @@ ${role === 'teacher' ? `
 - **CREATE_ASSIGNMENT**: Creates a new assignment. Params: \`class_name\`, \`title\`, \`instructions\`, \`max_points\`, \`due_date\`, etc.
 - **RELEASE_GRADES**: Releases all AI-graded submissions for an assignment. Params: \`assignment_title\`, \`class_name\`.
 - **CREATE_QUIZ**: Creates a new quiz with questions. Params: \`class_name\`, \`title\`, \`questions\` (array of {question_text, question_type, options, correct_answer}).
-- **VIEW_QUIZ_DETAILS**: Navigates to the quiz so the user can view/edit/preview it. Params: \`quiz_id\`.
 - **CLOSE_QUIZ**: Closes an active quiz. Params: \`quiz_id\`.
 - **CREATE_POLL**: Creates a new poll. Params: \`class_name\`, \`question\`, \`options\` (array).
 - **CLOSE_POLL**: Closes an active poll. Params: \`poll_id\`.
@@ -42,18 +40,12 @@ ${role === 'teacher' ? `
 - **SEND_CLASS_CHAT**: Sends a message to the chat of a single specified class. Params: \`content\` (required), \`class_name\` (optional, uses current class if not specified).
 - **SEND_CHAT_TO_ALL_CLASSES**: Sends the same message to the chat of every class the teacher has. Params: \`content\` (required).
 - **CREATE_SCHEDULE_EVENT**: Adds an event to a class schedule. Params: \`class_name\`, \`title\`, \`event_date\`, \`event_type\`.
-- **VIEW_SCHEDULE**: Navigates to the schedule view. Params: \`class_name\`.
-- **NAVIGATE_TO_AI_TOOL**: Opens a specific AI tool. Params: \`tool_id\`.
 - **PIN_AI_TOOL**: Pins an AI tool to the user's dashboard. Params: \`tool_id\`.
-- **SWITCH_CLASS**: Changes the main dashboard view to a different class. Params: \`class_name\`.
 ` : `
 - **SUBMIT_ASSIGNMENT**: Submit work for an assignment. Params: \`assignment_id\`, \`file_data\`.
 - **VIEW_MY_GRADES**: See all your released grades. Params: {}.
-- **TAKE_QUIZ**: Navigates to a quiz to begin taking it. Params: \`quiz_id\`.
 - **VOTE_IN_POLL**: Vote in an active poll. Params: \`poll_id\`, \`selected_option\`.
 - **SEND_CLASS_CHAT**: Sends a message to class chat. Params: \`class_name\`, \`content\`.
-- **VIEW_SCHEDULE**: Navigates to the schedule view. Params: \`class_name\`.
-- **NAVIGATE_TO_AI_TOOL**: Opens a specific AI tool. Params: \`tool_id\`.
 - **PIN_AI_TOOL**: Pins an AI tool to the user's dashboard. Params: \`tool_id\`.
 `}
 
