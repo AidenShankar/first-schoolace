@@ -11,7 +11,7 @@ import { Poll } from "@/entities/Poll";
 import { UploadFile, InvokeLLM, ExtractDataFromUploadedFile } from "@/integrations/Core";
 import { useTranslation } from "../components/i18n/useTranslation";
 import { Button } from "@/components/ui/button";
-import { Plus, BookOpen, Users, GraduationCap, LogOut, Trash2, ChevronDown, RefreshCw, MessageCircle, EyeOff, Eye } from "lucide-react";
+import { Plus, BookOpen, Users, GraduationCap, LogOut, Trash2, ChevronDown, RefreshCw, MessageCircle, EyeOff, Eye, Settings } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { createPageUrl } from '@/utils';
 import { createCheckoutSession } from "@/functions/createCheckoutSession";
@@ -22,6 +22,14 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+    DialogDescription,
+} from "@/components/ui/dialog";
 
 import AuthModal from "../components/auth/AuthModal";
 import ClassSetup from "../components/teacher/ClassSetup";
@@ -1227,16 +1235,41 @@ Output your response as JSON with:
                             )}
                             {user.app_role === 'teacher' && <LanguageSelector />}
                             {user.app_role === 'teacher' && (
-                                <Button 
-                                    variant="outline"
-                                    size="icon"
-                                    onClick={handleSyncClick}
-                                    disabled={isSyncing}
-                                    title="Sync Subscription Status"
-                                    className="text-indigo-600 border-white/20 hover:bg-white/10 hover:text-white rounded-xl h-9 w-9"
-                                >
-                                    <RefreshCw className={`w-4 h-4 ${isSyncing ? 'animate-spin' : ''}`} />
-                                </Button>
+                                <Dialog>
+                                    <DialogTrigger asChild>
+                                        <Button 
+                                            variant="outline"
+                                            size="icon"
+                                            title="Class Settings"
+                                            className="text-indigo-600 border-white/20 hover:bg-white/10 hover:text-white rounded-xl h-9 w-9"
+                                        >
+                                            <Settings className="w-4 h-4" />
+                                        </Button>
+                                    </DialogTrigger>
+                                    <DialogContent>
+                                        <DialogHeader>
+                                            <DialogTitle>Class Settings</DialogTitle>
+                                            <DialogDescription>
+                                                Manage settings for {currentClass?.name}
+                                            </DialogDescription>
+                                        </DialogHeader>
+                                        <div className="py-6 space-y-6">
+                                            <div className="flex items-center justify-between space-x-4">
+                                                <div className="flex flex-col space-y-1">
+                                                    <Label htmlFor="ace-ai-toggle" className="text-base font-medium">Hide ACE AI from students</Label>
+                                                    <span className="text-sm text-slate-500">
+                                                        Prevent students in this class from accessing the ACE AI tab
+                                                    </span>
+                                                </div>
+                                                <Switch 
+                                                    id="ace-ai-toggle" 
+                                                    checked={currentClass?.hide_ace_ai || false}
+                                                    onCheckedChange={handleToggleAceAi}
+                                                />
+                                            </div>
+                                        </div>
+                                    </DialogContent>
+                                </Dialog>
                             )}
                         </div>
                     </div>
@@ -1279,22 +1312,9 @@ Output your response as JSON with:
                                                 </Button>
                                             )}
                                             {!showAssignmentForm && !selectedAssignment && !showCreateForm && currentClass && (
-                                                <div className="flex items-center gap-4">
-                                                    <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-xl border border-slate-200 shadow-sm">
-                                                        <Switch 
-                                                            id="ace-ai-toggle" 
-                                                            checked={currentClass.hide_ace_ai || false}
-                                                            onCheckedChange={handleToggleAceAi}
-                                                        />
-                                                        <Label htmlFor="ace-ai-toggle" className="text-slate-600 text-sm font-medium cursor-pointer flex items-center gap-2">
-                                                            {currentClass.hide_ace_ai ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                                                            Hide ACE AI
-                                                        </Label>
-                                                    </div>
-                                                    <Button onClick={handleDeleteClass} variant="destructive" className="px-6 py-3 rounded-xl bg-red-100 text-red-600 hover:bg-red-200 border border-red-200">
-                                                        <Trash2 className="w-5 h-5 mr-2" /> {t('classSetup.deleteClass') || "Delete Class"}
-                                                    </Button>
-                                                </div>
+                                                <Button onClick={handleDeleteClass} variant="destructive" className="px-6 py-3 rounded-xl bg-red-100 text-red-600 hover:bg-red-200 border border-red-200">
+                                                    <Trash2 className="w-5 h-5 mr-2" /> {t('classSetup.deleteClass') || "Delete Class"}
+                                                </Button>
                                             )}
                                             {(showAssignmentForm || selectedAssignment || showCreateForm) && (
                                                 <Button variant="outline" onClick={() => { setShowAssignmentForm(false); setSelectedAssignment(null); setShowCreateForm(false); setEditingAssignment(null); }} className="rounded-xl border-slate-300 hover:bg-slate-50">
