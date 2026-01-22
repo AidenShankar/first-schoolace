@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Sparkles, Trash2, Bot, Gift, ChevronRight } from 'lucide-react';
+import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/components/ui/dialog";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden"; // Assuming this might be needed for accessibility if title is hidden, but I'll add a proper title.
 
 const features = [
     {
