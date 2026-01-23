@@ -1,6 +1,128 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { ArrowRight, Calculator, Sigma, MoveDown, CheckCircle2, Sparkles, Variable } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowRight, Calculator, Sigma, MoveDown, CheckCircle2, Sparkles, Variable, ArrowUp, Loader2, X } from 'lucide-react';
+import { InvokeLLM } from '@/integrations/Core';
+
+const AskAIWidget = () => {
+    const [query, setQuery] = useState('');
+    const [isOpen, setIsOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [answer, setAnswer] = useState(null);
+    const inputRef = useRef(null);
+
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'i') {
+                e.preventDefault();
+                inputRef.current?.focus();
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, []);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (!query.trim()) return;
+
+        setLoading(true);
+        setIsOpen(true);
+        setAnswer(null);
+
+        try {
+            const response = await InvokeLLM({
+                prompt: `You are a helpful and friendly math tutor explaining the "nth partial sum of arithmetic sequence" proof.
+                The user asks: "${query}".
+                
+                Context of the page the user is viewing:
+                1. Forward sum: Sn = a1 + (a1+d) + ...
+                2. Backward sum: Sn = an + (an-d) + ...
+                3. Add equations: 2Sn = n(a1 + an)
+                4. Final formula: Sn = n(a1 + an) / 2
+                
+                Provide a clear, concise (max 2-3 sentences), and helpful answer. Keep it encouraging.`
+            });
+            setAnswer(typeof response === 'string' ? response : JSON.stringify(response));
+        } catch (error) {
+            setAnswer("Sorry, I couldn't fetch an answer right now. Please try again.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <>
+            <AnimatePresence>
+                {isOpen && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 20, scale: 0.95 }}
+                        className="fixed bottom-24 left-1/2 -translate-x-1/2 z-40 w-full max-w-xl px-4 pointer-events-none"
+                    >
+                        <div className="bg-white rounded-2xl shadow-2xl border border-indigo-100 p-6 pointer-events-auto relative">
+                            <button 
+                                onClick={() => setIsOpen(false)}
+                                className="absolute top-4 right-4 text-slate-400 hover:text-slate-600"
+                            >
+                                <X className="w-4 h-4" />
+                            </button>
+                            
+                            <div className="flex items-start gap-4">
+                                <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center shrink-0">
+                                    <Sparkles className="w-5 h-5 text-indigo-600" />
+                                </div>
+                                <div className="flex-1 space-y-2">
+                                    <h4 className="font-semibold text-slate-900">ACE AI</h4>
+                                    {loading ? (
+                                        <div className="flex items-center gap-2 text-slate-500 text-sm">
+                                            <Loader2 className="w-4 h-4 animate-spin" />
+                                            Thinking...
+                                        </div>
+                                    ) : (
+                                        <p className="text-slate-700 leading-relaxed text-sm">
+                                            {answer}
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 w-full max-w-xl px-4">
+                 <form 
+                    onSubmit={handleSubmit}
+                    className="relative bg-white rounded-full shadow-2xl border border-slate-200 flex items-center p-2 pl-6 transition-all ring-1 ring-slate-100 focus-within:ring-2 focus-within:ring-indigo-500/20 focus-within:border-indigo-500/50"
+                >
+                    <input
+                        ref={inputRef}
+                        type="text"
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
+                        placeholder="Ask a question..."
+                        className="flex-1 bg-transparent border-none outline-none text-slate-700 placeholder:text-slate-400 h-10 text-base"
+                    />
+                    <div className="flex items-center gap-3 pr-2">
+                         {!query && (
+                            <div className="hidden md:flex items-center gap-1 text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-1 rounded border border-slate-200 uppercase tracking-wider">
+                                <span>⌘ I</span>
+                            </div>
+                         )}
+                         <button 
+                            type="submit"
+                            disabled={!query || loading}
+                            className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 ${query ? 'bg-indigo-600 text-white shadow-lg hover:bg-indigo-700 hover:scale-105 active:scale-95' : 'bg-slate-100 text-slate-300'}`}
+                         >
+                            <ArrowUp className="w-5 h-5 font-bold" />
+                         </button>
+                    </div>
+                 </form>
+            </div>
+        </>
+    );
+};
 
 export default function NthPartialSum() {
   const steps = [
@@ -149,6 +271,8 @@ export default function NthPartialSum() {
             <p>Mastering arithmetic sequences one step at a time.</p>
         </motion.div>
       </div>
+      
+      <AskAIWidget />
     </div>
   );
 }
