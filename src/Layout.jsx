@@ -241,6 +241,7 @@ export default function Layout({ children, currentPageName }) {
   const isLandingPage = currentPageName === 'Landing';
   const isCompliancePage = currentPageName === 'Compliance'; // Add this line
   const isDemoPage = currentPageName === 'Demo';
+  const isAPExamSchedulePage = currentPageName === 'APExamSchedule';
   const isExampleLearningTrackerPage = currentPageName === 'examplelearningtracker';
   const isLearnerDashboard = currentPageName === 'LearnerDashboard';
 
@@ -834,7 +835,7 @@ function LayoutContent({
       )}
 
       {/* Header - Conditionally render based on page */}
-      {!isLandingPage && !isCompliancePage && !isDemoPage && (
+      {!isLandingPage && !isCompliancePage && !isDemoPage && !isAPExamSchedulePage && (
         <header className={isLearnerDashboard ? "bg-black border-slate-800 backdrop-blur-xl border-b sticky top-0 z-40" : "bg-white/80 border-slate-200/60 backdrop-blur-xl border-b sticky top-0 z-40"}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-16">
@@ -892,7 +893,7 @@ function LayoutContent({
       </main>
 
       {/* Mobile Navigation - Conditionally render based on page */}
-      {!isLandingPage && !isCompliancePage && !isDemoPage && !isLearnerDashboard && (
+      {!isLandingPage && !isCompliancePage && !isDemoPage && !isLearnerDashboard && !isAPExamSchedulePage && (
         <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-xl border-t border-slate-200 px-2 py-2 flex justify-around z-40">
           {filteredNavLinks.map((link) => {
             if (link.requiresClass && !currentClassId) return null;
