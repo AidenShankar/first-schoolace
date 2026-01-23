@@ -785,6 +785,7 @@ export default function Layout({ children, currentPageName }) {
         isDemoPage={isDemoPage}
         isExampleLearningTrackerPage={isExampleLearningTrackerPage}
         isLearnerDashboard={isLearnerDashboard}
+        isAPExamSchedulePage={isAPExamSchedulePage}
         location={location}
         handleNavClick={handleNavClick}
         fetchUserAndClasses={fetchUserAndClasses}
@@ -800,7 +801,7 @@ export default function Layout({ children, currentPageName }) {
 
 function LayoutContent({ 
   user, allClasses, currentClass, currentClassId, quizInProgress, currentPageName,
-  isQuizModeActive, isLandingPage, isCompliancePage, isDemoPage, isExampleLearningTrackerPage, isLearnerDashboard,
+  isQuizModeActive, isLandingPage, isCompliancePage, isDemoPage, isExampleLearningTrackerPage, isLearnerDashboard, isAPExamSchedulePage,
   location, handleNavClick, fetchUserAndClasses, isLayoutLoading, getNavLinks, filterNavLinks, children 
 }) {
   const { language } = useLanguage();
