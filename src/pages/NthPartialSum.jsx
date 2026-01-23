@@ -131,7 +131,7 @@ export default function NthPartialSum() {
       title: "Write the Sum Forward",
       description: "Start by writing the sum S_n using the first term a_1 and the common difference d.",
       math: (
-        <div className="text-xl md:text-2xl font-mono text-slate-700">
+        <div className="text-xl md:text-2xl font-mono text-slate-700 whitespace-nowrap">
           S<sub>n</sub> = a<sub>1</sub> + (a<sub>1</sub> + d) + (a<sub>1</sub> + 2d) + ... + (a<sub>n</sub> - d) + a<sub>n</sub>
         </div>
       ),
@@ -142,7 +142,7 @@ export default function NthPartialSum() {
       title: "Write the Sum Backward",
       description: "Write the exact same sum, but start with the last term (a_n) and go backwards, subtracting d each time.",
       math: (
-        <div className="text-xl md:text-2xl font-mono text-slate-700">
+        <div className="text-xl md:text-2xl font-mono text-slate-700 whitespace-nowrap">
           S<sub>n</sub> = a<sub>n</sub> + (a<sub>n</sub> - d) + (a<sub>n</sub> - 2d) + ... + (a<sub>1</sub> + d) + a<sub>1</sub>
         </div>
       ),
@@ -170,7 +170,7 @@ export default function NthPartialSum() {
       title: "Simplify",
       description: "Since there are n terms in the sequence, you now have the term (a_1 + a_n) added to itself n times.",
       math: (
-        <div className="text-2xl md:text-4xl font-bold text-slate-800 font-mono">
+        <div className="text-2xl md:text-4xl font-bold text-slate-800 font-mono whitespace-nowrap">
           2S<sub>n</sub> = n(a<sub>1</sub> + a<sub>n</sub>)
         </div>
       ),
@@ -221,7 +221,7 @@ export default function NthPartialSum() {
       </div>
 
       {/* Proof Steps */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 -mt-16 relative z-20 space-y-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-16 relative z-20 space-y-8">
         {steps.map((step, idx) => (
           <motion.div
             key={step.id}
