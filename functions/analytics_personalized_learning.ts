@@ -20,21 +20,27 @@ Deno.serve(async (req) => {
         // Check Submission (another custom entity)
         const submissions = await base44.asServiceRole.entities.Submission.list('-created_date', 10);
         
-        // DEBUG: List available entities
-        const entityKeys = Object.keys(base44.asServiceRole.entities);
-        
-        // Try accessing via string key if it exists
-        let allComments = [];
-        if (base44.asServiceRole.entities['AssignmentComment']) {
-             allComments = await base44.asServiceRole.entities['AssignmentComment'].list('-created_date', 100);
-        } else {
-             // Try case variations
-             const key = entityKeys.find(k => k.toLowerCase() === 'assignmentcomment');
-             if (key) {
-                 allComments = await base44.asServiceRole.entities[key].list('-created_date', 100);
-             }
-        }
+        // Check if we can get entity definitions
+        let appInfo = {};
+        try {
+            // Internal method often available on base44 object or similar
+            // This is a guess to debug structure
+            appInfo = Object.keys(base44.asServiceRole);
+        } catch(e) {}
 
+        // Try direct fetch on entities
+        // Maybe it's base44.entities.AssignmentComment.list() (using Request context)
+        // But we need to bypass permissions.
+        // Let's try base44.asServiceRole.entities.AssignmentComment again but checking for errors
+        
+        let allComments = [];
+        let errorMsg = "";
+        try {
+             allComments = await base44.asServiceRole.entities.AssignmentComment.list('-created_date', 100);
+        } catch (e) {
+             errorMsg = e.message;
+        }
+        
         const comments = allComments.filter(c => c.is_ai_tutor_message === true);
         const recentComments = comments.filter(c => new Date(c.created_date) >= sevenDaysAgo);
         const commentsToProcess = recentComments;
@@ -95,7 +101,8 @@ Deno.serve(async (req) => {
             unique_users: uniqueUsers,
             average_duration_minutes: Math.round(averageDuration * 10) / 10,
             debug: {
-                available_entities: entityKeys,
+                service_role_keys: appInfo,
+                error_msg: errorMsg,
                 total_comments_in_db: allComments.length,
                 filtered_ai_tutor: comments.length,
                 filtered_recent: recentComments.length,
