@@ -13,22 +13,19 @@ Deno.serve(async (req) => {
         // We filter by created_date explicitly if possible, or fetch and filter.
         // SDK supports filter.
         
-        // Debug: try without date filter first to see if we get anything
-        const comments = await base44.asServiceRole.entities.AssignmentComment.filter({
-            is_ai_tutor_message: true
-        }, 'created_date', 10000); 
-        
-        console.log(`Found ${comments.length} comments total`);
-        if (comments.length > 0) {
-            console.log("Sample date:", comments[0].created_date);
-            console.log("Seven days ago:", sevenDaysAgo.toISOString());
+        // SUPER DEBUG: List everything
+        const allComments = await base44.asServiceRole.entities.AssignmentComment.list('-created_date', 100);
+        console.error(`TOTAL COMMENTS IN DB: ${allComments.length}`);
+        if (allComments.length > 0) {
+            console.error("SAMPLE COMMENT:", JSON.stringify(allComments[0]));
         }
 
-        // Filter manually if database filter is suspicious
-        const recentComments = comments.filter(c => new Date(c.created_date) >= sevenDaysAgo);
-        console.log(`Found ${recentComments.length} recent comments`);
+        const comments = allComments.filter(c => c.is_ai_tutor_message === true);
+        console.error(`FILTERED IN JS (is_ai_tutor_message=true): ${comments.length}`);
         
-        // Use recentComments for the rest of the logic
+        const recentComments = comments.filter(c => new Date(c.created_date) >= sevenDaysAgo);
+        console.error(`FILTERED RECENT: ${recentComments.length}`);
+        
         const commentsToProcess = recentComments;
         
         const userSessions = {};
