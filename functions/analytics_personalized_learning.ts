@@ -17,13 +17,15 @@ Deno.serve(async (req) => {
         const users = await base44.asServiceRole.entities.User.list('-created_date', 10);
         const userCount = users.length;
 
-        // Check AssignmentComment
-        const allComments = await base44.asServiceRole.entities.AssignmentComment.list('-created_date', 100);
+        // Check Submission (another custom entity)
+        const submissions = await base44.asServiceRole.entities.Submission.list('-created_date', 10);
+        
+        // Check AssignmentComment again, maybe with a different approach?
+        // Maybe try filter instead of list?
+        const allComments = await base44.asServiceRole.entities.AssignmentComment.filter({}, '-created_date', 100);
         
         const comments = allComments.filter(c => c.is_ai_tutor_message === true);
-        
         const recentComments = comments.filter(c => new Date(c.created_date) >= sevenDaysAgo);
-        
         const commentsToProcess = recentComments;
         
         const userSessions = {};
@@ -83,6 +85,7 @@ Deno.serve(async (req) => {
             average_duration_minutes: Math.round(averageDuration * 10) / 10,
             debug: {
                 user_count_check: userCount,
+                submission_count_check: submissions.length,
                 total_comments_in_db: allComments.length,
                 filtered_ai_tutor: comments.length,
                 filtered_recent: recentComments.length,
