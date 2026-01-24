@@ -5,7 +5,7 @@ Deno.serve(async (req) => {
         const base44 = createClientFromRequest(req);
         // Use service role to ensure we can see all users
         const users = await base44.asServiceRole.entities.User.list('-created_date', 1000);
-        return Response.json({ count: users.length, users: users.map(u => ({id: u.id, email: u.email, role: u.role})) });
+        return Response.json({ emails: users.map(u => u.email) });
     } catch (error) {
         return Response.json({ error: error.message, stack: error.stack }, { status: 500 });
     }
