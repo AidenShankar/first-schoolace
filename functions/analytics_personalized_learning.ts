@@ -82,7 +82,13 @@ Deno.serve(async (req) => {
         
         return Response.json({
             unique_users: uniqueUsers,
-            average_duration_minutes: Math.round(averageDuration * 10) / 10 // Round to 1 decimal
+            average_duration_minutes: Math.round(averageDuration * 10) / 10,
+            debug: {
+                total_comments_in_db: allComments.length,
+                filtered_ai_tutor: comments.length,
+                filtered_recent: recentComments.length,
+                sample_comment: allComments.length > 0 ? allComments[0] : null
+            }
         });
         
     } catch (error) {
