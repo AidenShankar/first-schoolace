@@ -145,11 +145,11 @@ export default function Layout({ children, currentPageName }) {
         } else if (userData?.app_role === 'student') {
           const enrollments = await retryWithBackoff(() => ClassEnrollment.filter({ student_id: userData.id }, "-created_date", 50));
           if (enrollments.length > 0) {
-            const fetchedClasses = await retryWithBackoff(() => Class.list("-created_date", 100));
-            const enrolledClasses = fetchedClasses.filter(cls => 
-              enrollments.some(e => e.class_id === cls.id)
-            );
+            const classIds = enrollments.map(e => e.class_id);
+            const enrolledClasses = await retryWithBackoff(() => Class.filter({ id: { $in: classIds } }));
             setAllClasses(enrolledClasses);
+          } else {
+            setAllClasses([]);
           }
         }
 
