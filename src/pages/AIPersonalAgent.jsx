@@ -1564,9 +1564,25 @@ You are an expert quiz question writer. Your task is to generate a set of quiz q
     try {
       setIsThinking(true);
       const cutoff = '2026-01-11T08:00:00Z'; // Jan 11, 2026 12:00 AM PST
-      const results = await retryWithBackoff(() => Submission.filter({ submitted_at: { $gte: cutoff } }, "-submitted_at", 100000));
-      const msg = await translateMessage(`Since Jan 11, 2026 (midnight PST), there are ${results.length} submissions.`);
+
+      // Count across ALL submissions in the system (service role equivalent via paging)
+      let total = 0;
+      let skip = 0;
+      const limit = 100000;
+      while (true) {
+        const batch = await retryWithBackoff(() => Submission.list('-created_date', limit, skip));
+        if (!batch || batch.length === 0) break;
+        total += batch.filter(s => {
+          const submittedAt = s.submitted_at || s.data?.submitted_at;
+          return submittedAt && new Date(submittedAt).toISOString() >= cutoff;
+        }).length;
+        skip += limit;
+        if (batch.length < limit) break; // last page
+      }
+
+      const msg = await translateMessage(`Since Jan 11, 2026 (midnight PST), there are ${total} submissions across all teachers and classes.`);
       setConversation(prev => [...prev, { role: 'assistant', content: msg }]);
+      setHasCountedSinceJan11(true);
     } catch (error) {
       setConversation(prev => [...prev, { role: 'assistant', content: `Counting failed: ${error.message}` }]);
     } finally {
