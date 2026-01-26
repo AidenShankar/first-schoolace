@@ -1555,6 +1555,20 @@ You are an expert quiz question writer. Your task is to generate a set of quiz q
     }]);
   };
 
+  const handleCountSinceJan11 = async () => {
+    try {
+      setIsThinking(true);
+      const cutoff = '2026-01-11T08:00:00Z'; // Jan 11, 2026 12:00 AM PST
+      const results = await retryWithBackoff(() => Submission.filter({ submitted_at: { $gte: cutoff } }, "-submitted_at", 100000));
+      const msg = await translateMessage(`Since Jan 11, 2026 (midnight PST), there are ${results.length} submissions.`);
+      setConversation(prev => [...prev, { role: 'assistant', content: msg }]);
+    } catch (error) {
+      setConversation(prev => [...prev, { role: 'assistant', content: `Counting failed: ${error.message}` }]);
+    } finally {
+      setIsThinking(false);
+    }
+  };
+
   const placeholderText = user?.app_role === 'teacher'
     ? t('aiAgent.teacherPlaceholder')
     : t('aiAgent.studentPlaceholder');
