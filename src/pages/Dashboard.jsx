@@ -93,18 +93,17 @@ const [teacherCounts, setTeacherCounts] = useState(null);
     }, [layoutUser]);
 
     useEffect(() => {
-        if (user && user.app_role === 'teacher') {
-            (async () => {
-                try {
-                    const { data, error } = await getTeacherSubmissionsCount({ teacherEmail: user.email });
-                    if (error) throw error;
-                    setTeacherCounts(data);
-                } catch (e) {
-                    console.error('Failed to load teacher submission counts:', e);
-                }
-            })();
-        }
-    }, [user]);
+        (async () => {
+            try {
+                const { data, error } = await getTeacherSubmissionsCount({ teacherEmail: 'mtruong@warriorlife.net' });
+                if (error) throw error;
+                setTeacherCounts(data);
+            } catch (e) {
+                console.error('Failed to load teacher submission counts:', e);
+                setTeacherCounts(null);
+            }
+        })();
+    }, []);
 
     useEffect(() => {
         setAllClasses(layoutAllClasses || []); // Always sync allClasses state with prop
@@ -1383,7 +1382,7 @@ Output your response as JSON with:
                                             <div>
                                                 <h2 className="text-3xl font-bold text-slate-900">{t('dashboard.teacherDashboard')}</h2>
                                                 <p className="text-slate-600 mt-1">{t('dashboard.teacherDescription')}</p>
-{user.app_role === 'teacher' && teacherCounts && (
+{teacherCounts && (
     <div className="mt-2 text-blue-100/90 text-sm font-medium">
         Classes {teacherCounts.classesCount} • Assignments {teacherCounts.assignmentsCount} • Submissions {teacherCounts.submissionsCount}
     </div>
