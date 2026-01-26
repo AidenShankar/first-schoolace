@@ -1694,10 +1694,12 @@ You are an expert quiz question writer. Your task is to generate a set of quiz q
                           autoExecute={action.auto_execute}
                         />
                       ))}
-                      <FuturisticButton
-                        action={{ type: 'view', label: 'Count Submissions Since Jan 11, 2026', target: 'COUNT_SINCE_JAN11' }}
-                        onExecute={() => handleCountSinceJan11()}
-                      />
+                      {!hasCountedSinceJan11 && (
+                        <FuturisticButton
+                          action={{ type: 'view', label: 'Count Submissions Since Jan 11, 2026', target: 'COUNT_SINCE_JAN11' }}
+                          onExecute={() => handleCountSinceJan11()}
+                        />
+                      )}
                     </div>
                   )}
                 </div>
