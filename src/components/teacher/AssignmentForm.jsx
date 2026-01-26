@@ -42,6 +42,7 @@ const initialFormState = {
   use_ai_grading: true,
   leniency: "Neutral",
   attachment_file: [],
+  grading_standards: { standard_set: "NGSS (Science)", selected_codes: [] },
 };
 
 export default function AssignmentForm({ onSubmit, onCancel, isSubmitting, assignmentToEdit }) {
@@ -67,6 +68,7 @@ export default function AssignmentForm({ onSubmit, onCancel, isSubmitting, assig
         // Ensure allow_submissions defaults to true if not present in assignmentToEdit
         allow_submissions: assignmentToEdit.allow_submissions !== undefined ? assignmentToEdit.allow_submissions : true,
         attachment_file: [], // Clear new attachments when editing, they are handled separately as existing_attachments
+        grading_standards: assignmentToEdit.grading_standards || { standard_set: "NGSS (Science)", selected_codes: [] },
       });
 
       const attachments = (assignmentToEdit.attachment_urls || []).map((url, index) => ({
@@ -92,6 +94,24 @@ export default function AssignmentForm({ onSubmit, onCancel, isSubmitting, assig
       setShowAnswerKeyUpload(false);
     }
   }, [assignmentToEdit]);
+
+  const toggleStandard = (code) => {
+    setFormData(prev => {
+      const currentStandards = prev.grading_standards || { standard_set: "NGSS (Science)", selected_codes: [] };
+      const currentCodes = currentStandards.selected_codes || [];
+      const newCodes = currentCodes.includes(code)
+        ? currentCodes.filter(c => c !== code)
+        : [...currentCodes, code];
+      
+      return {
+        ...prev,
+        grading_standards: {
+          ...currentStandards,
+          selected_codes: newCodes
+        }
+      };
+    });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -574,6 +594,63 @@ export default function AssignmentForm({ onSubmit, onCancel, isSubmitting, assig
                             {t('assignments.leniencyHelp')}
                           </p>
                         </div>
+
+                        <div className="space-y-4 pt-4 border-t border-blue-200">
+                            <Label className="text-sm font-semibold text-slate-700">Grading Standards (Optional)</Label>
+                            
+                            <div className="space-y-2">
+                                <Label className="text-xs text-slate-500">Standard Set</Label>
+                                <Select 
+                                    value={formData.grading_standards?.standard_set || "NGSS (Science)"} 
+                                    onValueChange={(val) => setFormData(prev => ({ 
+                                        ...prev, 
+                                        grading_standards: { standard_set: val, selected_codes: [] } 
+                                    }))}
+                                >
+                                    <SelectTrigger className="border-slate-300 focus:border-indigo-500 rounded-xl bg-white">
+                                        <SelectValue placeholder="Select Standards" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {Object.keys(STANDARDS_DATA).map(key => (
+                                            <SelectItem key={key} value={key}>{key}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
+                            {formData.grading_standards?.standard_set && STANDARDS_DATA[formData.grading_standards.standard_set] && (
+                                <div className="space-y-2">
+                                    <Label className="text-xs text-slate-500">Performance Expectations</Label>
+                                    <div className="flex flex-wrap gap-2">
+                                        {Object.entries(STANDARDS_DATA[formData.grading_standards.standard_set]).map(([category, standards]) => (
+                                            standards.map((std) => (
+                                                <Button
+                                                    key={std.code}
+                                                    type="button"
+                                                    variant={formData.grading_standards?.selected_codes?.includes(std.code) ? "default" : "outline"}
+                                                    onClick={() => toggleStandard(std.code)}
+                                                    className={`rounded-full transition-all ${
+                                                        formData.grading_standards?.selected_codes?.includes(std.code) 
+                                                        ? "bg-indigo-600 text-white hover:bg-indigo-700" 
+                                                        : "bg-white text-slate-600 hover:bg-slate-50 border-slate-300"
+                                                    }`}
+                                                    size="sm"
+                                                    title={std.description}
+                                                >
+                                                    {std.code}
+                                                </Button>
+                                            ))
+                                        ))}
+                                    </div>
+                                    {formData.grading_standards?.selected_codes?.length > 0 && (
+                                        <p className="text-xs text-slate-500 mt-1">
+                                            {formData.grading_standards.selected_codes.length} standard(s) selected.
+                                        </p>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+
                         {showAnswerKeyUpload && (
                           <div className="bg-white rounded-lg p-4 border border-blue-200">
                             <Label className="text-sm font-medium text-slate-700 mb-2 block">
