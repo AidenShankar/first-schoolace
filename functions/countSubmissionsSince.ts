@@ -8,13 +8,11 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Read payload (optional). Expected: { sinceDate: 'YYYY-MM-DDTHH:mm:ssZ' }
-    let sinceDate = '2026-01-11T00:00:00Z';
-    try {
-      const body = await req.json().catch(() => ({}));
-      if (body?.sinceDate) sinceDate = body.sinceDate;
-    } catch (_) {
-      // Ignore body parsing errors and use default
+    // Read payload and require sinceDate (ISO). Example for 12:00 AM PST on Jan 11: 2026-01-11T08:00:00Z
+    const body = await req.json().catch(() => ({}));
+    const sinceDate = body?.sinceDate;
+    if (!sinceDate) {
+      return Response.json({ error: 'sinceDate is required (ISO string). For 12:00 AM PST on Jan 11 use 2026-01-11T08:00:00Z.' }, { status: 400 });
     }
 
     // Efficient single query with high limit to avoid per-item counting
