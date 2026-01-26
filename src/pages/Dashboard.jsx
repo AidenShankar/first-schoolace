@@ -46,6 +46,7 @@ import LanguageSelector from "../components/i18n/LanguageSelector";
 
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { getStandardDescription } from "../components/teacher/StandardsData";
 
 export default function Dashboard({ user: layoutUser, allClasses: layoutAllClasses, isLayoutLoading }) {
     const { t } = useTranslation();
@@ -424,6 +425,15 @@ You are an expert academic grader. Your task is to grade a student's work with a
     - **Strict:** Be exacting. No partial credit unless explicitly stated in instructions. Minor errors are penalized. The final grade must precisely reflect the number of correct answers.
     - **Neutral:** Grade fairly based on the instructions. Award partial credit where it makes sense. The final grade should be a balanced reflection of the student's work.
     - **Lenient:** Focus on understanding and effort. Be generous with partial credit. Minor errors should not significantly impact the grade.
+
+${assignment.grading_standards?.selected_codes?.length > 0 ? `
+**GRADING STANDARDS (NGSS):**
+Evaluate the student's work specifically against the following performance expectations:
+${assignment.grading_standards.selected_codes.map(code => {
+    const desc = getStandardDescription(assignment.grading_standards.standard_set, code) || "";
+    return `- ${code}: ${desc}`;
+}).join('\n')}
+` : ''}
 
 - **Answer Key:** ${answerKeyContent}
 - **Student Submission:** ${fileContent}
