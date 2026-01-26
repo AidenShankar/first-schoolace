@@ -55,6 +55,7 @@ export default function AssignmentForm({ onSubmit, onCancel, isSubmitting, assig
   const [answerKeyFilename, setAnswerKeyFilename] = useState("");
   const [isGeneratingInstructions, setIsGeneratingInstructions] = useState(false);
   const [showGenerateConfirm, setShowGenerateConfirm] = useState(false);
+  const [enableGradingStandards, setEnableGradingStandards] = useState(false);
   // const [uploadingAnswerKey, setUploadingAnswerKey] = useState(false); // This state is no longer needed here
 
   useEffect(() => {
@@ -85,6 +86,13 @@ export default function AssignmentForm({ onSubmit, onCancel, isSubmitting, assig
         setAnswerKeyFilename("");
       }
       setAnswerKeyFile(null); // Clear any potentially selected new answer key file on edit load
+      
+      // Initialize grading standards toggle based on whether codes are selected
+      if (assignmentToEdit.grading_standards && assignmentToEdit.grading_standards.selected_codes?.length > 0) {
+        setEnableGradingStandards(true);
+      } else {
+        setEnableGradingStandards(false);
+      }
     } else {
       // Reset for new assignment
       setFormData(initialFormState);
@@ -92,6 +100,7 @@ export default function AssignmentForm({ onSubmit, onCancel, isSubmitting, assig
       setAnswerKeyFile(null);
       setAnswerKeyFilename("");
       setShowAnswerKeyUpload(false);
+      setEnableGradingStandards(false);
     }
   }, [assignmentToEdit]);
 
@@ -124,6 +133,10 @@ export default function AssignmentForm({ onSubmit, onCancel, isSubmitting, assig
     // Pass all data, including files to be uploaded and existing files, to the parent component.
     const dataToSubmit = {
       ...formData,
+      // If grading standards are disabled via toggle, ensure we send empty codes so AI doesn't use them
+      grading_standards: enableGradingStandards 
+        ? formData.grading_standards 
+        : { ...formData.grading_standards, selected_codes: [] },
       existing_attachments: existingAttachments, // Array of { url, name } for existing files
       answer_key_file: answerKeyFile, // The actual File object for a new/changed answer key
       // The parent component will handle the logic for `attachment_file` (new uploads),
@@ -596,59 +609,69 @@ export default function AssignmentForm({ onSubmit, onCancel, isSubmitting, assig
                         </div>
 
                         <div className="space-y-4 pt-4 border-t border-blue-200">
-                            <Label className="text-sm font-semibold text-slate-700">Grading Standards (Optional)</Label>
-                            
-                            <div className="space-y-2">
-                                <Label className="text-xs text-slate-500">Standard Set</Label>
-                                <Select 
-                                    value={formData.grading_standards?.standard_set || "NGSS (Science)"} 
-                                    onValueChange={(val) => setFormData(prev => ({ 
-                                        ...prev, 
-                                        grading_standards: { standard_set: val, selected_codes: [] } 
-                                    }))}
-                                >
-                                    <SelectTrigger className="border-slate-300 focus:border-indigo-500 rounded-xl bg-white">
-                                        <SelectValue placeholder="Select Standards" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {Object.keys(STANDARDS_DATA).map(key => (
-                                            <SelectItem key={key} value={key}>{key}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
+                            <div className="flex items-center justify-between">
+                                <Label className="text-sm font-semibold text-slate-700">Grading Standards (Optional)</Label>
+                                <Switch
+                                    checked={enableGradingStandards}
+                                    onCheckedChange={setEnableGradingStandards}
+                                />
                             </div>
-
-                            {formData.grading_standards?.standard_set && STANDARDS_DATA[formData.grading_standards.standard_set] && (
+                            
+                            <div className={`space-y-4 transition-opacity duration-200 ${enableGradingStandards ? "" : "opacity-50 pointer-events-none"}`}>
                                 <div className="space-y-2">
-                                    <Label className="text-xs text-slate-500">Performance Expectations</Label>
-                                    <div className="flex flex-wrap gap-2">
-                                        {Object.entries(STANDARDS_DATA[formData.grading_standards.standard_set]).map(([category, standards]) => (
-                                            standards.map((std) => (
-                                                <Button
-                                                    key={std.code}
-                                                    type="button"
-                                                    variant={formData.grading_standards?.selected_codes?.includes(std.code) ? "default" : "outline"}
-                                                    onClick={() => toggleStandard(std.code)}
-                                                    className={`rounded-full transition-all ${
-                                                        formData.grading_standards?.selected_codes?.includes(std.code) 
-                                                        ? "bg-indigo-600 text-white hover:bg-indigo-700" 
-                                                        : "bg-white text-slate-600 hover:bg-slate-50 border-slate-300"
-                                                    }`}
-                                                    size="sm"
-                                                    title={std.description}
-                                                >
-                                                    {std.code}
-                                                </Button>
-                                            ))
-                                        ))}
-                                    </div>
-                                    {formData.grading_standards?.selected_codes?.length > 0 && (
-                                        <p className="text-xs text-slate-500 mt-1">
-                                            {formData.grading_standards.selected_codes.length} standard(s) selected.
-                                        </p>
-                                    )}
+                                    <Label className="text-xs text-slate-500">Standard Set</Label>
+                                    <Select 
+                                        value={formData.grading_standards?.standard_set || "NGSS (Science)"} 
+                                        onValueChange={(val) => setFormData(prev => ({ 
+                                            ...prev, 
+                                            grading_standards: { standard_set: val, selected_codes: [] } 
+                                        }))}
+                                        disabled={!enableGradingStandards}
+                                    >
+                                        <SelectTrigger className="border-slate-300 focus:border-indigo-500 rounded-xl bg-white">
+                                            <SelectValue placeholder="Select Standards" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {Object.keys(STANDARDS_DATA).map(key => (
+                                                <SelectItem key={key} value={key}>{key}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
                                 </div>
-                            )}
+
+                                {formData.grading_standards?.standard_set && STANDARDS_DATA[formData.grading_standards.standard_set] && (
+                                    <div className="space-y-2">
+                                        <Label className="text-xs text-slate-500">Performance Expectations</Label>
+                                        <div className="flex flex-wrap gap-2">
+                                            {Object.entries(STANDARDS_DATA[formData.grading_standards.standard_set]).map(([category, standards]) => (
+                                                standards.map((std) => (
+                                                    <Button
+                                                        key={std.code}
+                                                        type="button"
+                                                        variant={formData.grading_standards?.selected_codes?.includes(std.code) ? "default" : "outline"}
+                                                        onClick={() => toggleStandard(std.code)}
+                                                        disabled={!enableGradingStandards}
+                                                        className={`rounded-full transition-all ${
+                                                            formData.grading_standards?.selected_codes?.includes(std.code) 
+                                                            ? "bg-indigo-600 text-white hover:bg-indigo-700" 
+                                                            : "bg-white text-slate-600 hover:bg-slate-50 border-slate-300"
+                                                        }`}
+                                                        size="sm"
+                                                        title={std.description}
+                                                    >
+                                                        {std.code}
+                                                    </Button>
+                                                ))
+                                            ))}
+                                        </div>
+                                        {formData.grading_standards?.selected_codes?.length > 0 && (
+                                            <p className="text-xs text-slate-500 mt-1">
+                                                {formData.grading_standards.selected_codes.length} standard(s) selected.
+                                            </p>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
                         </div>
 
                         {showAnswerKeyUpload && (
