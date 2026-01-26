@@ -1651,14 +1651,26 @@ You are an expert quiz question writer. Your task is to generate a set of quiz q
                 <p className="text-white/70">{t('aiAgent.subtitle')}</p>
               </div>
             </div>
-            <Button
-              onClick={() => window.location.href = createPageUrl('Dashboard')}
-              variant="ghost"
-              className="text-white/70 hover:text-white hover:bg-white/10"
-            >
-              <X className="w-5 h-5 mr-2" />
-              {t('aiAgent.closeAgent')}
-            </Button>
+            <div className="flex items-center gap-2">
+              {!hasCountedSinceJan11 && (
+                <Button
+                  onClick={handleCountSinceJan11}
+                  variant="outline"
+                  size="sm"
+                  className="text-white/80 border-white/30 hover:bg-white/10"
+                >
+                  Count Since Jan 11
+                </Button>
+              )}
+              <Button
+                onClick={() => window.location.href = createPageUrl('Dashboard')}
+                variant="ghost"
+                className="text-white/70 hover:text-white hover:bg-white/10"
+              >
+                <X className="w-5 h-5 mr-2" />
+                {t('aiAgent.closeAgent')}
+              </Button>
+            </div>
           </div>
         </div>
       </div>
