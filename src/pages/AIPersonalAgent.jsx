@@ -1529,6 +1529,10 @@ You are an expert quiz question writer. Your task is to generate a set of quiz q
           break;
         // --- END FIX ---
 
+        case 'COUNT_SINCE_JAN11':
+          await handleCountSinceJan11();
+          break;
+
         default:
           // Gracefully handle unknown actions instead of crashing
           console.error(`Unknown action target: ${action.target}`);
