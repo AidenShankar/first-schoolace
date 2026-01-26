@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { base44 } from '@/api/base44Client';
 import { Send, Loader2, Sparkles, CheckCircle, X, Plus, File, FileText, Image, BrainCircuit, Upload, GraduationCap } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
 import { InvokeLLM, UploadFile, ExtractDataFromUploadedFile } from '@/integrations/Core';
@@ -581,15 +580,6 @@ export default function ChatTutor({ user, learningData, language = 'EN' }) {
         };
         
         setConversation(prev => [...prev, userMessage]);
-        // Track query via built-in analytics (non-blocking)
-        base44.analytics.track({
-          eventName: 'personalized_learning_query',
-          properties: {
-            has_files: attachedFiles.length > 0,
-            language,
-            learning_mode: learningMode
-          }
-        });
         setInput('');
         setAttachedFiles([]);
         if (fileInputRef.current) {
