@@ -43,7 +43,7 @@ import SubmissionUpload from "../components/student/SubmissionUpload";
 import ProcessingModal from "../components/common/ProcessingModal"; // New import
 import ReactQuill from "react-quill"; // New import
 import LanguageSelector from "../components/i18n/LanguageSelector";
-import NewFeaturesBanner from "../components/dashboard/NewFeaturesBanner";
+
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 
@@ -1340,7 +1340,7 @@ Output your response as JSON with:
                                 </Dialog>
                             )}
                             </div>
-                            {user.app_role === 'teacher' && <NewFeaturesBanner />}
+
                         </div>
                     </div>
                 </div>
