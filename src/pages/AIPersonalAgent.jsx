@@ -109,7 +109,6 @@ export default function AIPersonalAgentPage() { // Renamed from AIPersonalAgent
   const [isThinking, setIsThinking] = useState(false);
   const [context, setContext] = useState({});
   const [uploadedFile, setUploadedFile] = useState(null);
-  const [hasCountedSinceJan11, setHasCountedSinceJan11] = useState(false);
   const conversationEndRef = useRef(null);
 
   // Loading screen timer (same as other tabs)
@@ -1530,10 +1529,6 @@ You are an expert quiz question writer. Your task is to generate a set of quiz q
           break;
         // --- END FIX ---
 
-        case 'COUNT_SINCE_JAN11':
-          await handleCountSinceJan11();
-          break;
-
         default:
           // Gracefully handle unknown actions instead of crashing
           console.error(`Unknown action target: ${action.target}`);
@@ -1558,36 +1553,6 @@ You are an expert quiz question writer. Your task is to generate a set of quiz q
       role: 'assistant',
       content: fileUploadMsg
     }]);
-  };
-
-  const handleCountSinceJan11 = async () => {
-    try {
-      setIsThinking(true);
-      const cutoff = '2026-01-11T08:00:00Z'; // Jan 11, 2026 12:00 AM PST
-
-      // Count across ALL submissions in the system (service role equivalent via paging)
-      let total = 0;
-      let skip = 0;
-      const limit = 100000;
-      while (true) {
-        const batch = await retryWithBackoff(() => Submission.list('-created_date', limit, skip));
-        if (!batch || batch.length === 0) break;
-        total += batch.filter(s => {
-          const submittedAt = s.submitted_at || s.data?.submitted_at;
-          return submittedAt && new Date(submittedAt).toISOString() >= cutoff;
-        }).length;
-        skip += limit;
-        if (batch.length < limit) break; // last page
-      }
-
-      const msg = await translateMessage(`Since Jan 11, 2026 (midnight PST), there are ${total} submissions across all teachers and classes.`);
-      setConversation(prev => [...prev, { role: 'assistant', content: msg }]);
-      setHasCountedSinceJan11(true);
-    } catch (error) {
-      setConversation(prev => [...prev, { role: 'assistant', content: `Counting failed: ${error.message}` }]);
-    } finally {
-      setIsThinking(false);
-    }
   };
 
   const placeholderText = user?.app_role === 'teacher'
@@ -1651,26 +1616,14 @@ You are an expert quiz question writer. Your task is to generate a set of quiz q
                 <p className="text-white/70">{t('aiAgent.subtitle')}</p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              {!hasCountedSinceJan11 && (
-                <Button
-                  onClick={handleCountSinceJan11}
-                  variant="outline"
-                  size="sm"
-                  className="text-white/80 border-white/30 hover:bg-white/10"
-                >
-                  Count Since Jan 11
-                </Button>
-              )}
-              <Button
-                onClick={() => window.location.href = createPageUrl('Dashboard')}
-                variant="ghost"
-                className="text-white/70 hover:text-white hover:bg-white/10"
-              >
-                <X className="w-5 h-5 mr-2" />
-                {t('aiAgent.closeAgent')}
-              </Button>
-            </div>
+            <Button
+              onClick={() => window.location.href = createPageUrl('Dashboard')}
+              variant="ghost"
+              className="text-white/70 hover:text-white hover:bg-white/10"
+            >
+              <X className="w-5 h-5 mr-2" />
+              {t('aiAgent.closeAgent')}
+            </Button>
           </div>
         </div>
       </div>
@@ -1706,12 +1659,6 @@ You are an expert quiz question writer. Your task is to generate a set of quiz q
                           autoExecute={action.auto_execute}
                         />
                       ))}
-                      {!hasCountedSinceJan11 && (
-                        <FuturisticButton
-                          action={{ type: 'view', label: 'Count Submissions Since Jan 11, 2026', target: 'COUNT_SINCE_JAN11' }}
-                          onExecute={() => handleCountSinceJan11()}
-                        />
-                      )}
                     </div>
                   )}
                 </div>
