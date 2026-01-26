@@ -16,6 +16,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { createPageUrl } from '@/utils';
 import { createCheckoutSession } from "@/functions/createCheckoutSession";
 import { syncSubscriptionStatus } from "@/functions/syncSubscriptionStatus";
+import { getTeacherSubmissionsCount } from "@/functions/getTeacherSubmissionsCount";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -68,6 +69,7 @@ export default function Dashboard({ user: layoutUser, allClasses: layoutAllClass
     const [isUpgrading, setIsUpgrading] = useState(false);
     const [isSyncing, setIsSyncing] = useState(false);
     const [textSubmissionState, setTextSubmissionState] = useState({ show: false, status: 'processing', message: '' });
+const [teacherCounts, setTeacherCounts] = useState(null);
 
     // Add retry logic for rate-limited requests
     const retryWithBackoff = useCallback(async (fn, maxRetries = 3, delay = 1000) => {
@@ -89,6 +91,20 @@ export default function Dashboard({ user: layoutUser, allClasses: layoutAllClass
     useEffect(() => {
         setUser(layoutUser);
     }, [layoutUser]);
+
+    useEffect(() => {
+        if (user && user.app_role === 'teacher') {
+            (async () => {
+                try {
+                    const { data, error } = await getTeacherSubmissionsCount({ teacherEmail: user.email });
+                    if (error) throw error;
+                    setTeacherCounts(data);
+                } catch (e) {
+                    console.error('Failed to load teacher submission counts:', e);
+                }
+            })();
+        }
+    }, [user]);
 
     useEffect(() => {
         setAllClasses(layoutAllClasses || []); // Always sync allClasses state with prop
@@ -1367,6 +1383,11 @@ Output your response as JSON with:
                                             <div>
                                                 <h2 className="text-3xl font-bold text-slate-900">{t('dashboard.teacherDashboard')}</h2>
                                                 <p className="text-slate-600 mt-1">{t('dashboard.teacherDescription')}</p>
+{user.app_role === 'teacher' && teacherCounts && (
+    <div className="mt-2 text-blue-100/90 text-sm font-medium">
+        Classes {teacherCounts.classesCount} • Assignments {teacherCounts.assignmentsCount} • Submissions {teacherCounts.submissionsCount}
+    </div>
+)}
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-2">
