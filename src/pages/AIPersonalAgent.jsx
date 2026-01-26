@@ -109,6 +109,7 @@ export default function AIPersonalAgentPage() { // Renamed from AIPersonalAgent
   const [isThinking, setIsThinking] = useState(false);
   const [context, setContext] = useState({});
   const [uploadedFile, setUploadedFile] = useState(null);
+  const [hasCountedSinceJan11, setHasCountedSinceJan11] = useState(false);
   const conversationEndRef = useRef(null);
 
   // Loading screen timer (same as other tabs)
