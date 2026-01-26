@@ -16,8 +16,14 @@ Deno.serve(async (req) => {
     }
 
     // Efficient single query with high limit to avoid per-item counting
+    // Validate ISO date
+    const since = new Date(sinceDate);
+    if (isNaN(since.getTime())) {
+      return Response.json({ error: 'Invalid sinceDate. Must be a valid ISO timestamp.' }, { status: 400 });
+    }
+
     const results = await base44.asServiceRole.entities.Submission.filter(
-      { submitted_at: { $gte: sinceDate } },
+      { submitted_at: { $gte: since.toISOString() } },
       '-submitted_at',
       100000
     );
