@@ -428,11 +428,19 @@ You are an expert academic grader. Your task is to grade a student's work with a
 
 ${assignment.grading_standards?.selected_codes?.length > 0 ? `
 **GRADING STANDARDS (NGSS):**
-Evaluate the student's work specifically against the following performance expectations:
+The teacher has selected specific standards to grade against. You have access to the full description of these standards below. You must evaluate the student's mastery of EACH of these specific standards:
 ${assignment.grading_standards.selected_codes.map(code => {
     const desc = getStandardDescription(assignment.grading_standards.standard_set, code) || "";
-    return `- ${code}: ${desc}`;
+    return `- ${code} (${desc})`;
 }).join('\n')}
+
+**MANDATORY FEEDBACK REQUIREMENT:**
+In your feedback response, you MUST explicitly address each selected standard individually.
+For every standard listed above, type the standard code and specific feedback on how the student met or did not meet that specific standard.
+
+Example format:
+"Regarding [Standard Code]: You successfully demonstrated..."
+"Regarding [Standard Code]: You missed the key concept of..."
 ` : ''}
 
 - **Answer Key:** ${answerKeyContent}
