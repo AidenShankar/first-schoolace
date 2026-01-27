@@ -68,22 +68,18 @@ export default function GradedWorkList({ performanceData }) {
     return (
         <div className="h-full bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden flex flex-col">
             {/* Header Section */}
-            <div className="relative p-6 bg-slate-900 shrink-0 overflow-hidden">
-                {/* Decorative Background Elements */}
-                <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 -translate-y-1/2 translate-x-1/2" />
-                <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 translate-y-1/2 -translate-x-1/2" />
-                
+            <div className="relative p-6 bg-gradient-to-r from-indigo-600 to-purple-600 shrink-0 overflow-hidden">
                 <div className="relative z-10">
-                    <div className="flex items-center gap-3 mb-3">
-                        <div className="p-2 bg-indigo-500/20 rounded-xl backdrop-blur-md border border-indigo-500/30">
-                            <Trophy className="w-5 h-5 text-indigo-300" />
+                    <div className="flex items-center gap-3 mb-2">
+                        <div className="p-2 bg-white/10 rounded-xl backdrop-blur-md border border-white/20">
+                            <FileCheck className="w-5 h-5 text-white" />
                         </div>
                         <h3 className="text-xl font-bold text-white tracking-tight">
-                            Performance History
+                            Graded Work
                         </h3>
                     </div>
-                    <p className="text-slate-400 text-sm leading-relaxed max-w-md">
-                        I analyze all your assignments and quizzes to provide personalized feedback. Here's your recent performance.
+                    <p className="text-indigo-100 text-sm leading-relaxed max-w-md">
+                        I have access to all your assignment file submissions, quiz results, and feedback, feel free to ask me anything!
                     </p>
                 </div>
             </div>
