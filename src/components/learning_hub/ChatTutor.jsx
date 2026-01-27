@@ -590,11 +590,14 @@ export default function ChatTutor({ user, learningData, language = 'EN' }) {
 
         try {
             const formattedHistory = formatConversationHistory([...conversation, userMessage]); 
-            const uploadedFilesContext = createUploadedFilesContext();
             
-            const systemPrompt = getTutorSystemPrompt(user, learningData, learningMode);
-            
-            let fullPrompt = `${systemPrompt}
+            let fullPrompt = "";
+
+            if (isPersonalizedMode) {
+                const uploadedFilesContext = createUploadedFilesContext();
+                const systemPrompt = getTutorSystemPrompt(user, learningData, learningMode);
+                
+                fullPrompt = `${systemPrompt}
 
 UPLOADED FILES CONTEXT:
 ${uploadedFilesContext || 'No files have been uploaded yet.'}
@@ -609,7 +612,17 @@ INSTRUCTIONS FOR FILE REFERENCES:
 - Always prioritize the most recently uploaded file when references are unclear
 - You can analyze, summarize, or answer questions about any uploaded file content at any time
 
-⚠️⚠️⚠️ CRITICAL MATH FORMATTING RULE - ABSOLUTELY MANDATORY ⚠️⚠️⚠️
+⚠️⚠️⚠️ CRITICAL MATH FORMATTING RULE - ABSOLUTELY MANDATORY ⚠️⚠️⚠️`;
+            } else {
+                const systemPrompt = "You are a helpful, friendly AI assistant. You can answer general questions, help with homework, and provide explanations. You DO NOT have access to the student's specific assignments, quizzes, or files. If the user asks about them, politely explain that you cannot access their personal data in this mode.";
+                
+                fullPrompt = `${systemPrompt}
+
+CONVERSATION HISTORY:
+${formattedHistory}
+
+⚠️⚠️⚠️ CRITICAL MATH FORMATTING RULE - ABSOLUTELY MANDATORY ⚠️⚠️⚠️`;
+            }
 
 BEFORE YOU WRITE YOUR RESPONSE, CHECK EVERY SINGLE WORD FOR MATH CONTENT.
 
