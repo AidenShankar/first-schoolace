@@ -11,8 +11,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { BrainCircuit, RotateCw, FileQuestion, BookOpen, X, Users } from 'lucide-react';
 import { createPageUrl } from '@/utils';
 import ChatTutor from '../components/learning_hub/ChatTutor';
-import FocusAreas from '../components/learning_hub/FocusAreas';
-import ProgressOverview from '../components/learning_hub/ProgressOverview';
+import GradedWorkList from '../components/learning_hub/GradedWorkList';
 import { Button } from "@/components/ui/button";
 import FlashcardGenerator from '../components/learning_hub/tools/FlashcardGenerator';
 import PracticeTestGenerator from '../components/learning_hub/tools/PracticeTestGenerator';
@@ -654,22 +653,14 @@ export default function PersonalizedLearning() {
                         >
                             <ChatTutor user={user} learningData={performanceData} language={language} />
                         </motion.div>
-                        <div className="lg:col-span-1 space-y-8 flex flex-col">
+                        <div className="lg:col-span-1 flex flex-col h-[600px] lg:h-auto">
                             <motion.div
-                                className="flex-1"
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
+                                className="h-full"
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
                                 transition={{ duration: 0.6, ease:"easeOut", delay: 0.3 }}
                             >
-                                <ProgressOverview performanceData={performanceData} />
-                            </motion.div>
-                            <motion.div
-                                className="flex-1"
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.6, ease:"easeOut", delay: 0.4 }}
-                            >
-                                <FocusAreas performanceData={performanceData} />
+                                <GradedWorkList performanceData={performanceData} />
                             </motion.div>
                         </div>
                     </div>
