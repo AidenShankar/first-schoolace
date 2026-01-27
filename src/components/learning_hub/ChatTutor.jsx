@@ -188,6 +188,7 @@ export default function ChatTutor({ user, learningData, language = 'EN' }) {
     const [isUploadingFile, setIsUploadingFile] = useState(false);
     const [isSavingMessage, setIsSavingMessage] = useState(false);
     const [learningMode, setLearningMode] = useState(true); // Default ON (step-by-step only)
+    const [isPersonalizedMode, setIsPersonalizedMode] = useState(true);
     const [isDragOver, setIsDragOver] = useState(false);
     const conversationEndRef = useRef(null);
     const quizRef = useRef(null);
@@ -802,14 +803,32 @@ ${JSON.stringify(response.quiz)}`;
                         </h3>
                         <p className="text-sm text-slate-500 font-medium">{t('personalizedLearning.yourPersonalTutor', language)}</p>
                     </div>
-                    {/* Learning Mode Indicator */}
-                    <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold ${
-                        learningMode 
-                            ? 'bg-purple-100 text-purple-700' 
-                            : 'bg-blue-100 text-blue-700'
-                    }`}>
-                        <GraduationCap className="w-3.5 h-3.5" />
-                        {learningMode ? t('personalizedLearning.learningMode', language) : t('personalizedLearning.solutionMode', language)}
+                    
+                    <div className="flex flex-col items-end gap-2">
+                        {/* Data Access Toggle */}
+                        <div className="flex items-center gap-2">
+                            <Label htmlFor="data-access-mode" className="text-xs font-semibold text-slate-600 cursor-pointer">
+                                {isPersonalizedMode ? "Personalized Access" : "General Chat"}
+                            </Label>
+                            <Switch 
+                                id="data-access-mode"
+                                checked={isPersonalizedMode}
+                                onCheckedChange={setIsPersonalizedMode}
+                                className="scale-75 origin-right"
+                            />
+                        </div>
+
+                        {/* Learning Mode Indicator - Only show in Personalized Mode */}
+                        {isPersonalizedMode && (
+                            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold ${
+                                learningMode 
+                                    ? 'bg-purple-100 text-purple-700' 
+                                    : 'bg-blue-100 text-blue-700'
+                            }`}>
+                                <GraduationCap className="w-3.5 h-3.5" />
+                                {learningMode ? t('personalizedLearning.learningMode', language) : t('personalizedLearning.solutionMode', language)}
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
@@ -913,47 +932,49 @@ ${JSON.stringify(response.quiz)}`;
                         multiple
                     />
                     
-                    {/* Plus Button with Dropdown */}
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <button
-                                disabled={isLoading || isUploadingFile || isSavingMessage}
-                                className="flex-shrink-0 w-12 h-12 rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 flex items-center justify-center transition-all duration-200 disabled:opacity-50 hover:scale-105 shadow-lg text-white"
-                            >
-                                <Plus className="w-5 h-5" />
-                            </button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="start" className="w-56">
-                            <DropdownMenuItem 
-                                onClick={() => fileInputRef.current?.click()}
-                                className="cursor-pointer"
-                            >
-                                <Upload className="w-4 h-4 mr-2" />
-                                {t('personalizedLearning.uploadFile', language)}
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <div className="px-2 py-3">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                        <GraduationCap className="w-4 h-4 text-purple-600" />
-                                        <Label htmlFor="learning-mode" className="text-sm font-medium cursor-pointer">
-                                            {t('personalizedLearning.learningMode', language)}
-                                        </Label>
+                    {/* Plus Button with Dropdown - Only visible in Personalized Mode */}
+                    {isPersonalizedMode && (
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <button
+                                    disabled={isLoading || isUploadingFile || isSavingMessage}
+                                    className="flex-shrink-0 w-12 h-12 rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 flex items-center justify-center transition-all duration-200 disabled:opacity-50 hover:scale-105 shadow-lg text-white"
+                                >
+                                    <Plus className="w-5 h-5" />
+                                </button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="start" className="w-56">
+                                <DropdownMenuItem 
+                                    onClick={() => fileInputRef.current?.click()}
+                                    className="cursor-pointer"
+                                >
+                                    <Upload className="w-4 h-4 mr-2" />
+                                    {t('personalizedLearning.uploadFile', language)}
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <div className="px-2 py-3">
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-2">
+                                            <GraduationCap className="w-4 h-4 text-purple-600" />
+                                            <Label htmlFor="learning-mode" className="text-sm font-medium cursor-pointer">
+                                                {t('personalizedLearning.learningMode', language)}
+                                            </Label>
+                                        </div>
+                                        <Switch 
+                                            id="learning-mode"
+                                            checked={learningMode}
+                                            onCheckedChange={setLearningMode}
+                                        />
                                     </div>
-                                    <Switch 
-                                        id="learning-mode"
-                                        checked={learningMode}
-                                        onCheckedChange={setLearningMode}
-                                    />
+                                    <p className="text-xs text-slate-500 mt-2 ml-6">
+                                        {learningMode 
+                                            ? t('personalizedLearning.learningModeDesc', language)
+                                            : t('personalizedLearning.solutionModeDesc', language)}
+                                    </p>
                                 </div>
-                                <p className="text-xs text-slate-500 mt-2 ml-6">
-                                    {learningMode 
-                                        ? t('personalizedLearning.learningModeDesc', language)
-                                        : t('personalizedLearning.solutionModeDesc', language)}
-                                </p>
-                            </div>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    )}
 
                     <div className="flex-1 relative">
                         <Textarea
