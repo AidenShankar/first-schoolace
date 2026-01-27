@@ -593,37 +593,7 @@ export default function ChatTutor({ user, learningData, language = 'EN' }) {
             
             let fullPrompt = "";
 
-            if (isPersonalizedMode) {
-                const uploadedFilesContext = createUploadedFilesContext();
-                const systemPrompt = getTutorSystemPrompt(user, learningData, learningMode);
-                
-                fullPrompt = `${systemPrompt}
-
-UPLOADED FILES CONTEXT:
-${uploadedFilesContext || 'No files have been uploaded yet.'}
-
-CONVERSATION HISTORY:
-${formattedHistory}
-
-INSTRUCTIONS FOR FILE REFERENCES:
-- You have access to all uploaded files throughout this entire conversation
-- When a student references "the file I uploaded" or asks about file content, refer to the UPLOADED FILES CONTEXT above
-- If multiple files are available and the reference is ambiguous, ask for clarification
-- Always prioritize the most recently uploaded file when references are unclear
-- You can analyze, summarize, or answer questions about any uploaded file content at any time
-
-⚠️⚠️⚠️ CRITICAL MATH FORMATTING RULE - ABSOLUTELY MANDATORY ⚠️⚠️⚠️`;
-            } else {
-                const systemPrompt = "You are a helpful, friendly AI assistant. You can answer general questions, help with homework, and provide explanations. You DO NOT have access to the student's specific assignments, quizzes, or files. If the user asks about them, politely explain that you cannot access their personal data in this mode.";
-                
-                fullPrompt = `${systemPrompt}
-
-CONVERSATION HISTORY:
-${formattedHistory}
-
-⚠️⚠️⚠️ CRITICAL MATH FORMATTING RULE - ABSOLUTELY MANDATORY ⚠️⚠️⚠️`;
-            }
-
+            const MATH_RULES = `
 BEFORE YOU WRITE YOUR RESPONSE, CHECK EVERY SINGLE WORD FOR MATH CONTENT.
 
 **GOLDEN RULE:** If it's a number, variable, equation, or contains ANY mathematical notation → WRAP IT IN DOLLAR SIGNS
@@ -672,6 +642,39 @@ When analyzing uploaded images containing math:
 TRIPLE-CHECK YOUR RESPONSE: Before finalizing, scan for ANY mathematical notation and ensure it's wrapped in $ or $$.
 
 Please respond to the student's latest message, maintaining full conversation context and file access.`;
+
+            if (isPersonalizedMode) {
+                const uploadedFilesContext = createUploadedFilesContext();
+                const systemPrompt = getTutorSystemPrompt(user, learningData, learningMode);
+                
+                fullPrompt = `${systemPrompt}
+
+UPLOADED FILES CONTEXT:
+${uploadedFilesContext || 'No files have been uploaded yet.'}
+
+CONVERSATION HISTORY:
+${formattedHistory}
+
+INSTRUCTIONS FOR FILE REFERENCES:
+- You have access to all uploaded files throughout this entire conversation
+- When a student references "the file I uploaded" or asks about file content, refer to the UPLOADED FILES CONTEXT above
+- If multiple files are available and the reference is ambiguous, ask for clarification
+- Always prioritize the most recently uploaded file when references are unclear
+- You can analyze, summarize, or answer questions about any uploaded file content at any time
+
+⚠️⚠️⚠️ CRITICAL MATH FORMATTING RULE - ABSOLUTELY MANDATORY ⚠️⚠️⚠️
+${MATH_RULES}`;
+            } else {
+                const systemPrompt = "You are a helpful, friendly AI assistant. You can answer general questions, help with homework, and provide explanations. You DO NOT have access to the student's specific assignments, quizzes, or files. If the user asks about them, politely explain that you cannot access their personal data in this mode.";
+                
+                fullPrompt = `${systemPrompt}
+
+CONVERSATION HISTORY:
+${formattedHistory}
+
+⚠️⚠️⚠️ CRITICAL MATH FORMATTING RULE - ABSOLUTELY MANDATORY ⚠️⚠️⚠️
+${MATH_RULES}`;
+            }
 
             const allFileUrls = isPersonalizedMode ? uploadedFiles
                 .filter(file => file.file_url && !file.error)
