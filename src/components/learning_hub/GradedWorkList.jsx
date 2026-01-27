@@ -1,9 +1,57 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { FileCheck, CheckCircle2, Trophy, ArrowRight } from 'lucide-react';
+import { FileCheck, Trophy, Calendar, FileText, BrainCircuit } from 'lucide-react';
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
+
+const CircularScore = ({ percentage, size = 60, strokeWidth = 4 }) => {
+    const radius = (size - strokeWidth) / 2;
+    const circumference = radius * 2 * Math.PI;
+    const offset = circumference - (percentage / 100) * circumference;
+    
+    // Color determination
+    let colorClass = "text-emerald-500";
+    if (percentage < 60) colorClass = "text-red-500";
+    else if (percentage < 80) colorClass = "text-amber-500";
+    else if (percentage < 90) colorClass = "text-blue-500";
+
+    return (
+        <div className="relative flex items-center justify-center" style={{ width: size, height: size }}>
+            {/* Background Circle */}
+            <svg className="w-full h-full transform -rotate-90">
+                <circle
+                    cx={size / 2}
+                    cy={size / 2}
+                    r={radius}
+                    stroke="currentColor"
+                    strokeWidth={strokeWidth}
+                    fill="transparent"
+                    className="text-slate-100"
+                />
+                {/* Progress Circle */}
+                <motion.circle
+                    initial={{ strokeDashoffset: circumference }}
+                    animate={{ strokeDashoffset: offset }}
+                    transition={{ duration: 1, ease: "easeOut" }}
+                    cx={size / 2}
+                    cy={size / 2}
+                    r={radius}
+                    stroke="currentColor"
+                    strokeWidth={strokeWidth}
+                    fill="transparent"
+                    strokeDasharray={circumference}
+                    strokeLinecap="round"
+                    className={colorClass}
+                />
+            </svg>
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <span className={cn("text-sm font-bold", colorClass)}>
+                    {percentage}%
+                </span>
+            </div>
+        </div>
+    );
+};
 
 export default function GradedWorkList({ performanceData }) {
     if (!performanceData) return null;
@@ -18,87 +66,100 @@ export default function GradedWorkList({ performanceData }) {
     ].sort((a, b) => new Date(b.submitted_at) - new Date(a.submitted_at));
 
     return (
-        <Card className="h-full bg-white/80 backdrop-blur-xl border-indigo-100 shadow-xl overflow-hidden flex flex-col">
-            <div className="p-6 bg-gradient-to-br from-indigo-600 to-purple-700 text-white shrink-0 relative overflow-hidden">
-                <div className="absolute top-0 right-0 p-4 opacity-10">
-                    <Trophy className="w-24 h-24" />
-                </div>
+        <div className="h-full bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden flex flex-col">
+            {/* Header Section */}
+            <div className="relative p-6 bg-slate-900 shrink-0 overflow-hidden">
+                {/* Decorative Background Elements */}
+                <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 -translate-y-1/2 translate-x-1/2" />
+                <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 translate-y-1/2 -translate-x-1/2" />
+                
                 <div className="relative z-10">
-                    <h3 className="text-xl font-bold flex items-center gap-2">
-                        <FileCheck className="w-5 h-5" />
-                        Graded Work
-                    </h3>
-                    <p className="text-indigo-100 text-sm mt-2 leading-relaxed">
-                        I have access to all your assignment file submissions, quiz results, and feedback, feel free to ask me anything!
+                    <div className="flex items-center gap-3 mb-3">
+                        <div className="p-2 bg-indigo-500/20 rounded-xl backdrop-blur-md border border-indigo-500/30">
+                            <Trophy className="w-5 h-5 text-indigo-300" />
+                        </div>
+                        <h3 className="text-xl font-bold text-white tracking-tight">
+                            Performance History
+                        </h3>
+                    </div>
+                    <p className="text-slate-400 text-sm leading-relaxed max-w-md">
+                        I analyze all your assignments and quizzes to provide personalized feedback. Here's your recent performance.
                     </p>
                 </div>
             </div>
 
-            <ScrollArea className="flex-1 p-4">
-                <div className="space-y-3">
+            {/* List Section */}
+            <ScrollArea className="flex-1 bg-slate-50/50">
+                <div className="p-4 space-y-3">
                     {allWork.length === 0 ? (
-                        <div className="text-center py-8 text-slate-500">
-                            <p>No graded work yet.</p>
+                        <div className="flex flex-col items-center justify-center h-48 text-center">
+                            <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-4">
+                                <FileCheck className="w-8 h-8 text-slate-300" />
+                            </div>
+                            <p className="text-slate-500 font-medium">No graded work yet</p>
+                            <p className="text-slate-400 text-sm mt-1">Complete assignments to see them here</p>
                         </div>
                     ) : (
                         allWork.map((work, index) => (
                             <motion.div
                                 key={`${work.type}-${index}`}
-                                initial={{ opacity: 0, x: -20 }}
-                                animate={{ opacity: 1, x: 0 }}
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: index * 0.05 }}
-                                className="group relative bg-white border border-slate-100 rounded-xl p-4 hover:shadow-md hover:border-indigo-200 transition-all duration-300"
+                                className="group relative bg-white hover:bg-white rounded-2xl p-4 transition-all duration-300 hover:shadow-lg border border-slate-200/60 hover:border-indigo-200"
                             >
-                                <div className="flex justify-between items-start gap-4">
-                                    <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-4">
+                                    {/* Icon Box */}
+                                    <div className={cn(
+                                        "w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 transition-colors",
+                                        work.type === 'quiz' 
+                                            ? "bg-purple-50 text-purple-600 group-hover:bg-purple-100" 
+                                            : "bg-blue-50 text-blue-600 group-hover:bg-blue-100"
+                                    )}>
+                                        {work.type === 'quiz' ? (
+                                            <BrainCircuit className="w-6 h-6" />
+                                        ) : (
+                                            <FileText className="w-6 h-6" />
+                                        )}
+                                    </div>
+
+                                    {/* Content */}
+                                    <div className="flex-1 min-w-0 py-1">
                                         <div className="flex items-center gap-2 mb-1">
-                                            <Badge variant="outline" className={`
-                                                text-[10px] uppercase tracking-wider font-bold
-                                                ${work.type === 'quiz' 
-                                                    ? 'bg-purple-50 text-purple-600 border-purple-200' 
-                                                    : 'bg-blue-50 text-blue-600 border-blue-200'}
-                                            `}>
+                                            <span className={cn(
+                                                "text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-full",
+                                                work.type === 'quiz' 
+                                                    ? "bg-purple-100 text-purple-700" 
+                                                    : "bg-blue-100 text-blue-700"
+                                            )}>
                                                 {work.type}
-                                            </Badge>
-                                            <span className="text-xs text-slate-400">
-                                                {work.submitted_at ? new Date(work.submitted_at).toLocaleDateString() : ''}
+                                            </span>
+                                            <span className="flex items-center text-xs text-slate-400 font-medium">
+                                                <Calendar className="w-3 h-3 mr-1" />
+                                                {work.submitted_at ? new Date(work.submitted_at).toLocaleDateString() : 'No date'}
                                             </span>
                                         </div>
-                                        <h4 className="font-semibold text-slate-800 truncate pr-2 group-hover:text-indigo-700 transition-colors">
+                                        <h4 className="font-bold text-slate-900 truncate group-hover:text-indigo-600 transition-colors text-base">
                                             {work.title}
                                         </h4>
-                                        <div className="text-xs text-slate-500 mt-1 truncate">
+                                        <p className="text-xs text-slate-500 truncate mt-0.5 font-medium">
                                             {work.subject}
-                                        </div>
+                                        </p>
                                     </div>
-                                    
-                                    <div className="flex flex-col items-end shrink-0">
-                                        <div className="flex items-center gap-1.5">
-                                            <span className={`text-lg font-bold ${
-                                                work.percentage >= 90 ? 'text-emerald-600' :
-                                                work.percentage >= 80 ? 'text-blue-600' :
-                                                work.percentage >= 70 ? 'text-indigo-600' :
-                                                'text-amber-600'
-                                            }`}>
-                                                {work.percentage}%
-                                            </span>
-                                            {work.percentage >= 90 && (
-                                                <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                                            )}
-                                        </div>
-                                        <span className="text-xs text-slate-400 font-medium bg-slate-50 px-2 py-0.5 rounded-full mt-1">
+
+                                    {/* Score */}
+                                    <div className="shrink-0 flex flex-col items-end gap-1 pl-2">
+                                        <CircularScore percentage={work.percentage} />
+                                        <span className="text-[10px] font-medium text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full mt-1">
                                             {work.score_display}
                                         </span>
                                     </div>
                                 </div>
-                                
-                                {/* Hover Effect Indicator */}
-                                <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-indigo-500 to-purple-600 rounded-l-xl opacity-0 group-hover:opacity-100 transition-opacity" />
                             </motion.div>
                         ))
                     )}
                 </div>
             </ScrollArea>
-        </Card>
+        </div>
     );
 }
