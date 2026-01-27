@@ -653,7 +653,7 @@ export default function PersonalizedLearning() {
                         >
                             <ChatTutor user={user} learningData={performanceData} language={language} />
                         </motion.div>
-                        <div className="lg:col-span-1 flex flex-col h-[600px] lg:h-auto">
+                        <div className="lg:col-span-1 flex flex-col h-[80vh]">
                             <motion.div
                                 className="h-full"
                                 initial={{ opacity: 0, x: 20 }}
