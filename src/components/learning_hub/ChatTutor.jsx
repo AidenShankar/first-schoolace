@@ -673,9 +673,9 @@ TRIPLE-CHECK YOUR RESPONSE: Before finalizing, scan for ANY mathematical notatio
 
 Please respond to the student's latest message, maintaining full conversation context and file access.`;
 
-            const allFileUrls = uploadedFiles
+            const allFileUrls = isPersonalizedMode ? uploadedFiles
                 .filter(file => file.file_url && !file.error)
-                .map(file => file.file_url);
+                .map(file => file.file_url) : [];
 
             const response = await InvokeLLM({
                 prompt: fullPrompt,
