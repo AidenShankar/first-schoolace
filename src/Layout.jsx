@@ -437,11 +437,8 @@ export default function Layout({ children, currentPageName }) {
           }
           const targetClassId = targetClass?.id;
           
-          const TEACHER_ONLY_PREFIXES = ['CREATE_', 'DELETE_', 'RELEASE_', 'REOPEN_', 'CLOSE_', 'SEND_CHAT_TO_ALL_'];
-          const isRestrictedAction = TEACHER_ONLY_PREFIXES.some(prefix => action.target.startsWith(prefix));
-
-          if (isRestrictedAction && user?.app_role !== 'teacher') {
-            throw new Error(`Access Denied: You must be a teacher to perform the action "${action.label || action.target.replace(/_/g, ' ')}".`);
+          if (action.target.startsWith('CREATE') && user?.app_role !== 'teacher') {
+            throw new Error("You must be a teacher to perform creation actions.");
           }
 
           switch (action.target) {
