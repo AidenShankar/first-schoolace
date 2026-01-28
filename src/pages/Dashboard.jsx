@@ -175,32 +175,30 @@ export default function Dashboard({ user: layoutUser, allClasses: layoutAllClass
             // Add a small delay before loading submissions
             await new Promise(resolve => setTimeout(resolve, 300));
             
+            // Fetch assignments for the current class to scope the submission query
+            const classAssignments = await retryWithBackoff(() => 
+                Assignment.filter({ class_id: currentClass.id }, "-created_date", 100)
+            );
+            const assignmentIds = classAssignments.map(a => a.id);
+
+            if (assignmentIds.length === 0) {
+                setSubmissions([]);
+                return;
+            }
+
             if (user.app_role === "teacher") {
-                // Load all submissions up to a limit, then filter by current class assignments
-                const allSubmissionsData = await retryWithBackoff(() => 
-                    Submission.list("-created_date", 500)
-                );
-                const classAssignments = await retryWithBackoff(() => 
-                    Assignment.filter({ class_id: currentClass.id }, "-created_date", 100)
-                );
-                const assignmentIds = new Set(classAssignments.map(a => a.id)); // Use Set for faster lookup
-                
-                const classSubmissions = allSubmissionsData.filter(submission => 
-                    assignmentIds.has(submission.assignment_id)
+                // Load submissions specifically for these assignments with a higher limit
+                const classSubmissions = await retryWithBackoff(() => 
+                    Submission.filter({ assignment_id: { $in: assignmentIds } }, "-created_date", 2000)
                 );
                 setSubmissions(classSubmissions);
             } else {
-                // Load all submissions for this student up to a limit, then filter by current class assignments
-                const allUserSubmissions = await retryWithBackoff(() => 
-                    Submission.filter({ student_id: user.id }, "-created_date", 200)
-                );
-                const classAssignments = await retryWithBackoff(() => 
-                    Assignment.filter({ class_id: currentClass.id }, "-created_date", 100)
-                );
-                const assignmentIds = new Set(classAssignments.map(a => a.id)); // Use Set for faster lookup
-                
-                const userClassSubmissions = allUserSubmissions.filter(submission => 
-                    assignmentIds.has(submission.assignment_id)
+                // Load submissions for this student within these assignments
+                const userClassSubmissions = await retryWithBackoff(() => 
+                    Submission.filter({ 
+                        student_id: user.id, 
+                        assignment_id: { $in: assignmentIds } 
+                    }, "-created_date", 500)
                 );
                 setSubmissions(userClassSubmissions);
             }
