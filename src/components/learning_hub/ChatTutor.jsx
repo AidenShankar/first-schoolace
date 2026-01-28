@@ -997,7 +997,21 @@ ${JSON.stringify(response.quiz)}`;
                         </button>
                     </div>
                 </div>
-                <p className="text-xs text-slate-400 text-center font-medium">{t('personalizedLearning.aiDisclaimer', language)}</p>
+                <div className="flex justify-between items-center px-1 pt-1">
+                    <p className="text-xs text-slate-400 font-medium">{t('personalizedLearning.aiDisclaimer', language)}</p>
+                    
+                    <div className="flex items-center gap-2">
+                        <Label htmlFor="data-access-mode-footer" className="text-xs font-semibold text-slate-400 cursor-pointer hover:text-slate-600 transition-colors">
+                            {isPersonalizedMode ? "Personalized Access" : "General Chat"}
+                        </Label>
+                        <Switch 
+                            id="data-access-mode-footer"
+                            checked={isPersonalizedMode}
+                            onCheckedChange={setIsPersonalizedMode}
+                            className="scale-75 origin-right data-[state=checked]:bg-purple-500"
+                        />
+                    </div>
+                </div>
             </div>
         </div>
     );
