@@ -844,7 +844,7 @@ function LayoutContent({
             ? "bg-black border-slate-800 backdrop-blur-xl border-b sticky top-0 z-40" 
             : `bg-white/80 border-slate-200/60 backdrop-blur-xl border-b z-40 ${isPersonalizedLearning ? 'relative' : 'sticky top-0'}`
         }>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className={`mx-auto px-4 sm:px-6 lg:px-8 ${isPersonalizedLearning ? 'max-w-[1600px]' : 'max-w-7xl'}`}>
             <div className="flex justify-between items-center h-16">
               <Link to={createPageUrl("Dashboard")} className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
