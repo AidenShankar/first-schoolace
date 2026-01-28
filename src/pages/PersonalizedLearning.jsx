@@ -645,9 +645,9 @@ export default function PersonalizedLearning() {
                 )}
 
                 {!error && user && performanceData && (
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
                         <motion.div
-                            className={isPersonalizedMode ? "lg:col-span-2" : "lg:col-span-3"}
+                            className={isPersonalizedMode ? "lg:col-span-3" : "lg:col-span-4"}
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.6, ease:"easeOut", delay: 0.2 }}
