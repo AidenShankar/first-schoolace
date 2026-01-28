@@ -814,22 +814,37 @@ ${JSON.stringify(response.quiz)}`;
                         <BrainCircuit size={24} />
                     </div>
                     <div className="flex-1">
-                        <div className="flex items-center gap-3">
-                            <h3 className="text-xl font-semibold text-slate-900 tracking-tight">
-                                {t('personalizedLearning.chatWithAce', language)}
-                            </h3>
-                            {isPersonalizedMode && (
-                                <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${
-                                    learningMode 
-                                        ? 'bg-purple-50 text-purple-700 border-purple-200' 
-                                        : 'bg-blue-50 text-blue-700 border-blue-200'
-                                }`}>
-                                    <GraduationCap className="w-3 h-3" />
-                                    {learningMode ? "Tutor Mode" : "Solution Mode"}
-                                </div>
-                            )}
-                        </div>
+                        <h3 className="text-xl font-semibold text-slate-900 tracking-tight">
+                            {t('personalizedLearning.chatWithAce', language)}
+                        </h3>
                         <p className="text-sm text-slate-500 font-medium">{t('personalizedLearning.yourPersonalTutor', language)}</p>
+                    </div>
+                    
+                    <div className="flex flex-col items-end gap-2">
+                        {/* Data Access Toggle */}
+                        <div className="flex items-center gap-2">
+                            <Label htmlFor="data-access-mode" className="text-xs font-semibold text-slate-600 cursor-pointer">
+                                {isPersonalizedMode ? "Personalized Access" : "General Chat"}
+                            </Label>
+                            <Switch 
+                                id="data-access-mode"
+                                checked={isPersonalizedMode}
+                                onCheckedChange={setIsPersonalizedMode}
+                                className="scale-75 origin-right"
+                            />
+                        </div>
+
+                        {/* Learning Mode Indicator - Only show in Personalized Mode */}
+                        {isPersonalizedMode && (
+                            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold ${
+                                learningMode 
+                                    ? 'bg-purple-100 text-purple-700' 
+                                    : 'bg-blue-100 text-blue-700'
+                            }`}>
+                                <GraduationCap className="w-3.5 h-3.5" />
+                                {learningMode ? t('personalizedLearning.learningMode', language) : t('personalizedLearning.solutionMode', language)}
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
@@ -924,20 +939,6 @@ ${JSON.stringify(response.quiz)}`;
             )}
                 
                 <div className="relative flex items-end gap-3">
-                    <div className="flex flex-col justify-end pb-3">
-                        <div className="flex items-center gap-2 bg-slate-100 rounded-full p-1 pr-3 border border-slate-200 hover:border-purple-300 transition-colors cursor-pointer group" onClick={() => setIsPersonalizedMode(!isPersonalizedMode)}>
-                             <Switch 
-                                id="footer-data-access-mode"
-                                checked={isPersonalizedMode}
-                                onCheckedChange={setIsPersonalizedMode}
-                                className="scale-75 data-[state=checked]:bg-purple-500 group-hover:data-[state=checked]:bg-purple-600"
-                            />
-                            <Label htmlFor="footer-data-access-mode" className="text-[10px] font-bold uppercase tracking-wider text-slate-500 cursor-pointer select-none group-hover:text-purple-600 transition-colors">
-                                {isPersonalizedMode ? "Personalized" : "General"}
-                            </Label>
-                        </div>
-                    </div>
-
                     <input
                         type="file"
                         ref={fileInputRef}
