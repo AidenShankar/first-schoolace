@@ -820,19 +820,6 @@ ${JSON.stringify(response.quiz)}`;
                     </div>
                     
                     <div className="flex flex-col items-end gap-2">
-                        {/* Data Access Toggle */}
-                        <div className="flex items-center gap-2">
-                            <Label htmlFor="data-access-mode" className="text-xs font-semibold text-slate-600 cursor-pointer">
-                                {isPersonalizedMode ? "Personalized Access" : "General Chat"}
-                            </Label>
-                            <Switch 
-                                id="data-access-mode"
-                                checked={isPersonalizedMode}
-                                onCheckedChange={setIsPersonalizedMode}
-                                className="scale-75 origin-right"
-                            />
-                        </div>
-
                         {/* Learning Mode Indicator - Only show in Personalized Mode */}
                         {isPersonalizedMode && (
                             <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold ${
