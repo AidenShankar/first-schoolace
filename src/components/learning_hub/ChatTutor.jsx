@@ -793,8 +793,7 @@ ${JSON.stringify(response.quiz)}`;
 
     return (
         <div 
-            className={`bg-white backdrop-blur-xl border rounded-3xl shadow-xl flex flex-col h-[80vh] hover:shadow-2xl transition-all duration-500 w-[900px] ${isDragOver ? 'border-purple-500 ring-4 ring-purple-500/20' : 'border-slate-100'}`} 
-            style={{transform: 'translateX(-100px)'}}
+            className={`bg-white backdrop-blur-xl border rounded-3xl shadow-xl flex flex-col h-[80vh] hover:shadow-2xl transition-all duration-500 w-full ${isDragOver ? 'border-purple-500 ring-4 ring-purple-500/20' : 'border-slate-100'}`} 
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
