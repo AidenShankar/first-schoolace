@@ -831,6 +831,22 @@ ${JSON.stringify(response.quiz)}`;
                                 {learningMode ? t('personalizedLearning.learningMode', language) : t('personalizedLearning.solutionMode', language)}
                             </div>
                         )}
+                        
+                        {/* Data Access Toggle */}
+                        <div className="flex items-center gap-2">
+                            <Label 
+                                htmlFor="data-access-mode" 
+                                className={`text-xs font-bold cursor-pointer select-none transition-colors ${isPersonalizedMode ? 'text-slate-700' : 'text-slate-400'}`}
+                            >
+                                Personalized Access
+                            </Label>
+                            <Switch 
+                                id="data-access-mode"
+                                checked={isPersonalizedMode}
+                                onCheckedChange={setIsPersonalizedMode}
+                                className="scale-75 origin-right data-[state=checked]:bg-purple-500"
+                            />
+                        </div>
                     </div>
                 </div>
             </div>
@@ -997,26 +1013,7 @@ ${JSON.stringify(response.quiz)}`;
                         </button>
                     </div>
                 </div>
-                <div className="relative flex items-center justify-center pt-2">
-                    <p className="text-xs text-slate-400 font-medium text-center w-full">
-                        {t('personalizedLearning.aiDisclaimer', language)}
-                    </p>
-                    
-                    <div className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center gap-3 bg-white/50 backdrop-blur-sm pl-2">
-                        <Label 
-                            htmlFor="data-access-mode-footer" 
-                            className={`text-xs font-bold cursor-pointer select-none transition-colors ${isPersonalizedMode ? 'text-slate-700' : 'text-slate-400'}`}
-                        >
-                            Personalized Access
-                        </Label>
-                        <Switch 
-                            id="data-access-mode-footer"
-                            checked={isPersonalizedMode}
-                            onCheckedChange={setIsPersonalizedMode}
-                            className="data-[state=checked]:bg-purple-500"
-                        />
-                    </div>
-                </div>
+                <p className="text-xs text-slate-400 text-center font-medium pt-2">{t('personalizedLearning.aiDisclaimer', language)}</p>
             </div>
         </div>
     );
