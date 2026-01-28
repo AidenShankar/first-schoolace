@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Loader2, Sparkles } from 'lucide-react';
-import { InvokeLLM, UploadFile, ExtractDataFromUploadedFile } from '@/integrations/Core';
+import { UploadFile, ExtractDataFromUploadedFile } from '@/integrations/Core';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import MarkdownOutput from './outputs/MarkdownOutput';
 import WorksheetOutput from './outputs/WorksheetOutput';
 import FileUpload from './inputs/FileUpload';
 import { useTranslation } from '../i18n/useTranslation';
+import { base44 } from '@/api/base44Client';
 
 export default function ToolRunner({ tool }) {
     const { t, language } = useTranslation();
@@ -38,8 +39,6 @@ export default function ToolRunner({ tool }) {
     // Handles changes to form inputs, including standard inputs, selects, and file inputs
     const handleInputChange = (id, value) => {
         // Checks if the 'value' is an event object from a file input (e.g., <input type="file" />)
-        // Note: The new FileUpload component will directly pass the File object,
-        // so this specific FileList check might become less common for new file inputs.
         if (value && typeof value === 'object' && 'target' in value && value.target && value.target.files instanceof FileList) {
             setFormState(prev => ({ ...prev, [id]: value.target.files[0] || null }));
         } 
@@ -61,12 +60,7 @@ export default function ToolRunner({ tool }) {
 
         try {
             let currentFormState = { ...formState }; // Create a mutable copy of the form state for processing
-
-            let llmPayload = {
-                prompt: '',
-                add_context_from_internet: false, // Default to false
-                file_urls: [],
-            };
+            let file_urls = [];
 
             // Identify if there's a file input field with a selected File object in the form state
             const fileInputId = inputSchema.find(f => currentFormState[f.id] instanceof File)?.id;
@@ -99,9 +93,7 @@ export default function ToolRunner({ tool }) {
                         }
                     } else {
                         // For other tools, add the file URL to the LLM payload
-                        llmPayload.file_urls.push(file_url);
-                        // Disable internet context if a file is uploaded for other tools too
-                        llmPayload.add_context_from_internet = false; 
+                        file_urls.push(file_url);
                     }
                 } catch (uploadError) {
                     console.error("File processing failed:", uploadError);
@@ -111,14 +103,6 @@ export default function ToolRunner({ tool }) {
                 }
             }
             
-            // If no file was uploaded and the tool allows it, enable internet context
-            if (!uploadedFileUrl && tool.useInternetContext) {
-                llmPayload.add_context_from_internet = true;
-            }
-
-            // Construct the prompt using the (potentially updated) form state
-            llmPayload.prompt = tool.promptTemplate(currentFormState);
-
             // Specific validation for the 'ai-detector' tool after file processing
             if (tool.id === 'ai-detector' && !currentFormState.text_content?.trim() && !uploadedFileUrl) {
                 setOutput({ type: 'error', content: 'Please provide text to analyze either by pasting it in the text area or uploading a document.' });
@@ -126,30 +110,21 @@ export default function ToolRunner({ tool }) {
                 return;
             }
 
-            // Invoke the LLM with the prepared payload
-            let result = await InvokeLLM(llmPayload);
-            
-            // Translate output if language is not English
-            if (language !== 'EN' && result) {
-                setIsTranslating(true);
-                const languageNames = {
-                    ES: 'Spanish',
-                    ZH: 'Chinese (Simplified)',
-                    KO: 'Korean',
-                    FR: 'French'
-                };
-                const targetLang = languageNames[language] || 'English';
-                
-                const translationResult = await InvokeLLM({
-                    prompt: `Translate the following text to ${targetLang}. Keep all markdown formatting intact. Only translate, do not add any commentary or explanations:\n\n${result}`
-                });
-                result = translationResult;
-                setIsTranslating(false);
+            // Call the backend function
+            const { data, error } = await base44.functions.invoke('runAITool', {
+                toolId: tool.id,
+                inputs: currentFormState,
+                file_urls: file_urls,
+                language: language
+            });
+
+            if (error) {
+                throw new Error(error.response?.data?.error || "Unknown error from backend");
             }
             
-            setOutput({ type: 'success', content: result }); // Set successful output
+            setOutput({ type: 'success', content: data.result }); // Set successful output
         } catch (error) {
-            console.error("LLM Invocation failed:", error);
+            console.error("AI Tool Generation failed:", error);
             
             // Provide more user-friendly error messages based on the error type
             let errorMessage = 'An error occurred while generating the response.';
@@ -159,6 +134,8 @@ export default function ToolRunner({ tool }) {
                 errorMessage = 'The AI service is temporarily unavailable. Please try again later.';
             } else if (error.message?.includes('too large')) {
                 errorMessage = 'The content is too large to process. Please try with a smaller file or shorter text.';
+            } else {
+                 errorMessage = error.message || 'An unexpected error occurred.';
             }
             
             setOutput({ type: 'error', content: errorMessage }); // Set error output
