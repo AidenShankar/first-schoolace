@@ -244,6 +244,7 @@ export default function Layout({ children, currentPageName }) {
   const isAPExamSchedulePage = currentPageName === 'APExamSchedule';
   const isExampleLearningTrackerPage = currentPageName === 'examplelearningtracker';
   const isLearnerDashboard = currentPageName === 'LearnerDashboard';
+  const isPersonalizedLearning = currentPageName === 'PersonalizedLearning';
 
   const handleSyncClick = async () => {
     setIsSyncing(true);
@@ -837,7 +838,11 @@ function LayoutContent({
 
       {/* Header - Conditionally render based on page */}
       {!isLandingPage && !isCompliancePage && !isDemoPage && !isAPExamSchedulePage && (
-        <header className={isLearnerDashboard ? "bg-black border-slate-800 backdrop-blur-xl border-b sticky top-0 z-40" : "bg-white/80 border-slate-200/60 backdrop-blur-xl border-b sticky top-0 z-40"}>
+        <header className={
+          isLearnerDashboard 
+            ? "bg-black border-slate-800 backdrop-blur-xl border-b sticky top-0 z-40" 
+            : `bg-white/80 border-slate-200/60 backdrop-blur-xl border-b z-40 ${isPersonalizedLearning ? 'relative' : 'sticky top-0'}`
+        }>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-16">
               <Link to={createPageUrl("Dashboard")} className="flex items-center space-x-3">

@@ -833,10 +833,14 @@ ${JSON.stringify(response.quiz)}`;
                         )}
                         
                         {/* Data Access Toggle */}
-                        <div className="flex items-center gap-2">
+                        <div className={`flex items-center gap-2 pl-3 pr-1 py-1 rounded-full border transition-all duration-300 ${
+                            isPersonalizedMode 
+                                ? 'bg-indigo-50 border-indigo-200 shadow-sm' 
+                                : 'bg-slate-50 border-slate-200'
+                        }`}>
                             <Label 
                                 htmlFor="data-access-mode" 
-                                className={`text-xs font-bold cursor-pointer select-none transition-colors ${isPersonalizedMode ? 'text-slate-700' : 'text-slate-400'}`}
+                                className={`text-xs font-bold cursor-pointer select-none transition-colors ${isPersonalizedMode ? 'text-indigo-700' : 'text-slate-500'}`}
                             >
                                 Personalized Access
                             </Label>
@@ -844,7 +848,7 @@ ${JSON.stringify(response.quiz)}`;
                                 id="data-access-mode"
                                 checked={isPersonalizedMode}
                                 onCheckedChange={setIsPersonalizedMode}
-                                className="scale-75 origin-right data-[state=checked]:bg-purple-500"
+                                className="scale-75 data-[state=checked]:bg-indigo-500"
                             />
                         </div>
                     </div>
