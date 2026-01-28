@@ -187,25 +187,12 @@ export default function ChatTutor({ user, learningData, language = 'EN', isPerso
     const [uploadedFiles, setUploadedFiles] = useState([]); 
     const [isUploadingFile, setIsUploadingFile] = useState(false);
     const [isSavingMessage, setIsSavingMessage] = useState(false);
-    const [learningMode, setLearningMode] = useState(true); // Default ON (step-by-step only)
+    const [learningMode, setLearningMode] = useState(false); // Default OFF (Solution Mode)
     const [isDragOver, setIsDragOver] = useState(false);
     const conversationEndRef = useRef(null);
     const quizRef = useRef(null);
     const fileInputRef = useRef(null);
     const prevConversationLengthRef = useRef(0);
-
-    // Load learning mode from localStorage
-    useEffect(() => {
-        const savedMode = localStorage.getItem('acelearningMode');
-        if (savedMode !== null) {
-            setLearningMode(savedMode === 'true');
-        }
-    }, []);
-
-    // Save learning mode to localStorage when it changes
-    useEffect(() => {
-        localStorage.setItem('acelearningMode', String(learningMode));
-    }, [learningMode]);
 
     // Load KaTeX from CDN
     useEffect(() => {
