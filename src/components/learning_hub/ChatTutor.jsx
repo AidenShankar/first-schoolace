@@ -236,7 +236,9 @@ export default function ChatTutor({ user, learningData, language = 'EN', isPerso
 
         let focusText = '';
         if (recentFocus.length > 0) {
-            const concepts = recentFocus.map(item => `"${item.title}"`).join(', ');
+            const titles = recentFocus.map(item => `"${item.title.trim()}"`);
+            const listFormatter = new Intl.ListFormat(language.toLowerCase(), { style: 'long', type: 'conjunction' });
+            const concepts = listFormatter.format(titles);
             focusText = t('personalizedLearning.focusAreasIntro', language).replace('{concepts}', concepts);
         }
 
