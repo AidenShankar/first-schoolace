@@ -430,7 +430,7 @@ const translations = {
       areasToFocusOn: "Areas to Focus On",
       allLookingGreat: "All Looking Great!",
       noFocusAreas: "No specific focus areas identified. Keep up the excellent work.",
-      introMessage: "Hi {name}! I'm Ace, your personal AI tutor. {focusText}\n\nWhat would you like to explore or work on today? We can dive deeper into a topic, review questions from a recent assignment or quiz, or you can upload a file for me to help you with!",
+      introMessage: "Hi {name}! I'm Ace, your personal AI tutor. {focusText}\n\nWhat would you like to explore or work on today? We can review questions from a recent assignment or quiz, you can ask me to generate a quiz on anything like a fractions assignment from 2 weeks ago, or you can upload a file for me to help you with!",
       focusAreasIntro: "I noticed some of your most recent areas for practice are {concepts}.",
       quizComplete: "Great job completing the quiz! You scored {score}/{total} ({percentage}%).",
       questionsToWorkOn: "Here are the questions we can work on:",
