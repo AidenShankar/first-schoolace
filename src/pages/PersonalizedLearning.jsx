@@ -34,6 +34,7 @@ export default function PersonalizedLearning() {
     const [isLoading, setIsLoading] = useState(true); // Controls data loading spinner after intro
     const [error, setError] = useState(null);
     const [activeTool, setActiveTool] = useState(null); // 'flashcards', 'test', 'guide'
+    const [isPersonalizedMode, setIsPersonalizedMode] = useState(true);
 
     // Block body scroll when modal is open
     useEffect(() => {
@@ -646,23 +647,35 @@ export default function PersonalizedLearning() {
                 {!error && user && performanceData && (
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                         <motion.div
-                            className="lg:col-span-2"
+                            className={isPersonalizedMode ? "lg:col-span-2" : "lg:col-span-3"}
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.6, ease:"easeOut", delay: 0.2 }}
                         >
-                            <ChatTutor user={user} learningData={performanceData} language={language} />
+                            <ChatTutor 
+                                user={user} 
+                                learningData={performanceData} 
+                                language={language}
+                                isPersonalizedMode={isPersonalizedMode}
+                                setIsPersonalizedMode={setIsPersonalizedMode}
+                            />
                         </motion.div>
-                        <div className="lg:col-span-1 flex flex-col h-[80vh]">
-                            <motion.div
-                                className="h-full"
-                                initial={{ opacity: 0, x: 20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ duration: 0.6, ease:"easeOut", delay: 0.3 }}
-                            >
-                                <GradedWorkList performanceData={performanceData} />
-                            </motion.div>
-                        </div>
+                        
+                        <AnimatePresence>
+                            {isPersonalizedMode && (
+                                <div className="lg:col-span-1 flex flex-col h-[80vh]">
+                                    <motion.div
+                                        className="h-full"
+                                        initial={{ opacity: 0, x: 20 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        exit={{ opacity: 0, x: 20 }}
+                                        transition={{ duration: 0.6, ease:"easeOut", delay: 0.3 }}
+                                    >
+                                        <GradedWorkList performanceData={performanceData} />
+                                    </motion.div>
+                                </div>
+                            )}
+                        </AnimatePresence>
                     </div>
                 )}
             </div>

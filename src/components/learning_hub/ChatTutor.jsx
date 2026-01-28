@@ -178,7 +178,7 @@ const MessageContent = ({ content, isUser }) => {
     );
 };
 
-export default function ChatTutor({ user, learningData, language = 'EN' }) {
+export default function ChatTutor({ user, learningData, language = 'EN', isPersonalizedMode, setIsPersonalizedMode }) {
     const [conversation, setConversation] = useState([]);
     const [input, setInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -188,7 +188,6 @@ export default function ChatTutor({ user, learningData, language = 'EN' }) {
     const [isUploadingFile, setIsUploadingFile] = useState(false);
     const [isSavingMessage, setIsSavingMessage] = useState(false);
     const [learningMode, setLearningMode] = useState(true); // Default ON (step-by-step only)
-    const [isPersonalizedMode, setIsPersonalizedMode] = useState(true);
     const [isDragOver, setIsDragOver] = useState(false);
     const conversationEndRef = useRef(null);
     const quizRef = useRef(null);
