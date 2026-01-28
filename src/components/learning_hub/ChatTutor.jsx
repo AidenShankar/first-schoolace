@@ -2,11 +2,8 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, Loader2, Sparkles, CheckCircle, X, Plus, File, FileText, Image, BrainCircuit, Upload, GraduationCap } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
-import { InvokeLLM, UploadFile, ExtractDataFromUploadedFile } from '@/integrations/Core';
+import { UploadFile, ExtractDataFromUploadedFile } from '@/integrations/Core';
 import ReactMarkdown from 'react-markdown';
-import { getTutorSystemPrompt } from './tutorSystemPrompt';
-import { AssignmentComment } from '@/entities/AssignmentComment';
-import { ClassEnrollment } from '@/entities/ClassEnrollment';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,6 +14,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { t } from '../i18n/translations';
+import { base44 } from '@/api/base44Client';
 
 // Fix AI outputs: wrap unwrapped LaTeX-like math in dollar signs for KaTeX/Markdown rendering
 function autoWrapLatex(content) {
@@ -186,7 +184,6 @@ export default function ChatTutor({ user, learningData, language = 'EN', isPerso
     const [attachedFiles, setAttachedFiles] = useState([]);
     const [uploadedFiles, setUploadedFiles] = useState([]); 
     const [isUploadingFile, setIsUploadingFile] = useState(false);
-    const [isSavingMessage, setIsSavingMessage] = useState(false);
     const [learningMode, setLearningMode] = useState(false); // Default OFF (Solution Mode)
     const [isDragOver, setIsDragOver] = useState(false);
     const conversationEndRef = useRef(null);
@@ -409,140 +406,6 @@ export default function ChatTutor({ user, learningData, language = 'EN', isPerso
         setActiveQuiz(null);
     };
 
-    const formatConversationHistory = (messages) => {
-        return messages
-            .filter(msg => msg.role !== 'system')
-            .map(msg => {
-                const role = msg.role === 'assistant' ? 'Tutor' : 'Student';
-                let content = msg.content;
-                
-                if (msg.fileInfos && msg.fileInfos.length > 0) {
-                    content += `\n[Files attached: ${msg.fileInfos.map(f => `${f.name} (${f.type})`).join(', ')}]`;
-                    msg.fileInfos.forEach(fileInfo => {
-                        if (fileInfo.extractedContent && !fileInfo.error) {
-                            const truncatedContent = fileInfo.extractedContent.length > 1500 
-                                ? fileInfo.extractedContent.substring(0, 1500) + '...[truncated]'
-                                : fileInfo.extractedContent;
-                            content += `\nFile content from ${fileInfo.name}: ${truncatedContent}`;
-                        }
-                    });
-                }
-                
-                return `${role}: ${content}`;
-            })
-            .join('\n\n');
-    };
-
-    const createUploadedFilesContext = () => {
-        if (uploadedFiles.length === 0) return '';
-        
-        return uploadedFiles.map(file => {
-            let fileContext = `- File: ${file.name} (${file.type || 'unknown type'})`;
-            fileContext += `\n  Upload ID: ${file.id}`;
-            fileContext += `\n  Uploaded: ${new Date(file.uploadedAt).toLocaleString()}`;
-            
-            if (file.error) {
-                fileContext += `\n  Status: Content extraction failed`;
-            } else if (file.extractedContent) {
-                const contentPreview = file.extractedContent.length > 3000 
-                    ? file.extractedContent.substring(0, 3000) + '...[truncated - full content available upon request]'
-                    : file.extractedContent;
-                fileContext += `\n  Content: ${contentPreview}`;
-            }
-            
-            return fileContext;
-        }).join('\n\n');
-    };
-
-    const moderateAndSaveStudentMessage = async (message) => {
-        setIsSavingMessage(true);
-        let isFlagged = false;
-        let flagReason = "";
-
-        try {
-            const moderationPrompt = `
-                Analyze the following student message for concerning content. Respond ONLY with a valid JSON object.
-                The JSON object must have two keys: "is_flagged" (boolean) and "reason" (string).
-                Flag the message if it contains any of the following:
-                - Requests for direct answers or cheating.
-                - Requests to generate full assignment submissions, like essays.
-                - Self-harm or suicidal ideation.
-                - Threats, violence, or bullying.
-                - Hate speech or discriminatory language.
-                - Profanity or sexually explicit content.
-                If no issues are found, "is_flagged" must be false and "reason" should be an empty string.
-
-                Student message: "${message}"
-            `;
-            
-            const moderationResult = await InvokeLLM({
-                prompt: moderationPrompt,
-                response_json_schema: {
-                    type: "object",
-                    properties: {
-                        is_flagged: { type: "boolean" },
-                        reason: { type: "string" },
-                    },
-                    required: ["is_flagged", "reason"],
-                }
-            });
-
-            if (moderationResult) {
-                isFlagged = moderationResult.is_flagged || false;
-                flagReason = moderationResult.reason || "";
-            }
-
-        } catch (error) {
-            console.error('AI Moderation failed, saving message without flags:', error);
-        }
-
-        try {
-            const enrollments = await ClassEnrollment.filter({ student_id: user.id });
-            for (const enrollment of enrollments) {
-                await AssignmentComment.create({
-                    assignment_id: null, 
-                    student_id: user.id,
-                    user_id: user.id,
-                    user_name: user.full_name,
-                    user_role: user.app_role,
-                    content: message,
-                    is_ai_tutor_message: true,
-                    class_id: enrollment.class_id,
-                    student_email: user.email,
-                    is_flagged: isFlagged,
-                    flag_reason: flagReason,
-                });
-            }
-        } catch (saveError) {
-             console.error('Failed to save student message after moderation attempt:', saveError);
-        } finally {
-            setIsSavingMessage(false);
-        }
-    };
-    
-    const saveTutorResponse = async (message) => {
-        try {
-            const enrollments = await ClassEnrollment.filter({ student_id: user.id });
-             for (const enrollment of enrollments) {
-                await AssignmentComment.create({
-                    assignment_id: null, 
-                    student_id: user.id,
-                    user_id: "ai_tutor", 
-                    user_name: "AI Tutor",
-                    user_role: "teacher", 
-                    content: message,
-                    is_ai_tutor_message: true,
-                    class_id: enrollment.class_id,
-                    student_email: user.email,
-                    is_flagged: false, 
-                    flag_reason: "",
-                });
-            }
-        } catch (error) {
-             console.error('Failed to save AI Tutor response for teacher view:', error);
-        }
-    };
-
     const handleSend = async (message) => {
         if (!message.trim() && attachedFiles.length === 0) return;
 
@@ -559,7 +422,6 @@ export default function ChatTutor({ user, learningData, language = 'EN', isPerso
         }
 
         const studentMessageContent = message || `[Files uploaded: ${attachedFiles.map(f => f.name).join(', ')}]`;
-        moderateAndSaveStudentMessage(studentMessageContent);
 
         const userMessage = { 
             role: 'user', 
@@ -577,178 +439,23 @@ export default function ChatTutor({ user, learningData, language = 'EN', isPerso
         setIsLoading(true);
 
         try {
-            const formattedHistory = formatConversationHistory([...conversation, userMessage]); 
-            
-            let fullPrompt = "";
-
-            const MATH_RULES = `
-BEFORE YOU WRITE YOUR RESPONSE, CHECK EVERY SINGLE WORD FOR MATH CONTENT.
-
-**GOLDEN RULE:** If it's a number, variable, equation, or contains ANY mathematical notation → WRAP IT IN DOLLAR SIGNS
-
-**YOU MUST FORMAT:**
-✓ Single variables: $x$, $y$, $a$, $n$
-✓ Numbers in equations: $3$, $42$, $2x$
-✓ Simple expressions: $x + 1$, $3a^2$
-✓ Complex expressions: $3a^2 + 3x^2 + 6ax$
-✓ Fractions with backslashes: $\\\\frac{3}{ax}$, $\\\\frac{3x}{a^2x}$
-✓ Parenthetical expressions: $\\\\left( \\\\frac{3}{ax} + \\\\frac{3x}{a^2x} \\\\right)$
-✓ Exponents: $x^2$, $a^{2x}$, $e^{2\\\\pi i}$
-✓ EVERYTHING with LaTeX backslashes: They NEED dollar signs!
-
-**WRONG vs CORRECT - STUDY THESE:**
-
-wrong "the expression ( \\frac{3}{ax} + \\frac{3x}{a^2x} + \\frac{7x}{x+a} )"
-correct "the expression $\\\\left( \\\\frac{3}{ax} + \\\\frac{3x}{a^2x} + \\\\frac{7x}{x+a} \\\\right)$"
-
-wrong "you wrote ( \\frac{3a^2 + 3x^2 + 6ax + 7a^2x^2}{a^2x(x+a)} )"
-correct "you wrote $\\\\left( \\\\frac{3a^2 + 3x^2 + 6ax + 7a^2x^2}{a^2x(x+a)} \\\\right)$"
-
-wrong "The denominator is a^2x(x+a)"
-correct "The denominator is $a^2x(x+a)$"
-
-wrong "3a^2 + 3x^2"
-correct "$3a^2 + 3x^2$"
-
-wrong "In your final expression, you wrote ( \\frac{3a^2 + 3x^2}"
-correct "In your final expression, you wrote $\\\\left( \\\\frac{3a^2 + 3x^2} \\\\right.$"
-
-**SPECIAL ATTENTION FOR IMAGES:**
-When analyzing uploaded images containing math:
-- Extract the mathematical expressions you see
-- IMMEDIATELY wrap them in dollar signs when referencing them
-- Use proper LaTeX formatting with double backslashes
-- Example: If image shows "x²+1", write it as "$x^2 + 1$" in your response
-
-**LaTeX Commands (DOUBLE backslashes required):**
-- $\\\\frac{num}{den}$ for fractions
-- $\\\\left( ... \\\\right)$ for parentheses
-- $\\\\sqrt{x}$ for square roots
-- $x^{power}$ for exponents
-- $x_{subscript}$ for subscripts
-
-TRIPLE-CHECK YOUR RESPONSE: Before finalizing, scan for ANY mathematical notation and ensure it's wrapped in $ or $$.
-
-Please respond to the student's latest message, maintaining full conversation context and file access.`;
-
-            if (isPersonalizedMode) {
-                const uploadedFilesContext = createUploadedFilesContext();
-                const systemPrompt = getTutorSystemPrompt(user, learningData, learningMode);
-                
-                fullPrompt = `${systemPrompt}
-
-UPLOADED FILES CONTEXT:
-${uploadedFilesContext || 'No files have been uploaded yet.'}
-
-CONVERSATION HISTORY:
-${formattedHistory}
-
-INSTRUCTIONS FOR FILE REFERENCES:
-- You have access to all uploaded files throughout this entire conversation
-- When a student references "the file I uploaded" or asks about file content, refer to the UPLOADED FILES CONTEXT above
-- If multiple files are available and the reference is ambiguous, ask for clarification
-- Always prioritize the most recently uploaded file when references are unclear
-- You can analyze, summarize, or answer questions about any uploaded file content at any time
-
-⚠️⚠️⚠️ CRITICAL MATH FORMATTING RULE - ABSOLUTELY MANDATORY ⚠️⚠️⚠️
-${MATH_RULES}`;
-            } else {
-                const systemPrompt = "You are a helpful, friendly AI assistant. You can answer general questions, help with homework, and provide explanations. You DO NOT have access to the student's specific assignments, quizzes, or files. If the user asks about them, politely explain that you cannot access their personal data in this mode.";
-                
-                fullPrompt = `${systemPrompt}
-
-CONVERSATION HISTORY:
-${formattedHistory}
-
-⚠️⚠️⚠️ CRITICAL MATH FORMATTING RULE - ABSOLUTELY MANDATORY ⚠️⚠️⚠️
-${MATH_RULES}`;
-            }
-
-            const allFileUrls = isPersonalizedMode ? uploadedFiles
-                .filter(file => file.file_url && !file.error)
-                .map(file => file.file_url) : [];
-
-            const response = await InvokeLLM({
-                prompt: fullPrompt,
-                file_urls: allFileUrls.length > 0 ? allFileUrls : undefined,
-                response_json_schema: {
-                    type: "object",
-                    properties: {
-                        content: { type: "string" },
-                        quiz: {
-                            type: "object",
-                            properties: {
-                                title: { type: "string" },
-                                questions: {
-                                    type: "array",
-                                    items: {
-                                        type: "object",
-                                        properties: {
-                                            question: { type: "string" },
-                                            options: { type: "array", items: { type: "string" } },
-                                            correct_answer: { type: "string" }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    required: ["content"]
-                }
+            const { data, error } = await base44.functions.invoke('chatWithAce', {
+                message: studentMessageContent,
+                learningData,
+                uploadedFiles, // Pass context of all uploaded files in session
+                conversationHistory: [...conversation, userMessage],
+                isPersonalizedMode,
+                learningMode,
+                language
             });
 
-            let finalContent = response.content;
-            let finalQuiz = response.quiz;
+            if (error) throw new Error(error.response?.data?.error || "Unknown error");
 
-            // Translate the response if the language is not English
-            if (language !== 'EN') {
-                const langNames = { ES: 'Spanish', ZH: 'Chinese', KO: 'Korean', FR: 'French' };
-                const targetLang = langNames[language] || 'English';
-                
-                const translationPrompt = `Translate the following AI tutor response to ${targetLang}. Keep all mathematical expressions (anything in $ or $$ delimiters) EXACTLY as they are - do not translate or modify them. Only translate the natural language text around them.
-
-Response to translate:
-${response.content}`;
-
-                const translatedResponse = await InvokeLLM({ prompt: translationPrompt });
-                finalContent = translatedResponse;
-
-                // Also translate quiz if present
-                if (response.quiz && Array.isArray(response.quiz.questions) && response.quiz.questions.length > 0) {
-                    const quizTranslationPrompt = `Translate the following quiz to ${targetLang}. Keep all mathematical expressions (anything in $ or $$ delimiters) EXACTLY as they are. Return the result as a valid JSON object with the same structure.
-
-Quiz to translate:
-${JSON.stringify(response.quiz)}`;
-
-                    const translatedQuiz = await InvokeLLM({ 
-                        prompt: quizTranslationPrompt,
-                        response_json_schema: {
-                            type: "object",
-                            properties: {
-                                title: { type: "string" },
-                                questions: {
-                                    type: "array",
-                                    items: {
-                                        type: "object",
-                                        properties: {
-                                            question: { type: "string" },
-                                            options: { type: "array", items: { type: "string" } },
-                                            correct_answer: { type: "string" }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    });
-                    finalQuiz = translatedQuiz;
-                }
-            }
+            const { content: finalContent, quiz: finalQuiz } = data;
 
             const assistantMessage = { role: 'assistant', content: finalContent, id: Date.now() };
             setConversation(prev => [...prev, assistantMessage]);
             
-            saveTutorResponse(finalContent);
-
             if (finalQuiz && Array.isArray(finalQuiz.questions) && finalQuiz.questions.length > 0) {
                 setActiveQuiz({ quiz: finalQuiz });
             }
@@ -947,7 +654,7 @@ ${JSON.stringify(response.quiz)}`;
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <button
-                                    disabled={isLoading || isUploadingFile || isSavingMessage}
+                                    disabled={isLoading || isUploadingFile}
                                     className="flex-shrink-0 w-12 h-12 rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 flex items-center justify-center transition-all duration-200 disabled:opacity-50 hover:scale-105 shadow-lg text-white"
                                 >
                                     <Plus className="w-5 h-5" />
@@ -994,11 +701,11 @@ ${JSON.stringify(response.quiz)}`;
                             placeholder={t('personalizedLearning.inputPlaceholder', language)}
                             className="bg-slate-50 border-slate-200 focus:bg-white focus:border-purple-400 focus:ring-purple-400/20 rounded-2xl px-6 py-4 resize-none text-base font-medium placeholder:text-slate-400 pr-16"
                             rows={1}
-                            disabled={isLoading || isUploadingFile || isSavingMessage}
+                            disabled={isLoading || isUploadingFile}
                         />
                         <button
                             onClick={() => handleSend(input)}
-                            disabled={isLoading || isUploadingFile || isSavingMessage || (!input.trim() && attachedFiles.length === 0)}
+                            disabled={isLoading || isUploadingFile || (!input.trim() && attachedFiles.length === 0)}
                             className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 flex items-center justify-center transition-all duration-200 disabled:opacity-50 hover:scale-105 shadow-lg"
                         >
                             <Send className="w-5 h-5" />
