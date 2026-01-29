@@ -679,7 +679,7 @@ export default function Layout({ children, currentPageName }) {
       requiresClass: true, 
       blocked: isQuizModeActive,
       blockedReason: "Complete your quiz to access other pages.",
-      roles: ['teacher', 'student']
+      roles: ['']
     },
     { 
       name: t('nav.classTools', language), 
