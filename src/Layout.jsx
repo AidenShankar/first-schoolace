@@ -134,6 +134,13 @@ export default function Layout({ children, currentPageName }) {
         }
 
         setUser(userData);
+
+        // Auto-redirect to dashboard if user is already logged in and on the landing page
+        if (userData && currentPageName === 'Landing') {
+            window.location.href = createPageUrl('Dashboard');
+            return;
+        }
+
         if (userData?.app_role === 'student') {
           checkQuizStatus(userData.id);
         }
