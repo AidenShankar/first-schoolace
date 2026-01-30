@@ -43,7 +43,6 @@ import SubmissionUpload from "../components/student/SubmissionUpload";
 import ProcessingModal from "../components/common/ProcessingModal"; // New import
 import ReactQuill from "react-quill"; // New import
 import LanguageSelector from "../components/i18n/LanguageSelector";
-import ThemeSelector from "../components/theme/ThemeSelector";
 
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
@@ -1174,7 +1173,7 @@ Output your response as JSON with:
 
     return (
         <div className="min-h-screen pb-20 md:pb-8 relative">
-            <div className="bg-gradient-to-r from-[var(--header-bg-from)] via-[var(--header-bg-via)] to-[var(--header-bg-to)] text-white relative overflow-hidden transition-colors duration-500">
+            <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-700 text-white relative overflow-hidden">
                 <div className="absolute inset-0 bg-black/10"></div>
                 <div className="absolute inset-0 bg-gradient-to-r from-white/5 to-transparent"></div>
                 <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -1269,19 +1268,9 @@ Output your response as JSON with:
                                                         </span>
                                                     </div>
                                                     <LanguageSelector />
-                                                    </div>
-
-                                                    <div className="space-y-4 pt-4 border-t border-slate-100">
-                                                    <div className="flex flex-col space-y-1">
-                                                        <Label className="text-base font-medium">Theme</Label>
-                                                        <span className="text-sm text-slate-500">
-                                                            Choose interface theme
-                                                        </span>
-                                                    </div>
-                                                    <ThemeSelector />
-                                                    </div>
-                                                    </div>
-                                                    </DialogContent>
+                                                </div>
+                                            </div>
+                                        </DialogContent>
                                     </Dialog>
                                     <Button 
                                         variant="outline"
@@ -1335,21 +1324,10 @@ Output your response as JSON with:
                                                     </span>
                                                 </div>
                                                 <LanguageSelector />
-                                                </div>
-
-                                                <div className="space-y-4 pt-4 border-t border-slate-100">
+                                            </div>
+                                            <div className="flex items-center justify-between space-x-4">
                                                 <div className="flex flex-col space-y-1">
-                                                    <Label className="text-base font-medium">Theme</Label>
-                                                    <span className="text-sm text-slate-500">
-                                                        Choose interface theme
-                                                    </span>
-                                                </div>
-                                                <ThemeSelector />
-                                                </div>
-
-                                                <div className="flex items-center justify-between space-x-4 pt-4 border-t border-slate-100">
-                                                <div className="flex flex-col space-y-1">
-                                                <Label htmlFor="ace-ai-toggle" className="text-base font-medium">Hide ACE AI Chat from students</Label>
+                                                    <Label htmlFor="ace-ai-toggle" className="text-base font-medium">Hide ACE AI Chat from students</Label>
                                                     <span className="text-sm text-slate-500">
                                                         Prevent students in this class from having conversations with ACE
                                                     </span>
