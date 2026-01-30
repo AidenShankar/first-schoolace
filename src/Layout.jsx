@@ -783,29 +783,29 @@ export default function Layout({ children, currentPageName }) {
     <ThemeProvider>
       <LanguageProvider>
         <LayoutContent 
-        user={user}
-        allClasses={allClasses}
-        currentClass={currentClass}
-        currentClassId={currentClassId}
-        quizInProgress={quizInProgress}
-        currentPageName={currentPageName}
-        isQuizModeActive={isQuizModeActive}
-        isLandingPage={isLandingPage}
-        isCompliancePage={isCompliancePage}
-        isDemoPage={isDemoPage}
-        isExampleLearningTrackerPage={isExampleLearningTrackerPage}
-        isLearnerDashboard={isLearnerDashboard}
-        isAPExamSchedulePage={isAPExamSchedulePage}
-        isPersonalizedLearning={isPersonalizedLearning}
-        location={location}
-        handleNavClick={handleNavClick}
-        fetchUserAndClasses={fetchUserAndClasses}
-        isLayoutLoading={isLayoutLoading}
-        getNavLinks={getNavLinks}
-        filterNavLinks={filterNavLinks}
-      >
-        {children}
-      </LayoutContent>
+          user={user}
+          allClasses={allClasses}
+          currentClass={currentClass}
+          currentClassId={currentClassId}
+          quizInProgress={quizInProgress}
+          currentPageName={currentPageName}
+          isQuizModeActive={isQuizModeActive}
+          isLandingPage={isLandingPage}
+          isCompliancePage={isCompliancePage}
+          isDemoPage={isDemoPage}
+          isExampleLearningTrackerPage={isExampleLearningTrackerPage}
+          isLearnerDashboard={isLearnerDashboard}
+          isAPExamSchedulePage={isAPExamSchedulePage}
+          isPersonalizedLearning={isPersonalizedLearning}
+          location={location}
+          handleNavClick={handleNavClick}
+          fetchUserAndClasses={fetchUserAndClasses}
+          isLayoutLoading={isLayoutLoading}
+          getNavLinks={getNavLinks}
+          filterNavLinks={filterNavLinks}
+        >
+          {children}
+        </LayoutContent>
       </LanguageProvider>
     </ThemeProvider>
   );
