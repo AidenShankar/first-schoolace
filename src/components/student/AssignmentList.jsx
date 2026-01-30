@@ -81,20 +81,20 @@ const CommentThread = ({ assignment, currentUser, onTextSubmission, isSubmitting
 
   return (
     <div className="space-y-3">
-      <h4 className="font-semibold text-slate-800 mb-2 flex items-center">
-        <MessageSquare className="w-4 h-4 mr-2" /> Private Comments
+      <h4 className="font-semibold mb-2 flex items-center" style={{ color: `rgb(var(--color-text))` }}>
+      <MessageSquare className="w-4 h-4 mr-2" /> Private Comments
       </h4>
-      <div className="space-y-3 max-h-60 overflow-y-auto p-3 bg-slate-50 rounded-lg">
+      <div className="space-y-3 max-h-60 overflow-y-auto p-3 rounded-lg" style={{ backgroundColor: `rgb(var(--color-accentLight))` }}>
         {comments.map(comment => (
           <div key={comment.id} className={`flex items-start gap-2 ${comment.user_id === currentUser.id ? "flex-row-reverse" : ""}`}>
-            <div className={`text-sm p-3 rounded-lg ${comment.user_id === currentUser.id ? "bg-indigo-100 text-indigo-800" : "bg-white text-slate-700 border border-slate-200"}`}>
-              <p className="font-bold">{comment.user_name} <span className="text-slate-500 font-normal">({comment.user_role})</span></p>
-              <p className="whitespace-pre-wrap mt-1 text-slate-800">{comment.content}</p>
-              <p className="text-right text-xs opacity-70 mt-1 text-slate-500">{format(subHours(new Date(comment.created_date), 8), 'MMM d, p')}</p>
+            <div className={`text-sm p-3 rounded-lg ${comment.user_id === currentUser.id ? "text-white" : "border"}`} style={{ backgroundColor: comment.user_id === currentUser.id ? `rgb(var(--color-primary))` : `rgb(var(--color-surface))`, borderColor: comment.user_id === currentUser.id ? 'transparent' : `rgb(var(--color-border))`, color: comment.user_id === currentUser.id ? 'white' : `rgb(var(--color-text))` }}>
+              <p className="font-bold">{comment.user_name} <span className="opacity-70 font-normal">({comment.user_role})</span></p>
+              <p className="whitespace-pre-wrap mt-1">{comment.content}</p>
+              <p className="text-right text-xs opacity-70 mt-1">{format(subHours(new Date(comment.created_date), 8), 'MMM d, p')}</p>
             </div>
           </div>
         ))}
-        {comments.length === 0 && <p className="text-sm text-slate-500 text-center py-4">No comments yet. Ask your teacher a question!</p>}
+        {comments.length === 0 && <p className="text-sm text-center py-4" style={{ color: `rgb(var(--color-textSecondary))` }}>No comments yet. Ask your teacher a question!</p>}
       </div>
       <div className="flex gap-2">
         <Textarea
@@ -151,18 +151,18 @@ export default function AssignmentList({ assignments, onUpload, userSubmissions,
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-2xl font-bold text-slate-900">Available Assignments</h3>
-        <Badge variant="outline" className="bg-slate-50">
+        <h3 className="text-2xl font-bold" style={{ color: `rgb(var(--color-text))` }}>Available Assignments</h3>
+        <Badge variant="outline" style={{ backgroundColor: `rgb(var(--color-accentLight))` }}>
           {assignments.length} assignment{assignments.length !== 1 ? 's' : ''}
         </Badge>
       </div>
 
       {assignments.length === 0 ? (
-        <Card className="bg-white/60 backdrop-blur-sm border-slate-200/60">
+        <Card className="themed-card backdrop-blur-sm">
           <CardContent className="flex flex-col items-center justify-center py-16">
-            <FileText className="w-16 h-16 text-slate-300 mb-4" />
-            <p className="text-slate-500 font-medium text-lg">No assignments available</p>
-            <p className="text-sm text-slate-400 mt-2">Your teacher hasn't posted any assignments yet. If you are expecting an assignment, please close this tab and log back in.</p>
+            <FileText className="w-16 h-16 mb-4" style={{ color: `rgb(var(--color-border))` }} />
+            <p className="font-medium text-lg" style={{ color: `rgb(var(--color-textSecondary))` }}>No assignments available</p>
+            <p className="text-sm mt-2" style={{ color: `rgb(var(--color-textSecondary))` }}>Your teacher hasn't posted any assignments yet. If you are expecting an assignment, please close this tab and log back in.</p>
           </CardContent>
         </Card>
       ) : (
@@ -184,7 +184,7 @@ export default function AssignmentList({ assignments, onUpload, userSubmissions,
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
                       <div className="flex-1 min-w-0">
-                        <CardTitle className="text-lg font-bold text-slate-900 mb-2 line-clamp-2">
+                        <CardTitle className="text-lg font-bold mb-2 line-clamp-2" style={{ color: `rgb(var(--color-text))` }}>
                           {assignment.title}
                         </CardTitle>
                         <div className="flex items-center gap-2 flex-wrap">
@@ -203,27 +203,27 @@ export default function AssignmentList({ assignments, onUpload, userSubmissions,
                           )}
                         </div>
                       </div>
-                      <FileText className="w-5 h-5 text-slate-400 flex-shrink-0" />
+                      <FileText className="w-5 h-5 flex-shrink-0" style={{ color: `rgb(var(--color-textSecondary))` }} />
                     </div>
                   </CardHeader>
 
                   <CardContent className="space-y-4 pt-0">
                     <div className="grid grid-cols-2 gap-3 text-sm">
-                      <div className="flex items-center text-slate-600">
-                        <Clock className="w-4 h-4 mr-1 text-slate-400 flex-shrink-0" />
+                      <div className="flex items-center" style={{ color: `rgb(var(--color-textSecondary))` }}>
+                        <Clock className="w-4 h-4 mr-1 flex-shrink-0" style={{ color: `rgb(var(--color-textSecondary))` }} />
                         <div className="min-w-0">
                           <p className="font-medium truncate">Due Date</p>
-                          <p className="text-slate-500 text-xs truncate">
+                          <p className="text-xs truncate" style={{ color: `rgb(var(--color-textSecondary))` }}>
                             {isValidDate ? format(new Date(assignment.due_date), 'MMM d') : 'No due date'}
                           </p>
                         </div>
                       </div>
 
-                      <div className="flex items-center text-slate-600">
-                        <Award className="w-4 h-4 mr-1 text-slate-400 flex-shrink-0" />
+                      <div className="flex items-center" style={{ color: `rgb(var(--color-textSecondary))` }}>
+                        <Award className="w-4 h-4 mr-1 flex-shrink-0" style={{ color: `rgb(var(--color-textSecondary))` }} />
                         <div className="min-w-0">
                           <p className="font-medium truncate">{assignment.allow_submissions !== false ? 'Points' : 'Info Only'}</p>
-                          <p className="text-slate-500 text-xs">{assignment.allow_submissions !== false ? `${assignment.max_points} pts` : 'No grading'}</p>
+                          <p className="text-xs" style={{ color: `rgb(var(--color-textSecondary))` }}>{assignment.allow_submissions !== false ? `${assignment.max_points} pts` : 'No grading'}</p>
                         </div>
                       </div>
                     </div>
@@ -231,7 +231,7 @@ export default function AssignmentList({ assignments, onUpload, userSubmissions,
                     {assignment.allow_submissions !== false && latestSubmission && !latestSubmission.is_released && (
                       <div className="bg-blue-50 rounded-lg p-3 border border-blue-200">
                         <p className="font-medium text-blue-800 text-sm">Under Review</p>
-                        <p className="text-xs text-slate-600 mt-1">
+                        <p className="text-xs mt-1" style={{ color: `rgb(var(--color-textSecondary))` }}>
                           Your teacher will release grades soon.
                         </p>
                       </div>
@@ -252,7 +252,7 @@ export default function AssignmentList({ assignments, onUpload, userSubmissions,
                           <div className="space-y-4">
                             {assignment.description && (
                               <div>
-                                <h4 className="font-semibold text-slate-800 mb-2">Description</h4>
+                                <h4 className="font-semibold mb-2" style={{ color: `rgb(var(--color-text))` }}>Description</h4>
                                 <ReactQuill
                                   value={assignment.description}
                                   readOnly={true}
@@ -264,15 +264,15 @@ export default function AssignmentList({ assignments, onUpload, userSubmissions,
 
                             {assignment.attachment_urls && assignment.attachment_urls.length > 0 && (
                               <div>
-                                <h4 className="font-semibold text-slate-800 mb-2">Assignment Files</h4>
+                                <h4 className="font-semibold mb-2" style={{ color: `rgb(var(--color-text))` }}>Assignment Files</h4>
                                 <div className="space-y-3">
                                   {assignment.attachment_urls.map((url, index) => (
-                                    <div key={index} className="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                                    <div key={index} className="rounded-lg p-4 border" style={{ backgroundColor: `rgb(var(--color-accentLight))`, borderColor: `rgb(var(--color-border))` }}>
                                       <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-3">
-                                          <Paperclip className="w-5 h-5 text-slate-500" />
+                                          <Paperclip className="w-5 h-5" style={{ color: `rgb(var(--color-textSecondary))` }} />
                                           <div>
-                                            <p className="text-sm font-medium text-slate-700">
+                                            <p className="text-sm font-medium" style={{ color: `rgb(var(--color-text))` }}>
                                               {assignment.attachment_filenames && assignment.attachment_filenames[index]
                                                 ? assignment.attachment_filenames[index]
                                                 : `Assignment File ${index + 1}`}
@@ -294,7 +294,7 @@ export default function AssignmentList({ assignments, onUpload, userSubmissions,
 
                             {assignment.allow_submissions !== false && latestSubmission && latestSubmission.is_released && (
                               <div>
-                                <h4 className="font-semibold text-slate-800 mb-2">Your Grade & Feedback</h4>
+                                <h4 className="font-semibold mb-2" style={{ color: `rgb(var(--color-text))` }}>Your Grade & Feedback</h4>
                                 <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-lg p-4 border border-green-200">
                                   <div className="flex items-center justify-between mb-3">
                                     <span className="font-semibold">Grade:</span>
@@ -304,13 +304,13 @@ export default function AssignmentList({ assignments, onUpload, userSubmissions,
                                   </div>
                                   {latestSubmission.final_feedback && (
                                     <div>
-                                      <p className="font-medium text-slate-700 mb-2">Feedback:</p>
-                                      <p className="text-slate-600 text-sm leading-relaxed">{latestSubmission.final_feedback}</p>
+                                      <p className="font-medium mb-2" style={{ color: `rgb(var(--color-text))` }}>Feedback:</p>
+                                      <p className="text-sm leading-relaxed" style={{ color: `rgb(var(--color-textSecondary))` }}>{latestSubmission.final_feedback}</p>
                                     </div>
                                   )}
                                   {latestSubmission.feedback_attachment_url && (
                                     <div className="mt-3 pt-3 border-t border-green-200/50">
-                                      <p className="font-medium text-slate-700 mb-2">Feedback Attachment:</p>
+                                      <p className="font-medium mb-2" style={{ color: `rgb(var(--color-text))` }}>Feedback Attachment:</p>
                                       <FilePreview 
                                         fileUrl={latestSubmission.feedback_attachment_url} 
                                         fileName={latestSubmission.feedback_attachment_filename || "Feedback Attachment"} 
@@ -323,13 +323,13 @@ export default function AssignmentList({ assignments, onUpload, userSubmissions,
 
                             {assignment.allow_submissions !== false && submissions.length > 0 && (
                               <div>
-                                <h4 className="font-semibold text-slate-800 mb-2">Your Submissions</h4>
+                                <h4 className="font-semibold mb-2" style={{ color: `rgb(var(--color-text))` }}>Your Submissions</h4>
                                 <div className="space-y-2">
                                   {submissions.map(sub => (
-                                    <div key={sub.id} className="flex items-center justify-between bg-slate-50 p-3 rounded-lg">
+                                    <div key={sub.id} className="flex items-center justify-between p-3 rounded-lg" style={{ backgroundColor: `rgb(var(--color-accentLight))` }}>
                                       <FilePreview fileUrl={sub.file_url} fileName={sub.file_name} />
                                       <div className="flex items-center gap-2">
-                                        <span className="text-xs text-slate-500">
+                                        <span className="text-xs" style={{ color: `rgb(var(--color-textSecondary))` }}>
                                           {format(new Date(sub.submitted_at || sub.created_date), 'MMM d, p')}
                                         </span>
                                         {!sub.is_released && (

@@ -118,11 +118,11 @@ export default function AssignmentCard({ assignment, submissionCount, onClick, o
 
   return (
     <>
-      <Card className="bg-white/80 backdrop-blur-sm border-slate-200/60 hover:shadow-xl transition-all duration-300 group hover:scale-[1.02] flex flex-col">
+      <Card className="backdrop-blur-sm hover:shadow-xl transition-all duration-300 group hover:scale-[1.02] flex flex-col themed-card">
         <CardHeader className="pb-3 cursor-pointer" onClick={onClick}>
           <div className="flex items-start justify-between">
             <div className="flex-1">
-              <CardTitle className="text-lg font-bold text-slate-900 group-hover:text-indigo-700 transition-colors line-clamp-2">
+              <CardTitle className="text-lg font-bold transition-colors line-clamp-2" style={{ color: `rgb(var(--color-text))` }}>
                 {assignment.title}
               </CardTitle>
               <div className="flex items-center gap-2 mt-2">
@@ -137,13 +137,16 @@ export default function AssignmentCard({ assignment, submissionCount, onClick, o
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <FileText className="w-5 h-5 text-slate-400 transition-colors" style={{ '--hover-color': `rgb(var(--color-primary))` }} onMouseEnter={(e) => e.currentTarget.style.color = `rgb(var(--color-primary))`} onMouseLeave={(e) => e.currentTarget.style.color = ''} />
+              <FileText className="w-5 h-5 transition-colors" style={{ color: `rgb(var(--color-textSecondary))` }} onMouseEnter={(e) => e.currentTarget.style.color = `rgb(var(--color-primary))`} onMouseLeave={(e) => e.currentTarget.style.color = `rgb(var(--color-textSecondary))`} />
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-8 w-8 text-slate-400 hover:text-slate-600"
+                    className="h-8 w-8"
+                    style={{ color: `rgb(var(--color-textSecondary))` }}
+                    onMouseEnter={(e) => e.currentTarget.style.color = `rgb(var(--color-text))`}
+                    onMouseLeave={(e) => e.currentTarget.style.color = `rgb(var(--color-textSecondary))`}
                     onClick={(e) => e.stopPropagation()}
                   >
                     <MoreVertical className="h-4 w-4" />
@@ -195,14 +198,15 @@ export default function AssignmentCard({ assignment, submissionCount, onClick, o
         <CardContent className="space-y-4 cursor-pointer flex-grow" onClick={onClick}>
           {assignment.description && (
             <div 
-              className="text-sm text-slate-600 line-clamp-2 prose prose-sm max-w-none [&>*]:my-0"
+              className="text-sm line-clamp-2 prose prose-sm max-w-none [&>*]:my-0"
+              style={{ color: `rgb(var(--color-textSecondary))` }}
               dangerouslySetInnerHTML={{ __html: assignment.description }}
             />
           )}
           
           <div className="grid grid-cols-2 gap-4 text-sm">
-            <div className="flex items-center text-slate-600">
-              <Clock className="w-4 h-4 mr-2 text-slate-400" />
+            <div className="flex items-center" style={{ color: `rgb(var(--color-textSecondary))` }}>
+              <Clock className="w-4 h-4 mr-2" style={{ color: `rgb(var(--color-textSecondary))` }} />
               <div>
                 <p className="font-medium">Due Date</p>
                 <p className="text-xs">
@@ -211,8 +215,8 @@ export default function AssignmentCard({ assignment, submissionCount, onClick, o
               </div>
             </div>
             
-            <div className="flex items-center text-slate-600">
-              <Award className="w-4 h-4 mr-2 text-slate-400" />
+            <div className="flex items-center" style={{ color: `rgb(var(--color-textSecondary))` }}>
+              <Award className="w-4 h-4 mr-2" style={{ color: `rgb(var(--color-textSecondary))` }} />
               <div>
                 <p className="font-medium">Max Points</p>
                 <p className="text-xs">{assignment.max_points} pts</p>
@@ -221,9 +225,9 @@ export default function AssignmentCard({ assignment, submissionCount, onClick, o
           </div>
         </CardContent>
 
-        <div className="flex items-center justify-between pt-2 border-t border-slate-100 p-4">
-          <div className="flex items-center text-slate-600">
-            <Users className="w-4 h-4 mr-2 text-slate-400" />
+        <div className="flex items-center justify-between pt-2 border-t p-4" style={{ borderColor: `rgb(var(--color-border))` }}>
+          <div className="flex items-center" style={{ color: `rgb(var(--color-textSecondary))` }}>
+            <Users className="w-4 h-4 mr-2" style={{ color: `rgb(var(--color-textSecondary))` }} />
             <span className="text-sm font-medium">
               {submissionCount} {submissionCount !== 1 ? t('assignments.submissions') : t('assignments.submission')}
             </span>
@@ -255,7 +259,7 @@ export default function AssignmentCard({ assignment, submissionCount, onClick, o
             <DialogTitle>{t('assignments.duplicateAssignment')}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 pt-4">
-            <p className="text-sm text-slate-600">
+            <p className="text-sm" style={{ color: `rgb(var(--color-textSecondary))` }}>
               {t('assignments.selectDestinationClass')} "{assignment.title}":
             </p>
             <Select value={destinationClassId} onValueChange={setDestinationClassId}>
