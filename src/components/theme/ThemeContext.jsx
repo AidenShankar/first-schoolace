@@ -18,6 +18,22 @@ export const themes = {
       accentLight: '219 234 254', // blue-100
     }
   },
+  cherry: {
+    name: 'Cherry Blossom',
+    popular: true,
+    colors: {
+      primary: '244 114 182', // pink-400
+      primaryHover: '236 72 153', // pink-500
+      secondary: '251 207 232', // pink-200
+      background: '253 242 248', // pink-50
+      surface: '255 255 255', // white
+      text: '131 24 67', // pink-900
+      textSecondary: '157 23 77', // pink-800
+      border: '251 207 232', // pink-200
+      accent: '219 39 119', // pink-600
+      accentLight: '252 231 243', // pink-100
+    }
+  },
   nord: {
     name: 'Nord',
     popular: true,
@@ -25,7 +41,7 @@ export const themes = {
       primary: '136 192 208', // #88c0d0
       primaryHover: '129 161 193', // #81a1c1
       secondary: '143 188 187', // #8fbcbb
-      background: '216 222 233', // #d8dee9 - darker
+      background: '229 233 240', // #e5e9f0 - darker
       surface: '255 255 255', // #ffffff
       text: '46 52 64', // #2e3440
       textSecondary: '76 86 106', // #4c566a
@@ -92,22 +108,6 @@ export const themes = {
       border: '254 215 170', // orange-200
       accent: '251 146 60', // orange-400
       accentLight: '254 243 199', // orange-100
-    }
-  },
-  cherry: {
-    name: 'Cherry Blossom',
-    popular: true,
-    colors: {
-      primary: '244 114 182', // pink-400
-      primaryHover: '236 72 153', // pink-500
-      secondary: '251 207 232', // pink-200
-      background: '253 242 248', // pink-50
-      surface: '255 255 255', // white
-      text: '131 24 67', // pink-900
-      textSecondary: '157 23 77', // pink-800
-      border: '251 207 232', // pink-200
-      accent: '219 39 119', // pink-600
-      accentLight: '252 231 243', // pink-100
     }
   },
   minimal: {
