@@ -21,10 +21,27 @@ export default function QuizTaker({ user, quiz, onFinish }) {
 
     const finishHandler = useRef(onFinish);
     const isSubmittingRef = useRef(isSubmitting);
+    const initializedRef = useRef(false);
     
     useEffect(() => {
         isSubmittingRef.current = isSubmitting;
     }, [isSubmitting]);
+
+    // Retry utility
+    const retryWithBackoff = async (fn, maxRetries = 3, delay = 1000) => {
+        for (let i = 0; i < maxRetries; i++) {
+            try {
+                return await fn();
+            } catch (error) {
+                if (error.response?.status === 429 && i < maxRetries - 1) {
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    delay *= 2;
+                } else {
+                    throw error;
+                }
+            }
+        }
+    };
 
     const handleFinish = useCallback(async () => {
         if (isSubmittingRef.current) return;
