@@ -240,7 +240,15 @@ export default function AssignmentList({ assignments, onUpload, userSubmissions,
                     <div className={`flex ${assignment.allow_submissions !== false ? 'justify-between' : 'justify-center'} gap-2 pt-2`}>
                       <Dialog>
                         <DialogTrigger asChild>
-                          <Button variant="outline" size="sm" className="flex-1 text-xs">
+                          <Button 
+                            size="sm" 
+                            className="flex-1 text-xs border"
+                            style={{ 
+                              backgroundColor: `rgb(var(--color-surface))`, 
+                              borderColor: `rgb(var(--color-border))`, 
+                              color: `rgb(var(--color-text))` 
+                            }}
+                          >
                             <Eye className="w-3 h-3 mr-1" />
                             View Details
                           </Button>
