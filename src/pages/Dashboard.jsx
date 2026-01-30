@@ -1227,10 +1227,16 @@ Output your response as JSON with:
                                     variant="ghost" 
                                     size="sm" 
                                     onClick={handleFeedbackClick} 
-                                    className="bg-white rounded-xl hover:bg-white/20 hover:text-white transition-colors"
+                                    className="bg-white rounded-xl transition-colors"
                                     style={{ color: `rgb(var(--color-primary))` }}
-                                    onMouseEnter={(e) => e.currentTarget.style.color = 'white'}
-                                    onMouseLeave={(e) => e.currentTarget.style.color = `rgb(var(--color-primary))`}
+                                    onMouseEnter={(e) => {
+                                        e.currentTarget.style.backgroundColor = `rgb(var(--color-primary))`;
+                                        e.currentTarget.style.color = 'white';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.backgroundColor = 'white';
+                                        e.currentTarget.style.color = `rgb(var(--color-primary))`;
+                                    }}
                                 >
                                     <MessageCircle className="w-4 h-4 mr-2" />
                                     {t('dashboard.feedback')}
@@ -1239,10 +1245,16 @@ Output your response as JSON with:
                                     variant="ghost" 
                                     size="sm" 
                                     onClick={handleLogout} 
-                                    className="bg-white rounded-xl hover:bg-white/20 hover:text-white transition-colors"
+                                    className="bg-white rounded-xl transition-colors"
                                     style={{ color: `rgb(var(--color-primary))` }}
-                                    onMouseEnter={(e) => e.currentTarget.style.color = 'white'}
-                                    onMouseLeave={(e) => e.currentTarget.style.color = `rgb(var(--color-primary))`}
+                                    onMouseEnter={(e) => {
+                                        e.currentTarget.style.backgroundColor = `rgb(var(--color-primary))`;
+                                        e.currentTarget.style.color = 'white';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.backgroundColor = 'white';
+                                        e.currentTarget.style.color = `rgb(var(--color-primary))`;
+                                    }}
                                 >
                                     <LogOut className="w-4 h-4 mr-2" />
                                     {t('dashboard.logout')}
@@ -1264,10 +1276,16 @@ Output your response as JSON with:
                                                 variant="ghost"
                                                 size="icon"
                                                 title="Settings"
-                                                className="bg-white rounded-xl h-9 w-9 hover:bg-white/20 hover:text-white transition-colors"
+                                                className="bg-white rounded-xl h-9 w-9 transition-colors"
                                                 style={{ color: `rgb(var(--color-primary))` }}
-                                                onMouseEnter={(e) => e.currentTarget.style.color = 'white'}
-                                                onMouseLeave={(e) => e.currentTarget.style.color = `rgb(var(--color-primary))`}
+                                                onMouseEnter={(e) => {
+                                                    e.currentTarget.style.backgroundColor = `rgb(var(--color-primary))`;
+                                                    e.currentTarget.style.color = 'white';
+                                                }}
+                                                onMouseLeave={(e) => {
+                                                    e.currentTarget.style.backgroundColor = 'white';
+                                                    e.currentTarget.style.color = `rgb(var(--color-primary))`;
+                                                }}
                                             >
                                                 <Settings className="w-4 h-4" />
                                             </Button>
@@ -1310,10 +1328,20 @@ Output your response as JSON with:
                                         }}
                                         disabled={isSyncing}
                                         title="Refresh Page"
-                                        className="bg-white rounded-xl h-9 w-9 hover:bg-white/20 hover:text-white transition-colors"
+                                        className="bg-white rounded-xl h-9 w-9 transition-colors"
                                         style={{ color: `rgb(var(--color-primary))` }}
-                                        onMouseEnter={(e) => e.currentTarget.style.color = 'white'}
-                                        onMouseLeave={(e) => e.currentTarget.style.color = `rgb(var(--color-primary))`}
+                                        onMouseEnter={(e) => {
+                                            if (!isSyncing) {
+                                                e.currentTarget.style.backgroundColor = `rgb(var(--color-primary))`;
+                                                e.currentTarget.style.color = 'white';
+                                            }
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            if (!isSyncing) {
+                                                e.currentTarget.style.backgroundColor = 'white';
+                                                e.currentTarget.style.color = `rgb(var(--color-primary))`;
+                                            }
+                                        }}
                                     >
                                         <RefreshCw className={`w-4 h-4 ${isSyncing ? 'animate-spin' : ''}`} />
                                     </Button>
@@ -1335,10 +1363,16 @@ Output your response as JSON with:
                                             variant="ghost"
                                             size="icon"
                                             title="Class Settings"
-                                            className="bg-white rounded-xl h-9 w-9 hover:bg-white/20 hover:text-white transition-colors"
+                                            className="bg-white rounded-xl h-9 w-9 transition-colors"
                                             style={{ color: `rgb(var(--color-primary))` }}
-                                            onMouseEnter={(e) => e.currentTarget.style.color = 'white'}
-                                            onMouseLeave={(e) => e.currentTarget.style.color = `rgb(var(--color-primary))`}
+                                            onMouseEnter={(e) => {
+                                                e.currentTarget.style.backgroundColor = `rgb(var(--color-primary))`;
+                                                e.currentTarget.style.color = 'white';
+                                            }}
+                                            onMouseLeave={(e) => {
+                                                e.currentTarget.style.backgroundColor = 'white';
+                                                e.currentTarget.style.color = `rgb(var(--color-primary))`;
+                                            }}
                                         >
                                             <Settings className="w-4 h-4" />
                                         </Button>
