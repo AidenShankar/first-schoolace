@@ -111,13 +111,63 @@ export default function Layout({ children, currentPageName }) {
 
   const checkQuizStatus = useCallback(async (studentId) => {
     try {
+      // 1. Get all in-progress submissions
       const activeSubmissions = await retryWithBackoff(() => QuizSubmission.filter({ 
           student_id: studentId, 
           status: 'in-progress' 
       }));
-      setQuizInProgress(activeSubmissions.length > 0);
+
+      if (activeSubmissions.length === 0) {
+        setQuizInProgress(false);
+        return;
+      }
+
+      let hasValidActiveSubmissions = false;
+
+      // 2. Filter out zombies and handle auto-cleanup
+      for (const sub of activeSubmissions) {
+          // Check if quiz exists and is active
+          const quizList = await retryWithBackoff(() => Quiz.filter({ id: sub.quiz_id }));
+          
+          if (quizList.length === 0) {
+              // Quiz deleted, force complete
+              await QuizSubmission.update(sub.id, { status: 'completed', completed_at: new Date().toISOString() });
+              continue;
+          }
+          
+          const quiz = quizList[0];
+          if (quiz.status === 'closed') {
+              // Quiz closed, force complete
+              await QuizSubmission.update(sub.id, { status: 'completed', completed_at: new Date().toISOString() });
+              continue;
+          }
+
+          // Check for newer completed submissions (zombie check)
+          const completedSubmissions = await retryWithBackoff(() => QuizSubmission.filter({
+              student_id: studentId,
+              quiz_id: sub.quiz_id,
+              status: 'completed'
+          }));
+          
+          // If there is a completed submission that was created AFTER the current in-progress one,
+          // then the in-progress one is a stale "zombie" (e.g. from a crash or race condition).
+          const newerCompleted = completedSubmissions.find(cs => new Date(cs.created_date) > new Date(sub.created_date));
+          if (newerCompleted) {
+              await QuizSubmission.update(sub.id, { status: 'completed', completed_at: new Date().toISOString() });
+              continue;
+          }
+
+          // If we get here, it's a valid active submission
+          hasValidActiveSubmissions = true;
+      }
+
+      setQuizInProgress(hasValidActiveSubmissions);
     } catch (e) {
       console.error("Error checking quiz status:", e);
+      // Fail safe to unlocked if checking fails, or keep locked?
+      // Keeping locked is safer for cheating, but failing to unlock is bad UX.
+      // Given the retry logic, if it still fails, it's likely a network/server issue.
+      // We'll default to unlocked to prevent permanent lockout in case of persistent errors.
       setQuizInProgress(false);
     }
   }, [retryWithBackoff]); // useCallback for memoization
