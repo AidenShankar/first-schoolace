@@ -43,6 +43,7 @@ import SubmissionUpload from "../components/student/SubmissionUpload";
 import ProcessingModal from "../components/common/ProcessingModal"; // New import
 import ReactQuill from "react-quill"; // New import
 import LanguageSelector from "../components/i18n/LanguageSelector";
+import ThemeSelector from "../components/theme/ThemeSelector";
 
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
@@ -1173,19 +1174,25 @@ Output your response as JSON with:
 
     return (
         <div className="min-h-screen pb-20 md:pb-8 relative">
-            <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-700 text-white relative overflow-hidden">
+            <div 
+              className="relative overflow-hidden transition-colors duration-300"
+              style={{ 
+                  background: 'linear-gradient(to right, var(--primary), var(--accent))',
+                  color: 'var(--primary-foreground)'
+              }}
+            >
                 <div className="absolute inset-0 bg-black/10"></div>
                 <div className="absolute inset-0 bg-gradient-to-r from-white/5 to-transparent"></div>
                 <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                     <div className="flex justify-between items-start mb-6">
                         <div>
-                            <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-3xl md:text-4xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-100">
+                            <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-3xl md:text-4xl font-bold mb-2" style={{ color: 'var(--primary-foreground)' }}>
                                 {t('dashboard.welcome')}, {user.full_name || user.email}!
                             </motion.h1>
                             <div className="flex items-center gap-4">
                                 {currentClass ? (
                                     <div className="flex items-center gap-3">
-                                        <p className="text-blue-100 font-medium">
+                                        <p className="font-medium" style={{ opacity: 0.9 }}>
                                             {currentClass.name} {user.app_role === 'teacher' ? `- Class Code: ${currentClass.class_code}`: ''}
                                         </p>
                                         {allClasses.length > 1 && (
@@ -1216,20 +1223,20 @@ Output your response as JSON with:
                                         )}
                                     </div>
                                 ) : (
-                                    <p className="text-blue-100 font-medium">{t('dashboard.loadingClassroom')}</p>
-                                )}
-                            </div>
-                        </div>
-                        <div className="flex flex-col items-end gap-2">
-                            <div className="flex items-center gap-3">
-                                <Button variant="outline" size="sm" onClick={handleFeedbackClick} className="text-indigo-600 border-white/20 hover:bg-white/10 hover:text-white rounded-xl">
-                                <MessageCircle className="w-4 h-4 mr-2" />
-                                {t('dashboard.feedback')}
-                            </Button>
-                            <Button variant="outline" size="sm" onClick={handleLogout} className="text-indigo-600 border-white/20 hover:bg-white/10 hover:text-white rounded-xl">
-                                <LogOut className="w-4 h-4 mr-2" />
-                                {t('dashboard.logout')}
-                            </Button>
+                                    <p className="font-medium" style={{ opacity: 0.9 }}>{t('dashboard.loadingClassroom')}</p>
+                                    )}
+                                    </div>
+                                    </div>
+                                    <div className="flex flex-col items-end gap-2">
+                                    <div className="flex items-center gap-3">
+                                    <Button variant="outline" size="sm" onClick={handleFeedbackClick} className="border-white/20 hover:bg-white/10 hover:text-white rounded-xl" style={{ color: 'var(--primary-foreground)', borderColor: 'rgba(255,255,255,0.2)' }}>
+                                    <MessageCircle className="w-4 h-4 mr-2" />
+                                    {t('dashboard.feedback')}
+                                    </Button>
+                                    <Button variant="outline" size="sm" onClick={handleLogout} className="border-white/20 hover:bg-white/10 hover:text-white rounded-xl" style={{ color: 'var(--primary-foreground)', borderColor: 'rgba(255,255,255,0.2)' }}>
+                                    <LogOut className="w-4 h-4 mr-2" />
+                                    {t('dashboard.logout')}
+                                    </Button>
                             {/* Show supercharged badge for students (non-interactive) */}
                             {user.app_role === 'student' && (
                                 <>
@@ -1247,7 +1254,8 @@ Output your response as JSON with:
                                                 variant="outline"
                                                 size="icon"
                                                 title="Settings"
-                                                className="text-indigo-600 border-white/20 hover:bg-white/10 hover:text-white rounded-xl h-9 w-9"
+                                                className="border-white/20 hover:bg-white/10 hover:text-white rounded-xl h-9 w-9"
+                                                style={{ color: 'var(--primary-foreground)', borderColor: 'rgba(255,255,255,0.2)' }}
                                             >
                                                 <Settings className="w-4 h-4" />
                                             </Button>
@@ -1269,6 +1277,24 @@ Output your response as JSON with:
                                                     </div>
                                                     <LanguageSelector />
                                                 </div>
+                                                <div className="flex flex-col space-y-4">
+                                                      <div className="flex flex-col space-y-1">
+                                                          <Label className="text-base font-medium">Theme</Label>
+                                                          <span className="text-sm text-slate-500">
+                                                              Customize the platform's appearance
+                                                          </span>
+                                                      </div>
+                                                      <ThemeSelector />
+                                                </div>
+                                                <div className="flex flex-col space-y-4">
+                                                    <div className="flex flex-col space-y-1">
+                                                        <Label className="text-base font-medium">Theme</Label>
+                                                        <span className="text-sm text-slate-500">
+                                                            Customize the platform's appearance
+                                                        </span>
+                                                    </div>
+                                                    <ThemeSelector />
+                                                </div>
                                             </div>
                                         </DialogContent>
                                     </Dialog>
@@ -1281,10 +1307,11 @@ Output your response as JSON with:
                                         }}
                                         disabled={isSyncing}
                                         title="Refresh Page"
-                                        className="text-indigo-600 border-white/20 hover:bg-white/10 hover:text-white rounded-xl h-9 w-9"
-                                    >
+                                        className="border-white/20 hover:bg-white/10 hover:text-white rounded-xl h-9 w-9"
+                                        style={{ color: 'var(--primary-foreground)', borderColor: 'rgba(255,255,255,0.2)' }}
+                                        >
                                         <RefreshCw className={`w-4 h-4 ${isSyncing ? 'animate-spin' : ''}`} />
-                                    </Button>
+                                        </Button>
                                 </>
                                 )}
                             {user.app_role === 'teacher' && (
@@ -1303,7 +1330,8 @@ Output your response as JSON with:
                                             variant="outline"
                                             size="icon"
                                             title="Class Settings"
-                                            className="text-indigo-600 border-white/20 hover:bg-white/10 hover:text-white rounded-xl h-9 w-9"
+                                            className="border-white/20 hover:bg-white/10 hover:text-white rounded-xl h-9 w-9"
+                                            style={{ color: 'var(--primary-foreground)', borderColor: 'rgba(255,255,255,0.2)' }}
                                         >
                                             <Settings className="w-4 h-4" />
                                         </Button>
@@ -1379,15 +1407,21 @@ Output your response as JSON with:
                                 <>
                                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                                         <div className="flex items-center space-x-4">
-                                            <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center"><Users className="w-6 h-6 text-indigo-600" /></div>
+                                            <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'var(--secondary)' }}>
+                                              <Users className="w-6 h-6" style={{ color: 'var(--primary)' }} />
+                                            </div>
                                             <div>
-                                                <h2 className="text-3xl font-bold text-slate-900">{t('dashboard.teacherDashboard')}</h2>
-                                                <p className="text-slate-600 mt-1">{t('dashboard.teacherDescription')}</p>
+                                                <h2 className="text-3xl font-bold" style={{ color: 'var(--text-main)' }}>{t('dashboard.teacherDashboard')}</h2>
+                                                <p className="mt-1" style={{ color: 'var(--text-muted)' }}>{t('dashboard.teacherDescription')}</p>
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-2">
                                             {!showAssignmentForm && !selectedAssignment && !showCreateForm && (
-                                                <Button onClick={handleCreateNewAssignment} className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200">
+                                                <Button 
+                                                  onClick={handleCreateNewAssignment} 
+                                                  className="px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
+                                                  style={{ backgroundColor: 'var(--primary)', color: 'var(--primary-foreground)' }}
+                                                >
                                                     <Plus className="w-5 h-5 mr-2" /> {t('dashboard.createAssignment')}
                                                 </Button>
                                             )}
@@ -1508,10 +1542,12 @@ Output your response as JSON with:
                             ) : (
                                 <>
                                     <div className="flex items-center space-x-4 mb-8">
-                                        <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center"><GraduationCap className="w-6 h-6 text-purple-600" /></div>
+                                        <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'var(--secondary)' }}>
+                                          <GraduationCap className="w-6 h-6" style={{ color: 'var(--primary)' }} />
+                                        </div>
                                         <div>
-                                            <h2 className="text-3xl font-bold text-slate-900">{t('dashboard.studentPortal')}</h2>
-                                            <p className="text-slate-600 mt-1">{t('dashboard.studentDescription')}</p>
+                                            <h2 className="text-3xl font-bold" style={{ color: 'var(--text-main)' }}>{t('dashboard.studentPortal')}</h2>
+                                            <p className="mt-1" style={{ color: 'var(--text-muted)' }}>{t('dashboard.studentDescription')}</p>
                                         </div>
                                     </div>
                                     <motion.div
