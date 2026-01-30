@@ -1273,6 +1273,7 @@ Output your response as JSON with:
                                     <div className="relative inline-block">
                                     <Dialog>
                                         <DialogTrigger asChild>
+                                            <div className="relative inline-block">
                                             <Button 
                                                 variant="ghost"
                                                 size="icon"
@@ -1367,6 +1368,7 @@ Output your response as JSON with:
                                 <Dialog>
                                     <div className="relative inline-block">
                                     <DialogTrigger asChild>
+                                        <div className="relative inline-block">
                                         <Button 
                                             variant="ghost"
                                             size="icon"
@@ -1384,6 +1386,8 @@ Output your response as JSON with:
                                         >
                                             <Settings className="w-4 h-4" />
                                         </Button>
+
+                                        </div>
                                     </DialogTrigger>
 
                                     </div>
