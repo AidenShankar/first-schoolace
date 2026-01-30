@@ -145,10 +145,10 @@ export default function GradedWorkList({ performanceData }) {
                                                 {work.submitted_at ? new Date(work.submitted_at).toLocaleDateString() : 'No date'}
                                             </span>
                                         </div>
-                                        <h4 className="font-bold text-slate-900 line-clamp-2 leading-tight group-hover:text-indigo-600 transition-colors text-base">
+                                        <h4 className="font-bold line-clamp-2 leading-tight group-hover:text-indigo-600 transition-colors text-base" style={{ color: `rgb(var(--color-text))` }}>
                                             {work.title}
                                         </h4>
-                                        <p className="text-xs text-slate-500 truncate mt-0.5 font-medium">
+                                        <p className="text-xs truncate mt-0.5 font-medium" style={{ color: `rgb(var(--color-textSecondary))` }}>
                                             {work.subject}
                                         </p>
                                     </div>

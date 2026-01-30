@@ -472,7 +472,7 @@ If some sections are missing, leave them as empty strings or arrays. Here is the
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                         <div className="flex items-center gap-4">
                              <div className="flex-shrink-0">
-                                <h1 className="text-3xl font-bold text-slate-900 flex items-center gap-3">
+                                <h1 className="text-3xl font-bold flex items-center gap-3" style={{ color: `rgb(var(--color-text))` }}>
                                     <BookOpen className="w-8 h-8 text-indigo-600" />
                                     {t('lessonPlans.title')}
                                 </h1>

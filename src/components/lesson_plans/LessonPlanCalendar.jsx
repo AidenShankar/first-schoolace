@@ -79,7 +79,7 @@ export default function LessonPlanCalendar({
     return (
         <div className="space-y-6">
             {/* Week Navigation */}
-            <Card>
+            <Card style={{ backgroundColor: `rgb(var(--color-surface))`, borderColor: `rgb(var(--color-border))` }}>
                 <CardContent className="p-4">
                     <div className="flex items-center justify-between">
                         <Button
@@ -112,7 +112,7 @@ export default function LessonPlanCalendar({
 
             {/* Teacher Release Status Legend */}
             {isTeacher && (
-                <Card>
+                <Card style={{ backgroundColor: `rgb(var(--color-surface))`, borderColor: `rgb(var(--color-border))` }}>
                     <CardContent className="p-4">
                         <div className="flex items-center justify-center gap-8 text-sm">
                             <div className="flex items-center gap-2">
@@ -274,7 +274,7 @@ export default function LessonPlanCalendar({
 
 
             {/* Summary Stats */}
-            <Card>
+            <Card style={{ backgroundColor: `rgb(var(--color-surface))`, borderColor: `rgb(var(--color-border))` }}>
                 <CardContent className="p-4">
                     <div className="flex items-center justify-center gap-8 text-sm" style={{ color: `rgb(var(--color-textSecondary))` }}>
                         <div className="text-center">

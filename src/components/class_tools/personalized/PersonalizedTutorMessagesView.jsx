@@ -86,7 +86,7 @@ export default function PersonalizedTutorMessagesView({ allClasses }) {
         : messagePairs;
 
     return (
-        <Card className="backdrop-blur-sm shadow-xl themed-card">
+        <Card className="backdrop-blur-sm shadow-xl themed-card" style={{ backgroundColor: `rgb(var(--color-surface))`, borderColor: `rgb(var(--color-border))` }}>
             <CardHeader>
                 <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
                     <div>
@@ -177,7 +177,7 @@ export default function PersonalizedTutorMessagesView({ allClasses }) {
                                                         <DialogHeader>
                                                             <DialogTitle>AI Tutor Response</DialogTitle>
                                                         </DialogHeader>
-                                                        <div className="py-4 whitespace-pre-wrap text-slate-700">
+                                                        <div className="py-4 whitespace-pre-wrap" style={{ color: `rgb(var(--color-text))` }}>
                                                             {aiResponse.content}
                                                         </div>
                                                     </DialogContent>

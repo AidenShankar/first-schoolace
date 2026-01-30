@@ -122,7 +122,7 @@ export default function ScheduleView({ currentClass, user }) {
     };
 
     return (
-        <Card className="h-full themed-card">
+        <Card className="h-full themed-card" style={{ backgroundColor: `rgb(var(--color-surface))`, borderColor: `rgb(var(--color-border))` }}>
             <CardHeader className="flex flex-row items-center justify-between">
                 <div>
                     <CardTitle>{t('classTools.classSchedule')}</CardTitle>

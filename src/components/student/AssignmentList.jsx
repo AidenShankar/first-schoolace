@@ -180,7 +180,7 @@ export default function AssignmentList({ assignments, onUpload, userSubmissions,
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
               >
-                <Card className="backdrop-blur-sm hover:shadow-xl transition-all duration-300 h-full themed-card">
+                <Card className="backdrop-blur-sm hover:shadow-xl transition-all duration-300 h-full themed-card" style={{ backgroundColor: `rgb(var(--color-surface))`, borderColor: `rgb(var(--color-border))` }}>
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
                       <div className="flex-1 min-w-0">

@@ -529,10 +529,10 @@ export default function ChatTutor({ user, learningData, language = 'EN', isPerso
                         <BrainCircuit size={24} />
                     </div>
                     <div className="flex-1">
-                        <h3 className="text-xl font-semibold text-slate-900 tracking-tight">
+                        <h3 className="text-xl font-semibold tracking-tight" style={{ color: `rgb(var(--color-text))` }}>
                             {t('personalizedLearning.chatWithAce', language)}
                         </h3>
-                        <p className="text-sm text-slate-500 font-medium">{t('personalizedLearning.yourPersonalTutor', language)}</p>
+                        <p className="text-sm font-medium" style={{ color: `rgb(var(--color-textSecondary))` }}>{t('personalizedLearning.yourPersonalTutor', language)}</p>
                     </div>
                     
                     <div className="flex flex-col items-end gap-2">

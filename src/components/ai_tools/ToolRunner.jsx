@@ -145,7 +145,7 @@ export default function ToolRunner({ tool }) {
     };
     
     return (
-        <Card className="shadow-lg h-full flex flex-col themed-card">
+        <Card className="shadow-lg h-full flex flex-col themed-card" style={{ backgroundColor: `rgb(var(--color-surface))`, borderColor: `rgb(var(--color-border))` }}>
             <CardHeader className="flex-shrink-0">
                 <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: `linear-gradient(to right, rgb(var(--color-primary)), rgb(var(--color-secondary)))` }}>
@@ -167,7 +167,7 @@ export default function ToolRunner({ tool }) {
                         if (InputComponent === Select) {
                             return (
                                 <div key={field.id} className="space-y-2">
-                                    <label htmlFor={field.id} className="font-medium text-slate-700">
+                                    <label htmlFor={field.id} className="font-medium" style={{ color: `rgb(var(--color-text))` }}>
                                         {field.label} {field.required && <span className="text-red-500">*</span>}
                                     </label>
                                     <Select value={formState[field.id] || ''} onValueChange={(val) => handleInputChange(field.id, val)}>
