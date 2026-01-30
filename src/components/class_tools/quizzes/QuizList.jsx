@@ -134,7 +134,7 @@ export default function QuizList({ user, quizzes, submissions, onTakeQuiz, onVie
                 const isCompleted = submission?.status === 'completed';
 
                 return (
-                    <div key={quiz.id} className="p-4 border rounded-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4" style={{ borderColor: `rgb(var(--color-border))` }}>
+                    <div key={quiz.id} className="p-4 border rounded-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4" style={{ backgroundColor: `rgb(var(--color-surface))`, borderColor: `rgb(var(--color-border))` }}>
                         <div className="flex-grow">
                             <h4 className="font-semibold" style={{ color: `rgb(var(--color-text))` }}>{quiz.title}</h4>
                             <p className="text-sm" style={{ color: `rgb(var(--color-textSecondary))` }}>{quiz.description}</p>
