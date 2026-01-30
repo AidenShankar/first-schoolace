@@ -122,7 +122,7 @@ export default function QuizzesView({ user, currentClass, allClasses }) {
     };
 
     return (
-        <Card>
+        <Card className="themed-card">
             <CardHeader>
                 <CardTitle>{t('classTools.quizzes')}</CardTitle>
             </CardHeader>

@@ -86,7 +86,7 @@ export default function PersonalizedTutorMessagesView({ allClasses }) {
         : messagePairs;
 
     return (
-        <Card className="bg-white/80 backdrop-blur-sm border-slate-200/60 shadow-xl">
+        <Card className="backdrop-blur-sm shadow-xl themed-card">
             <CardHeader>
                 <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
                     <div>

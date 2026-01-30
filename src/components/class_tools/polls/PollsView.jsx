@@ -80,7 +80,7 @@ export default function PollsView({ user, currentClass }) {
     };
 
     return (
-        <Card>
+        <Card className="themed-card">
             <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>{t('classTools.polls')}</CardTitle>
                 {user.app_role === 'teacher' && (

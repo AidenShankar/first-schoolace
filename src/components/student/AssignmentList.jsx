@@ -364,7 +364,10 @@ export default function AssignmentList({ assignments, onUpload, userSubmissions,
                         <Button
                           onClick={() => onUpload(assignment)}
                           size="sm"
-                          className="flex-1 text-xs themed-button"
+                          className="flex-1 text-xs transition-colors"
+                          style={{ backgroundColor: `rgb(var(--color-primary))`, color: 'white' }}
+                          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = `rgb(var(--color-primaryHover))`}
+                          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = `rgb(var(--color-primary))`}
                         >
                           <Upload className="w-3 h-3 mr-1" />
                           {submissions.length > 0 ? "Submit More" : "Submit"}

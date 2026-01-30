@@ -122,7 +122,7 @@ export default function ScheduleView({ currentClass, user }) {
     };
 
     return (
-        <Card className="h-full">
+        <Card className="h-full themed-card">
             <CardHeader className="flex flex-row items-center justify-between">
                 <div>
                     <CardTitle>{t('classTools.classSchedule')}</CardTitle>
@@ -163,12 +163,12 @@ export default function ScheduleView({ currentClass, user }) {
                 </div>
             </CardHeader>
             <CardContent>
-                <div className="grid grid-cols-7 gap-px bg-slate-200 rounded-lg overflow-hidden">
+                <div className="grid grid-cols-7 gap-px rounded-lg overflow-hidden" style={{ backgroundColor: `rgb(var(--color-border))` }}>
                     {/* Header Row */}
                     {weekDays.map(day => (
-                        <div key={day.toISOString()} className={`bg-slate-50 p-3 text-center font-medium text-sm ${isToday(day) ? 'bg-blue-50 text-blue-700' : 'text-slate-600'}`}>
+                        <div key={day.toISOString()} className={`p-3 text-center font-medium text-sm ${isToday(day) ? 'text-blue-700' : ''}`} style={{ backgroundColor: isToday(day) ? `rgba(var(--color-primary), 0.1)` : `rgba(var(--color-surface), 0.5)`, color: isToday(day) ? `rgb(var(--color-primary))` : `rgb(var(--color-textSecondary))` }}>
                             <div className="font-semibold">{format(day, 'EEE')}</div>
-                            <div className={`text-lg ${isToday(day) ? 'bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center mx-auto mt-1' : ''}`}>
+                            <div className={`text-lg ${isToday(day) ? 'text-white rounded-full w-8 h-8 flex items-center justify-center mx-auto mt-1' : ''}`} style={ isToday(day) ? { backgroundColor: `rgb(var(--color-primary))` } : {}}>
                                 {format(day, 'd')}
                             </div>
                         </div>
@@ -178,7 +178,7 @@ export default function ScheduleView({ currentClass, user }) {
                     {weekDays.map(day => {
                         const dayEvents = getEventsForDay(day);
                         return (
-                            <div key={`events-${day.toISOString()}`} className="bg-white p-2 min-h-[200px] border-t border-slate-100 overflow-y-auto">
+                            <div key={`events-${day.toISOString()}`} className="p-2 min-h-[200px] border-t overflow-y-auto" style={{ backgroundColor: `rgb(var(--color-surface))`, borderColor: `rgb(var(--color-border))` }}>
                                 <div className="space-y-1">
                                     {dayEvents.map(event => (
                                         <div 

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Pin, PinOff } from 'lucide-react';
@@ -10,11 +9,22 @@ export default function ToolCard({ icon: Icon, title, description, isSelected, i
         <motion.div
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.98 }}
-            className={`w-full p-4 rounded-xl text-left transition-all duration-200 border-2 relative ${
-                isSelected 
-                ? 'bg-indigo-50 border-indigo-500 shadow-lg' 
-                : 'bg-white border-transparent hover:bg-slate-50'
-            }`}
+            className="w-full p-4 rounded-xl text-left transition-all duration-200 border-2 relative"
+            style={{
+                backgroundColor: isSelected ? `rgba(var(--color-primary), 0.1)` : `rgb(var(--color-surface))`,
+                borderColor: isSelected ? `rgb(var(--color-primary))` : 'transparent',
+                boxShadow: isSelected ? '0 10px 15px -3px rgba(0, 0, 0, 0.1)' : 'none'
+            }}
+            onMouseEnter={(e) => {
+                if (!isSelected) {
+                    e.currentTarget.style.backgroundColor = `rgba(var(--color-border), 0.3)`;
+                }
+            }}
+            onMouseLeave={(e) => {
+                if (!isSelected) {
+                    e.currentTarget.style.backgroundColor = `rgb(var(--color-surface))`;
+                }
+            }}
         >
             <Button
                 variant="ghost"
@@ -33,8 +43,8 @@ export default function ToolCard({ icon: Icon, title, description, isSelected, i
                 className="w-full text-left"
             >
                 <div className="flex items-start gap-4">
-                    <div className={`flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center ${isSelected ? 'bg-indigo-100' : 'bg-slate-100'}`}>
-                        <Icon className={`w-5 h-5 ${isSelected ? 'text-indigo-600' : 'text-slate-600'}`} />
+                    <div className="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: isSelected ? `rgba(var(--color-primary), 0.2)` : `rgba(var(--color-border), 0.5)` }}>
+                        <Icon className="w-5 h-5" style={{ color: isSelected ? `rgb(var(--color-primary))` : `rgb(var(--color-textSecondary))` }} />
                     </div>
                     <div className="pr-8">
                         <h3 className="font-semibold text-slate-800 flex items-center gap-2">

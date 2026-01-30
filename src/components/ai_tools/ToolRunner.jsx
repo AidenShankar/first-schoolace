@@ -145,10 +145,10 @@ export default function ToolRunner({ tool }) {
     };
     
     return (
-        <Card className="shadow-lg border-slate-200/60 h-full flex flex-col">
+        <Card className="shadow-lg h-full flex flex-col themed-card">
             <CardHeader className="flex-shrink-0">
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-lg flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: `linear-gradient(to right, rgb(var(--color-primary)), rgb(var(--color-secondary)))` }}>
                         <tool.icon className="w-5 h-5 text-white" />
                     </div>
                     <div>
@@ -214,7 +214,7 @@ export default function ToolRunner({ tool }) {
                         );
                     })}
                     
-                    <Button onClick={handleGenerate} disabled={!isFormValid || isLoading} className="w-full py-6 text-lg">
+                    <Button onClick={handleGenerate} disabled={!isFormValid || isLoading} className="w-full py-6 text-lg themed-button">
                         {isLoading ? (
                             <>
                                 <Loader2 className="w-6 h-6 mr-2 animate-spin" />
@@ -233,7 +233,7 @@ export default function ToolRunner({ tool }) {
                 <div className="flex-1 flex flex-col space-y-4">
                     <h3 className="font-semibold text-slate-800 flex-shrink-0">{t('aiTools.output')}</h3>
                     {isLoading && !output ? (
-                        <div className="flex-1 flex flex-col items-center justify-center p-8 text-slate-500 bg-slate-50 rounded-xl border gap-2">
+                        <div className="flex-1 flex flex-col items-center justify-center p-8 rounded-xl border gap-2" style={{ backgroundColor: `rgba(var(--color-border), 0.3)`, color: `rgb(var(--color-textSecondary))`, borderColor: `rgb(var(--color-border))` }}>
                             <Loader2 className="w-8 h-8 animate-spin" />
                             {isTranslating && <p className="text-sm">{t('aiTools.translating') || 'Translating...'}</p>}
                         </div>
@@ -246,7 +246,7 @@ export default function ToolRunner({ tool }) {
                             </p>
                         </div>
                     ) : output && output.type === 'success' ? (
-                        <div className="flex-1 overflow-y-auto border rounded-lg bg-white">
+                        <div className="flex-1 overflow-y-auto border rounded-lg" style={{ backgroundColor: `rgb(var(--color-surface))`, borderColor: `rgb(var(--color-border))` }}>
                            {tool.outputComponent === WorksheetOutput ? (
                                <WorksheetOutput content={output.content} />
                            ) : (
@@ -256,7 +256,7 @@ export default function ToolRunner({ tool }) {
                            )}
                         </div>
                     ) : (
-                        <div className="flex-1 flex items-center justify-center p-8 text-center text-slate-500 bg-slate-50 rounded-xl border border-dashed">
+                        <div className="flex-1 flex items-center justify-center p-8 text-center rounded-xl border border-dashed" style={{ backgroundColor: `rgba(var(--color-border), 0.3)`, color: `rgb(var(--color-textSecondary))`, borderColor: `rgb(var(--color-border))` }}>
                             {t('aiTools.outputPlaceholder')}
                         </div>
                     )}
