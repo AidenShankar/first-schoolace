@@ -1327,8 +1327,7 @@ Output your response as JSON with:
                                         </DialogContent>
                                         </Dialog>
                                         </div>
-                                    </div>
-                                    <Button 
+                                        <Button 
                                         variant="ghost"
                                         size="icon"
                                         onClick={() => {
