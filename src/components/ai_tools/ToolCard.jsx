@@ -47,13 +47,13 @@ export default function ToolCard({ icon: Icon, title, description, isSelected, i
                         <Icon className="w-5 h-5" style={{ color: isSelected ? `rgb(var(--color-primary))` : `rgb(var(--color-textSecondary))` }} />
                     </div>
                     <div className="pr-8">
-                        <h3 className="font-semibold text-slate-800 flex items-center gap-2">
+                        <h3 className="font-semibold flex items-center gap-2" style={{ color: `rgb(var(--color-text))` }}>
                             {title}
                             {hasBetaTag && (
                                 <Badge variant="outline" className="border-yellow-400 text-yellow-400 text-xs">Beta</Badge>
                             )}
                         </h3>
-                        <p className="text-sm text-slate-600 mt-1">{description}</p>
+                        <p className="text-sm mt-1" style={{ color: `rgb(var(--color-textSecondary))` }}>{description}</p>
                     </div>
                 </div>
             </button>

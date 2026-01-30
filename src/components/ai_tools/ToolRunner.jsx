@@ -152,8 +152,8 @@ export default function ToolRunner({ tool }) {
                         <tool.icon className="w-5 h-5 text-white" />
                     </div>
                     <div>
-                        <CardTitle className="text-xl font-bold text-slate-900">{tool.name}</CardTitle>
-                        <CardDescription className="text-slate-600">{tool.description}</CardDescription>
+                        <CardTitle className="text-xl font-bold" style={{ color: `rgb(var(--color-text))` }}>{tool.name}</CardTitle>
+                        <CardDescription style={{ color: `rgb(var(--color-textSecondary))` }}>{tool.description}</CardDescription>
                     </div>
                 </div>
             </CardHeader>
@@ -201,7 +201,7 @@ export default function ToolRunner({ tool }) {
                         // Default rendering for other input components (e.g., Textarea, Input, custom inputs)
                         return (
                             <div key={field.id} className="space-y-2">
-                                <label htmlFor={field.id} className="font-medium text-slate-700">
+                                <label htmlFor={field.id} className="font-medium" style={{ color: `rgb(var(--color-text))` }}>
                                     {field.label} {field.required && <span className="text-red-500">*</span>}
                                 </label>
                                 <InputComponent
@@ -231,7 +231,7 @@ export default function ToolRunner({ tool }) {
 
                 {/* Output Section */}
                 <div className="flex-1 flex flex-col space-y-4">
-                    <h3 className="font-semibold text-slate-800 flex-shrink-0">{t('aiTools.output')}</h3>
+                    <h3 className="font-semibold flex-shrink-0" style={{ color: `rgb(var(--color-text))` }}>{t('aiTools.output')}</h3>
                     {isLoading && !output ? (
                         <div className="flex-1 flex flex-col items-center justify-center p-8 rounded-xl border gap-2" style={{ backgroundColor: `rgba(var(--color-border), 0.3)`, color: `rgb(var(--color-textSecondary))`, borderColor: `rgb(var(--color-border))` }}>
                             <Loader2 className="w-8 h-8 animate-spin" />
