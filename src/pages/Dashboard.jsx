@@ -1173,8 +1173,8 @@ Output your response as JSON with:
     }
 
     return (
-        <div className="min-h-screen pb-20 md:pb-8 relative">
-            <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-700 text-white relative overflow-hidden">
+        <div className="min-h-screen pb-20 md:pb-8 relative" style={{ backgroundColor: `rgb(var(--color-background))` }}>
+            <div className="text-white relative overflow-hidden" style={{ background: `linear-gradient(to right, rgb(var(--color-primary)), rgb(var(--color-secondary)), rgb(var(--color-accent)))` }}>
                 <div className="absolute inset-0 bg-black/10"></div>
                 <div className="absolute inset-0 bg-gradient-to-r from-white/5 to-transparent"></div>
                 <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -1223,11 +1223,11 @@ Output your response as JSON with:
                         </div>
                         <div className="flex flex-col items-end gap-2">
                             <div className="flex items-center gap-3">
-                                <Button variant="outline" size="sm" onClick={handleFeedbackClick} className="text-indigo-600 border-white/20 hover:bg-white/10 hover:text-white rounded-xl">
+                                <Button variant="outline" size="sm" onClick={handleFeedbackClick} className="border-white/20 hover:bg-white/10 hover:text-white rounded-xl" style={{ color: 'rgb(var(--color-surface))' }}>
                                 <MessageCircle className="w-4 h-4 mr-2" />
                                 {t('dashboard.feedback')}
                             </Button>
-                            <Button variant="outline" size="sm" onClick={handleLogout} className="text-indigo-600 border-white/20 hover:bg-white/10 hover:text-white rounded-xl">
+                            <Button variant="outline" size="sm" onClick={handleLogout} className="border-white/20 hover:bg-white/10 hover:text-white rounded-xl" style={{ color: 'rgb(var(--color-surface))' }}>
                                 <LogOut className="w-4 h-4 mr-2" />
                                 {t('dashboard.logout')}
                             </Button>
@@ -1248,8 +1248,9 @@ Output your response as JSON with:
                                                 variant="outline"
                                                 size="icon"
                                                 title="Settings"
-                                                className="text-indigo-600 border-white/20 hover:bg-white/10 hover:text-white rounded-xl h-9 w-9"
-                                            >
+                                                className="border-white/20 hover:bg-white/10 hover:text-white rounded-xl h-9 w-9"
+                                                style={{ color: 'rgb(var(--color-surface))' }}
+                                                >
                                                 <Settings className="w-4 h-4" />
                                             </Button>
                                         </DialogTrigger>
@@ -1291,8 +1292,9 @@ Output your response as JSON with:
                                         }}
                                         disabled={isSyncing}
                                         title="Refresh Page"
-                                        className="text-indigo-600 border-white/20 hover:bg-white/10 hover:text-white rounded-xl h-9 w-9"
-                                    >
+                                        className="border-white/20 hover:bg-white/10 hover:text-white rounded-xl h-9 w-9"
+                                        style={{ color: 'rgb(var(--color-surface))' }}
+                                        >
                                         <RefreshCw className={`w-4 h-4 ${isSyncing ? 'animate-spin' : ''}`} />
                                     </Button>
                                 </>
@@ -1313,7 +1315,8 @@ Output your response as JSON with:
                                             variant="outline"
                                             size="icon"
                                             title="Class Settings"
-                                            className="text-indigo-600 border-white/20 hover:bg-white/10 hover:text-white rounded-xl h-9 w-9"
+                                            className="border-white/20 hover:bg-white/10 hover:text-white rounded-xl h-9 w-9"
+                                            style={{ color: 'rgb(var(--color-surface))' }}
                                         >
                                             <Settings className="w-4 h-4" />
                                         </Button>
