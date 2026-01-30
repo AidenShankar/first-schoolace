@@ -33,10 +33,15 @@ export default function QuizTaker({ user, quiz, onFinish }) {
         try {
             // The submission object might be stale, refetch it
             const currentSubmissions = await QuizSubmission.filter({ quiz_id: quiz.id, student_id: user.id, status: 'in-progress' });
+            
             if (currentSubmissions.length === 0) {
                  setIsCompleted(true);
+                 // Ensure layout is notified even if we found no in-progress submissions here (already closed)
+                 window.dispatchEvent(new CustomEvent('quiz-state-change', { detail: { quizInProgress: false } }));
                  return;
-            } // Already submitted elsewhere
+            } 
+            
+            // Use the first one for answer association
             const submissionToUpdate = currentSubmissions[0];
 
             // Save all answers
@@ -69,11 +74,17 @@ export default function QuizTaker({ user, quiz, onFinish }) {
             }
             
             const finalScore = allQuestions.length > 0 ? (score / allQuestions.length) * 100 : 0;
-            await QuizSubmission.update(submissionToUpdate.id, { 
-                status: 'completed', 
-                score: parseFloat(finalScore.toFixed(2)), 
-                completed_at: new Date().toISOString() 
-            });
+            const completionDate = new Date().toISOString();
+
+            // CRITICAL FIX: Close ALL in-progress submissions for this quiz/user to prevent "stuck" locked state
+            // caused by duplicate submissions (race conditions)
+            for (const sub of currentSubmissions) {
+                await QuizSubmission.update(sub.id, { 
+                    status: 'completed', 
+                    score: parseFloat(finalScore.toFixed(2)), 
+                    completed_at: completionDate 
+                });
+            }
 
             // Clear saved quiz state
             localStorage.removeItem(`quiz_${quiz.id}_${user.id}`);
