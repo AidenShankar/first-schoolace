@@ -1262,7 +1262,6 @@ Output your response as JSON with:
                             {/* Show supercharged badge for students (non-interactive) */}
                             {user.app_role === 'student' && (
                                 <>
-                                    <div className="relative">
                                     <Button 
                                         onClick={() => {}} 
                                         className="text-white text-xs px-3 py-3 rounded-full shadow-lg font-bold tracking-wider cursor-default h-10"
@@ -1271,13 +1270,6 @@ Output your response as JSON with:
                                     >
                                         SUPERCHARGED
                                     </Button>
-                                    <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 flex flex-col items-center pointer-events-none animate-bounce z-50">
-                                        <div className="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[8px] border-b-white"></div>
-                                        <div className="bg-white text-indigo-600 text-xs font-bold px-2 py-1 rounded shadow-lg whitespace-nowrap">
-                                            New Themes!
-                                        </div>
-                                    </div>
-                                    </div>
                                     <Dialog>
                                         <DialogTrigger asChild>
                                             <Button 
@@ -1356,7 +1348,6 @@ Output your response as JSON with:
                                 </>
                                 )}
                             {user.app_role === 'teacher' && (
-                                <div className="relative">
                                 <Button 
                                     onClick={() => {}} 
                                     className="text-white text-xs px-3 py-3 rounded-full shadow-lg font-bold tracking-wider cursor-default h-10"
@@ -1364,18 +1355,12 @@ Output your response as JSON with:
                                     style={{ background: `linear-gradient(to right, rgb(var(--color-primary)), rgb(var(--color-secondary)))` }}
                                 >
                                     SUPERCHARGED
-                                </Button>
-                                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 flex flex-col items-center pointer-events-none animate-bounce z-50">
-                                    <div className="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[8px] border-b-white"></div>
-                                    <div className="bg-white text-indigo-600 text-xs font-bold px-2 py-1 rounded shadow-lg whitespace-nowrap">
-                                        New Themes!
-                                    </div>
-                                </div>
-                                </div>
+                                </Button
                             )}
                             {user.app_role === 'teacher' && (
                                 <Dialog>
                                     <DialogTrigger asChild>
+                                        <div className="relative inline-block">
                                         <Button 
                                             variant="ghost"
                                             size="icon"
@@ -1393,6 +1378,13 @@ Output your response as JSON with:
                                         >
                                             <Settings className="w-4 h-4" />
                                         </Button>
+                                        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 flex flex-col items-center pointer-events-none animate-bounce z-50">
+                                            <div className="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[8px] border-b-white"></div>
+                                            <div className="bg-white text-indigo-600 text-xs font-bold px-2 py-1 rounded shadow-lg whitespace-nowrap">
+                                                New Themes!
+                                            </div>
+                                        </div>
+                                        </div>
                                     </DialogTrigger>
                                     <DialogContent>
                                         <DialogHeader>
