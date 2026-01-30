@@ -1270,8 +1270,8 @@ Output your response as JSON with:
                                     >
                                         SUPERCHARGED
                                     </Button>
-                                    <div className="relative">
                                     <Dialog>
+                                        <div className="relative">
                                         <DialogTrigger asChild>
                                             <Button 
                                                 variant="ghost"
@@ -1291,6 +1291,13 @@ Output your response as JSON with:
                                                 <Settings className="w-4 h-4" />
                                             </Button>
                                         </DialogTrigger>
+                                        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 flex flex-col items-center pointer-events-none animate-bounce z-50">
+                                            <div className="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[8px] border-b-white"></div>
+                                            <div className="bg-white text-indigo-600 text-xs font-bold px-2 py-1 rounded shadow-lg whitespace-nowrap">
+                                                New Themes!
+                                            </div>
+                                        </div>
+                                        </div>
                                         <DialogContent>
                                             <DialogHeader>
                                                 <DialogTitle>Settings</DialogTitle>
@@ -1320,13 +1327,6 @@ Output your response as JSON with:
                                             </div>
                                         </DialogContent>
                                     </Dialog>
-                                    <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 flex flex-col items-center pointer-events-none animate-bounce z-50">
-                                        <div className="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[8px] border-b-white"></div>
-                                        <div className="bg-white text-indigo-600 text-xs font-bold px-2 py-1 rounded shadow-lg whitespace-nowrap">
-                                            New Themes!
-                                        </div>
-                                    </div>
-                                    </div>
                                     <Button 
                                         variant="ghost"
                                         size="icon"
