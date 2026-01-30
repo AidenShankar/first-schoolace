@@ -37,8 +37,8 @@ export default function PollCreateForm({ currentClass, onCreated, onCancel }) {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="p-4 border rounded-lg space-y-4">
-            <h3 className="font-semibold">{t('classTools.createNewPoll')}</h3>
+        <form onSubmit={handleSubmit} className="p-4 border rounded-lg space-y-4" style={{ borderColor: `rgb(var(--color-border))` }}>
+            <h3 className="font-semibold" style={{ color: `rgb(var(--color-text))` }}>{t('classTools.createNewPoll')}</h3>
             <div>
                 <Label>{t('classTools.pollQuestion')}</Label>
                 <Input value={question} onChange={e => setQuestion(e.target.value)} required />

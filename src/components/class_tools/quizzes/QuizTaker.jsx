@@ -227,8 +227,8 @@ export default function QuizTaker({ user, quiz, onFinish }) {
              <Card>
                 <CardContent className="p-8 text-center space-y-4">
                     <CheckCircle className="w-16 h-16 text-green-500 mx-auto" />
-                    <h2 className="text-2xl font-bold">Quiz Submitted!</h2>
-                    <p className="text-slate-600">Your quiz has been successfully submitted.</p>
+                    <h2 className="text-2xl font-bold" style={{ color: `rgb(var(--color-text))` }}>Quiz Submitted!</h2>
+                    <p style={{ color: `rgb(var(--color-textSecondary))` }}>Your quiz has been successfully submitted.</p>
                     <Button onClick={() => finishHandler.current()}>Return to Quiz List</Button>
                 </CardContent>
             </Card>
@@ -240,7 +240,7 @@ export default function QuizTaker({ user, quiz, onFinish }) {
             <Card>
                 <CardContent className="p-8 text-center">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
-                    <p className="text-slate-600">Loading quiz...</p>
+                    <p style={{ color: `rgb(var(--color-textSecondary))` }}>Loading quiz...</p>
                 </CardContent>
             </Card>
         );
@@ -257,7 +257,7 @@ export default function QuizTaker({ user, quiz, onFinish }) {
                         <div>
                             <CardTitle className="text-2xl">{quiz.title}</CardTitle>
                             {quiz.description && (
-                                <p className="text-slate-600 mt-1">{quiz.description}</p>
+                                <p className="mt-1" style={{ color: `rgb(var(--color-textSecondary))` }}>{quiz.description}</p>
                             )}
                         </div>
                         {timeLeft !== null && (
@@ -272,14 +272,14 @@ export default function QuizTaker({ user, quiz, onFinish }) {
                     </div>
                     
                     <div className="mt-4">
-                        <div className="flex justify-between text-sm text-slate-600 mb-2">
+                        <div className="flex justify-between text-sm mb-2" style={{ color: `rgb(var(--color-textSecondary))` }}>
                             <span>Question {currentQuestionIndex + 1} of {questions.length}</span>
                             <span>{Math.round(progress)}% Complete</span>
                         </div>
-                        <div className="w-full bg-slate-200 rounded-full h-2">
+                        <div className="w-full rounded-full h-2" style={{ backgroundColor: `rgb(var(--color-border))` }}>
                             <div 
-                                className="bg-indigo-600 h-2 rounded-full transition-all duration-300" 
-                                style={{ width: `${progress}%` }}
+                                className="h-2 rounded-full transition-all duration-300" 
+                                style={{ width: `${progress}%`, backgroundColor: `rgb(var(--color-primary))` }}
                             ></div>
                         </div>
                     </div>
@@ -289,7 +289,7 @@ export default function QuizTaker({ user, quiz, onFinish }) {
             <Card>
                 <CardContent className="p-6">
                     <div className="space-y-6">
-                        <h3 className="text-lg font-semibold leading-relaxed">
+                        <h3 className="text-lg font-semibold leading-relaxed" style={{ color: `rgb(var(--color-text))` }}>
                             {currentQuestion.question_text}
                         </h3>
                         
@@ -306,7 +306,16 @@ export default function QuizTaker({ user, quiz, onFinish }) {
                                 value={answers[currentQuestion.id] || ''}
                             >
                                 {Object.entries(currentQuestion.options).map(([key, value]) => (
-                                    <div key={key} className="flex items-center space-x-3 p-3 rounded-lg hover:bg-slate-50 border border-transparent hover:border-slate-200">
+                                    <div key={key} className="flex items-center space-x-3 p-3 rounded-lg border" 
+                                        style={{ borderColor: 'transparent' }}
+                                        onMouseEnter={(e) => {
+                                            e.currentTarget.style.backgroundColor = `rgba(var(--color-border), 0.3)`;
+                                            e.currentTarget.style.borderColor = `rgb(var(--color-border))`;
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            e.currentTarget.style.backgroundColor = 'transparent';
+                                            e.currentTarget.style.borderColor = 'transparent';
+                                        }}>
                                         <RadioGroupItem value={key} id={`${currentQuestion.id}-${key}`} />
                                         <Label 
                                             htmlFor={`${currentQuestion.id}-${key}`}
@@ -332,7 +341,7 @@ export default function QuizTaker({ user, quiz, onFinish }) {
                     Previous
                 </Button>
                 
-                <div className="text-sm text-slate-600">
+                <div className="text-sm" style={{ color: `rgb(var(--color-textSecondary))` }}>
                     {Object.keys(answers).length} of {questions.length} questions answered
                 </div>
 

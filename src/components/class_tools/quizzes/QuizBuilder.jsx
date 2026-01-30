@@ -108,8 +108,8 @@ function AIGenerator({ onQuestionsGenerated, t }) {
     };
     
     return (
-        <div className="p-4 border rounded-lg space-y-4 my-4 bg-slate-50">
-            <h3 className="font-semibold flex items-center gap-2"><Wand2 className="w-4 h-4 text-purple-500" /> {t('classTools.aiQuizGenerator')}</h3>
+        <div className="p-4 border rounded-lg space-y-4 my-4" style={{ backgroundColor: `rgb(var(--color-surface))`, borderColor: `rgb(var(--color-border))` }}>
+            <h3 className="font-semibold flex items-center gap-2" style={{ color: `rgb(var(--color-text))` }}><Wand2 className="w-4 h-4" style={{ color: `rgb(var(--color-primary))` }} /> {t('classTools.aiQuizGenerator')}</h3>
             <Select value={aiFormData.contextType} onValueChange={(val) => setAiFormData(prev => ({...prev, contextType: val}))}>
                 <SelectTrigger><SelectValue/></SelectTrigger>
                 <SelectContent>
@@ -276,7 +276,7 @@ export default function QuizBuilder({ user, currentClass, quiz, onSave, onCancel
 
     return (
         <div className="space-y-6">
-            <h2 className="text-2xl font-bold">{quiz ? t('classTools.editQuiz') : t('classTools.createQuiz')}</h2>
+            <h2 className="text-2xl font-bold" style={{ color: `rgb(var(--color-text))` }}>{quiz ? t('classTools.editQuiz') : t('classTools.createQuiz')}</h2>
             <div className="space-y-4">
                 <div>
                     <Label>{t('classTools.quizTitle')}</Label>
@@ -312,7 +312,7 @@ export default function QuizBuilder({ user, currentClass, quiz, onSave, onCancel
                     </div>
                     <div className="space-y-3">
                         <Label>{t('classTools.afterCompletion')}</Label>
-                        <div className="flex items-center space-x-2 p-3 bg-slate-50 rounded-lg">
+                        <div className="flex items-center space-x-2 p-3 rounded-lg" style={{ backgroundColor: `rgb(var(--color-accentLight))` }}>
                            <Switch
                                 id="show-results"
                                 checked={showResults}
@@ -329,7 +329,7 @@ export default function QuizBuilder({ user, currentClass, quiz, onSave, onCancel
             <AIGenerator onQuestionsGenerated={(newQs) => setQuestions([...questions, ...newQs])} t={t} />
             
             {questions.map((q, qIndex) => (
-                <div key={q.id || `q-${qIndex}`} className="p-4 border rounded-lg space-y-3 bg-white">
+                <div key={q.id || `q-${qIndex}`} className="p-4 border rounded-lg space-y-3" style={{ backgroundColor: `rgb(var(--color-surface))`, borderColor: `rgb(var(--color-border))` }}>
                     <div className="flex justify-between items-start">
                         <Label className="text-base font-semibold">{t('classTools.question')} {qIndex + 1}</Label>
                         <Button variant="destructive" size="sm" onClick={() => removeQuestion(qIndex)}>
@@ -386,17 +386,17 @@ export default function QuizBuilder({ user, currentClass, quiz, onSave, onCancel
                         <div className="grid grid-cols-2 gap-3">
                             <div className="flex items-center gap-2">
                                 <Label className="font-bold">A.</Label>
-                                <span className="text-sm text-slate-600">True</span>
+                                <span className="text-sm" style={{ color: `rgb(var(--color-textSecondary))` }}>True</span>
                             </div>
                             <div className="flex items-center gap-2">
                                 <Label className="font-bold">B.</Label>
-                                <span className="text-sm text-slate-600">False</span>
+                                <span className="text-sm" style={{ color: `rgb(var(--color-textSecondary))` }}>False</span>
                             </div>
                         </div>
                     )}
 
                     {q.question_type === 'free-response' && (
-                        <div className="bg-slate-50 p-3 rounded-md text-sm text-slate-600 italic">
+                        <div className="p-3 rounded-md text-sm italic" style={{ backgroundColor: `rgb(var(--color-accentLight))`, color: `rgb(var(--color-textSecondary))` }}>
                             Students will type their own answer.
                         </div>
                     )}

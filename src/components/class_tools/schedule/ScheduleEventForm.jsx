@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -63,7 +62,7 @@ const ScrollableDatePicker = ({ value, onChange }) => {
     return (
         <div className="grid grid-cols-3 gap-4">
             <div>
-                <Label className="text-sm font-medium text-slate-600 mb-2 block">Month</Label>
+                <Label className="text-sm font-medium mb-2 block" style={{ color: `rgb(var(--color-textSecondary))` }}>Month</Label>
                 <Select value={currentMonth.toString()} onValueChange={(value) => handleDateChange('month', parseInt(value))}>
                     <SelectTrigger className="h-10">
                         <SelectValue />
@@ -79,7 +78,7 @@ const ScrollableDatePicker = ({ value, onChange }) => {
             </div>
             
             <div>
-                <Label className="text-sm font-medium text-slate-600 mb-2 block">Day</Label>
+                <Label className="text-sm font-medium mb-2 block" style={{ color: `rgb(var(--color-textSecondary))` }}>Day</Label>
                 <Select value={currentDay.toString()} onValueChange={(value) => handleDateChange('day', parseInt(value))}>
                     <SelectTrigger className="h-10">
                         <SelectValue />
@@ -95,7 +94,7 @@ const ScrollableDatePicker = ({ value, onChange }) => {
             </div>
             
             <div>
-                <Label className="text-sm font-medium text-slate-600 mb-2 block">Year</Label>
+                <Label className="text-sm font-medium mb-2 block" style={{ color: `rgb(var(--color-textSecondary))` }}>Year</Label>
                 <Select value={currentYear.toString()} onValueChange={(value) => handleDateChange('year', parseInt(value))}>
                     <SelectTrigger className="h-10">
                         <SelectValue />
@@ -148,7 +147,7 @@ export default function ScheduleEventForm({ event, onSubmit, onCancel }) {
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="space-y-6 pt-4">
                     <div className="space-y-2">
-                        <Label htmlFor="title" className="text-sm font-medium text-slate-700">Title</Label>
+                        <Label htmlFor="title" className="text-sm font-medium" style={{ color: `rgb(var(--color-text))` }}>Title</Label>
                         <Input 
                             id="title" 
                             value={formData.title} 
@@ -160,7 +159,7 @@ export default function ScheduleEventForm({ event, onSubmit, onCancel }) {
                     </div>
                     
                     <div className="space-y-2">
-                        <Label htmlFor="description" className="text-sm font-medium text-slate-700">Description</Label>
+                        <Label htmlFor="description" className="text-sm font-medium" style={{ color: `rgb(var(--color-text))` }}>Description</Label>
                         <Textarea 
                             id="description" 
                             value={formData.description} 
@@ -171,7 +170,7 @@ export default function ScheduleEventForm({ event, onSubmit, onCancel }) {
                     </div>
                     
                     <div className="space-y-2">
-                        <Label className="text-sm font-medium text-slate-700">Date</Label>
+                        <Label className="text-sm font-medium" style={{ color: `rgb(var(--color-text))` }}>Date</Label>
                         <ScrollableDatePicker 
                             value={formData.event_date}
                             onChange={(date) => handleInputChange('event_date', date)}
@@ -179,7 +178,7 @@ export default function ScheduleEventForm({ event, onSubmit, onCancel }) {
                     </div>
                     
                     <div className="space-y-2">
-                        <Label htmlFor="event_type" className="text-sm font-medium text-slate-700">Event Type</Label>
+                        <Label htmlFor="event_type" className="text-sm font-medium" style={{ color: `rgb(var(--color-text))` }}>Event Type</Label>
                         <Select value={formData.event_type} onValueChange={(value) => handleInputChange('event_type', value)}>
                             <SelectTrigger className="h-10">
                                 <SelectValue />
