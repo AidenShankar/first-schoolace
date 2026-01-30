@@ -129,25 +129,16 @@ export default function ClassTools({ user, currentClass: initialCurrentClass, al
                     <div className="flex items-center gap-3">
                         <label className="text-sm font-medium" style={{ color: `rgb(var(--color-text))` }}>{t('classTools.selectClass')}:</label>
                         <Select value={currentClass?.id || ''} onValueChange={handleClassChange}>
-                            <SelectTrigger className="w-64">
-                                <SelectValue placeholder={t('classTools.chooseClass')}>
-                                    {currentClass ? (
-                                        <div className="flex items-center gap-2">
-                                            <span>{currentClass.name}</span>
-                                            {user?.app_role === 'teacher' && (
-                                                <span className="text-xs text-slate-500">({currentClass.class_code})</span>
-                                            )}
-                                        </div>
-                                    ) : 'Select a class'}
-                                </SelectValue>
+                            <SelectTrigger className="w-64" style={{ backgroundColor: `rgb(var(--color-surface))`, borderColor: `rgb(var(--color-border))`, color: `rgb(var(--color-text))` }}>
+                                <SelectValue placeholder={t('classTools.chooseClass')} />
                             </SelectTrigger>
-                            <SelectContent>
+                            <SelectContent style={{ backgroundColor: `rgb(var(--color-surface))`, borderColor: `rgb(var(--color-border))`, color: `rgb(var(--color-text))` }}>
                                 {allClasses.map(cls => (
-                                    <SelectItem key={cls.id} value={cls.id}>
+                                    <SelectItem key={cls.id} value={cls.id} style={{ color: `rgb(var(--color-text))` }}>
                                         <div className="flex items-center gap-2">
                                             <span>{cls.name}</span>
                                             {user?.app_role === 'teacher' && (
-                                                <span className="text-xs text-slate-500">({cls.class_code})</span>
+                                                <span className="text-xs" style={{ color: `rgb(var(--color-textSecondary))` }}>({cls.class_code})</span>
                                             )}
                                         </div>
                                     </SelectItem>
@@ -160,14 +151,14 @@ export default function ClassTools({ user, currentClass: initialCurrentClass, al
 
             {currentClass && (
                 <Tabs value={activeTab} className="w-full" onValueChange={handleTabChange}>
-                    <TabsList className="grid w-full grid-flow-col auto-cols-fr rounded-xl p-2 themed-card">
+                    <TabsList className="grid w-full grid-flow-col auto-cols-fr rounded-xl p-2" style={{ backgroundColor: `rgb(var(--color-surface))`, borderColor: `rgb(var(--color-border))` }}>
                         {tabs.map(tab => (
                             <TabsTrigger
                                 key={tab.id}
                                 value={tab.id}
                                 className="flex items-center gap-2 rounded-lg data-[state=active]:shadow-md transition-colors"
                                 style={{
-                                    color: activeTab === tab.id ? `rgb(var(--color-primary))` : `rgb(var(--color-textSecondary))`
+                                    color: activeTab === tab.id ? `rgb(var(--color-primary))` : `rgb(var(--color-text))`
                                 }}
                                 onMouseEnter={(e) => {
                                     if (activeTab !== tab.id) {

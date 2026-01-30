@@ -727,7 +727,12 @@ export default function ChatTutor({ user, learningData, language = 'EN', isPerso
                             onChange={(e) => setInput(e.target.value)}
                             onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(input); } }}
                             placeholder={t('personalizedLearning.inputPlaceholder', language)}
-                            className="bg-slate-50 border-slate-200 focus:bg-white focus:border-purple-400 focus:ring-purple-400/20 rounded-2xl px-6 py-4 resize-none text-base font-medium placeholder:text-slate-400 pr-16"
+                            className="rounded-2xl px-6 py-4 resize-none text-base font-medium pr-16"
+                            style={{ 
+                                backgroundColor: `rgb(var(--color-surface))`, 
+                                borderColor: `rgb(var(--color-border))`, 
+                                color: `rgb(var(--color-text))` 
+                            }}
                             rows={1}
                             disabled={isLoading || isUploadingFile}
                         />

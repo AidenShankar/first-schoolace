@@ -82,7 +82,7 @@ export default function PollsView({ user, currentClass }) {
     return (
         <Card className="themed-card" style={{ backgroundColor: `rgb(var(--color-surface))`, borderColor: `rgb(var(--color-border))` }}>
             <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>{t('classTools.polls')}</CardTitle>
+                <CardTitle style={{ color: `rgb(var(--color-text))` }}>{t('classTools.polls')}</CardTitle>
                 {user.app_role === 'teacher' && (
                     <Button onClick={() => setShowCreateForm(true)}>
                         <Plus className="w-4 h-4 mr-2" /> {t('classTools.createPoll')}

@@ -86,6 +86,7 @@ export default function LessonPlanCalendar({
                             variant="outline"
                             onClick={previousWeek}
                             className="flex items-center gap-2"
+                            style={{ backgroundColor: `rgb(var(--color-surface))`, borderColor: `rgb(var(--color-border))`, color: `rgb(var(--color-text))` }}
                         >
                             <ChevronLeft className="w-4 h-4" />
                             {t('lessonPlans.previous')}
@@ -102,6 +103,7 @@ export default function LessonPlanCalendar({
                             variant="outline"
                             onClick={nextWeek}
                             className="flex items-center gap-2"
+                            style={{ backgroundColor: `rgb(var(--color-surface))`, borderColor: `rgb(var(--color-border))`, color: `rgb(var(--color-text))` }}
                         >
                             {t('lessonPlans.next')}
                             <ChevronRight className="w-4 h-4" />

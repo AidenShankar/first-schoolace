@@ -159,7 +159,14 @@ export default function QuizList({ user, quizzes, submissions, onTakeQuiz, onVie
                                         </Button>
                                     )}
                                     <Button variant="outline" size="sm" onClick={() => onEditQuiz(quiz)}><Edit className="w-4 h-4 mr-1" /> {t('classTools.edit')}</Button>
-                                    <Button variant="outline" size="sm" onClick={() => onViewResults(quiz)}><BarChart className="w-4 h-4 mr-1" /> {t('classTools.results')}</Button>
+                                    <Button 
+                                        size="sm" 
+                                        onClick={() => onViewResults(quiz)}
+                                        style={{ backgroundColor: `rgb(var(--color-surface))`, color: `rgb(var(--color-text))`, borderColor: `rgb(var(--color-border))` }}
+                                        className="border"
+                                    >
+                                        <BarChart className="w-4 h-4 mr-1" /> {t('classTools.results')}
+                                    </Button>
                                     <Button variant="outline" size="sm" onClick={() => handleDeleteQuiz(quiz)} className="text-red-600 hover:text-red-700 hover:bg-red-50">
                                         <Trash2 className="w-4 h-4 mr-1" /> {t('classTools.delete')}
                                     </Button>
@@ -170,11 +177,15 @@ export default function QuizList({ user, quizzes, submissions, onTakeQuiz, onVie
                             )}
                             {user.app_role === 'student' && isCompleted && (
                                 quiz.show_results ? (
-                                    <Button variant="outline" onClick={() => onViewResults(quiz)}>
+                                    <Button 
+                                        onClick={() => onViewResults(quiz)}
+                                        style={{ backgroundColor: `rgb(var(--color-surface))`, color: `rgb(var(--color-text))`, borderColor: `rgb(var(--color-border))` }}
+                                        className="border"
+                                    >
                                         <BarChart className="w-4 h-4 mr-1" /> {t('classTools.viewResults')}
                                     </Button>
                                 ) : (
-                                    <Badge className="bg-gray-100 text-gray-800">{t('classTools.completed')}</Badge>
+                                    <Badge className="bg-gray-100 text-gray-800" style={{ backgroundColor: `rgb(var(--color-accentLight))`, color: `rgb(var(--color-text))` }}>{t('classTools.completed')}</Badge>
                                 )
                             )}
                         </div>

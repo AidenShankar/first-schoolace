@@ -479,17 +479,22 @@ If some sections are missing, leave them as empty strings or arrays. Here is the
                             </div>
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                    <Button variant="outline" className="min-w-[200px] justify-between">
+                                    <Button 
+                                        variant="outline" 
+                                        className="min-w-[200px] justify-between"
+                                        style={{ backgroundColor: `rgb(var(--color-surface))`, borderColor: `rgb(var(--color-border))`, color: `rgb(var(--color-text))` }}
+                                    >
                                         <span>{currentClass.name}</span>
                                         <ChevronDown className="w-4 h-4" />
                                     </Button>
                                 </DropdownMenuTrigger>
-                                <DropdownMenuContent>
+                                <DropdownMenuContent style={{ backgroundColor: `rgb(var(--color-surface))`, borderColor: `rgb(var(--color-border))` }}>
                                     {allClasses.map((cls) => (
                                         <DropdownMenuItem 
                                             key={cls.id} 
                                             onClick={() => handleClassSwitch(cls)}
                                             className={currentClass.id === cls.id ? "bg-indigo-50" : ""}
+                                            style={{ color: `rgb(var(--color-text))` }}
                                         >
                                             {cls.name}
                                         </DropdownMenuItem>

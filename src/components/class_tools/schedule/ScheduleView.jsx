@@ -125,7 +125,7 @@ export default function ScheduleView({ currentClass, user }) {
         <Card className="h-full themed-card" style={{ backgroundColor: `rgb(var(--color-surface))`, borderColor: `rgb(var(--color-border))` }}>
             <CardHeader className="flex flex-row items-center justify-between">
                 <div>
-                    <CardTitle>{t('classTools.classSchedule')}</CardTitle>
+                    <CardTitle style={{ color: `rgb(var(--color-text))` }}>{t('classTools.classSchedule')}</CardTitle>
                     <p className="text-sm" style={{ color: `rgb(var(--color-textSecondary))` }}>{t('classTools.weekOf')} {format(weekStart, 'MMMM d')} - {format(weekEnd, 'MMMM d, yyyy')}</p>
                 </div>
                 <div className="flex items-center gap-2">
@@ -209,7 +209,7 @@ export default function ScheduleView({ currentClass, user }) {
                                         >
                                             <div className="flex items-center gap-1 font-medium">
                                                 {eventIcons[event.event_type]}
-                                                <span className="truncate">{event.title}</span>
+                                                <span className="truncate" style={{ color: `rgb(var(--color-text))` }}>{event.title}</span>
                                                 {/* Display points for assignment events */}
                                                 {event.isAssignment && (
                                                     <span className="text-xs bg-blue-200 text-blue-800 px-1 rounded ml-1">

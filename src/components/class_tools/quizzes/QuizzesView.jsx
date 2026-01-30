@@ -124,7 +124,7 @@ export default function QuizzesView({ user, currentClass, allClasses }) {
     return (
         <Card className="themed-card" style={{ backgroundColor: `rgb(var(--color-surface))`, borderColor: `rgb(var(--color-border))` }}>
             <CardHeader>
-                <CardTitle>{t('classTools.quizzes')}</CardTitle>
+                <CardTitle style={{ color: `rgb(var(--color-text))` }}>{t('classTools.quizzes')}</CardTitle>
             </CardHeader>
             <CardContent>
                 {renderContent()}
