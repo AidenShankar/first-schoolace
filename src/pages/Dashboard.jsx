@@ -1264,9 +1264,9 @@ Output your response as JSON with:
                                 <>
                                     <Button 
                                         onClick={() => {}} 
-                                        className="text-white text-xs px-3 py-3 rounded-full shadow-lg bg-gradient-to-r from-purple-500 to-pink-500 font-bold tracking-wider cursor-default h-10"
+                                        className="text-white text-xs px-3 py-3 rounded-full shadow-lg font-bold tracking-wider cursor-default h-10"
                                         size="sm"
-
+                                        style={{ background: `linear-gradient(to right, rgb(var(--color-primary)), rgb(var(--color-secondary)))` }}
                                     >
                                         SUPERCHARGED
                                     </Button>
@@ -1350,8 +1350,9 @@ Output your response as JSON with:
                             {user.app_role === 'teacher' && (
                                 <Button 
                                     onClick={() => {}} 
-                                    className="text-white text-xs px-3 py-3 rounded-full shadow-lg bg-gradient-to-r from-purple-500 to-pink-500 font-bold tracking-wider cursor-default h-10"
+                                    className="text-white text-xs px-3 py-3 rounded-full shadow-lg font-bold tracking-wider cursor-default h-10"
                                     size="sm"
+                                    style={{ background: `linear-gradient(to right, rgb(var(--color-primary)), rgb(var(--color-secondary)))` }}
                                 >
                                     SUPERCHARGED
                                 </Button>
