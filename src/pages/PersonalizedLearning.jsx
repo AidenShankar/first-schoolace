@@ -556,22 +556,47 @@ export default function PersonalizedLearning() {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+        <div className="min-h-screen" style={{ background: `rgb(var(--color-background))` }}>
             
             <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16 relative">
                 <div className="absolute top-8 right-8 z-50 flex gap-2">
                     <Button 
                         variant="outline" 
-                        className="gap-2 border-slate-300 bg-white/50 backdrop-blur-sm hover:bg-white/80"
+                        className="gap-2 backdrop-blur-sm transition-colors"
+                        style={{ 
+                            backgroundColor: 'rgb(var(--color-surface))',
+                            borderColor: 'rgb(var(--color-border))',
+                            color: 'rgb(var(--color-primary))'
+                        }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.backgroundColor = `rgba(var(--color-primary), 0.1)`;
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.backgroundColor = 'rgb(var(--color-surface))';
+                        }}
                         onClick={() => window.location.href = createPageUrl('AceSpaces')}
                     >
-                        <Users className="w-4 h-4 text-indigo-600" />
+                        <Users className="w-4 h-4" />
                         Ace Spaces
                     </Button>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button variant="outline" className="gap-2 border-slate-300 bg-white/50 backdrop-blur-sm hover:bg-white/80">
-                                <BrainCircuit className="w-4 h-4 text-indigo-600" />
+                            <Button 
+                                variant="outline" 
+                                className="gap-2 backdrop-blur-sm transition-colors"
+                                style={{ 
+                                    backgroundColor: 'rgb(var(--color-surface))',
+                                    borderColor: 'rgb(var(--color-border))',
+                                    color: 'rgb(var(--color-primary))'
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.currentTarget.style.backgroundColor = `rgba(var(--color-primary), 0.1)`;
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.currentTarget.style.backgroundColor = 'rgb(var(--color-surface))';
+                                }}
+                            >
+                                <BrainCircuit className="w-4 h-4" />
                                 {t('personalizedLearning.aiStudyTools')}
                             </Button>
                         </DropdownMenuTrigger>

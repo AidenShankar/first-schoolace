@@ -465,9 +465,9 @@ If some sections are missing, leave them as empty strings or arrays. Here is the
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+        <div className="min-h-screen" style={{ background: `rgb(var(--color-background))` }}>
             {/* Header */}
-            <div className="bg-white/80 backdrop-blur-xl border-b border-slate-200/60">
+            <div className="backdrop-blur-xl border-b" style={{ backgroundColor: 'rgba(var(--color-surface), 0.8)', borderColor: `rgb(var(--color-border))` }}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                         <div className="flex items-center gap-4">
@@ -533,7 +533,7 @@ If some sections are missing, leave them as empty strings or arrays. Here is the
                             {isTeacher && (
                                 <Button
                                     onClick={handleCreateLesson}
-                                    className="bg-indigo-600 hover:bg-indigo-700 text-white"
+                                    className="themed-button"
                                 >
                                     <Plus className="w-4 h-4 mr-2" />
                                     {t('lessonPlans.createLesson')}

@@ -180,7 +180,7 @@ export default function AssignmentList({ assignments, onUpload, userSubmissions,
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
               >
-                <Card className="bg-white/80 backdrop-blur-sm border-slate-200/60 hover:shadow-xl transition-all duration-300 h-full">
+                <Card className="backdrop-blur-sm hover:shadow-xl transition-all duration-300 h-full themed-card">
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
                       <div className="flex-1 min-w-0">
@@ -364,7 +364,7 @@ export default function AssignmentList({ assignments, onUpload, userSubmissions,
                         <Button
                           onClick={() => onUpload(assignment)}
                           size="sm"
-                          className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white text-xs"
+                          className="flex-1 text-xs themed-button"
                         >
                           <Upload className="w-3 h-3 mr-1" />
                           {submissions.length > 0 ? "Submit More" : "Submit"}

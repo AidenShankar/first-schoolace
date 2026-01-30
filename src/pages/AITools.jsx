@@ -346,7 +346,7 @@ export default function AITools() {
     }
 
     return (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12" style={{ backgroundColor: `rgb(var(--color-background))`, minHeight: '100vh' }}>
             <div className="flex items-center space-x-4 mb-8">
                 <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-xl flex items-center justify-center shadow-lg">
                     <Sparkles className="w-6 h-6 text-white" />

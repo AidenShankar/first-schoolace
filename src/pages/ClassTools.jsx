@@ -119,7 +119,7 @@ export default function ClassTools({ user, currentClass: initialCurrentClass, al
     };
 
     return (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12" style={{ backgroundColor: `rgb(var(--color-background))` }}>
             <div className="mb-8">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     <div>
@@ -160,12 +160,25 @@ export default function ClassTools({ user, currentClass: initialCurrentClass, al
 
             {currentClass && (
                 <Tabs value={activeTab} className="w-full" onValueChange={handleTabChange}>
-                    <TabsList className="grid w-full grid-flow-col auto-cols-fr bg-slate-100 rounded-xl p-2">
+                    <TabsList className="grid w-full grid-flow-col auto-cols-fr rounded-xl p-2 themed-card">
                         {tabs.map(tab => (
                             <TabsTrigger
                                 key={tab.id}
                                 value={tab.id}
-                                className="flex items-center gap-2 rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-md"
+                                className="flex items-center gap-2 rounded-lg data-[state=active]:shadow-md transition-colors"
+                                style={{
+                                    color: activeTab === tab.id ? `rgb(var(--color-primary))` : `rgb(var(--color-textSecondary))`
+                                }}
+                                onMouseEnter={(e) => {
+                                    if (activeTab !== tab.id) {
+                                        e.currentTarget.style.backgroundColor = `rgba(var(--color-border), 0.5)`;
+                                    }
+                                }}
+                                onMouseLeave={(e) => {
+                                    if (activeTab !== tab.id) {
+                                        e.currentTarget.style.backgroundColor = 'transparent';
+                                    }
+                                }}
                             >
                                 <tab.icon className="w-4 h-4" /> {tab.label}
                             </TabsTrigger>
