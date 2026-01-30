@@ -33,21 +33,6 @@ export const themes = {
       accentLight: '229 233 240', // #e5e9f0
     }
   },
-  dracula: {
-    name: 'Dracula',
-    colors: {
-      primary: '189 147 249', // #bd93f9
-      primaryHover: '139 233 253', // #8be9fd
-      secondary: '255 121 198', // #ff79c6
-      background: '40 42 54', // #282a36
-      surface: '68 71 90', // #44475a
-      text: '248 248 242', // #f8f8f2
-      textSecondary: '189 147 249', // #bd93f9
-      border: '98 114 164', // #6272a4
-      accent: '80 250 123', // #50fa7b
-      accentLight: '68 71 90', // #44475a
-    }
-  },
   gruvbox: {
     name: 'Gruvbox',
     colors: {
@@ -108,23 +93,9 @@ export const themes = {
       accentLight: '254 243 199', // orange-100
     }
   },
-  moonlight: {
-    name: 'Moonlight',
-    colors: {
-      primary: '139 92 246', // violet-500
-      primaryHover: '124 58 237', // violet-600
-      secondary: '168 85 247', // purple-500
-      background: '30 27 75', // custom dark blue
-      surface: '45 41 95', // custom dark blue-purple
-      text: '241 245 249', // slate-100
-      textSecondary: '203 213 225', // slate-300
-      border: '71 85 105', // slate-600
-      accent: '147 51 234', // purple-600
-      accentLight: '55 48 163', // custom purple
-    }
-  },
   cherry: {
     name: 'Cherry Blossom',
+    popular: true,
     colors: {
       primary: '244 114 182', // pink-400
       primaryHover: '236 72 153', // pink-500
@@ -151,21 +122,6 @@ export const themes = {
       border: '229 231 235', // gray-200
       accent: '17 24 39', // gray-900
       accentLight: '243 244 246', // gray-100
-    }
-  },
-  cyberpunk: {
-    name: 'Cyberpunk',
-    colors: {
-      primary: '236 72 153', // pink-500
-      primaryHover: '219 39 119', // pink-600
-      secondary: '14 165 233', // sky-500
-      background: '17 24 39', // gray-900
-      surface: '31 41 55', // gray-800
-      text: '236 72 153', // pink-500
-      textSecondary: '156 163 175', // gray-400
-      border: '75 85 99', // gray-600
-      accent: '253 224 71', // yellow-300
-      accentLight: '55 65 81', // gray-700
     }
   },
   retro: {
