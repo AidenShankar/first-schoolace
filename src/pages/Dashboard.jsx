@@ -1223,14 +1223,30 @@ Output your response as JSON with:
                         </div>
                         <div className="flex flex-col items-end gap-2">
                             <div className="flex items-center gap-3">
-                                <Button variant="ghost" size="sm" onClick={handleFeedbackClick} className="border border-white/20 rounded-xl text-white hover:bg-white/20">
-                                <MessageCircle className="w-4 h-4 mr-2" />
-                                {t('dashboard.feedback')}
-                            </Button>
-                            <Button variant="ghost" size="sm" onClick={handleLogout} className="border border-white/20 rounded-xl text-white hover:bg-white/20">
-                                <LogOut className="w-4 h-4 mr-2" />
-                                {t('dashboard.logout')}
-                            </Button>
+                                <Button 
+                                    variant="ghost" 
+                                    size="sm" 
+                                    onClick={handleFeedbackClick} 
+                                    className="bg-white rounded-xl hover:bg-white/20 hover:text-white transition-colors"
+                                    style={{ color: `rgb(var(--color-primary))` }}
+                                    onMouseEnter={(e) => e.currentTarget.style.color = 'white'}
+                                    onMouseLeave={(e) => e.currentTarget.style.color = `rgb(var(--color-primary))`}
+                                >
+                                    <MessageCircle className="w-4 h-4 mr-2" />
+                                    {t('dashboard.feedback')}
+                                </Button>
+                                <Button 
+                                    variant="ghost" 
+                                    size="sm" 
+                                    onClick={handleLogout} 
+                                    className="bg-white rounded-xl hover:bg-white/20 hover:text-white transition-colors"
+                                    style={{ color: `rgb(var(--color-primary))` }}
+                                    onMouseEnter={(e) => e.currentTarget.style.color = 'white'}
+                                    onMouseLeave={(e) => e.currentTarget.style.color = `rgb(var(--color-primary))`}
+                                >
+                                    <LogOut className="w-4 h-4 mr-2" />
+                                    {t('dashboard.logout')}
+                                </Button>
                             {/* Show supercharged badge for students (non-interactive) */}
                             {user.app_role === 'student' && (
                                 <>
@@ -1248,7 +1264,10 @@ Output your response as JSON with:
                                                 variant="ghost"
                                                 size="icon"
                                                 title="Settings"
-                                                className="border border-white/20 rounded-xl h-9 w-9 text-white hover:bg-white/20"
+                                                className="bg-white rounded-xl h-9 w-9 hover:bg-white/20 hover:text-white transition-colors"
+                                                style={{ color: `rgb(var(--color-primary))` }}
+                                                onMouseEnter={(e) => e.currentTarget.style.color = 'white'}
+                                                onMouseLeave={(e) => e.currentTarget.style.color = `rgb(var(--color-primary))`}
                                             >
                                                 <Settings className="w-4 h-4" />
                                             </Button>
@@ -1291,7 +1310,10 @@ Output your response as JSON with:
                                         }}
                                         disabled={isSyncing}
                                         title="Refresh Page"
-                                        className="border border-white/20 rounded-xl h-9 w-9 text-white hover:bg-white/20"
+                                        className="bg-white rounded-xl h-9 w-9 hover:bg-white/20 hover:text-white transition-colors"
+                                        style={{ color: `rgb(var(--color-primary))` }}
+                                        onMouseEnter={(e) => e.currentTarget.style.color = 'white'}
+                                        onMouseLeave={(e) => e.currentTarget.style.color = `rgb(var(--color-primary))`}
                                     >
                                         <RefreshCw className={`w-4 h-4 ${isSyncing ? 'animate-spin' : ''}`} />
                                     </Button>
@@ -1313,7 +1335,10 @@ Output your response as JSON with:
                                             variant="ghost"
                                             size="icon"
                                             title="Class Settings"
-                                            className="border border-white/20 rounded-xl h-9 w-9 text-white hover:bg-white/20"
+                                            className="bg-white rounded-xl h-9 w-9 hover:bg-white/20 hover:text-white transition-colors"
+                                            style={{ color: `rgb(var(--color-primary))` }}
+                                            onMouseEnter={(e) => e.currentTarget.style.color = 'white'}
+                                            onMouseLeave={(e) => e.currentTarget.style.color = `rgb(var(--color-primary))`}
                                         >
                                             <Settings className="w-4 h-4" />
                                         </Button>
