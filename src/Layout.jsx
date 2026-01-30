@@ -4,6 +4,7 @@ import { createPageUrl } from "@/utils";
 import { GraduationCap, MessageSquare, BookOpen, Sparkles, SlidersHorizontal, Bot, Share2, Calendar, BrainCircuit, CalendarClock } from "lucide-react";
 import { LanguageProvider, useLanguage } from "./components/i18n/LanguageContext";
 import { t } from "./components/i18n/translations";
+import { ThemeProvider } from "./components/theme/ThemeContext";
 import { User } from '@/entities/User';
 import { Class } from '@/entities/Class';
 import { ClassEnrollment } from '@/entities/ClassEnrollment';
@@ -804,8 +805,9 @@ export default function Layout({ children, currentPageName }) {
       >
         {children}
       </LayoutContent>
-    </LanguageProvider>
-  );
+      </LanguageProvider>
+      </ThemeProvider>
+      );
 }
 
 function LayoutContent({ 

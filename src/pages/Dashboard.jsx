@@ -43,6 +43,7 @@ import SubmissionUpload from "../components/student/SubmissionUpload";
 import ProcessingModal from "../components/common/ProcessingModal"; // New import
 import ReactQuill from "react-quill"; // New import
 import LanguageSelector from "../components/i18n/LanguageSelector";
+import ThemeSelector from "../components/theme/ThemeSelector";
 
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
@@ -1269,6 +1270,15 @@ Output your response as JSON with:
                                                     </div>
                                                     <LanguageSelector />
                                                 </div>
+                                                <div className="pt-6 border-t">
+                                                    <div className="flex flex-col space-y-3 mb-4">
+                                                        <Label className="text-base font-medium">Theme</Label>
+                                                        <span className="text-sm text-slate-500">
+                                                            Choose your preferred color scheme
+                                                        </span>
+                                                    </div>
+                                                    <ThemeSelector />
+                                                </div>
                                             </div>
                                         </DialogContent>
                                     </Dialog>
@@ -1316,42 +1326,51 @@ Output your response as JSON with:
                                             </DialogDescription>
                                         </DialogHeader>
                                         <div className="py-6 space-y-6">
-                                            <div className="flex items-center justify-between space-x-4">
-                                                <div className="flex flex-col space-y-1">
-                                                    <Label className="text-base font-medium">Language</Label>
-                                                    <span className="text-sm text-slate-500">
-                                                        Change application language
-                                                    </span>
-                                                </div>
-                                                <LanguageSelector />
+                                        <div className="flex items-center justify-between space-x-4">
+                                            <div className="flex flex-col space-y-1">
+                                                <Label className="text-base font-medium">Language</Label>
+                                                <span className="text-sm text-slate-500">
+                                                    Change application language
+                                                </span>
+                                            </div>
+                                            <LanguageSelector />
+                                        </div>
+                                        <div className="pt-6 border-t">
+                                            <div className="flex flex-col space-y-3 mb-4">
+                                                <Label className="text-base font-medium">Theme</Label>
+                                                <span className="text-sm text-slate-500">
+                                                    Choose your preferred color scheme
+                                                </span>
+                                            </div>
+                                            <ThemeSelector />
+                                        </div>
+                                        <div className="pt-6 border-t flex items-center justify-between space-x-4">
+                                            <div className="flex flex-col space-y-1">
+                                                <Label htmlFor="ace-ai-toggle" className="text-base font-medium">Hide ACE AI Chat from students</Label>
+                                                <span className="text-sm text-slate-500">
+                                                    Prevent students in this class from having conversations with ACE
+                                                </span>
+                                            </div>
+                                            <Switch 
+                                                id="ace-ai-toggle" 
+                                                checked={currentClass?.hide_ace_ai || false}
+                                                onCheckedChange={handleToggleAceAi}
+                                            />
                                             </div>
                                             <div className="flex items-center justify-between space-x-4">
-                                                <div className="flex flex-col space-y-1">
-                                                    <Label htmlFor="ace-ai-toggle" className="text-base font-medium">Hide ACE AI Chat from students</Label>
-                                                    <span className="text-sm text-slate-500">
-                                                        Prevent students in this class from having conversations with ACE
-                                                    </span>
-                                                </div>
-                                                <Switch 
-                                                    id="ace-ai-toggle" 
-                                                    checked={currentClass?.hide_ace_ai || false}
-                                                    onCheckedChange={handleToggleAceAi}
-                                                />
-                                                </div>
-                                                <div className="flex items-center justify-between space-x-4">
-                                                <div className="flex flex-col space-y-1">
-                                                    <Label htmlFor="ai-tools-toggle" className="text-base font-medium">Hide AI Tools from students</Label>
-                                                    <span className="text-sm text-slate-500">
-                                                        Prevent students in this class from accessing the AI Tools tab
-                                                    </span>
-                                                </div>
-                                                <Switch 
-                                                    id="ai-tools-toggle" 
-                                                    checked={currentClass?.hide_ai_tools || false}
-                                                    onCheckedChange={handleToggleAiTools}
-                                                />
-                                                </div>
-                                                </div>
+                                            <div className="flex flex-col space-y-1">
+                                                <Label htmlFor="ai-tools-toggle" className="text-base font-medium">Hide AI Tools from students</Label>
+                                                <span className="text-sm text-slate-500">
+                                                    Prevent students in this class from accessing the AI Tools tab
+                                                </span>
+                                            </div>
+                                            <Switch 
+                                                id="ai-tools-toggle" 
+                                                checked={currentClass?.hide_ai_tools || false}
+                                                onCheckedChange={handleToggleAiTools}
+                                            />
+                                            </div>
+                                            </div>
                                                 </DialogContent>
                                 </Dialog>
                             )}

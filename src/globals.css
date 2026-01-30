@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Default theme colors */
+  --color-primary: 99 102 241;
+  --color-primaryHover: 79 70 229;
+  --color-secondary: 168 85 247;
+  --color-background: 248 250 252;
+  --color-surface: 255 255 255;
+  --color-text: 15 23 42;
+  --color-textSecondary: 71 85 105;
+  --color-border: 226 232 240;
+  --color-accent: 59 130 246;
+  --color-accentLight: 219 234 254;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-[rgb(var(--color-background))] text-[rgb(var(--color-text))];
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+}
+
+@layer utilities {
+  .bg-primary {
+    background-color: rgb(var(--color-primary));
+  }
+  .bg-primary-hover:hover {
+    background-color: rgb(var(--color-primaryHover));
+  }
+  .bg-secondary {
+    background-color: rgb(var(--color-secondary));
+  }
+  .bg-surface {
+    background-color: rgb(var(--color-surface));
+  }
+  .bg-accent {
+    background-color: rgb(var(--color-accent));
+  }
+  .bg-accent-light {
+    background-color: rgb(var(--color-accentLight));
+  }
+  .text-primary {
+    color: rgb(var(--color-primary));
+  }
+  .text-secondary {
+    color: rgb(var(--color-textSecondary));
+  }
+  .text-accent {
+    color: rgb(var(--color-accent));
+  }
+  .border-theme {
+    border-color: rgb(var(--color-border));
+  }
+  .themed-card {
+    background-color: rgb(var(--color-surface));
+    border-color: rgb(var(--color-border));
+  }
+  .themed-button {
+    background-color: rgb(var(--color-primary));
+    color: rgb(var(--color-surface));
+  }
+  .themed-button:hover {
+    background-color: rgb(var(--color-primaryHover));
+  }
+}
