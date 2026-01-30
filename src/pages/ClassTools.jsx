@@ -106,7 +106,7 @@ export default function ClassTools({ user, currentClass: initialCurrentClass, al
         return (
             <React.Suspense fallback={
                 <div className="flex items-center justify-center py-12">
-                    <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+                    <Loader2 className="w-8 h-8 animate-spin" style={{ color: `rgb(var(--color-primary))` }} />
                 </div>
             }>
                 {tabId === 'schedule' && <ScheduleView user={user} currentClass={currentClass} />}

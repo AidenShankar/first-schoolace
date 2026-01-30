@@ -92,10 +92,10 @@ export default function LessonPlanCalendar({
                         </Button>
                         
                         <div className="text-center">
-                            <h3 className="text-lg font-semibold text-slate-900">
+                            <h3 className="text-lg font-semibold" style={{ color: `rgb(var(--color-text))` }}>
                                 {format(weekStart, 'MMMM d')} - {format(weekEnd, 'MMMM d, yyyy')}
                             </h3>
-                            <p className="text-sm text-slate-600">{t('lessonPlans.weekView')}</p>
+                            <p className="text-sm" style={{ color: `rgb(var(--color-textSecondary))` }}>{t('lessonPlans.weekView')}</p>
                         </div>
                         
                         <Button
@@ -118,12 +118,12 @@ export default function LessonPlanCalendar({
                             <div className="flex items-center gap-2">
                                 <div className="w-4 h-4 bg-green-200 border-l-4 border-l-green-500 rounded-sm"></div>
                                 <Eye className="w-4 h-4 text-green-600" />
-                                <span className="text-slate-700">{t('lessonPlans.releasedStudentsCanSee')}</span>
+                                <span style={{ color: `rgb(var(--color-text))` }}>{t('lessonPlans.releasedStudentsCanSee')}</span>
                             </div>
                             <div className="flex items-center gap-2">
                                 <div className="w-4 h-4 bg-red-200 border-l-4 border-l-red-500 rounded-sm"></div>
                                 <EyeOff className="w-4 h-4 text-red-600" />
-                                <span className="text-slate-700">{t('lessonPlans.unreleasedStudentsCannotSee')}</span>
+                                <span style={{ color: `rgb(var(--color-text))` }}>{t('lessonPlans.unreleasedStudentsCannotSee')}</span>
                             </div>
                         </div>
                     </CardContent>
@@ -142,27 +142,29 @@ export default function LessonPlanCalendar({
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: dayIndex * 0.1 }}
-                            className={`min-h-[300px] rounded-xl border-2 bg-white transition-all duration-200 ${
-                                isCurrentDay 
-                                    ? 'border-indigo-300 bg-indigo-50/50 shadow-md' 
-                                    : 'border-slate-200 hover:border-slate-300 shadow-sm hover:shadow-md'
-                            }`}
+                            className="min-h-[300px] rounded-xl border-2 transition-all duration-200 shadow-sm hover:shadow-md"
+                            style={{
+                                backgroundColor: isCurrentDay ? `rgba(var(--color-primary), 0.1)` : `rgb(var(--color-surface))`,
+                                borderColor: isCurrentDay ? `rgb(var(--color-primary))` : `rgb(var(--color-border))`
+                            }}
+                            onMouseEnter={(e) => {
+                                if (!isCurrentDay) e.currentTarget.style.borderColor = `rgba(var(--color-border), 0.7)`;
+                            }}
+                            onMouseLeave={(e) => {
+                                if (!isCurrentDay) e.currentTarget.style.borderColor = `rgb(var(--color-border))`;
+                            }}
                         >
                             {/* Day Header */}
-                            <div className={`p-4 border-b ${isCurrentDay ? 'border-indigo-200' : 'border-slate-200'}`}>
+                            <div className="p-4 border-b" style={{ borderColor: isCurrentDay ? `rgb(var(--color-primary))` : `rgb(var(--color-border))` }}>
                                 <div className="text-center">
-                                    <h4 className={`font-semibold ${isCurrentDay ? 'text-indigo-900' : 'text-slate-900'}`}>
+                                    <h4 className="font-semibold" style={{ color: isCurrentDay ? `rgb(var(--color-primary))` : `rgb(var(--color-text))` }}>
                                         {format(day, 'EEEE')}
                                     </h4>
-                                    <div className={`text-2xl font-bold mt-1 ${
-                                        isCurrentDay 
-                                            ? 'text-indigo-700' 
-                                            : 'text-slate-700'
-                                    }`}>
+                                    <div className="text-2xl font-bold mt-1" style={{ color: isCurrentDay ? `rgb(var(--color-primary))` : `rgb(var(--color-text))` }}>
                                         {format(day, 'd')}
                                     </div>
                                     {format(day, 'MMM') !== format(weekStart, 'MMM') && (
-                                        <div className="text-xs text-slate-500 mt-1">
+                                        <div className="text-xs mt-1" style={{ color: `rgb(var(--color-textSecondary))` }}>
                                             {format(day, 'MMM')}
                                         </div>
                                     )}
@@ -172,8 +174,8 @@ export default function LessonPlanCalendar({
                             {/* Lessons for the day */}
                             <div className="p-3 space-y-2">
                                 {dayLessons.length === 0 ? (
-                                    <div className="text-center text-slate-400 text-sm py-8">
-                                        <Calendar className="w-6 h-6 mx-auto mb-2 opacity-50" />
+                                    <div className="text-center text-sm py-8" style={{ color: `rgb(var(--color-textSecondary))` }}>
+                                        <Calendar className="w-6 h-6 mx-auto mb-2 opacity-50" style={{ color: `rgb(var(--color-textSecondary))` }} />
                                         <p>{t('lessonPlans.noLessonsForDay')}</p>
                                     </div>
                                 ) : (
@@ -186,14 +188,17 @@ export default function LessonPlanCalendar({
                                             className="group relative"
                                         >
                                             <Card 
-                                                className={`cursor-pointer transition-all duration-200 hover:shadow-md border-l-4 ${getReleaseStatusColor(lesson)} ${getReleaseCardBackground(lesson)} hover:border-l-8`}
+                                                className="cursor-pointer transition-all duration-200 hover:shadow-md border-l-4 hover:border-l-8 themed-card"
+                                                style={{
+                                                    borderLeftColor: isTeacher ? (lesson.is_released ? 'rgb(34 197 94)' : 'rgb(239 68 68)') : `rgb(var(--color-primary))`
+                                                }}
                                                 onClick={() => onLessonClick(lesson)}
                                             >
                                                 <CardContent className="p-3">
                                                     <div className="space-y-2">
                                                         {/* Title and Release Status */}
                                                         <div className="flex items-start justify-between gap-2">
-                                                            <h5 className="font-medium text-slate-900 text-sm leading-tight line-clamp-2 group-hover:text-indigo-700 transition-colors flex-1">
+                                                            <h5 className="font-medium text-sm leading-tight line-clamp-2 transition-colors flex-1" style={{ color: `rgb(var(--color-text))` }}>
                                                                 {lesson.title}
                                                             </h5>
                                                             <div className="flex items-center gap-1 flex-shrink-0">
@@ -234,7 +239,7 @@ export default function LessonPlanCalendar({
                                                         
                                                         {/* Duration info */}
                                                         {lesson.activities && lesson.activities.length > 0 && lesson.activities.some(a => a.duration) && (
-                                                            <div className="flex items-center gap-1 text-xs text-slate-500">
+                                                            <div className="flex items-center gap-1 text-xs" style={{ color: `rgb(var(--color-textSecondary))` }}>
                                                                 <Clock className="w-3 h-3" />
                                                                 <span>
                                                                     {lesson.activities.reduce((sum, a) => sum + (a.duration || 0), 0)} {t('lessonPlans.min')}
@@ -271,9 +276,9 @@ export default function LessonPlanCalendar({
             {/* Summary Stats */}
             <Card>
                 <CardContent className="p-4">
-                    <div className="flex items-center justify-center gap-8 text-sm text-slate-600">
+                    <div className="flex items-center justify-center gap-8 text-sm" style={{ color: `rgb(var(--color-textSecondary))` }}>
                         <div className="text-center">
-                            <div className="text-2xl font-bold text-slate-900">
+                            <div className="text-2xl font-bold" style={{ color: `rgb(var(--color-text))` }}>
                                 {lessons.filter(l => {
                                     const lessonDate = parseISO(l.lesson_date);
                                     return lessonDate >= weekStart && lessonDate <= weekEnd;
@@ -281,7 +286,7 @@ export default function LessonPlanCalendar({
                             </div>
                             <div>{t('lessonPlans.lessonsThisWeek')}</div>
                         </div>
-                        <div className="h-8 w-px bg-slate-200"></div>
+                        <div className="h-8 w-px" style={{ backgroundColor: `rgb(var(--color-border))` }}></div>
                         <div className="text-center">
                             <div className="text-2xl font-bold text-green-600">
                                 {lessons.filter(l => {
@@ -291,7 +296,7 @@ export default function LessonPlanCalendar({
                             </div>
                             <div>{t('lessonPlans.releasedCount')}</div>
                         </div>
-                        <div className="h-8 w-px bg-slate-200"></div>
+                        <div className="h-8 w-px" style={{ backgroundColor: `rgb(var(--color-border))` }}></div>
                         <div className="text-center">
                             <div className="text-2xl font-bold text-red-600">
                                 {lessons.filter(l => {

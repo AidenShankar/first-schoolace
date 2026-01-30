@@ -158,10 +158,10 @@ export default function ChatPage() {
                         transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
                         className="text-center"
                     >
-                        <h1 className="text-5xl font-bold tracking-tight text-slate-900">
+                        <h1 className="text-5xl font-bold tracking-tight" style={{ color: `rgb(var(--color-text))` }}>
                             {t('chat.title')}
                         </h1>
-                        <p className="text-lg text-slate-500 mt-4 font-medium tracking-wide">
+                        <p className="text-lg mt-4 font-medium tracking-wide" style={{ color: `rgb(var(--color-textSecondary))` }}>
                             {t('common.poweredByACE')}
                         </p>
                     </motion.div>
