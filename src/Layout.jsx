@@ -5,6 +5,7 @@ import { GraduationCap, MessageSquare, BookOpen, Sparkles, SlidersHorizontal, Bo
 import { LanguageProvider, useLanguage } from "./components/i18n/LanguageContext";
 import { t } from "./components/i18n/translations";
 import { User } from '@/entities/User';
+import { ThemeProvider } from './components/theme/ThemeContext';
 import { Class } from '@/entities/Class';
 import { ClassEnrollment } from '@/entities/ClassEnrollment';
 import { QuizSubmission } from '@/entities/QuizSubmission';
@@ -780,7 +781,8 @@ export default function Layout({ children, currentPageName }) {
   
   return (
     <LanguageProvider>
-      <LayoutContent 
+      <ThemeProvider user={user}>
+        <LayoutContent
         user={user}
         allClasses={allClasses}
         currentClass={currentClass}
@@ -834,7 +836,7 @@ function LayoutContent({
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-[var(--app-bg-from)] via-[var(--app-bg-via)] to-[var(--app-bg-to)] flex flex-col transition-colors duration-500">
       {quizInProgress && user?.app_role === 'student' && currentPageName !== 'ClassTools' && (
         <div className="bg-yellow-500 text-white px-4 py-2 text-center font-medium z-50">
           ⏰ You have an active quiz in progress. Some features are locked until you complete it.
@@ -849,7 +851,7 @@ function LayoutContent({
         <header className={
           isLearnerDashboard 
             ? "bg-black border-slate-800 backdrop-blur-xl border-b sticky top-0 z-40" 
-            : `bg-white/80 border-slate-200/60 backdrop-blur-xl border-b z-40 ${isPersonalizedLearning ? 'relative' : 'sticky top-0'}`
+            : `bg-background/80 border-border/60 backdrop-blur-xl border-b z-40 ${isPersonalizedLearning ? 'relative' : 'sticky top-0'}`
         }>
           <div className={`mx-auto px-4 sm:px-6 lg:px-8 ${isPersonalizedLearning ? 'max-w-[1600px]' : 'max-w-7xl'}`}>
             <div className="flex justify-between items-center h-16">
@@ -858,7 +860,7 @@ function LayoutContent({
                   <GraduationCap className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h1 className={isLearnerDashboard ? "text-xl font-bold text-white" : "text-xl font-bold text-slate-900"}>Schoolace</h1>
+                  <h1 className={isLearnerDashboard ? "text-xl font-bold text-white" : "text-xl font-bold text-[var(--text-main)]"}>Schoolace</h1>
                 </div>
               </Link>
               
