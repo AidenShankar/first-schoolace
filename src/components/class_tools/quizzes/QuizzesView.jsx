@@ -90,7 +90,7 @@ export default function QuizzesView({ user, currentClass, allClasses }) {
     const renderContent = () => {
         switch (view) {
             case 'builder':
-                return <QuizBuilder user={user} currentClass={currentClass} quiz={selectedQuiz} onSave={handleQuizCreated} onCancel={() => setView('list')} />;
+                return <QuizBuilder user={user} currentClass={currentClass} quiz={selectedQuiz} onSave={handleQuizCreated} onCancel={() => setView('list')} retryWithBackoff={retryWithBackoff} />;
             case 'taker':
                 return <QuizTaker user={user} quiz={selectedQuiz} onFinish={() => { fetchData(); setView('list'); }} />;
             case 'results':

@@ -180,7 +180,7 @@ function AIGenerator({ onQuestionsGenerated, t }) {
     );
 }
 
-export default function QuizBuilder({ user, currentClass, quiz, onSave, onCancel }) {
+export default function QuizBuilder({ user, currentClass, quiz, onSave, onCancel, retryWithBackoff }) {
     const { t } = useTranslation();
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
@@ -189,17 +189,30 @@ export default function QuizBuilder({ user, currentClass, quiz, onSave, onCancel
     const [showResults, setShowResults] = useState(false);
     const [questions, setQuestions] = useState([]);
     const [isSaving, setIsSaving] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+
+    // Fallback retry if not provided
+    const safeRetry = retryWithBackoff || (async (fn) => await fn());
     
     useEffect(() => {
         if (quiz) {
+            setIsLoading(true);
             setTitle(quiz.title);
             setDescription(quiz.description || '');
             setTimeLimit(quiz.time_limit_minutes || 0);
             setIsUnlimited(!quiz.time_limit_minutes || quiz.time_limit_minutes === 0);
             setShowResults(quiz.show_results || false);
+            
             const fetchQuestions = async () => {
-                const existingQuestions = await QuizQuestion.filter({ quiz_id: quiz.id });
-                setQuestions(existingQuestions);
+                try {
+                    const existingQuestions = await safeRetry(() => QuizQuestion.filter({ quiz_id: quiz.id }));
+                    setQuestions(existingQuestions);
+                } catch (error) {
+                    console.error("Error fetching questions:", error);
+                    alert("Failed to load quiz questions. Please try again.");
+                } finally {
+                    setIsLoading(false);
+                }
             };
             fetchQuestions();
         } else {
@@ -207,8 +220,9 @@ export default function QuizBuilder({ user, currentClass, quiz, onSave, onCancel
             setIsUnlimited(true);
             setTimeLimit(0);
             setShowResults(false);
+            setQuestions([]);
         }
-    }, [quiz]);
+    }, [quiz, safeRetry]);
 
     const addQuestion = () => {
         setQuestions([...questions, { 
@@ -253,26 +267,27 @@ export default function QuizBuilder({ user, currentClass, quiz, onSave, onCancel
 
             // 1. Save or Update Quiz Entry
             if (quiz) {
-                await Quiz.update(quiz.id, quizData);
+                await safeRetry(() => Quiz.update(quiz.id, quizData));
             } else {
-                const newQuiz = await Quiz.create({ 
+                const newQuiz = await safeRetry(() => Quiz.create({ 
                     ...quizData,
                     class_id: currentClass.id, 
                     teacher_id: user.id 
-                });
+                }));
                 savedQuizId = newQuiz.id;
             }
             
             // 2. Handle Questions (Optimized)
             if(quiz) {
                 // Fetch old questions
-                const oldQuestions = await QuizQuestion.filter({quiz_id: quiz.id});
+                const oldQuestions = await safeRetry(() => QuizQuestion.filter({quiz_id: quiz.id}));
                 
                 // Parallel deletion in chunks to avoid rate limits
-                const deletePromises = oldQuestions.map(q => QuizQuestion.delete(q.id));
+                // CORRECTED: Chunk the DATA, then map to promises inside the loop
                 const chunkSize = 10;
-                for (let i = 0; i < deletePromises.length; i += chunkSize) {
-                    await Promise.all(deletePromises.slice(i, i + chunkSize));
+                for (let i = 0; i < oldQuestions.length; i += chunkSize) {
+                    const chunk = oldQuestions.slice(i, i + chunkSize);
+                    await Promise.all(chunk.map(q => safeRetry(() => QuizQuestion.delete(q.id))));
                 }
             }
             
@@ -285,7 +300,7 @@ export default function QuizBuilder({ user, currentClass, quiz, onSave, onCancel
                         quiz_id: savedQuizId
                     };
                 });
-                await QuizQuestion.bulkCreate(questionsToCreate);
+                await safeRetry(() => QuizQuestion.bulkCreate(questionsToCreate));
             }
 
             onSave();
@@ -300,6 +315,13 @@ export default function QuizBuilder({ user, currentClass, quiz, onSave, onCancel
     return (
         <div className="space-y-6">
             <h2 className="text-2xl font-bold" style={{ color: `rgb(var(--color-text))` }}>{quiz ? t('classTools.editQuiz') : t('classTools.createQuiz')}</h2>
+            
+            {isLoading ? (
+                <div className="flex justify-center py-12">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2" style={{ borderColor: `rgb(var(--color-primary))` }}></div>
+                </div>
+            ) : (
+                <>
             <div className="space-y-4">
                 <div>
                     <Label>{t('classTools.quizTitle')}</Label>
@@ -471,6 +493,8 @@ export default function QuizBuilder({ user, currentClass, quiz, onSave, onCancel
                 </Button>
                 <Button variant="ghost" onClick={onCancel} disabled={isSaving}>{t('classTools.cancel')}</Button>
             </div>
+            </>
+            )}
         </div>
     );
 }
