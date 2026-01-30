@@ -202,7 +202,7 @@ export default function AssignmentCard({ assignment, submissionCount, onClick, o
           {assignment.description && (
             <div 
               className="text-sm line-clamp-2 prose prose-sm max-w-none [&>*]:my-0"
-              style={{ color: `rgb(var(--color-textSecondary))` }}
+              style={{ color: `rgb(var(--color-textSecondary))`, opacity: 0.8 }}
               dangerouslySetInnerHTML={{ __html: assignment.description }}
             />
           )}
