@@ -780,8 +780,9 @@ export default function Layout({ children, currentPageName }) {
   };
   
   return (
-    <LanguageProvider>
-      <LayoutContent 
+    <ThemeProvider>
+      <LanguageProvider>
+        <LayoutContent 
         user={user}
         allClasses={allClasses}
         currentClass={currentClass}
@@ -806,8 +807,8 @@ export default function Layout({ children, currentPageName }) {
         {children}
       </LayoutContent>
       </LanguageProvider>
-      </ThemeProvider>
-      );
+    </ThemeProvider>
+  );
 }
 
 function LayoutContent({ 
