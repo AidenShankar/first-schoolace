@@ -140,40 +140,62 @@ export default function QuizTaker({ user, quiz, onFinish }) {
     }, [answers, currentQuestionIndex, quiz.id, user.id]);
 
     useEffect(() => {
+        if (initializedRef.current) return;
+        initializedRef.current = true;
+
         const startQuiz = async () => {
             try {
-                const existingSubmissions = await QuizSubmission.filter({ quiz_id: quiz.id, student_id: user.id });
-                const completedSubmission = existingSubmissions.find(s => s.status === 'completed');
-                
-                if (completedSubmission) {
-                    setIsCompleted(true);
-                    return;
-                }
+                // Parallel fetch for questions and submissions to speed up loading
+                const [existingSubmissions, fetchedQuestions] = await Promise.all([
+                    retryWithBackoff(() => QuizSubmission.filter({ quiz_id: quiz.id, student_id: user.id })),
+                    retryWithBackoff(() => QuizQuestion.filter({ quiz_id: quiz.id }))
+                ]);
 
-                // Check for questions BEFORE creating a submission
-                const fetchedQuestions = await QuizQuestion.filter({ quiz_id: quiz.id });
+                // Check questions first
                 if (!fetchedQuestions || fetchedQuestions.length === 0) {
                     setError("This quiz has no questions available.");
                     return;
                 }
                 setQuestions(fetchedQuestions);
 
-                let sub = existingSubmissions.find(s => s.status === 'in-progress');
-                if (!sub) {
-                    sub = await QuizSubmission.create({ 
-                        quiz_id: quiz.id, 
-                        student_id: user.id, 
-                        student_name: user.full_name,
-                        student_email: user.email,
-                        status: 'in-progress', 
-                        started_at: new Date().toISOString(),
-                        focus_loss_count: 0 // Initialize count
-                    });
+                // Check for existing completed submission
+                const completedSubmission = existingSubmissions.find(s => s.status === 'completed');
+                if (completedSubmission) {
+                    setIsCompleted(true);
+                    return;
                 }
+
+                // Handle in-progress submission
+                let sub = existingSubmissions.find(s => s.status === 'in-progress');
+                
+                if (!sub) {
+                    try {
+                        sub = await retryWithBackoff(() => QuizSubmission.create({ 
+                            quiz_id: quiz.id, 
+                            student_id: user.id, 
+                            student_name: user.full_name,
+                            student_email: user.email,
+                            status: 'in-progress', 
+                            started_at: new Date().toISOString(),
+                            focus_loss_count: 0
+                        }));
+                    } catch (createError) {
+                        console.error("Failed to create submission:", createError);
+                        setError("Failed to start quiz session. Please try again.");
+                        return;
+                    }
+                }
+
+                if (!sub) {
+                    setError("Could not initialize quiz session.");
+                    return;
+                }
+
                 // Notify layout that quiz has started
                 window.dispatchEvent(new CustomEvent('quiz-state-change', { detail: { quizInProgress: true } }));
                 setSubmission(sub);
                 
+                // Handle timer
                 if (quiz.time_limit_minutes && quiz.time_limit_minutes > 0) {
                     const startTime = new Date(sub.started_at).getTime();
                     const timeLimit = quiz.time_limit_minutes * 60 * 1000;
@@ -192,7 +214,10 @@ export default function QuizTaker({ user, quiz, onFinish }) {
                 setError("Failed to load quiz. Please check your connection and try again.");
             }
         };
-        startQuiz();
+        
+        if (quiz && user) {
+            startQuiz();
+        }
     }, [quiz, user, handleFinish]);
 
     useEffect(() => {
