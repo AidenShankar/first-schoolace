@@ -803,12 +803,13 @@ export default function Layout({ children, currentPageName }) {
         isLayoutLoading={isLayoutLoading}
         getNavLinks={getNavLinks}
         filterNavLinks={filterNavLinks}
-      >
-        {children}
-      </LayoutContent>
-    </LanguageProvider>
-  );
-}
+            >
+              {children}
+            </LayoutContent>
+          </ThemeProvider>
+        </LanguageProvider>
+        );
+        }
 
 function LayoutContent({ 
   user, allClasses, currentClass, currentClassId, quizInProgress, currentPageName,
