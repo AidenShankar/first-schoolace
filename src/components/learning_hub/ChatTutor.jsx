@@ -681,19 +681,6 @@ export default function ChatTutor({ user, learningData, language = 'EN', isPerso
                     </div>
                 </div>
             )}
-
-            {showUploadNotice && (
-                <div className="flex items-center justify-between bg-amber-50 border border-amber-200 text-amber-800 rounded-full px-4 py-2 text-xs sm:text-sm">
-                    <div className="flex items-center gap-2">
-                        <Loader2 className="w-4 h-4" />
-                        <span>Heads up: file uploads can slow replies. For snappier speed, reload when you're done.</span>
-                    </div>
-                    <div className="flex items-center gap-2 pl-3">
-                        <button onClick={() => window.location.reload()} className="px-2 py-1 rounded-full bg-amber-100 hover:bg-amber-200 text-amber-800 font-semibold">Reload</button>
-                        <button onClick={() => setShowUploadNotice(false)} className="text-amber-500 hover:text-amber-700"><X className="w-4 h-4" /></button>
-                    </div>
-                </div>
-            )}
                 
                 <div className="relative flex items-end gap-3">
                     <input
