@@ -54,7 +54,7 @@ export const themes = {
       primary: '14 165 233', // sky-500
       primaryHover: '2 132 199', // sky-600
       secondary: '6 182 212', // cyan-500
-      background: '240 249 255', // sky-50
+      background: '224 242 254', // sky-100
       surface: '255 255 255', // white
       text: '12 74 110', // sky-900
       textSecondary: '7 89 133', // sky-800
