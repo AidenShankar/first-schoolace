@@ -124,45 +124,55 @@ export default function QuizTaker({ user, quiz, onFinish }) {
 
     useEffect(() => {
         const startQuiz = async () => {
-            const existingSubmissions = await QuizSubmission.filter({ quiz_id: quiz.id, student_id: user.id });
-            const completedSubmission = existingSubmissions.find(s => s.status === 'completed');
-            
-            if (completedSubmission) {
-                setIsCompleted(true);
-                return;
-            }
-
-            let sub = existingSubmissions.find(s => s.status === 'in-progress');
-            if (!sub) {
-                sub = await QuizSubmission.create({ 
-                    quiz_id: quiz.id, 
-                    student_id: user.id, 
-                    student_name: user.full_name,
-                    student_email: user.email,
-                    status: 'in-progress', 
-                    started_at: new Date().toISOString(),
-                    focus_loss_count: 0 // Initialize count
-                });
-            }
-            // Notify layout that quiz has started
-            window.dispatchEvent(new CustomEvent('quiz-state-change', { detail: { quizInProgress: true } }));
-            setSubmission(sub);
-            
-            const fetchedQuestions = await QuizQuestion.filter({ quiz_id: quiz.id });
-            setQuestions(fetchedQuestions);
-
-            if (quiz.time_limit_minutes && quiz.time_limit_minutes > 0) {
-                const startTime = new Date(sub.started_at).getTime();
-                const timeLimit = quiz.time_limit_minutes * 60 * 1000;
-                const elapsed = Date.now() - startTime;
-                const remaining = Math.max(0, timeLimit - elapsed);
+            try {
+                const existingSubmissions = await QuizSubmission.filter({ quiz_id: quiz.id, student_id: user.id });
+                const completedSubmission = existingSubmissions.find(s => s.status === 'completed');
                 
-                if (remaining <= 0) {
-                    handleFinish();
+                if (completedSubmission) {
+                    setIsCompleted(true);
                     return;
-                } else {
-                    setTimeLeft(Math.ceil(remaining / 1000));
                 }
+
+                // Check for questions BEFORE creating a submission
+                const fetchedQuestions = await QuizQuestion.filter({ quiz_id: quiz.id });
+                if (!fetchedQuestions || fetchedQuestions.length === 0) {
+                    setError("This quiz has no questions available.");
+                    return;
+                }
+                setQuestions(fetchedQuestions);
+
+                let sub = existingSubmissions.find(s => s.status === 'in-progress');
+                if (!sub) {
+                    sub = await QuizSubmission.create({ 
+                        quiz_id: quiz.id, 
+                        student_id: user.id, 
+                        student_name: user.full_name,
+                        student_email: user.email,
+                        status: 'in-progress', 
+                        started_at: new Date().toISOString(),
+                        focus_loss_count: 0 // Initialize count
+                    });
+                }
+                // Notify layout that quiz has started
+                window.dispatchEvent(new CustomEvent('quiz-state-change', { detail: { quizInProgress: true } }));
+                setSubmission(sub);
+                
+                if (quiz.time_limit_minutes && quiz.time_limit_minutes > 0) {
+                    const startTime = new Date(sub.started_at).getTime();
+                    const timeLimit = quiz.time_limit_minutes * 60 * 1000;
+                    const elapsed = Date.now() - startTime;
+                    const remaining = Math.max(0, timeLimit - elapsed);
+                    
+                    if (remaining <= 0) {
+                        handleFinish();
+                        return;
+                    } else {
+                        setTimeLeft(Math.ceil(remaining / 1000));
+                    }
+                }
+            } catch (err) {
+                console.error("Error starting quiz:", err);
+                setError("Failed to load quiz. Please check your connection and try again.");
             }
         };
         startQuiz();
