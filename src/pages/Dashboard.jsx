@@ -1291,7 +1291,6 @@ Output your response as JSON with:
                                             </Button>
                                         </DialogTrigger>
 
-                                        </div>
                                         <DialogContent>
                                             <DialogHeader>
                                                 <DialogTitle>Settings</DialogTitle>
