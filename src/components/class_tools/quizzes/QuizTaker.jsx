@@ -244,6 +244,19 @@ export default function QuizTaker({ user, quiz, onFinish }) {
         return `${minutes}:${secs.toString().padStart(2, '0')}`;
     };
     
+    if (error) {
+        return (
+            <Card>
+                <CardContent className="p-8 text-center space-y-4">
+                    <AlertTriangle className="w-16 h-16 text-yellow-500 mx-auto" />
+                    <h2 className="text-2xl font-bold text-red-600">Unable to Start Quiz</h2>
+                    <p style={{ color: `rgb(var(--color-textSecondary))` }}>{error}</p>
+                    <Button onClick={() => finishHandler.current()} variant="outline">Back to List</Button>
+                </CardContent>
+            </Card>
+        );
+    }
+
     if (isCompleted) {
         return (
              <Card>
