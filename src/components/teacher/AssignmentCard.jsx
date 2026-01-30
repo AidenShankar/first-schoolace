@@ -137,7 +137,7 @@ export default function AssignmentCard({ assignment, submissionCount, onClick, o
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <FileText className="w-5 h-5 text-slate-400 group-hover:text-indigo-500 transition-colors" />
+              <FileText className="w-5 h-5 text-slate-400 transition-colors" style={{ '--hover-color': `rgb(var(--color-primary))` }} onMouseEnter={(e) => e.currentTarget.style.color = `rgb(var(--color-primary))`} onMouseLeave={(e) => e.currentTarget.style.color = ''} />
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
@@ -232,7 +232,16 @@ export default function AssignmentCard({ assignment, submissionCount, onClick, o
           <Button
             variant="ghost"
             size="sm"
-            className="text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 rounded-lg px-3 py-1"
+            className="rounded-lg px-3 py-1 transition-colors"
+            style={{ color: `rgb(var(--color-primary))` }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = `rgb(var(--color-primaryHover))`;
+              e.currentTarget.style.backgroundColor = `rgba(var(--color-primary), 0.1)`;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = `rgb(var(--color-primary))`;
+              e.currentTarget.style.backgroundColor = 'transparent';
+            }}
             onClick={onClick}
           >
             {t('assignments.viewDetails')}
@@ -268,6 +277,10 @@ export default function AssignmentCard({ assignment, submissionCount, onClick, o
               <Button 
                 onClick={handleDuplicate} 
                 disabled={!destinationClassId || isDuplicating}
+                className="text-white transition-colors"
+                style={{ backgroundColor: `rgb(var(--color-primary))` }}
+                onMouseEnter={(e) => !e.currentTarget.disabled && (e.currentTarget.style.backgroundColor = `rgb(var(--color-primaryHover))`)}
+                onMouseLeave={(e) => !e.currentTarget.disabled && (e.currentTarget.style.backgroundColor = `rgb(var(--color-primary))`)}
               >
                 {isDuplicating ? t('assignments.duplicating') : t('assignments.duplicate')}
               </Button>
