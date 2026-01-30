@@ -1180,7 +1180,7 @@ Output your response as JSON with:
                 <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                     <div className="flex justify-between items-start mb-6">
                         <div>
-                            <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-3xl md:text-4xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-100">
+                            <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-3xl md:text-4xl font-bold mb-2 text-white">
                                 {t('dashboard.welcome')}, {user.full_name || user.email}!
                             </motion.h1>
                             <div className="flex items-center gap-4">
@@ -1462,8 +1462,8 @@ Output your response as JSON with:
                                                 <Users className="w-6 h-6" style={{ color: `rgb(var(--color-primary))` }} />
                                             </div>
                                             <div>
-                                                <h2 className="text-3xl font-bold text-slate-900">{t('dashboard.teacherDashboard')}</h2>
-                                                <p className="text-slate-600 mt-1">{t('dashboard.teacherDescription')}</p>
+                                                <h2 className="text-3xl font-bold" style={{ color: `rgb(var(--color-text))` }}>{t('dashboard.teacherDashboard')}</h2>
+                                                <p className="mt-1" style={{ color: `rgb(var(--color-textSecondary))` }}>{t('dashboard.teacherDescription')}</p>
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-2">
@@ -1507,7 +1507,7 @@ Output your response as JSON with:
                                                         ← {t('dashboard.backToAssignments')}
                                                     </Button>
                                                     <div>
-                                                        <h3 className="text-2xl font-bold text-slate-900">{selectedAssignment.title}</h3>
+                                                        <h3 className="text-2xl font-bold" style={{ color: `rgb(var(--color-text))` }}>{selectedAssignment.title}</h3>
                                                         <ReactQuill
                                                           value={selectedAssignment.description}
                                                           readOnly={true}
@@ -1535,12 +1535,12 @@ Output your response as JSON with:
                                             transition={{ duration: 0.6 }}
                                             className="space-y-6"
                                         >
-                                            <h3 className="text-2xl font-bold text-slate-900">{t('dashboard.yourAssignments')}</h3>
+                                            <h3 className="text-2xl font-bold" style={{ color: `rgb(var(--color-text))` }}>{t('dashboard.yourAssignments')}</h3>
                                             {assignments.length === 0 ? (
                                                 <div className="text-center py-16">
-                                                    <BookOpen className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-                                                    <p className="text-slate-500 font-medium text-lg">{t('dashboard.noAssignmentsYet')}</p>
-                                                    <p className="text-sm text-slate-400 mt-2">{t('dashboard.createFirstAssignment')}</p>
+                                                    <BookOpen className="w-16 h-16 mx-auto mb-4" style={{ color: `rgb(var(--color-border))` }} />
+                                                    <p className="font-medium text-lg" style={{ color: `rgb(var(--color-textSecondary))` }}>{t('dashboard.noAssignmentsYet')}</p>
+                                                    <p className="text-sm mt-2" style={{ color: `rgb(var(--color-textSecondary))` }}>{t('dashboard.createFirstAssignment')}</p>
                                                 </div>
                                             ) : (
                                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -1599,8 +1599,8 @@ Output your response as JSON with:
                                             <GraduationCap className="w-6 h-6" style={{ color: `rgb(var(--color-secondary))` }} />
                                         </div>
                                         <div>
-                                            <h2 className="text-3xl font-bold text-slate-900">{t('dashboard.studentPortal')}</h2>
-                                            <p className="text-slate-600 mt-1">{t('dashboard.studentDescription')}</p>
+                                            <h2 className="text-3xl font-bold" style={{ color: `rgb(var(--color-text))` }}>{t('dashboard.studentPortal')}</h2>
+                                            <p className="mt-1" style={{ color: `rgb(var(--color-textSecondary))` }}>{t('dashboard.studentDescription')}</p>
                                         </div>
                                     </div>
                                     <motion.div
