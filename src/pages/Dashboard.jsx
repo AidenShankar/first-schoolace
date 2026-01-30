@@ -1271,7 +1271,6 @@ Output your response as JSON with:
                                         SUPERCHARGED
                                     </Button>
                                     <Dialog>
-                                       <div className="relative inline-block">
                                         <DialogTrigger asChild>
                                             <Button 
                                                 variant="ghost"
