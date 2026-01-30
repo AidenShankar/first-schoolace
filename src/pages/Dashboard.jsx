@@ -1270,8 +1270,8 @@ Output your response as JSON with:
                                                     </div>
                                                     <LanguageSelector />
                                                 </div>
-                                                <div className="pt-6 border-t">
-                                                    <div className="flex flex-col space-y-3 mb-4">
+                                                <div className="pt-6 border-t flex items-center justify-between space-x-4">
+                                                    <div className="flex flex-col space-y-1">
                                                         <Label className="text-base font-medium">Theme</Label>
                                                         <span className="text-sm text-slate-500">
                                                             Choose your preferred color scheme
@@ -1335,8 +1335,8 @@ Output your response as JSON with:
                                             </div>
                                             <LanguageSelector />
                                         </div>
-                                        <div className="pt-6 border-t">
-                                            <div className="flex flex-col space-y-3 mb-4">
+                                        <div className="pt-6 border-t flex items-center justify-between space-x-4">
+                                            <div className="flex flex-col space-y-1">
                                                 <Label className="text-base font-medium">Theme</Label>
                                                 <span className="text-sm text-slate-500">
                                                     Choose your preferred color scheme
