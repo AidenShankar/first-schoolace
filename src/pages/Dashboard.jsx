@@ -1223,11 +1223,11 @@ Output your response as JSON with:
                         </div>
                         <div className="flex flex-col items-end gap-2">
                             <div className="flex items-center gap-3">
-                                <Button variant="outline" size="sm" onClick={handleFeedbackClick} className="border-white/20 rounded-xl text-white hover:bg-white/20">
+                                <Button variant="ghost" size="sm" onClick={handleFeedbackClick} className="border border-white/20 rounded-xl text-white hover:bg-white/20">
                                 <MessageCircle className="w-4 h-4 mr-2" />
                                 {t('dashboard.feedback')}
                             </Button>
-                            <Button variant="outline" size="sm" onClick={handleLogout} className="border-white/20 rounded-xl text-white hover:bg-white/20">
+                            <Button variant="ghost" size="sm" onClick={handleLogout} className="border border-white/20 rounded-xl text-white hover:bg-white/20">
                                 <LogOut className="w-4 h-4 mr-2" />
                                 {t('dashboard.logout')}
                             </Button>
@@ -1245,10 +1245,10 @@ Output your response as JSON with:
                                     <Dialog>
                                         <DialogTrigger asChild>
                                             <Button 
-                                                variant="outline"
+                                                variant="ghost"
                                                 size="icon"
                                                 title="Settings"
-                                                className="border-white/20 rounded-xl h-9 w-9 text-white hover:bg-white/20"
+                                                className="border border-white/20 rounded-xl h-9 w-9 text-white hover:bg-white/20"
                                             >
                                                 <Settings className="w-4 h-4" />
                                             </Button>
@@ -1283,7 +1283,7 @@ Output your response as JSON with:
                                         </DialogContent>
                                     </Dialog>
                                     <Button 
-                                        variant="outline"
+                                        variant="ghost"
                                         size="icon"
                                         onClick={() => {
                                             setIsSyncing(true);
@@ -1291,7 +1291,7 @@ Output your response as JSON with:
                                         }}
                                         disabled={isSyncing}
                                         title="Refresh Page"
-                                        className="border-white/20 rounded-xl h-9 w-9 text-white hover:bg-white/20"
+                                        className="border border-white/20 rounded-xl h-9 w-9 text-white hover:bg-white/20"
                                     >
                                         <RefreshCw className={`w-4 h-4 ${isSyncing ? 'animate-spin' : ''}`} />
                                     </Button>
@@ -1310,10 +1310,10 @@ Output your response as JSON with:
                                 <Dialog>
                                     <DialogTrigger asChild>
                                         <Button 
-                                            variant="outline"
+                                            variant="ghost"
                                             size="icon"
                                             title="Class Settings"
-                                            className="border-white/20 rounded-xl h-9 w-9 text-white hover:bg-white/20"
+                                            className="border border-white/20 rounded-xl h-9 w-9 text-white hover:bg-white/20"
                                         >
                                             <Settings className="w-4 h-4" />
                                         </Button>
