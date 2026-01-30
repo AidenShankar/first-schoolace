@@ -188,6 +188,7 @@ export default function QuizBuilder({ user, currentClass, quiz, onSave, onCancel
     const [isUnlimited, setIsUnlimited] = useState(true);
     const [showResults, setShowResults] = useState(false);
     const [questions, setQuestions] = useState([]);
+    const [isSaving, setIsSaving] = useState(false);
     
     useEffect(() => {
         if (quiz) {
@@ -237,41 +238,63 @@ export default function QuizBuilder({ user, currentClass, quiz, onSave, onCancel
     };
 
     const handleSave = async () => {
-        const finalTimeLimit = isUnlimited ? 0 : timeLimit;
-        
-        const quizData = {
-            title,
-            description,
-            time_limit_minutes: finalTimeLimit,
-            show_results: showResults
-        };
+        setIsSaving(true);
+        try {
+            const finalTimeLimit = isUnlimited ? 0 : timeLimit;
+            
+            const quizData = {
+                title,
+                description,
+                time_limit_minutes: finalTimeLimit,
+                show_results: showResults
+            };
 
-        let savedQuiz;
-        if (quiz) {
-            await Quiz.update(quiz.id, quizData);
-            savedQuiz = quiz;
-        } else {
-            savedQuiz = await Quiz.create({ 
-                ...quizData,
-                class_id: currentClass.id, 
-                teacher_id: user.id 
-            });
-        }
-        
-        // Delete old questions if editing
-        if(quiz) {
-            const oldQuestions = await QuizQuestion.filter({quiz_id: quiz.id});
-            for(const q of oldQuestions) {
-                await QuizQuestion.delete(q.id);
+            let savedQuizId = quiz ? quiz.id : null;
+
+            // 1. Save or Update Quiz Entry
+            if (quiz) {
+                await Quiz.update(quiz.id, quizData);
+            } else {
+                const newQuiz = await Quiz.create({ 
+                    ...quizData,
+                    class_id: currentClass.id, 
+                    teacher_id: user.id 
+                });
+                savedQuizId = newQuiz.id;
             }
+            
+            // 2. Handle Questions (Optimized)
+            if(quiz) {
+                // Fetch old questions
+                const oldQuestions = await QuizQuestion.filter({quiz_id: quiz.id});
+                
+                // Parallel deletion in chunks to avoid rate limits
+                const deletePromises = oldQuestions.map(q => QuizQuestion.delete(q.id));
+                const chunkSize = 10;
+                for (let i = 0; i < deletePromises.length; i += chunkSize) {
+                    await Promise.all(deletePromises.slice(i, i + chunkSize));
+                }
+            }
+            
+            // Bulk Create new questions
+            if (questions.length > 0) {
+                 const questionsToCreate = questions.map(q => {
+                    const { id, ...rest } = q;
+                    return {
+                        ...rest,
+                        quiz_id: savedQuizId
+                    };
+                });
+                await QuizQuestion.bulkCreate(questionsToCreate);
+            }
+
+            onSave();
+        } catch (error) {
+            console.error("Error saving quiz:", error);
+            alert("Failed to save quiz. Please try again.");
+        } finally {
+            setIsSaving(false);
         }
-        
-        // Create new questions
-        for (const q of questions) {
-            const { id, ...questionToSave } = q;
-            await QuizQuestion.create({ ...questionToSave, quiz_id: savedQuiz.id });
-        }
-        onSave();
     };
 
     return (
@@ -436,10 +459,17 @@ export default function QuizBuilder({ user, currentClass, quiz, onSave, onCancel
             </Button>
             
             <div className="flex gap-2">
-                <Button onClick={handleSave} disabled={questions.length === 0} className="bg-indigo-600 hover:bg-indigo-700">
-                    {t('classTools.saveQuiz')}
+                <Button onClick={handleSave} disabled={questions.length === 0 || isSaving} className="bg-indigo-600 hover:bg-indigo-700">
+                    {isSaving ? (
+                        <>
+                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                            {t('classTools.saving') || "Saving..."}
+                        </>
+                    ) : (
+                        t('classTools.saveQuiz')
+                    )}
                 </Button>
-                <Button variant="ghost" onClick={onCancel}>{t('classTools.cancel')}</Button>
+                <Button variant="ghost" onClick={onCancel} disabled={isSaving}>{t('classTools.cancel')}</Button>
             </div>
         </div>
     );
