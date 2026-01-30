@@ -20,11 +20,12 @@ export const themes = {
   },
   nord: {
     name: 'Nord',
+    popular: true,
     colors: {
       primary: '136 192 208', // #88c0d0
       primaryHover: '129 161 193', // #81a1c1
       secondary: '143 188 187', // #8fbcbb
-      background: '236 239 244', // #eceff4
+      background: '216 222 233', // #d8dee9 - darker
       surface: '255 255 255', // #ffffff
       text: '46 52 64', // #2e3440
       textSecondary: '76 86 106', // #4c566a
