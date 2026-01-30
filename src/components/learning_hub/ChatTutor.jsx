@@ -293,14 +293,6 @@ export default function ChatTutor({ user, learningData, language = 'EN', isPerso
         if (uploadedFiles.length > 0) setShowUploadNotice(true);
     }, [uploadedFiles.length]);
 
-    useEffect(() => {
-        if (uploadedFiles.length > 0) setShowUploadNotice(true);
-    }, [uploadedFiles.length]);
-
-    useEffect(() => {
-        if (uploadedFiles.length > 0) setShowUploadNotice(true);
-    }, [uploadedFiles.length]);
-
     const handleFileUpload = async (input) => {
         const files = input.target ? Array.from(input.target.files) : Array.from(input);
         if (files.length === 0) return;
