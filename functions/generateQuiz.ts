@@ -60,7 +60,7 @@ Deno.serve(async (req) => {
                             type: "object",
                             properties: {
                                 question_text: { type: "string" },
-                                question_type: { type: "string", enum: ["${question_type}"] },
+                                question_type: { type: "string", enum: [question_type] },
                                 options: { 
                                     type: "object",
                                     properties: {
