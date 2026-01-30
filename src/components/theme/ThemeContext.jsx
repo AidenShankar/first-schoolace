@@ -34,22 +34,6 @@ export const themes = {
       accentLight: '252 231 243', // pink-100
     }
   },
-  dark: {
-    name: 'Dark Mode',
-    popular: true,
-    colors: {
-      primary: '129 140 248', // indigo-400
-      primaryHover: '165 180 252', // indigo-300
-      secondary: '192 132 252', // purple-400
-      background: '15 23 42', // slate-900
-      surface: '30 41 59', // slate-800
-      text: '248 250 252', // slate-50
-      textSecondary: '203 213 225', // slate-300
-      border: '51 65 85', // slate-700
-      accent: '96 165 250', // blue-400
-      accentLight: '30 64 175', // blue-800
-    }
-  },
   nord: {
     name: 'Nord',
     popular: true,
@@ -94,6 +78,21 @@ export const themes = {
       border: '186 230 253', // sky-200
       accent: '20 184 166', // teal-500
       accentLight: '204 251 241', // teal-100
+    }
+  },
+   dark: {
+    name: 'Dark Mode',
+    colors: {
+      primary: '129 140 248', // indigo-400
+      primaryHover: '165 180 252', // indigo-300
+      secondary: '192 132 252', // purple-400
+      background: '15 23 42', // slate-900
+      surface: '30 41 59', // slate-800
+      text: '248 250 252', // slate-50
+      textSecondary: '203 213 225', // slate-300
+      border: '51 65 85', // slate-700
+      accent: '96 165 250', // blue-400
+      accentLight: '30 64 175', // blue-800
     }
   },
   forest: {
