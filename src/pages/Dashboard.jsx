@@ -1277,6 +1277,7 @@ Output your response as JSON with:
                                                 variant="ghost"
                                                 size="icon"
                                                 title="Settings"
+                                                className="bg-white rounded-xl h-9 w-9 transition-colors relative"
                                                 className="bg-white rounded-xl h-9 w-9 transition-colors"
                                                 style={{ color: `rgb(var(--color-primary))` }}
                                                 onMouseEnter={(e) => {
