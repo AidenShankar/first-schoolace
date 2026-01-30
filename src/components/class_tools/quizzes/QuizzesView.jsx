@@ -115,6 +115,7 @@ export default function QuizzesView({ user, currentClass, allClasses }) {
                             onEditQuiz={handleEditQuiz}
                             onUpdate={fetchData}
                             allClasses={allClasses}
+                            retryWithBackoff={retryWithBackoff}
                         />
                     </>
                 );

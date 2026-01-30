@@ -16,12 +16,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useTranslation } from '../../i18n/useTranslation';
 
 
-export default function QuizList({ user, quizzes, submissions, onTakeQuiz, onViewResults, onEditQuiz, onUpdate, allClasses }) {
+export default function QuizList({ user, quizzes, submissions, onTakeQuiz, onViewResults, onEditQuiz, onUpdate, allClasses, retryWithBackoff }) {
     const { t } = useTranslation();
     const [isDuplicating, setIsDuplicating] = useState(false);
     const [duplicatingQuiz, setDuplicatingQuiz] = useState(null);
     const [destinationClassId, setDestinationClassId] = useState('');
     const [isSubmittingDuplicate, setIsSubmittingDuplicate] = useState(false);
+    const [isProcessing, setIsProcessing] = useState(false);
+
+    // Fallback retry function if not provided prop (e.g. from older parent versions)
+    const safeRetry = retryWithBackoff || (async (fn) => await fn());
 
     const statusConfig = {
         draft: { color: "bg-yellow-100 text-yellow-800", icon: <Lock className="w-3 h-3" />, text: t('classTools.draft') },
@@ -30,17 +34,33 @@ export default function QuizList({ user, quizzes, submissions, onTakeQuiz, onVie
     };
 
     const toggleStatus = async (quiz) => {
-        let newStatus;
-        if (quiz.status === 'draft') newStatus = 'active';
-        else if (quiz.status === 'active') newStatus = 'closed';
-        else newStatus = 'draft';
-        await Quiz.update(quiz.id, { status: newStatus });
-        onUpdate();
+        try {
+            setIsProcessing(true);
+            let newStatus;
+            if (quiz.status === 'draft') newStatus = 'active';
+            else if (quiz.status === 'active') newStatus = 'closed';
+            else newStatus = 'draft';
+            await safeRetry(() => Quiz.update(quiz.id, { status: newStatus }));
+            onUpdate();
+        } catch (e) {
+            console.error("Error updating status:", e);
+            alert("Failed to update status. Please try again.");
+        } finally {
+            setIsProcessing(false);
+        }
     };
 
     const toggleShowResults = async (quiz) => {
-        await Quiz.update(quiz.id, { show_results: !quiz.show_results });
-        onUpdate();
+        try {
+            setIsProcessing(true);
+            await safeRetry(() => Quiz.update(quiz.id, { show_results: !quiz.show_results }));
+            onUpdate();
+        } catch (e) {
+            console.error("Error updating settings:", e);
+            alert("Failed to update settings. Please try again.");
+        } finally {
+            setIsProcessing(false);
+        }
     };
 
     const handleOpenDuplicateDialog = (quiz) => {
@@ -61,7 +81,7 @@ export default function QuizList({ user, quizzes, submissions, onTakeQuiz, onVie
         setIsSubmittingDuplicate(true);
         try {
             // 1. Create a copy of the quiz in the new class
-            const newQuiz = await Quiz.create({
+            const newQuiz = await safeRetry(() => Quiz.create({
                 class_id: destinationClassId,
                 teacher_id: duplicatingQuiz.teacher_id,
                 title: duplicatingQuiz.title,
@@ -69,10 +89,10 @@ export default function QuizList({ user, quizzes, submissions, onTakeQuiz, onVie
                 status: 'draft', // Duplicated quizzes always start as drafts
                 time_limit_minutes: duplicatingQuiz.time_limit_minutes,
                 show_results: duplicatingQuiz.show_results,
-            });
+            }));
 
             // 2. Get all questions from the original quiz
-            const originalQuestions = await QuizQuestion.filter({ quiz_id: duplicatingQuiz.id });
+            const originalQuestions = await safeRetry(() => QuizQuestion.filter({ quiz_id: duplicatingQuiz.id }));
 
             // 3. Create copies of the questions for the new quiz
             if (originalQuestions.length > 0) {
@@ -83,9 +103,10 @@ export default function QuizList({ user, quizzes, submissions, onTakeQuiz, onVie
                     options: q.options,
                     correct_answer: q.correct_answer,
                 }));
-                await QuizQuestion.bulkCreate(newQuestions);
+                // Bulk create is usually efficient, but wrap in retry just in case
+                await safeRetry(() => QuizQuestion.bulkCreate(newQuestions));
             }
-            
+
             alert(t('classTools.quizCopied').replace('{title}', duplicatingQuiz.title));
             handleCloseDuplicateDialog();
 
@@ -103,20 +124,28 @@ export default function QuizList({ user, quizzes, submissions, onTakeQuiz, onVie
         }
 
         try {
-            // Delete all questions first
-            const questions = await QuizQuestion.filter({ quiz_id: quiz.id });
-            for (const question of questions) {
-                await QuizQuestion.delete(question.id);
+            setIsProcessing(true);
+            // Get all questions first
+            const questions = await safeRetry(() => QuizQuestion.filter({ quiz_id: quiz.id }));
+
+            // Delete all questions in PARALLEL instead of sequential loop for speed
+            // Using chunks of 10 to avoid hitting aggressive rate limits if there are many questions
+            const chunkSize = 10;
+            for (let i = 0; i < questions.length; i += chunkSize) {
+                const chunk = questions.slice(i, i + chunkSize);
+                await Promise.all(chunk.map(q => safeRetry(() => QuizQuestion.delete(q.id))));
             }
 
             // Delete the quiz
-            await Quiz.delete(quiz.id);
-            
+            await safeRetry(() => Quiz.delete(quiz.id));
+
             alert(t('classTools.quizDeleted').replace('{title}', quiz.title));
             onUpdate();
         } catch (error) {
             console.error("Failed to delete quiz:", error);
             alert("An error occurred while deleting the quiz. Please try again.");
+        } finally {
+            setIsProcessing(false);
         }
     };
     
