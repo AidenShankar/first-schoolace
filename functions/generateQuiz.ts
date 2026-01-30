@@ -22,9 +22,10 @@ Deno.serve(async (req) => {
             - Difficulty: ${difficulty}
 
             **IMPORTANT:** 
-            - For multiple choice questions, you MUST provide exactly 4 written answer options (A, B, C, D) with complete text for each option.
-            - For true-false questions, correct_answer should be "A" (True) or "B" (False).
-            - For free-response questions, options should be empty or null, and correct_answer should be a sample correct answer or key points.
+            - YOU MUST GENERATE QUESTIONS OF TYPE: "${question_type}" ONLY. Do not mix types.
+            - For multiple choice questions (question_type="multiple-choice"), you MUST provide exactly 4 written answer options (A, B, C, D) with complete text for each option. The "options" object MUST NOT be null.
+            - For true-false questions (question_type="true-false"), correct_answer should be "A" (True) or "B" (False).
+            - For free-response questions (question_type="free-response"), options should be empty or null, and correct_answer should be a sample correct answer or key points.
             
             Generate exactly ${num_questions} well-written questions. Each question should be clear and educational.
             
@@ -59,7 +60,7 @@ Deno.serve(async (req) => {
                             type: "object",
                             properties: {
                                 question_text: { type: "string" },
-                                question_type: { type: "string", enum: ["multiple-choice", "true-false", "free-response"] },
+                                question_type: { type: "string", enum: ["${question_type}"] },
                                 options: { 
                                     type: "object",
                                     properties: {
