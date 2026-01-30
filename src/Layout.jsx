@@ -1,10 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { GraduationCap, MessageSquare, BookOpen, Sparkles, SlidersHorizontal, Bot, Share2, Calendar, BrainCircuit, CalendarClock, Settings } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import ThemeSelector from "./components/theme/ThemeSelector";
+import { GraduationCap, MessageSquare, BookOpen, Sparkles, SlidersHorizontal, Bot, Share2, Calendar, BrainCircuit, CalendarClock } from "lucide-react";
 import { LanguageProvider, useLanguage } from "./components/i18n/LanguageContext";
 import { t } from "./components/i18n/translations";
 import { ThemeProvider } from "./components/theme/ThemeContext";
@@ -969,34 +966,6 @@ function LayoutContent({
                     );
                   })}
                 </nav>
-
-                <div className="relative ml-2">
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button variant="ghost" size="icon" className="relative">
-                        <Settings className="w-5 h-5" />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-4" align="end">
-                      <div className="space-y-2">
-                        <h4 className="font-medium leading-none mb-2">Appearance</h4>
-                        <ThemeSelector />
-                      </div>
-                    </PopoverContent>
-                  </Popover>
-                  
-                  <div className="absolute top-full mt-2 right-[-20px] z-50 flex flex-col items-center pointer-events-none w-32 animate-bounce">
-                     <div className="text-primary mb-1">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M12 19V5" />
-                            <path d="m5 12 7-7 7 7" />
-                        </svg>
-                     </div>
-                     <span className="text-sm font-bold text-primary bg-background/80 backdrop-blur px-2 py-1 rounded shadow-sm border border-border whitespace-nowrap">
-                        New Themes!
-                     </span>
-                  </div>
-                </div>
               </div>
 
             </div>
