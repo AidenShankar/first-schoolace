@@ -5,7 +5,6 @@ import { GraduationCap, MessageSquare, BookOpen, Sparkles, SlidersHorizontal, Bo
 import { LanguageProvider, useLanguage } from "./components/i18n/LanguageContext";
 import { t } from "./components/i18n/translations";
 import { ThemeProvider } from "./components/theme/ThemeContext";
-import ThemeSelector from "./components/theme/ThemeSelector";
 import { User } from '@/entities/User';
 import { Class } from '@/entities/Class';
 import { ClassEnrollment } from '@/entities/ClassEnrollment';
@@ -967,17 +966,6 @@ function LayoutContent({
                     );
                   })}
                 </nav>
-                <div className="relative ml-2 hidden md:block">
-                  <ThemeSelector />
-                  <div className="absolute top-12 right-0 z-50 pointer-events-none">
-                    <div className="relative animate-bounce">
-                      <div className="absolute -top-1 right-10 w-3 h-3 bg-indigo-600 rotate-45"></div>
-                      <div className="bg-indigo-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-lg">
-                        New Themes!
-                      </div>
-                    </div>
-                  </div>
-                </div>
               </div>
 
             </div>
