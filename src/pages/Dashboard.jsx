@@ -1423,7 +1423,9 @@ Output your response as JSON with:
                                 <>
                                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                                         <div className="flex items-center space-x-4">
-                                            <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center"><Users className="w-6 h-6 text-indigo-600" /></div>
+                                            <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: `rgba(var(--color-primary), 0.1)` }}>
+                                                <Users className="w-6 h-6" style={{ color: `rgb(var(--color-primary))` }} />
+                                            </div>
                                             <div>
                                                 <h2 className="text-3xl font-bold text-slate-900">{t('dashboard.teacherDashboard')}</h2>
                                                 <p className="text-slate-600 mt-1">{t('dashboard.teacherDescription')}</p>
@@ -1431,7 +1433,13 @@ Output your response as JSON with:
                                         </div>
                                         <div className="flex items-center gap-2">
                                             {!showAssignmentForm && !selectedAssignment && !showCreateForm && (
-                                                <Button onClick={handleCreateNewAssignment} className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200">
+                                                <Button 
+                                                    onClick={handleCreateNewAssignment} 
+                                                    className="text-white px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
+                                                    style={{ backgroundColor: `rgb(var(--color-primary))` }}
+                                                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = `rgb(var(--color-primaryHover))`}
+                                                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = `rgb(var(--color-primary))`}
+                                                >
                                                     <Plus className="w-5 h-5 mr-2" /> {t('dashboard.createAssignment')}
                                                 </Button>
                                             )}
@@ -1552,7 +1560,9 @@ Output your response as JSON with:
                             ) : (
                                 <>
                                     <div className="flex items-center space-x-4 mb-8">
-                                        <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center"><GraduationCap className="w-6 h-6 text-purple-600" /></div>
+                                        <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: `rgba(var(--color-secondary), 0.2)` }}>
+                                            <GraduationCap className="w-6 h-6" style={{ color: `rgb(var(--color-secondary))` }} />
+                                        </div>
                                         <div>
                                             <h2 className="text-3xl font-bold text-slate-900">{t('dashboard.studentPortal')}</h2>
                                             <p className="text-slate-600 mt-1">{t('dashboard.studentDescription')}</p>
