@@ -66,9 +66,9 @@ export default function GradedWorkList({ performanceData }) {
     ].sort((a, b) => new Date(b.submitted_at) - new Date(a.submitted_at));
 
     return (
-        <div className="h-full bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden flex flex-col">
+        <div className="h-full rounded-3xl border shadow-xl overflow-hidden flex flex-col themed-card">
             {/* Header Section */}
-            <div className="relative p-6 bg-gradient-to-r from-indigo-600 to-purple-600 shrink-0 overflow-hidden">
+            <div className="relative p-6 shrink-0 overflow-hidden" style={{ background: `linear-gradient(to right, rgb(var(--color-primary)), rgb(var(--color-secondary)))` }}>
                 <div className="relative z-10">
                     <div className="flex items-center gap-3 mb-2">
                         <div className="p-2 bg-white/10 rounded-xl backdrop-blur-md border border-white/20">
@@ -85,7 +85,7 @@ export default function GradedWorkList({ performanceData }) {
             </div>
 
             {/* List Section */}
-            <ScrollArea className="flex-1 bg-slate-50/50">
+            <ScrollArea className="flex-1" style={{ backgroundColor: `rgba(var(--color-background), 0.5)` }}>
                 <div className="p-4 space-y-3">
                     {allWork.length === 0 ? (
                         <div className="flex flex-col items-center justify-center h-48 text-center">
@@ -102,7 +102,17 @@ export default function GradedWorkList({ performanceData }) {
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: index * 0.05 }}
-                                className="group relative bg-white hover:bg-white rounded-2xl p-4 transition-all duration-300 hover:shadow-lg border border-slate-200/60 hover:border-indigo-200"
+                                className="group relative rounded-2xl p-4 transition-all duration-300 hover:shadow-lg border"
+                                style={{ 
+                                    backgroundColor: `rgb(var(--color-surface))`,
+                                    borderColor: `rgb(var(--color-border))`
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.currentTarget.style.borderColor = `rgb(var(--color-primary))`;
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.currentTarget.style.borderColor = `rgb(var(--color-border))`;
+                                }}
                             >
                                 <div className="flex items-center gap-4">
                                     {/* Icon Box */}

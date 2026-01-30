@@ -57,7 +57,7 @@ const InteractiveQuiz = ({ quiz, onQuizSubmit, onCancel, language = 'EN' }) => {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3 }}
-            className="my-6 bg-white/90 backdrop-blur-xl p-8 rounded-3xl border border-slate-100 shadow-xl"
+            className="my-6 backdrop-blur-xl p-8 rounded-3xl border shadow-xl themed-card" style={{ borderColor: `rgb(var(--color-border))` }}
         >
             <div className="flex justify-between items-center mb-8">
                 <h3 className="text-2xl font-semibold text-slate-900 tracking-tight">{quiz.title}</h3>
@@ -80,9 +80,26 @@ const InteractiveQuiz = ({ quiz, onQuizSubmit, onCancel, language = 'EN' }) => {
                                     key={oIndex}
                                     className={`text-left p-4 rounded-2xl text-base font-medium transition-all duration-300 ease-out border-2 ${
                                         answers[qIndex] === opt 
-                                            ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white border-purple-500 shadow-lg transform scale-[1.02]' 
-                                            : 'bg-white hover:bg-slate-50 border-slate-200 hover:border-slate-300 hover:shadow-md'
+                                            ? 'text-white shadow-lg transform scale-[1.02]' 
+                                            : 'hover:shadow-md'
                                     }`}
+                                    style={
+                                        answers[qIndex] === opt
+                                            ? { background: `linear-gradient(to right, rgb(var(--color-primary)), rgb(var(--color-secondary)))`, borderColor: `rgb(var(--color-primary))` }
+                                            : { backgroundColor: `rgb(var(--color-surface))`, borderColor: `rgb(var(--color-border))` }
+                                    }
+                                    onMouseEnter={(e) => {
+                                        if (answers[qIndex] !== opt) {
+                                            e.currentTarget.style.backgroundColor = `rgba(var(--color-border), 0.5)`;
+                                            e.currentTarget.style.borderColor = `rgb(var(--color-textSecondary))`;
+                                        }
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        if (answers[qIndex] !== opt) {
+                                            e.currentTarget.style.backgroundColor = `rgb(var(--color-surface))`;
+                                            e.currentTarget.style.borderColor = `rgb(var(--color-border))`;
+                                        }
+                                    }}
                                     onClick={() => handleAnswer(qIndex, opt)}
                                 >
                                     <MathText>{opt}</MathText>
@@ -93,7 +110,10 @@ const InteractiveQuiz = ({ quiz, onQuizSubmit, onCancel, language = 'EN' }) => {
                 ))}
             </div>
             <button 
-                className={`w-full mt-8 rounded-2xl h-14 text-lg font-semibold text-white bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] ${!isSubmittable ? 'grayscale' : ''}`} 
+                className={`w-full mt-8 rounded-2xl h-14 text-lg font-semibold text-white disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] ${!isSubmittable ? 'grayscale' : ''}`}
+                style={{ background: `linear-gradient(to right, rgb(var(--color-primary)), rgb(var(--color-secondary)))` }}
+                onMouseEnter={(e) => !e.currentTarget.disabled && (e.currentTarget.style.opacity = '0.9')}
+                onMouseLeave={(e) => !e.currentTarget.disabled && (e.currentTarget.style.opacity = '1')} 
                 disabled={!isSubmittable} 
                 onClick={() => onQuizSubmit(answers)}
             >
@@ -489,7 +509,8 @@ export default function ChatTutor({ user, learningData, language = 'EN', isPerso
 
     return (
         <div 
-            className={`bg-white backdrop-blur-xl border rounded-3xl shadow-xl flex flex-col h-[80vh] hover:shadow-2xl transition-all duration-500 w-full ${isDragOver ? 'border-purple-500 ring-4 ring-purple-500/20' : 'border-slate-100'}`} 
+            className={`backdrop-blur-xl border rounded-3xl shadow-xl flex flex-col h-[80vh] hover:shadow-2xl transition-all duration-500 w-full themed-card ${isDragOver ? 'ring-4 ring-purple-500/20' : ''}`}
+            style={{ borderColor: isDragOver ? `rgb(var(--color-primary))` : `rgb(var(--color-border))` }} 
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
@@ -502,9 +523,9 @@ export default function ChatTutor({ user, learningData, language = 'EN', isPerso
                     </div>
                 </div>
             )}
-            <div className="p-6 border-b border-slate-100 flex-shrink-0">
+            <div className="p-6 border-b flex-shrink-0" style={{ borderColor: `rgb(var(--color-border))` }}>
                 <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0 text-white shadow-lg">
+                    <div className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 text-white shadow-lg" style={{ background: `linear-gradient(to bottom right, rgb(var(--color-primary)), rgb(var(--color-secondary)))` }}>
                         <BrainCircuit size={24} />
                     </div>
                     <div className="flex-1">
@@ -550,7 +571,7 @@ export default function ChatTutor({ user, learningData, language = 'EN', isPerso
                 </div>
             </div>
 
-            <div className="flex-grow p-6 overflow-y-auto space-y-4 bg-white">
+            <div className="flex-grow p-6 overflow-y-auto space-y-4" style={{ backgroundColor: `rgb(var(--color-surface))` }}>
                 <AnimatePresence initial={false}>
                     {conversation.map((msg, index) => (
                         <motion.div 
@@ -563,15 +584,19 @@ export default function ChatTutor({ user, learningData, language = 'EN', isPerso
                             className={`flex gap-4 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
                         >
                             {msg.role === 'assistant' && (
-                                <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center flex-shrink-0 text-white shadow-md">
+                                <div className="w-10 h-10 rounded-2xl flex items-center justify-center flex-shrink-0 text-white shadow-md" style={{ background: `linear-gradient(to bottom right, rgb(var(--color-primary)), rgb(var(--color-secondary)))` }}>
                                     <Sparkles className="w-5 h-5" />
                                 </div>
                             )}
                             <div className={`max-w-[80%] px-6 py-4 rounded-3xl shadow-md ${
                                 msg.role === 'user' 
-                                    ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white ml-12' 
-                                    : 'bg-white text-slate-800 border border-slate-100'
-                            }`}>
+                                    ? 'text-white ml-12' 
+                                    : 'border'
+                            }`} style={
+                                msg.role === 'user' 
+                                    ? { background: `linear-gradient(to right, rgb(var(--color-primary)), rgb(var(--color-secondary)))` }
+                                    : { backgroundColor: `rgb(var(--color-surface))`, borderColor: `rgb(var(--color-border))`, color: `rgb(var(--color-text))` }
+                            }>
                                 <MessageContent content={msg.content} isUser={msg.role === 'user'} />
                                 {msg.fileInfos && msg.fileInfos.length > 0 && (
                                     <div className="mt-3 space-y-2">
@@ -613,10 +638,10 @@ export default function ChatTutor({ user, learningData, language = 'EN', isPerso
                         transition={{ duration: 0.3 }}
                         className="flex justify-start items-center gap-4"
                     >
-                        <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white shadow-md">
+                        <div className="w-10 h-10 rounded-2xl flex items-center justify-center text-white shadow-md" style={{ background: `linear-gradient(to bottom right, rgb(var(--color-primary)), rgb(var(--color-secondary)))` }}>
                             <Loader2 className="animate-spin w-5 h-5" />
                         </div>
-                        <div className="px-6 py-4 rounded-3xl bg-white border border-slate-100 shadow-md">
+                        <div className="px-6 py-4 rounded-3xl border shadow-md" style={{ backgroundColor: `rgb(var(--color-surface))`, borderColor: `rgb(var(--color-border))` }}>
                             <p className="text-slate-600 font-medium">{t('personalizedLearning.aceIsThinking', language)}</p>
                         </div>
                     </motion.div>
@@ -624,7 +649,7 @@ export default function ChatTutor({ user, learningData, language = 'EN', isPerso
                 <div ref={conversationEndRef} />
             </div>
 
-            <div className="p-6 border-t border-slate-100 flex-shrink-0 space-y-4 bg-white/80 backdrop-blur-xl rounded-b-3xl">
+            <div className="p-6 border-t flex-shrink-0 space-y-4 backdrop-blur-xl rounded-b-3xl" style={{ borderColor: `rgb(var(--color-border))`, backgroundColor: `rgba(var(--color-surface), 0.8)` }}>
             {attachedFiles.length > 0 && (
                 <div className="space-y-2">
                     {attachedFiles.map((file) => (
@@ -655,7 +680,10 @@ export default function ChatTutor({ user, learningData, language = 'EN', isPerso
                             <DropdownMenuTrigger asChild>
                                 <button
                                     disabled={isLoading || isUploadingFile}
-                                    className="flex-shrink-0 w-12 h-12 rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 flex items-center justify-center transition-all duration-200 disabled:opacity-50 hover:scale-105 shadow-lg text-white"
+                                    className="flex-shrink-0 w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-200 disabled:opacity-50 hover:scale-105 shadow-lg text-white"
+                                    style={{ background: `linear-gradient(to right, rgb(var(--color-primary)), rgb(var(--color-secondary)))` }}
+                                    onMouseEnter={(e) => !isLoading && !isUploadingFile && (e.currentTarget.style.opacity = '0.9')}
+                                    onMouseLeave={(e) => !isLoading && !isUploadingFile && (e.currentTarget.style.opacity = '1')}
                                 >
                                     <Plus className="w-5 h-5" />
                                 </button>
@@ -706,7 +734,10 @@ export default function ChatTutor({ user, learningData, language = 'EN', isPerso
                         <button
                             onClick={() => handleSend(input)}
                             disabled={isLoading || isUploadingFile || (!input.trim() && attachedFiles.length === 0)}
-                            className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 flex items-center justify-center transition-all duration-200 disabled:opacity-50 hover:scale-105 shadow-lg"
+                            className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-xl text-white flex items-center justify-center transition-all duration-200 disabled:opacity-50 hover:scale-105 shadow-lg"
+                            style={{ background: `linear-gradient(to right, rgb(var(--color-primary)), rgb(var(--color-secondary)))` }}
+                            onMouseEnter={(e) => !isLoading && !isUploadingFile && (e.currentTarget.style.opacity = '0.9')}
+                            onMouseLeave={(e) => !isLoading && !isUploadingFile && (e.currentTarget.style.opacity = '1')}
                         >
                             <Send className="w-5 h-5" />
                         </button>

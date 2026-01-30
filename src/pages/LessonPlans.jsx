@@ -411,7 +411,7 @@ If some sections are missing, leave them as empty strings or arrays. Here is the
 
     if (pageLoading) {
         return (
-            <div className="fixed inset-0 bg-white flex items-center justify-center z-[9999]">
+            <div className="fixed inset-0 flex items-center justify-center z-[9999]" style={{ backgroundColor: `rgb(var(--color-background))` }}>
                 <div className="text-center">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
