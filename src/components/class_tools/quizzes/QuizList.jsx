@@ -128,16 +128,16 @@ export default function QuizList({ user, quizzes, submissions, onTakeQuiz, onVie
 
     return (
         <div className="space-y-3">
-            {studentQuizzes.length === 0 && <p className="text-center text-slate-500 py-8">{t('classTools.noQuizzesAvailable')}</p>}
+            {studentQuizzes.length === 0 && <p className="text-center py-8" style={{ color: `rgb(var(--color-textSecondary))` }}>{t('classTools.noQuizzesAvailable')}</p>}
             {studentQuizzes.map(quiz => {
                 const submission = submissions.find(s => s.quiz_id === quiz.id);
                 const isCompleted = submission?.status === 'completed';
 
                 return (
-                    <div key={quiz.id} className="p-4 border rounded-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div key={quiz.id} className="p-4 border rounded-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4" style={{ borderColor: `rgb(var(--color-border))` }}>
                         <div className="flex-grow">
-                            <h4 className="font-semibold">{quiz.title}</h4>
-                            <p className="text-sm text-slate-500">{quiz.description}</p>
+                            <h4 className="font-semibold" style={{ color: `rgb(var(--color-text))` }}>{quiz.title}</h4>
+                            <p className="text-sm" style={{ color: `rgb(var(--color-textSecondary))` }}>{quiz.description}</p>
                             <Badge className={`${statusConfig[quiz.status]?.color || ''} mt-2 gap-1`}>
                                 {statusConfig[quiz.status]?.icon} {statusConfig[quiz.status]?.text}
                             </Badge>
@@ -192,7 +192,7 @@ export default function QuizList({ user, quizzes, submissions, onTakeQuiz, onVie
                         </DialogDescription>
                     </DialogHeader>
                     <div className="py-4 space-y-2">
-                        <label className="text-sm font-medium">{t('classTools.destinationClass')}</label>
+                        <label className="text-sm font-medium" style={{ color: `rgb(var(--color-text))` }}>{t('classTools.destinationClass')}</label>
                         <Select value={destinationClassId} onValueChange={setDestinationClassId}>
                             <SelectTrigger>
                                 <SelectValue placeholder={t('classTools.selectClassToCopy')} />

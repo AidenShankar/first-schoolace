@@ -84,9 +84,9 @@ export default function PollCard({ poll, user, votes = [], onUpdate }) {
     const getVotePercentage = (option) => totalVotes > 0 ? (getVoteCount(option) / totalVotes) * 100 : 0;
 
     return (
-        <div className="p-4 border rounded-lg">
+        <div className="p-4 border rounded-lg" style={{ borderColor: `rgb(var(--color-border))` }}>
             <div className="flex justify-between items-start">
-                <h4 className="font-semibold">{poll.question}</h4>
+                <h4 className="font-semibold" style={{ color: `rgb(var(--color-text))` }}>{poll.question}</h4>
                 <Badge className={poll.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}>
                     {poll.status}
                 </Badge>
@@ -105,12 +105,12 @@ export default function PollCard({ poll, user, votes = [], onUpdate }) {
                             </Button>
                         )}
                         {(user.app_role === 'teacher' || poll.status === 'closed' || userVote) && (
-                            <div className="relative w-full h-8 bg-slate-200 rounded-md overflow-hidden">
-                                <div className="absolute top-0 left-0 h-full bg-indigo-500 transition-all" style={{ width: `${getVotePercentage(option)}%` }}></div>
-                                <div className="absolute top-0 left-2 h-full flex items-center text-sm font-medium text-slate-800 z-10">
+                            <div className="relative w-full h-8 rounded-md overflow-hidden" style={{ backgroundColor: `rgb(var(--color-border))` }}>
+                                <div className="absolute top-0 left-0 h-full transition-all" style={{ width: `${getVotePercentage(option)}%`, backgroundColor: `rgb(var(--color-primary))` }}></div>
+                                <div className="absolute top-0 left-2 h-full flex items-center text-sm font-medium z-10" style={{ color: `rgb(var(--color-text))` }}>
                                     {option} ({getVoteCount(option)} {t('classTools.votes')})
                                     {userVote && userVote.selected_option === option && user.app_role === 'student' && (
-                                        <span className="ml-2 text-xs bg-indigo-600 text-white px-2 py-0.5 rounded">{t('classTools.yourVote')}</span>
+                                        <span className="ml-2 text-xs text-white px-2 py-0.5 rounded" style={{ backgroundColor: `rgb(var(--color-primary))` }}>{t('classTools.yourVote')}</span>
                                     )}
                                 </div>
                             </div>
@@ -119,7 +119,7 @@ export default function PollCard({ poll, user, votes = [], onUpdate }) {
                 ))}
             </div>
             {totalVotes > 0 && (
-                <p className="text-sm text-slate-500 mb-2">{t('classTools.totalVotes')}: {totalVotes}</p>
+                <p className="text-sm mb-2" style={{ color: `rgb(var(--color-textSecondary))` }}>{t('classTools.totalVotes')}: {totalVotes}</p>
             )}
             {user.app_role === 'teacher' && (
                 <div className="flex gap-2">

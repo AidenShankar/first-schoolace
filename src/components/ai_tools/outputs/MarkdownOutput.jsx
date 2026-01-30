@@ -16,7 +16,7 @@ export default function MarkdownOutput({ content }) {
     const isAIDetectorOutput = content.includes('AI Likelihood:') || content.includes('Human Likelihood:');
 
     return (
-        <div className="bg-slate-50 rounded-xl border border-slate-200 p-6 relative prose max-w-none prose-slate">
+        <div className="rounded-xl border p-6 relative prose max-w-none" style={{ backgroundColor: `rgb(var(--color-surface))`, borderColor: `rgb(var(--color-border))`, color: `rgb(var(--color-text))` }}>
             {isAIDetectorOutput && (
                 <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-lg flex items-start gap-3">
                     <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
@@ -31,7 +31,16 @@ export default function MarkdownOutput({ content }) {
                 variant="ghost"
                 size="sm"
                 onClick={handleCopy}
-                className="absolute top-4 right-4 text-slate-500 hover:bg-slate-200 hover:text-slate-800"
+                className="absolute top-4 right-4"
+                style={{ color: `rgb(var(--color-textSecondary))` }}
+                onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = `rgb(var(--color-border))`;
+                    e.currentTarget.style.color = `rgb(var(--color-text))`;
+                }}
+                onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                    e.currentTarget.style.color = `rgb(var(--color-textSecondary))`;
+                }}
             >
                 {copied ? <Check className="w-4 h-4 text-green-600" /> : <Copy className="w-4 h-4" />}
                 <span className="ml-2">{copied ? 'Copied!' : 'Copy'}</span>
