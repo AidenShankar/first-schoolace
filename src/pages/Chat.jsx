@@ -150,7 +150,7 @@ export default function ChatPage() {
 
     if (pageLoading) {
         return (
-            <div className="fixed inset-0 bg-white flex items-center justify-center z-[9999]">
+            <div className="fixed inset-0 flex items-center justify-center z-[9999]" style={{ backgroundColor: `rgb(var(--color-background))` }}>
                 <div className="text-center">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
@@ -173,7 +173,7 @@ export default function ChatPage() {
     if (isLoading) {
         return (
             <div className="flex items-center justify-center h-[calc(100vh-8rem)]">
-                <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+                <Loader2 className="w-8 h-8 animate-spin" style={{ color: `rgb(var(--color-primary))` }} />
             </div>
         );
     }
@@ -181,9 +181,9 @@ export default function ChatPage() {
     if (!user || !currentClass) {
         return (
             <div className="flex flex-col items-center justify-center h-[calc(100vh-8rem)] text-center">
-                <Users className="w-12 h-12 text-slate-400 mb-4" />
-                <h2 className="text-xl font-semibold text-slate-700">{t('chat.unavailable')}</h2>
-                <p className="text-slate-500 mt-2">{t('chat.mustBeEnrolled')}</p>
+                <Users className="w-12 h-12 mb-4" style={{ color: `rgb(var(--color-textSecondary))` }} />
+                <h2 className="text-xl font-semibold" style={{ color: `rgb(var(--color-text))` }}>{t('chat.unavailable')}</h2>
+                <p className="mt-2" style={{ color: `rgb(var(--color-textSecondary))` }}>{t('chat.mustBeEnrolled')}</p>
             </div>
         );
     }
@@ -192,10 +192,10 @@ export default function ChatPage() {
         <div className="h-[calc(100vh-4rem)] md:h-[calc(100vh-5rem)] flex flex-col max-w-4xl mx-auto p-4">
             <div className="flex-shrink-0 mb-4 flex justify-between items-center">
                 <div>
-                    <h1 className="text-2xl font-bold text-slate-900">{t('chat.title')}</h1>
+                    <h1 className="text-2xl font-bold" style={{ color: `rgb(var(--color-text))` }}>{t('chat.title')}</h1>
                     <div className="flex items-center gap-2">
-                        <p className="text-slate-600">{t('chat.chattingIn')}: {currentClass.name}</p>
-                        {isRefreshing && <Loader2 className="w-4 h-4 animate-spin text-slate-400" />}
+                        <p style={{ color: `rgb(var(--color-textSecondary))` }}>{t('chat.chattingIn')}: {currentClass.name}</p>
+                        {isRefreshing && <Loader2 className="w-4 h-4 animate-spin" style={{ color: `rgb(var(--color-textSecondary))` }} />}
                     </div>
                 </div>
                 {allClasses.length > 1 && (
@@ -212,7 +212,7 @@ export default function ChatPage() {
                 )}
             </div>
 
-            <div className="flex-grow bg-white border border-slate-200 rounded-2xl flex flex-col overflow-hidden">
+            <div className="flex-grow rounded-2xl flex flex-col overflow-hidden themed-card">
                 <div className="flex-grow p-6 space-y-6 overflow-y-auto">
                     <AnimatePresence>
                         {messages.map((message) => {
@@ -228,11 +228,11 @@ export default function ChatPage() {
                                     className={`flex items-end gap-3 ${isMyMessage ? 'justify-end' : 'justify-start'}`}
                                 >
                                     <div className={`flex flex-col space-y-1 max-w-sm ${isMyMessage ? 'items-end' : 'items-start'}`}>
-                                        <div className={`px-4 py-3 rounded-2xl ${isMyMessage ? 'bg-indigo-600 text-white rounded-br-none' : 'bg-slate-100 text-slate-800 rounded-bl-none'}`}>
+                                        <div className={`px-4 py-3 rounded-2xl ${isMyMessage ? 'text-white rounded-br-none' : 'rounded-bl-none'}`} style={{ backgroundColor: isMyMessage ? `rgb(var(--color-primary))` : `rgb(var(--color-accentLight))`, color: isMyMessage ? 'white' : `rgb(var(--color-text))` }}>
                                             <p className="font-semibold text-sm mb-1">{message.user_name} <span className="font-normal opacity-80">({message.user_role})</span></p>
                                             <p className="leading-snug">{message.content}</p>
                                         </div>
-                                        <p className="text-xs text-slate-400 mt-1 px-1">
+                                        <p className="text-xs mt-1 px-1" style={{ color: `rgb(var(--color-textSecondary))` }}>
                                             {format(subHours(new Date(message.created_date), 8), 'MMM d, p')}
                                         </p>
                                         </div>
@@ -243,13 +243,14 @@ export default function ChatPage() {
                     <div ref={messagesEndRef} />
                 </div>
                 
-                <div className="p-4 bg-slate-50 border-t border-slate-200">
+                <div className="p-4 border-t" style={{ backgroundColor: `rgb(var(--color-accentLight))`, borderColor: `rgb(var(--color-border))` }}>
                     <form onSubmit={handleSendMessage} className="flex items-center gap-3">
                         <Input
                             value={newMessage}
                             onChange={(e) => setNewMessage(e.target.value)}
                             placeholder={t('chat.typeMessage')}
-                            className="flex-grow bg-white"
+                            className="flex-grow"
+                            style={{ backgroundColor: `rgb(var(--color-surface))` }}
                             disabled={isSending}
                         />
                         <Button type="submit" disabled={isSending || !newMessage.trim()}>

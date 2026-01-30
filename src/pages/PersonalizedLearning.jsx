@@ -657,8 +657,8 @@ export default function PersonalizedLearning() {
                     transition={{ duration: 0.6, ease:"easeOut" }}
                     className="text-center mb-16"
                 >
-                    <h1 className="text-5xl font-bold tracking-tight text-slate-900">{t('personalizedLearning.title')}</h1>
-                    <p className="text-xl text-slate-500 mt-3 max-w-2xl mx-auto">
+                    <h1 className="text-5xl font-bold tracking-tight" style={{ color: `rgb(var(--color-text))` }}>{t('personalizedLearning.title')}</h1>
+                    <p className="text-xl mt-3 max-w-2xl mx-auto" style={{ color: `rgb(var(--color-textSecondary))` }}>
                         {t('personalizedLearning.subtitle')}
                     </p>
                 </motion.div>
