@@ -3,7 +3,6 @@ import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { GraduationCap, MessageSquare, BookOpen, Sparkles, SlidersHorizontal, Bot, Share2, Calendar, BrainCircuit, CalendarClock } from "lucide-react";
 import { LanguageProvider, useLanguage } from "./components/i18n/LanguageContext";
-import { ThemeProvider } from "./components/theme/ThemeContext";
 import { t } from "./components/i18n/translations";
 import { User } from '@/entities/User';
 import { Class } from '@/entities/Class';
@@ -781,9 +780,8 @@ export default function Layout({ children, currentPageName }) {
   
   return (
     <LanguageProvider>
-      <ThemeProvider user={user}>
-        <LayoutContent 
-          user={user}
+      <LayoutContent 
+        user={user}
         allClasses={allClasses}
         currentClass={currentClass}
         currentClassId={currentClassId}
@@ -803,12 +801,11 @@ export default function Layout({ children, currentPageName }) {
         isLayoutLoading={isLayoutLoading}
         getNavLinks={getNavLinks}
         filterNavLinks={filterNavLinks}
-        >
+      >
         {children}
-        </LayoutContent>
-        </ThemeProvider>
-        </LanguageProvider>
-        );
+      </LayoutContent>
+    </LanguageProvider>
+  );
 }
 
 function LayoutContent({ 
@@ -837,7 +834,7 @@ function LayoutContent({
   };
 
   return (
-    <div className="min-h-screen flex flex-col transition-colors duration-300" style={{ backgroundColor: 'var(--bg-main)', color: 'var(--text-main)' }}>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex flex-col">
       {quizInProgress && user?.app_role === 'student' && currentPageName !== 'ClassTools' && (
         <div className="bg-yellow-500 text-white px-4 py-2 text-center font-medium z-50">
           ⏰ You have an active quiz in progress. Some features are locked until you complete it.
@@ -849,24 +846,19 @@ function LayoutContent({
 
       {/* Header - Conditionally render based on page */}
       {!isLandingPage && !isCompliancePage && !isDemoPage && !isAPExamSchedulePage && (
-        <header 
-          className={`backdrop-blur-xl border-b z-40 ${isPersonalizedLearning ? 'relative' : 'sticky top-0'}`}
-          style={{ 
-            backgroundColor: 'var(--header-bg)', 
-            borderColor: 'var(--border)' 
-          }}
-        >
+        <header className={
+          isLearnerDashboard 
+            ? "bg-black border-slate-800 backdrop-blur-xl border-b sticky top-0 z-40" 
+            : `bg-white/80 border-slate-200/60 backdrop-blur-xl border-b z-40 ${isPersonalizedLearning ? 'relative' : 'sticky top-0'}`
+        }>
           <div className={`mx-auto px-4 sm:px-6 lg:px-8 ${isPersonalizedLearning ? 'max-w-[1600px]' : 'max-w-7xl'}`}>
             <div className="flex justify-between items-center h-16">
               <Link to={createPageUrl("Dashboard")} className="flex items-center space-x-3">
-                <div 
-                  className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg"
-                  style={{ backgroundColor: 'var(--primary)', color: 'var(--primary-foreground)' }}
-                >
-                  <GraduationCap className="w-6 h-6" />
+                <div className="w-10 h-10 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                  <GraduationCap className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-xl font-bold" style={{ color: 'var(--text-main)' }}>Schoolace</h1>
+                  <h1 className={isLearnerDashboard ? "text-xl font-bold text-white" : "text-xl font-bold text-slate-900"}>Schoolace</h1>
                 </div>
               </Link>
               
@@ -879,12 +871,12 @@ function LayoutContent({
                       <div key={link.name} className="relative">
                         <Link
                           to={link.blocked ? '#' : link.href}
-                          style={{
-                              backgroundColor: location.pathname === new URL(link.href, window.location.origin).pathname && !link.action ? 'var(--secondary)' : 'transparent',
-                              color: location.pathname === new URL(link.href, window.location.origin).pathname && !link.action ? 'var(--primary)' : 'var(--text-muted)'
-                          }}
-                          className={`px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 flex items-center gap-2 hover:opacity-80 ${
-                            link.blocked ? "opacity-50 cursor-not-allowed" : ""
+                          className={`px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 flex items-center gap-2 ${
+                            link.blocked 
+                              ? "text-slate-400 cursor-not-allowed"
+                              : location.pathname === new URL(link.href, window.location.origin).pathname && !link.action
+                              ? "bg-indigo-100 text-indigo-700"
+                              : isLearnerDashboard ? "text-slate-400 hover:text-white hover:bg-slate-800" : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
                           }`}
                           onClick={(e) => handleNavClick(e, link)}
                           title={link.blocked ? link.blockedReason : undefined}
@@ -916,22 +908,19 @@ function LayoutContent({
 
       {/* Mobile Navigation - Conditionally render based on page */}
       {!isLandingPage && !isCompliancePage && !isDemoPage && !isLearnerDashboard && !isAPExamSchedulePage && (
-        <div 
-          className="md:hidden fixed bottom-0 left-0 right-0 backdrop-blur-xl border-t px-2 py-2 flex justify-around z-40"
-          style={{ backgroundColor: 'var(--header-bg)', borderColor: 'var(--border)' }}
-        >
+        <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-xl border-t border-slate-200 px-2 py-2 flex justify-around z-40">
           {filteredNavLinks.map((link) => {
             if (link.requiresClass && !currentClassId) return null;
             return (
               <Link
                 key={link.name}
                 to={link.blocked ? '#' : link.href}
-                style={{
-                  backgroundColor: location.pathname === new URL(link.href, window.location.origin).pathname && !link.action ? 'var(--secondary)' : 'transparent',
-                  color: location.pathname === new URL(link.href, window.location.origin).pathname && !link.action ? 'var(--primary)' : 'var(--text-muted)'
-                }}
                 className={`flex flex-col items-center justify-center py-2 px-4 rounded-lg font-medium text-sm transition-all duration-200 w-full ${
-                  link.blocked ? "opacity-50 cursor-not-allowed" : ""
+                  link.blocked 
+                    ? "text-slate-400 cursor-not-allowed"
+                    : location.pathname === new URL(link.href, window.location.origin).pathname && !link.action
+                    ? "bg-indigo-100 text-indigo-700"
+                    : "text-slate-600"
                 }`}
                 onClick={(e) => handleNavClick(e, link)}
                 title={link.blocked ? link.blockedReason : undefined}
