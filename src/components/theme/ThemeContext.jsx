@@ -5,6 +5,7 @@ const ThemeContext = createContext();
 export const themes = {
   default: {
     name: 'Default',
+    recommended: true,
     colors: {
       primary: '99 102 241', // indigo-500
       primaryHover: '79 70 229', // indigo-600

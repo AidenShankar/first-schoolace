@@ -32,6 +32,9 @@ export default function ThemeSelector() {
                 />
               </div>
               <span>{theme.name}</span>
+              {theme.recommended && (
+                <span className="ml-2 text-xs px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 border border-emerald-200">Recommended</span>
+              )}
               {theme.popular && (
                 <Sparkles className="w-3 h-3 text-amber-500" />
               )}
