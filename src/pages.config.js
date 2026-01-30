@@ -56,6 +56,7 @@ import Chat from './pages/Chat';
 import ChooseCourses from './pages/ChooseCourses';
 import ClassTools from './pages/ClassTools';
 import Compliance from './pages/Compliance';
+import Dashboard from './pages/Dashboard';
 import Demo from './pages/Demo';
 import Gradebook from './pages/Gradebook';
 import Landing from './pages/Landing';
@@ -69,7 +70,6 @@ import Setup from './pages/Setup';
 import TermsOfService from './pages/TermsOfService';
 import compliance from './pages/compliance';
 import examplelearningtracker from './pages/examplelearningtracker';
-import Dashboard from './pages/Dashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -83,6 +83,7 @@ export const PAGES = {
     "ChooseCourses": ChooseCourses,
     "ClassTools": ClassTools,
     "Compliance": Compliance,
+    "Dashboard": Dashboard,
     "Demo": Demo,
     "Gradebook": Gradebook,
     "Landing": Landing,
@@ -96,7 +97,6 @@ export const PAGES = {
     "TermsOfService": TermsOfService,
     "compliance": compliance,
     "examplelearningtracker": examplelearningtracker,
-    "Dashboard": Dashboard,
 }
 
 export const pagesConfig = {
