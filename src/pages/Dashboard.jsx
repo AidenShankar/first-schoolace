@@ -1355,7 +1355,7 @@ Output your response as JSON with:
                                     style={{ background: `linear-gradient(to right, rgb(var(--color-primary)), rgb(var(--color-secondary)))` }}
                                 >
                                     SUPERCHARGED
-                                </Button
+                                </Button>
                             )}
                             {user.app_role === 'teacher' && (
                                 <Dialog>
