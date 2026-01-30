@@ -17,6 +17,7 @@ export default function QuizTaker({ user, quiz, onFinish }) {
     const [timeLeft, setTimeLeft] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isCompleted, setIsCompleted] = useState(false);
+    const [error, setError] = useState(null);
 
     const finishHandler = useRef(onFinish);
     const isSubmittingRef = useRef(isSubmitting);
