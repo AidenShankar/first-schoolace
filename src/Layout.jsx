@@ -861,7 +861,7 @@ function LayoutContent({
                   <GraduationCap className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h1 className={isLearnerDashboard ? "text-xl font-bold text-white" : "text-xl font-bold text-[var(--text-main)]"}>Schoolace</h1>
+                  <h1 className={isLearnerDashboard ? "text-xl font-bold text-white" : "text-xl font-bold text-[var(--text-main-header)]"}>Schoolace</h1>
                 </div>
               </Link>
               

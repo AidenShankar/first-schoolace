@@ -7,7 +7,7 @@ const ThemeContext = createContext();
 export const useTheme = () => useContext(ThemeContext);
 
 export const ThemeProvider = ({ children, user }) => {
-  // Default to the first theme in our list (Default)
+  // Default to the first theme in our list
   const [currentThemeId, setCurrentThemeId] = useState('default');
   
   // Initialize theme from user data or local storage
@@ -48,6 +48,7 @@ export const ThemeProvider = ({ children, user }) => {
       {/* Inject CSS Variables */}
       <style>{`
         :root {
+          /* Core App Backgrounds & Text */
           --app-bg-from: ${currentTheme.colors['--app-bg-from']};
           --app-bg-via: ${currentTheme.colors['--app-bg-via']};
           --app-bg-to: ${currentTheme.colors['--app-bg-to']};
@@ -55,43 +56,48 @@ export const ThemeProvider = ({ children, user }) => {
           --header-bg-from: ${currentTheme.colors['--header-bg-from']};
           --header-bg-via: ${currentTheme.colors['--header-bg-via']};
           --header-bg-to: ${currentTheme.colors['--header-bg-to']};
+          --text-main-header: ${currentTheme.colors['--text-main-header'] || '#ffffff'};
           
           --text-main: ${currentTheme.colors['--text-main']};
           --text-muted: ${currentTheme.colors['--text-muted']};
           
-          /* ShadCN UI Overrides based on theme */
-          --background: ${currentTheme.type === 'dark' ? '222.2 84% 4.9%' : '0 0% 100%'};
-          --foreground: ${currentTheme.type === 'dark' ? '210 40% 98%' : '222.2 84% 4.9%'};
+          /* ShadCN UI Variables (HSL) */
+          --background: ${currentTheme.colors['--background']};
+          --foreground: ${currentTheme.colors['--foreground']};
           
-          --card: ${currentTheme.type === 'dark' ? '222.2 84% 4.9%' : '0 0% 100%'};
-          --card-foreground: ${currentTheme.type === 'dark' ? '210 40% 98%' : '222.2 84% 4.9%'};
+          --card: ${currentTheme.colors['--card']};
+          --card-foreground: ${currentTheme.colors['--card-foreground']};
           
-          --popover: ${currentTheme.type === 'dark' ? '222.2 84% 4.9%' : '0 0% 100%'};
-          --popover-foreground: ${currentTheme.type === 'dark' ? '210 40% 98%' : '222.2 84% 4.9%'};
+          --popover: ${currentTheme.colors['--popover']};
+          --popover-foreground: ${currentTheme.colors['--popover-foreground']};
           
           --primary: ${currentTheme.colors['--primary']};
           --primary-foreground: ${currentTheme.colors['--primary-foreground']};
           
-          --secondary: ${currentTheme.type === 'dark' ? '217.2 32.6% 17.5%' : '210 40% 96.1%'};
-          --secondary-foreground: ${currentTheme.type === 'dark' ? '210 40% 98%' : '222.2 47.4% 11.2%'};
+          --secondary: ${currentTheme.colors['--secondary']};
+          --secondary-foreground: ${currentTheme.colors['--secondary-foreground']};
           
-          --muted: ${currentTheme.type === 'dark' ? '217.2 32.6% 17.5%' : '210 40% 96.1%'};
-          --muted-foreground: ${currentTheme.type === 'dark' ? '215 20.2% 65.1%' : '215.4 16.3% 46.9%'};
+          --muted: ${currentTheme.colors['--muted']};
+          --muted-foreground: ${currentTheme.colors['--muted-foreground']};
           
-          --accent: ${currentTheme.type === 'dark' ? '217.2 32.6% 17.5%' : '210 40% 96.1%'};
-          --accent-foreground: ${currentTheme.type === 'dark' ? '210 40% 98%' : '222.2 47.4% 11.2%'};
+          --accent: ${currentTheme.colors['--accent']};
+          --accent-foreground: ${currentTheme.colors['--accent-foreground']};
           
-          --destructive: 0 84.2% 60.2%;
-          --destructive-foreground: 210 40% 98%;
+          --destructive: ${currentTheme.colors['--destructive']};
+          --destructive-foreground: ${currentTheme.colors['--destructive-foreground']};
           
-          --border: ${currentTheme.type === 'dark' ? '217.2 32.6% 17.5%' : '214.3 31.8% 91.4%'};
-          --input: ${currentTheme.type === 'dark' ? '217.2 32.6% 17.5%' : '214.3 31.8% 91.4%'};
-          --ring: ${currentTheme.colors['--primary']};
+          --border: ${currentTheme.colors['--border']};
+          --input: ${currentTheme.colors['--input']};
+          --ring: ${currentTheme.colors['--ring']};
+          
+          --radius: ${currentTheme.colors['--radius'] || '0.5rem'};
         }
         
-        /* Apply global transitions for smooth theme switching */
-        body, div, nav, button, input {
-           transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        /* Global override for transition */
+        * {
+           transition-property: background-color, border-color, color, fill, stroke;
+           transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+           transition-duration: 300ms;
         }
       `}</style>
       {children}
