@@ -1174,7 +1174,7 @@ Output your response as JSON with:
 
     return (
         <div className="min-h-screen pb-20 md:pb-8 relative" style={{ backgroundColor: `rgb(var(--color-background))` }}>
-            <div className="text-white relative overflow-hidden" style={{ background: `linear-gradient(to right, rgb(var(--color-primary)), rgb(var(--color-secondary)), rgb(var(--color-accent)))` }}>
+            <div className="text-white relative" style={{ background: `linear-gradient(to right, rgb(var(--color-primary)), rgb(var(--color-secondary)), rgb(var(--color-accent)))` }}>
                 <div className="absolute inset-0 bg-black/10"></div>
                 <div className="absolute inset-0 bg-gradient-to-r from-white/5 to-transparent"></div>
                 <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
