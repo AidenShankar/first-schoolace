@@ -61,10 +61,10 @@ export default function ClassTools({ user, currentClass: initialCurrentClass, al
                             transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
                             className="text-center"
                         >
-                            <h1 className="text-5xl font-bold tracking-tight text-slate-900">
+                            <h1 className="text-5xl font-bold tracking-tight" style={{ color: `rgb(var(--color-text))` }}>
                                 {t('classTools.title')}
                             </h1>
-                            <p className="text-lg text-slate-500 mt-4 font-medium tracking-wide">
+                            <p className="text-lg mt-4 font-medium tracking-wide" style={{ color: `rgb(var(--color-textSecondary))` }}>
                                 {t('common.poweredByACE')}
                             </p>
                         </motion.div>
@@ -77,9 +77,9 @@ export default function ClassTools({ user, currentClass: initialCurrentClass, al
         return (
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 <div className="text-center">
-                    <h1 className="text-3xl font-bold text-slate-900 mb-4">{t('classTools.title')}</h1>
-                    <p className="text-slate-500 font-medium text-lg">{t('classTools.noClasses')}</p>
-                    <p className="text-sm text-slate-400 mt-2">{t('classTools.goToDashboard')}</p>
+                    <h1 className="text-3xl font-bold mb-4" style={{ color: `rgb(var(--color-text))` }}>{t('classTools.title')}</h1>
+                    <p className="font-medium text-lg" style={{ color: `rgb(var(--color-textSecondary))` }}>{t('classTools.noClasses')}</p>
+                    <p className="text-sm mt-2" style={{ color: `rgb(var(--color-textSecondary))` }}>{t('classTools.goToDashboard')}</p>
                 </div>
             </div>
         );
@@ -123,11 +123,11 @@ export default function ClassTools({ user, currentClass: initialCurrentClass, al
             <div className="mb-8">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     <div>
-                        <h1 className="text-3xl font-bold text-slate-900">{t('classTools.title')}</h1>
-                        <p className="text-slate-600 mt-1">{t('classTools.subtitle')}</p>
+                        <h1 className="text-3xl font-bold" style={{ color: `rgb(var(--color-text))` }}>{t('classTools.title')}</h1>
+                        <p className="mt-1" style={{ color: `rgb(var(--color-textSecondary))` }}>{t('classTools.subtitle')}</p>
                     </div>
                     <div className="flex items-center gap-3">
-                        <label className="text-sm font-medium text-slate-700">{t('classTools.selectClass')}:</label>
+                        <label className="text-sm font-medium" style={{ color: `rgb(var(--color-text))` }}>{t('classTools.selectClass')}:</label>
                         <Select value={currentClass?.id || ''} onValueChange={handleClassChange}>
                             <SelectTrigger className="w-64">
                                 <SelectValue placeholder={t('classTools.chooseClass')}>

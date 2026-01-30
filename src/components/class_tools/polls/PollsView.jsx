@@ -93,7 +93,7 @@ export default function PollsView({ user, currentClass }) {
                 {showCreateForm && <PollCreateForm currentClass={currentClass} onCreated={handlePollCreated} onCancel={() => setShowCreateForm(false)} />}
                 
                 {polls.length === 0 ? (
-                    <p className="text-center text-slate-500 py-8">
+                    <p className="text-center py-8" style={{ color: `rgb(var(--color-textSecondary))` }}>
                         {user.app_role === 'teacher' ? t('classTools.noPolls') : t('classTools.noPollsStudent')}
                     </p>
                 ) : polls.map(poll => (

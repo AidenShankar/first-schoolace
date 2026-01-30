@@ -126,10 +126,10 @@ export default function ScheduleView({ currentClass, user }) {
             <CardHeader className="flex flex-row items-center justify-between">
                 <div>
                     <CardTitle>{t('classTools.classSchedule')}</CardTitle>
-                    <p className="text-slate-500 text-sm">{t('classTools.weekOf')} {format(weekStart, 'MMMM d')} - {format(weekEnd, 'MMMM d, yyyy')}</p>
+                    <p className="text-sm" style={{ color: `rgb(var(--color-textSecondary))` }}>{t('classTools.weekOf')} {format(weekStart, 'MMMM d')} - {format(weekEnd, 'MMMM d, yyyy')}</p>
                 </div>
                 <div className="flex items-center gap-2">
-                    <div className="flex items-center bg-slate-100 rounded-lg">
+                    <div className="flex items-center rounded-lg" style={{ backgroundColor: `rgb(var(--color-accentLight))` }}>
                         <Button 
                             variant="ghost" 
                             size="sm"
@@ -182,14 +182,28 @@ export default function ScheduleView({ currentClass, user }) {
                                 <div className="space-y-1">
                                     {dayEvents.map(event => (
                                         <div 
-                                            key={event.id} 
-                                            className={`text-xs p-2 rounded border-l-2 cursor-pointer hover:bg-slate-50 ${
-                                                event.event_type === 'Test/Quiz' ? 'border-red-400 bg-red-50' :
-                                                event.event_type === 'Homework Due' ? 'border-blue-400 bg-blue-50' :
-                                                event.event_type === 'Project Due' ? 'border-purple-400 bg-purple-50' :
-                                                event.event_type === 'Holiday' ? 'border-green-400 bg-green-50' :
-                                                'border-orange-400 bg-orange-50'
-                                            }`}
+                                           key={event.id} 
+                                           className="text-xs p-2 rounded border-l-2 cursor-pointer"
+                                           style={{
+                                               backgroundColor: event.event_type === 'Test/Quiz' ? 'rgba(248, 113, 113, 0.1)' :
+                                                              event.event_type === 'Homework Due' ? 'rgba(96, 165, 250, 0.1)' :
+                                                              event.event_type === 'Project Due' ? 'rgba(168, 85, 247, 0.1)' :
+                                                              event.event_type === 'Holiday' ? 'rgba(74, 222, 128, 0.1)' :
+                                                              'rgba(251, 146, 60, 0.1)',
+                                               borderLeftColor: event.event_type === 'Test/Quiz' ? 'rgb(248, 113, 113)' :
+                                                                event.event_type === 'Homework Due' ? 'rgb(96, 165, 250)' :
+                                                                event.event_type === 'Project Due' ? 'rgb(168, 85, 247)' :
+                                                                event.event_type === 'Holiday' ? 'rgb(74, 222, 128)' :
+                                                                'rgb(251, 146, 60)'
+                                           }}
+                                           onMouseEnter={(e) => e.currentTarget.style.backgroundColor = `rgba(var(--color-border), 0.3)`}
+                                           onMouseLeave={(e) => {
+                                               e.currentTarget.style.backgroundColor = event.event_type === 'Test/Quiz' ? 'rgba(248, 113, 113, 0.1)' :
+                                                              event.event_type === 'Homework Due' ? 'rgba(96, 165, 250, 0.1)' :
+                                                              event.event_type === 'Project Due' ? 'rgba(168, 85, 247, 0.1)' :
+                                                              event.event_type === 'Holiday' ? 'rgba(74, 222, 128, 0.1)' :
+                                                              'rgba(251, 146, 60, 0.1)';
+                                           }}
                                             // Only allow editing for teachers and for manual events (not assignments)
                                             onClick={() => user.app_role === 'teacher' && !event.isAssignment ? (setEditingEvent(event), setShowForm(true)) : null}
                                         >
@@ -204,7 +218,7 @@ export default function ScheduleView({ currentClass, user }) {
                                                 )}
                                             </div>
                                             {event.description && (
-                                                <p className="text-slate-600 mt-1 text-xs truncate">{event.description}</p>
+                                                <p className="mt-1 text-xs truncate" style={{ color: `rgb(var(--color-textSecondary))` }}>{event.description}</p>
                                             )}
                                             {/* Only show delete button for teachers and for manual events (not assignments) */}
                                             {user.app_role === 'teacher' && !event.isAssignment && (

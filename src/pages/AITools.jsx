@@ -306,10 +306,10 @@ export default function AITools() {
                         transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
                         className="text-center"
                     >
-                        <h1 className="text-5xl font-bold tracking-tight text-slate-900">
+                        <h1 className="text-5xl font-bold tracking-tight" style={{ color: `rgb(var(--color-text))` }}>
                             {t('aiTools.title')}
                         </h1>
-                        <p className="text-lg text-slate-500 mt-4 font-medium tracking-wide">
+                        <p className="text-lg mt-4 font-medium tracking-wide" style={{ color: `rgb(var(--color-textSecondary))` }}>
                             {t('common.poweredByACE')}
                         </p>
                     </motion.div>
@@ -328,8 +328,8 @@ export default function AITools() {
                 <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-2xl flex items-center justify-center shadow-lg mb-4">
                     <Sparkles className="w-8 h-8 text-white" />
                 </div>
-                <h2 className="text-2xl font-bold text-slate-900">{t('aiTools.locked')}</h2>
-                <p className="text-slate-600 max-w-sm">
+                <h2 className="text-2xl font-bold" style={{ color: `rgb(var(--color-text))` }}>{t('aiTools.locked')}</h2>
+                <p className="max-w-sm" style={{ color: `rgb(var(--color-textSecondary))` }}>
                     {t('aiTools.lockedDescription')}
                 </p>
                 <Button 
@@ -352,14 +352,14 @@ export default function AITools() {
                     <Sparkles className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                    <h1 className="text-3xl font-bold text-slate-900">{t('aiTools.title')}</h1>
-                    <p className="text-slate-600 mt-1">{t('aiTools.subtitle')}</p>
+                    <h1 className="text-3xl font-bold" style={{ color: `rgb(var(--color-text))` }}>{t('aiTools.title')}</h1>
+                    <p className="mt-1" style={{ color: `rgb(var(--color-textSecondary))` }}>{t('aiTools.subtitle')}</p>
                 </div>
             </div>
 
             <div className="flex flex-col md:flex-row gap-8">
                 <aside className="w-full md:w-1/3 lg:w-1/4 space-y-3">
-                    <h2 className="text-lg font-semibold text-slate-800 px-2">
+                    <h2 className="text-lg font-semibold px-2" style={{ color: `rgb(var(--color-text))` }}>
                       {user.app_role === 'teacher' ? t('aiTools.teacherTools') : t('aiTools.studentTools')}
                     </h2>
                     {tools.map((tool, index) => (
