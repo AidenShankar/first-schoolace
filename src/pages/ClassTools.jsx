@@ -5,12 +5,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { motion } from 'framer-motion';
 import { useTranslation } from '../components/i18n/useTranslation';
 
-// Lazy import components to prevent them from loading until needed
-const ScheduleView = React.lazy(() => import('@/components/class_tools/schedule/ScheduleView'));
-const QuizzesView = React.lazy(() => import('@/components/class_tools/quizzes/QuizzesView'));
-const PollsView = React.lazy(() => import('@/components/class_tools/polls/PollsView'));
-const PersonalizedTutorMessagesView = React.lazy(() => import('@/components/class_tools/personalized/PersonalizedTutorMessagesView'));
-const ScreeningView = React.lazy(() => import('@/components/class_tools/screening/ScreeningView'));
+// Direct imports for faster tab switching
+import ScheduleView from '@/components/class_tools/schedule/ScheduleView';
+import QuizzesView from '@/components/class_tools/quizzes/QuizzesView';
+import PollsView from '@/components/class_tools/polls/PollsView';
+import PersonalizedTutorMessagesView from '@/components/class_tools/personalized/PersonalizedTutorMessagesView';
+import ScreeningView from '@/components/class_tools/screening/ScreeningView';
 
 export default function ClassTools({ user, currentClass: initialCurrentClass, allClasses, isLayoutLoading }) {
     const { t } = useTranslation();
@@ -96,7 +96,7 @@ export default function ClassTools({ user, currentClass: initialCurrentClass, al
         tabs.push({ id: 'personalized', label: t('classTools.personalizedLearning'), icon: Bot });
     }
 
-    // Function to render tab content with lazy loading and suspense
+    // Function to render tab content
     const renderTabContent = (tabId) => {
         // Only render if the tab has been loaded (clicked on)
         if (!loadedTabs.has(tabId)) {
@@ -104,17 +104,13 @@ export default function ClassTools({ user, currentClass: initialCurrentClass, al
         }
 
         return (
-            <React.Suspense fallback={
-                <div className="flex items-center justify-center py-12">
-                    <Loader2 className="w-8 h-8 animate-spin" style={{ color: `rgb(var(--color-primary))` }} />
-                </div>
-            }>
+            <>
                 {tabId === 'schedule' && <ScheduleView user={user} currentClass={currentClass} />}
                 {tabId === 'quizzes' && <QuizzesView user={user} currentClass={currentClass} allClasses={allClasses} />}
                 {tabId === 'polls' && <PollsView user={user} currentClass={currentClass} />}
                 {tabId === 'screening' && <ScreeningView user={user} currentClass={currentClass} allClasses={allClasses} />}
                 {tabId === 'personalized' && user?.app_role === 'teacher' && <PersonalizedTutorMessagesView allClasses={allClasses} />}
-            </React.Suspense>
+            </>
         );
     };
 
