@@ -243,7 +243,7 @@ export default function LessonPlanViewer({
                     </Button>
                     <div>
                         <div className="flex items-center gap-3 mb-2">
-                            <h1 className="text-3xl font-bold text-slate-900">{lesson.title}</h1>
+                            <h1 className="text-3xl font-bold" style={{ color: `rgb(var(--color-text))` }}>{lesson.title}</h1>
                             {isTeacher && (
                                 <Badge 
                                     className={`text-sm px-3 py-1 ${
@@ -268,7 +268,7 @@ export default function LessonPlanViewer({
                             )}
                         </div>
                         <div className="flex items-center gap-4 mt-2">
-                            <div className="flex items-center gap-2 text-slate-600">
+                            <div className="flex items-center gap-2" style={{ color: `rgb(var(--color-textSecondary))` }}>
                                 <Calendar className="w-4 h-4" />
                                 <span>{format(parseISO(lesson.lesson_date), 'EEEE, MMMM d, yyyy')}</span>
                             </div>
@@ -317,23 +317,23 @@ export default function LessonPlanViewer({
             <div className="space-y-8">
                 {/* Learning Objectives */}
                 {lesson.objectives && lesson.objectives.length > 0 && (
-                    <Card>
+                    <Card style={{ backgroundColor: `rgb(var(--color-surface))`, borderColor: `rgb(var(--color-border))` }}>
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
+                            <CardTitle className="flex items-center gap-2" style={{ color: `rgb(var(--color-text))` }}>
                                 <Target className="w-5 h-5 text-green-600" />
                                 {t('lessonPlans.learningObjectives')}
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
                             <div className="space-y-2">
-                                <p className="text-slate-700 font-medium mb-3">{t('lessonPlans.studentsWillBeAbleTo')}</p>
+                                <p className="font-medium mb-3" style={{ color: `rgb(var(--color-textSecondary))` }}>{t('lessonPlans.studentsWillBeAbleTo')}</p>
                                 <ul className="space-y-2">
                                     {lesson.objectives.map((objective, index) => (
                                         <li key={index} className="flex items-start gap-2">
                                             <span className="w-6 h-6 bg-green-100 text-green-700 rounded-full flex items-center justify-center text-sm font-medium flex-shrink-0 mt-0.5">
                                                 {index + 1}
                                             </span>
-                                            <span className="text-slate-700">{objective}</span>
+                                            <span style={{ color: `rgb(var(--color-text))` }}>{objective}</span>
                                         </li>
                                     ))}
                                 </ul>
@@ -344,15 +344,15 @@ export default function LessonPlanViewer({
 
                 {/* Hook/Opening */}
                 {lesson.hook && (
-                    <Card>
+                    <Card style={{ backgroundColor: `rgb(var(--color-surface))`, borderColor: `rgb(var(--color-border))` }}>
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
+                            <CardTitle className="flex items-center gap-2" style={{ color: `rgb(var(--color-text))` }}>
                                 <Lightbulb className="w-5 h-5 text-yellow-600" />
                                 {t('lessonPlans.hookOpeningActivity')}
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <p className="text-slate-700 whitespace-pre-wrap leading-relaxed">
+                            <p className="whitespace-pre-wrap leading-relaxed" style={{ color: `rgb(var(--color-text))` }}>
                                 {lesson.hook}
                             </p>
                         </CardContent>
@@ -361,9 +361,9 @@ export default function LessonPlanViewer({
 
                 {/* Classroom Activities */}
                 {lesson.activities && lesson.activities.length > 0 && (
-                    <Card>
+                    <Card style={{ backgroundColor: `rgb(var(--color-surface))`, borderColor: `rgb(var(--color-border))` }}>
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
+                            <CardTitle className="flex items-center gap-2" style={{ color: `rgb(var(--color-text))` }}>
                                 <Users className="w-5 h-5 text-blue-600" />
                                 {t('lessonPlans.classroomActivities')}
                             </CardTitle>
@@ -371,13 +371,13 @@ export default function LessonPlanViewer({
                         <CardContent>
                             <div className="space-y-6">
                                 {lesson.activities.map((activity, index) => (
-                                    <div key={index} className="border border-slate-200 rounded-lg p-6 bg-slate-50">
+                                    <div key={index} className="border rounded-lg p-6" style={{ backgroundColor: `rgba(var(--color-text), 0.02)`, borderColor: `rgb(var(--color-border))` }}>
                                         <div className="flex items-start justify-between mb-4">
-                                            <h4 className="text-lg font-semibold text-slate-900">
+                                            <h4 className="text-lg font-semibold" style={{ color: `rgb(var(--color-text))` }}>
                                                 {index + 1}. {activity.title}
                                             </h4>
                                             {activity.duration && (
-                                                <div className="flex items-center gap-1 text-slate-600 bg-white px-3 py-1 rounded-full">
+                                                <div className="flex items-center gap-1 px-3 py-1 rounded-full" style={{ backgroundColor: `rgb(var(--color-surface))`, color: `rgb(var(--color-textSecondary))` }}>
                                                     <Clock className="w-4 h-4" />
                                                     <span className="text-sm font-medium">
                                                         {activity.duration} {t('lessonPlans.min')}
@@ -386,14 +386,14 @@ export default function LessonPlanViewer({
                                             )}
                                         </div>
                                         {activity.description && (
-                                            <p className="text-slate-700 mb-4 whitespace-pre-wrap leading-relaxed">
+                                            <p className="mb-4 whitespace-pre-wrap leading-relaxed" style={{ color: `rgb(var(--color-text))` }}>
                                                 {activity.description}
                                             </p>
                                         )}
                                         {activity.materials && activity.materials.length > 0 && activity.materials.some(m => m.trim()) && (
                                             <div>
-                                                <h5 className="text-sm font-semibold text-slate-800 mb-2">{t('lessonPlans.materialsNeeded')}:</h5>
-                                                <ul className="list-disc list-inside text-slate-600 space-y-1">
+                                                <h5 className="text-sm font-semibold mb-2" style={{ color: `rgb(var(--color-text))` }}>{t('lessonPlans.materialsNeeded')}:</h5>
+                                                <ul className="list-disc list-inside space-y-1" style={{ color: `rgb(var(--color-textSecondary))` }}>
                                                     {activity.materials.filter(m => m.trim()).map((material, materialIndex) => (
                                                         <li key={materialIndex}>{material}</li>
                                                     ))}
@@ -409,9 +409,9 @@ export default function LessonPlanViewer({
 
                 {/* Homework */}
                 {lesson.homework && lesson.homework.length > 0 && lesson.homework.some(hw => hw.trim()) && (
-                    <Card>
+                    <Card style={{ backgroundColor: `rgb(var(--color-surface))`, borderColor: `rgb(var(--color-border))` }}>
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
+                            <CardTitle className="flex items-center gap-2" style={{ color: `rgb(var(--color-text))` }}>
                                 <Home className="w-5 h-5 text-purple-600" />
                                 {t('lessonPlans.homework')}
                             </CardTitle>
@@ -423,7 +423,7 @@ export default function LessonPlanViewer({
                                         <span className="w-5 h-5 bg-purple-100 text-purple-700 rounded-full flex items-center justify-center text-sm font-medium flex-shrink-0 mt-0.5">
                                             {index + 1}
                                         </span>
-                                        <span className="text-slate-700">{hw}</span>
+                                        <span style={{ color: `rgb(var(--color-text))` }}>{hw}</span>
                                     </li>
                                 ))}
                             </ul>
@@ -434,9 +434,9 @@ export default function LessonPlanViewer({
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     {/* Resources */}
                     {lesson.resources && lesson.resources.length > 0 && lesson.resources.some(r => r.title?.trim() || r.file_url?.trim()) && (
-                        <Card>
+                        <Card style={{ backgroundColor: `rgb(var(--color-surface))`, borderColor: `rgb(var(--color-border))` }}>
                             <CardHeader>
-                                <CardTitle className="flex items-center gap-2">
+                                <CardTitle className="flex items-center gap-2" style={{ color: `rgb(var(--color-text))` }}>
                                     <BookOpen className="w-5 h-5 text-indigo-600" />
                                     {t('lessonPlans.resources')}
                                 </CardTitle>
@@ -444,13 +444,13 @@ export default function LessonPlanViewer({
                             <CardContent>
                                 <div className="space-y-4">
                                     {lesson.resources.filter(r => r.title?.trim() || r.file_url?.trim()).map((resource, index) => (
-                                        <div key={index} className="flex items-start gap-3 p-4 bg-slate-50 rounded-lg border border-slate-200">
+                                        <div key={index} className="flex items-start gap-3 p-4 rounded-lg border" style={{ backgroundColor: `rgba(var(--color-text), 0.02)`, borderColor: `rgb(var(--color-border))` }}>
                                             <div className="flex-shrink-0">
                                                 {getFileIcon(resource.file_name, resource.type, resource.file_mime_type)}
                                             </div>
                                             <div className="flex-1 min-w-0">
                                                 <div className="flex items-start justify-between gap-2 mb-2">
-                                                    <p className="font-medium text-slate-900 leading-tight">
+                                                    <p className="font-medium leading-tight" style={{ color: `rgb(var(--color-text))` }}>
                                                         {resource.title || resource.file_name || 'Untitled Resource'}
                                                     </p>
                                                     <Badge 
@@ -465,13 +465,13 @@ export default function LessonPlanViewer({
                                                 {resource.file_url && (
                                                     <div className="space-y-2">
                                                         {resource.file_name && (
-                                                            <div className="flex items-center gap-2 text-sm text-slate-600">
+                                                            <div className="flex items-center gap-2 text-sm" style={{ color: `rgb(var(--color-textSecondary))` }}>
                                                                 <File className="w-3 h-3" />
                                                                 <span className="truncate">{resource.file_name}</span>
                                                             </div>
                                                         )}
                                                         {resource.file_mime_type && (
-                                                            <div className="flex items-center gap-2 text-xs text-slate-500">
+                                                            <div className="flex items-center gap-2 text-xs" style={{ color: `rgb(var(--color-textSecondary))` }}>
                                                                 <span>Type: {resource.file_mime_type}</span>
                                                             </div>
                                                         )}
@@ -519,9 +519,9 @@ export default function LessonPlanViewer({
 
                     {/* Assessment */}
                     {lesson.assessment && (lesson.assessment.type || lesson.assessment.description) && (
-                        <Card>
+                        <Card style={{ backgroundColor: `rgb(var(--color-surface))`, borderColor: `rgb(var(--color-border))` }}>
                             <CardHeader>
-                                <CardTitle className="flex items-center gap-2">
+                                <CardTitle className="flex items-center gap-2" style={{ color: `rgb(var(--color-text))` }}>
                                     <CheckSquare className="w-5 h-5 text-emerald-600" />
                                     {t('lessonPlans.assessment')}
                                 </CardTitle>
@@ -529,7 +529,7 @@ export default function LessonPlanViewer({
                             <CardContent className="space-y-4">
                                 {lesson.assessment.type && (
                                     <div>
-                                        <span className="text-sm font-medium text-slate-700">{t('lessonPlans.type')}: </span>
+                                        <span className="text-sm font-medium" style={{ color: `rgb(var(--color-text))` }}>{t('lessonPlans.type')}: </span>
                                         <Badge variant="outline">
                                             {lesson.assessment.type.charAt(0).toUpperCase() + lesson.assessment.type.slice(1)}
                                         </Badge>
@@ -537,16 +537,16 @@ export default function LessonPlanViewer({
                                 )}
                                 {lesson.assessment.description && (
                                     <div>
-                                        <h4 className="text-sm font-semibold text-slate-800 mb-2">{t('lessonPlans.descriptionLabel')}</h4>
-                                        <p className="text-slate-700 whitespace-pre-wrap">
+                                        <h4 className="text-sm font-semibold mb-2" style={{ color: `rgb(var(--color-text))` }}>{t('lessonPlans.descriptionLabel')}</h4>
+                                        <p className="whitespace-pre-wrap" style={{ color: `rgb(var(--color-text))` }}>
                                             {lesson.assessment.description}
                                         </p>
                                     </div>
                                 )}
                                 {lesson.assessment.rubric && (
                                     <div>
-                                        <h4 className="text-sm font-semibold text-slate-800 mb-2">{t('lessonPlans.rubricLabel')}</h4>
-                                        <p className="text-slate-700 whitespace-pre-wrap">
+                                        <h4 className="text-sm font-semibold mb-2" style={{ color: `rgb(var(--color-text))` }}>{t('lessonPlans.rubricLabel')}</h4>
+                                        <p className="whitespace-pre-wrap" style={{ color: `rgb(var(--color-text))` }}>
                                             {lesson.assessment.rubric}
                                         </p>
                                     </div>
@@ -558,9 +558,9 @@ export default function LessonPlanViewer({
 
                 {/* Differentiation */}
                 {lesson.differentiation && lesson.differentiation.length > 0 && lesson.differentiation.some(d => d.trim()) && (
-                    <Card>
+                    <Card style={{ backgroundColor: `rgb(var(--color-surface))`, borderColor: `rgb(var(--color-border))` }}>
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
+                            <CardTitle className="flex items-center gap-2" style={{ color: `rgb(var(--color-text))` }}>
                                 <Layers className="w-5 h-5 text-orange-600" />
                                 {t('lessonPlans.differentiationStrategies')}
                             </CardTitle>
@@ -572,7 +572,7 @@ export default function LessonPlanViewer({
                                         <span className="w-5 h-5 bg-orange-100 text-orange-700 rounded-full flex items-center justify-center text-sm font-medium flex-shrink-0 mt-0.5">
                                             {index + 1}
                                         </span>
-                                        <span className="text-slate-700">{strategy}</span>
+                                        <span style={{ color: `rgb(var(--color-text))` }}>{strategy}</span>
                                     </li>
                                 ))}
                             </ul>
@@ -582,15 +582,15 @@ export default function LessonPlanViewer({
 
                 {/* Additional Information */}
                 {lesson.additional_information && lesson.additional_information.trim() && (
-                    <Card>
+                    <Card style={{ backgroundColor: `rgb(var(--color-surface))`, borderColor: `rgb(var(--color-border))` }}>
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
+                            <CardTitle className="flex items-center gap-2" style={{ color: `rgb(var(--color-text))` }}>
                                 <Info className="w-5 h-5 text-teal-600" />
                                 {t('lessonPlans.preMadeLessonPlan')}
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <p className="text-slate-700 whitespace-pre-wrap leading-relaxed">
+                            <p className="whitespace-pre-wrap leading-relaxed" style={{ color: `rgb(var(--color-text))` }}>
                                 {lesson.additional_information}
                             </p>
                         </CardContent>

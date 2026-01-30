@@ -118,7 +118,10 @@ export default function AssignmentCard({ assignment, submissionCount, onClick, o
 
   return (
     <>
-      <Card className="backdrop-blur-sm hover:shadow-xl transition-all duration-300 group hover:scale-[1.02] flex flex-col themed-card">
+      <Card 
+        className="backdrop-blur-sm hover:shadow-xl transition-all duration-300 group hover:scale-[1.02] flex flex-col themed-card"
+        style={{ backgroundColor: `rgb(var(--color-surface))`, borderColor: `rgb(var(--color-border))` }}
+      >
         <CardHeader className="pb-3 cursor-pointer" onClick={onClick}>
           <div className="flex items-start justify-between">
             <div className="flex-1">
