@@ -11,7 +11,8 @@ import { Clock, AlertTriangle, CheckCircle } from 'lucide-react';
 
 export default function QuizTaker({ user, quiz, onFinish }) {
     const [submission, setSubmission] = useState(null);
-    const [questions, setQuestions] = useState([]);
+    const [questions, setQuestions] = useState(null);
+    const [error, setError] = useState(null);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [answers, setAnswers] = useState({});
     const [timeLeft, setTimeLeft] = useState(null);
@@ -112,45 +113,50 @@ export default function QuizTaker({ user, quiz, onFinish }) {
 
     useEffect(() => {
         const startQuiz = async () => {
-            const existingSubmissions = await QuizSubmission.filter({ quiz_id: quiz.id, student_id: user.id });
-            const completedSubmission = existingSubmissions.find(s => s.status === 'completed');
-            
-            if (completedSubmission) {
-                setIsCompleted(true);
-                return;
-            }
-
-            let sub = existingSubmissions.find(s => s.status === 'in-progress');
-            if (!sub) {
-                sub = await QuizSubmission.create({ 
-                    quiz_id: quiz.id, 
-                    student_id: user.id, 
-                    student_name: user.full_name,
-                    student_email: user.email,
-                    status: 'in-progress', 
-                    started_at: new Date().toISOString(),
-                    focus_loss_count: 0 // Initialize count
-                });
-            }
-            // Notify layout that quiz has started
-            window.dispatchEvent(new CustomEvent('quiz-state-change', { detail: { quizInProgress: true } }));
-            setSubmission(sub);
-            
-            const fetchedQuestions = await QuizQuestion.filter({ quiz_id: quiz.id });
-            setQuestions(fetchedQuestions);
-
-            if (quiz.time_limit_minutes && quiz.time_limit_minutes > 0) {
-                const startTime = new Date(sub.started_at).getTime();
-                const timeLimit = quiz.time_limit_minutes * 60 * 1000;
-                const elapsed = Date.now() - startTime;
-                const remaining = Math.max(0, timeLimit - elapsed);
+            try {
+                const existingSubmissions = await QuizSubmission.filter({ quiz_id: quiz.id, student_id: user.id });
+                const completedSubmission = existingSubmissions.find(s => s.status === 'completed');
                 
-                if (remaining <= 0) {
-                    handleFinish();
+                if (completedSubmission) {
+                    setIsCompleted(true);
                     return;
-                } else {
-                    setTimeLeft(Math.ceil(remaining / 1000));
                 }
+
+                let sub = existingSubmissions.find(s => s.status === 'in-progress');
+                if (!sub) {
+                    sub = await QuizSubmission.create({ 
+                        quiz_id: quiz.id, 
+                        student_id: user.id, 
+                        student_name: user.full_name,
+                        student_email: user.email,
+                        status: 'in-progress', 
+                        started_at: new Date().toISOString(),
+                        focus_loss_count: 0 // Initialize count
+                    });
+                }
+                // Notify layout that quiz has started
+                window.dispatchEvent(new CustomEvent('quiz-state-change', { detail: { quizInProgress: true } }));
+                setSubmission(sub);
+                
+                const fetchedQuestions = await QuizQuestion.filter({ quiz_id: quiz.id });
+                setQuestions(fetchedQuestions);
+
+                if (quiz.time_limit_minutes && quiz.time_limit_minutes > 0) {
+                    const startTime = new Date(sub.started_at).getTime();
+                    const timeLimit = quiz.time_limit_minutes * 60 * 1000;
+                    const elapsed = Date.now() - startTime;
+                    const remaining = Math.max(0, timeLimit - elapsed);
+                    
+                    if (remaining <= 0) {
+                        handleFinish();
+                        return;
+                    } else {
+                        setTimeLeft(Math.ceil(remaining / 1000));
+                    }
+                }
+            } catch (err) {
+                console.error("Error starting quiz:", err);
+                setError("Failed to load quiz. Please try again.");
             }
         };
         startQuiz();
@@ -235,12 +241,37 @@ export default function QuizTaker({ user, quiz, onFinish }) {
         )
     }
 
-    if (!questions.length || !submission) {
+    if (error) {
+        return (
+            <Card>
+                <CardContent className="p-8 text-center space-y-4">
+                    <AlertTriangle className="w-16 h-16 text-red-500 mx-auto" />
+                    <h2 className="text-xl font-bold text-red-600">{error}</h2>
+                    <Button onClick={() => finishHandler.current()}>Return to Quiz List</Button>
+                </CardContent>
+            </Card>
+        );
+    }
+
+    if (questions === null || !submission) {
         return (
             <Card>
                 <CardContent className="p-8 text-center">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
                     <p style={{ color: `rgb(var(--color-textSecondary))` }}>Loading quiz...</p>
+                </CardContent>
+            </Card>
+        );
+    }
+
+    if (questions.length === 0) {
+        return (
+            <Card>
+                <CardContent className="p-8 text-center space-y-4">
+                    <AlertTriangle className="w-16 h-16 text-yellow-500 mx-auto" />
+                    <h2 className="text-xl font-bold" style={{ color: `rgb(var(--color-text))` }}>No Questions Found</h2>
+                    <p style={{ color: `rgb(var(--color-textSecondary))` }}>This quiz has no questions.</p>
+                    <Button onClick={() => finishHandler.current()}>Return to Quiz List</Button>
                 </CardContent>
             </Card>
         );
