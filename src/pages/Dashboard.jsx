@@ -1335,10 +1335,21 @@ Output your response as JSON with:
                                                     </span>
                                                 </div>
                                                 <LanguageSelector />
-                                            </div>
-                                            <div className="flex items-center justify-between space-x-4">
+                                                </div>
+
+                                                <div className="space-y-4 pt-4 border-t border-slate-100">
                                                 <div className="flex flex-col space-y-1">
-                                                    <Label htmlFor="ace-ai-toggle" className="text-base font-medium">Hide ACE AI Chat from students</Label>
+                                                    <Label className="text-base font-medium">Theme</Label>
+                                                    <span className="text-sm text-slate-500">
+                                                        Choose interface theme
+                                                    </span>
+                                                </div>
+                                                <ThemeSelector />
+                                                </div>
+
+                                                <div className="flex items-center justify-between space-x-4 pt-4 border-t border-slate-100">
+                                                <div className="flex flex-col space-y-1">
+                                                <Label htmlFor="ace-ai-toggle" className="text-base font-medium">Hide ACE AI Chat from students</Label>
                                                     <span className="text-sm text-slate-500">
                                                         Prevent students in this class from having conversations with ACE
                                                     </span>
