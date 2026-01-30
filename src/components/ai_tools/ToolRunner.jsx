@@ -250,7 +250,7 @@ export default function ToolRunner({ tool }) {
                            {tool.outputComponent === WorksheetOutput ? (
                                <WorksheetOutput content={output.content} />
                            ) : (
-                               <div className="p-4">
+                               <div className="p-4" style={{ color: `rgb(var(--color-text))` }}>
                                    <MarkdownOutput content={output.content} />
                                </div>
                            )}

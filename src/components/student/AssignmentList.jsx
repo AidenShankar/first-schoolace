@@ -197,7 +197,7 @@ export default function AssignmentList({ assignments, onUpload, userSubmissions,
                             </Badge>
                           )}
                           {assignment.allow_submissions !== false && latestSubmission?.is_released && (
-                            <Badge className={`bg-white border-slate-200 text-xs px-2 py-1 font-bold ${getGradeColor(latestSubmission.final_grade, assignment.max_points)}`}>
+                            <Badge className={`border text-xs px-2 py-1 font-bold ${getGradeColor(latestSubmission.final_grade, assignment.max_points)}`} style={{ backgroundColor: `rgb(var(--color-surface))`, borderColor: `rgb(var(--color-border))` }}>
                               {latestSubmission.final_grade}/{assignment.max_points}
                             </Badge>
                           )}
@@ -210,20 +210,20 @@ export default function AssignmentList({ assignments, onUpload, userSubmissions,
                   <CardContent className="space-y-4 pt-0">
                     <div className="grid grid-cols-2 gap-3 text-sm">
                       <div className="flex items-center" style={{ color: `rgb(var(--color-textSecondary))` }}>
-                        <Clock className="w-4 h-4 mr-1 flex-shrink-0" style={{ color: `rgb(var(--color-textSecondary))` }} />
+                        <Clock className="w-4 h-4 mr-1 flex-shrink-0" />
                         <div className="min-w-0">
-                          <p className="font-medium truncate">Due Date</p>
-                          <p className="text-xs truncate" style={{ color: `rgb(var(--color-textSecondary))` }}>
+                          <p className="font-medium truncate" style={{ color: `rgb(var(--color-text))` }}>Due Date</p>
+                          <p className="text-xs truncate">
                             {isValidDate ? format(new Date(assignment.due_date), 'MMM d') : 'No due date'}
                           </p>
                         </div>
                       </div>
 
                       <div className="flex items-center" style={{ color: `rgb(var(--color-textSecondary))` }}>
-                        <Award className="w-4 h-4 mr-1 flex-shrink-0" style={{ color: `rgb(var(--color-textSecondary))` }} />
+                        <Award className="w-4 h-4 mr-1 flex-shrink-0" />
                         <div className="min-w-0">
-                          <p className="font-medium truncate">{assignment.allow_submissions !== false ? 'Points' : 'Info Only'}</p>
-                          <p className="text-xs" style={{ color: `rgb(var(--color-textSecondary))` }}>{assignment.allow_submissions !== false ? `${assignment.max_points} pts` : 'No grading'}</p>
+                          <p className="font-medium truncate" style={{ color: `rgb(var(--color-text))` }}>{assignment.allow_submissions !== false ? 'Points' : 'Info Only'}</p>
+                          <p className="text-xs">{assignment.allow_submissions !== false ? `${assignment.max_points} pts` : 'No grading'}</p>
                         </div>
                       </div>
                     </div>
@@ -231,7 +231,7 @@ export default function AssignmentList({ assignments, onUpload, userSubmissions,
                     {assignment.allow_submissions !== false && latestSubmission && !latestSubmission.is_released && (
                       <div className="bg-blue-50 rounded-lg p-3 border border-blue-200">
                         <p className="font-medium text-blue-800 text-sm">Under Review</p>
-                        <p className="text-xs mt-1" style={{ color: `rgb(var(--color-textSecondary))` }}>
+                        <p className="text-xs mt-1 text-blue-600">
                           Your teacher will release grades soon.
                         </p>
                       </div>
