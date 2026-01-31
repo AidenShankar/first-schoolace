@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus, Sparkles, Image as ImageIcon, Trash2, Save, X, Loader2 } from "lucide-react";
+import { Plus, Sparkles, Image as ImageIcon, Trash2, Save, X, Loader2, Upload, FileText } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { UploadFile, InvokeLLM } from "@/integrations/Core";
 import { motion, AnimatePresence } from "framer-motion";
@@ -51,21 +51,24 @@ export default function SetCreator({ onCancel, onSave, initialData = null }) {
         }
     };
 
-    const handleImportFromAI = async (text) => {
+    const handleImportFromAI = async ({ text, file }) => {
         setShowAIModal(false);
-        // Show loading state or toast
-        // This logic is usually better in a separate function but for simplicity I'll put it here or rely on the parent
-        // Actually I should implement the AI call here
-        setIsSaving(true); // Reuse saving spinner for "Thinking"
+        setIsSaving(true); 
         try {
-            const prompt = `Extract flashcards from the following text. Return ONLY a JSON object with a key "cards" containing an array of objects with "term" and "definition" keys.
+            let fileUrl = null;
+            if (file) {
+                const uploadRes = await UploadFile({ file });
+                fileUrl = uploadRes.file_url;
+            }
+
+            const prompt = `Extract flashcards from the provided content (text or file). Return ONLY a JSON object with a key "cards" containing an array of objects with "term" and "definition" keys.
             
-            Text:
-            ${text}
+            ${text ? `Text content:\n${text}` : ''}
             `;
             
             const result = await InvokeLLM({
                 prompt: prompt,
+                file_urls: fileUrl ? [fileUrl] : undefined,
                 response_json_schema: {
                     type: "object",
                     properties: {
@@ -87,7 +90,7 @@ export default function SetCreator({ onCancel, onSave, initialData = null }) {
             
             if (result && result.cards) {
                 const newCards = result.cards.map(c => ({ id: Date.now() + Math.random(), ...c }));
-                setCards([...cards, ...newCards].filter(c => c.term || c.definition)); // keep existing empty one if needed, or filter
+                setCards([...cards, ...newCards].filter(c => c.term || c.definition)); 
             }
         } catch (error) {
             console.error("AI Import failed:", error);
@@ -201,6 +204,7 @@ export default function SetCreator({ onCancel, onSave, initialData = null }) {
 
 function AIImportModal({ onClose, onImport }) {
     const [text, setText] = useState("");
+    const [file, setFile] = useState(null);
 
     return (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
@@ -217,22 +221,52 @@ function AIImportModal({ onClose, onImport }) {
                     </h3>
                     <Button variant="ghost" size="icon" onClick={onClose}><X className="w-4 h-4" /></Button>
                 </div>
-                <div className="p-6 space-y-4">
-                    <p className="text-slate-600 text-sm">
-                        Paste your notes, a paragraph, or a list of terms below. Our AI will magically convert them into flashcards.
-                    </p>
+                <div className="p-6 space-y-6">
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium text-slate-700">Upload a File</label>
+                        <div className="border-2 border-dashed border-slate-200 rounded-xl p-6 text-center hover:bg-slate-50 transition-colors cursor-pointer relative">
+                            <input 
+                                type="file" 
+                                onChange={(e) => setFile(e.target.files[0])}
+                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                accept=".pdf,.doc,.docx,.ppt,.pptx,.txt"
+                            />
+                            {file ? (
+                                <div className="flex items-center justify-center gap-2 text-indigo-600 font-medium">
+                                    <FileText className="w-5 h-5" />
+                                    {file.name}
+                                </div>
+                            ) : (
+                                <div className="text-slate-500 text-sm">
+                                    <Upload className="w-8 h-8 mx-auto mb-2 text-slate-400" />
+                                    <span className="font-semibold text-indigo-600">Click to upload</span> or drag and drop
+                                    <p className="text-xs mt-1 text-slate-400">PDF, Word, PowerPoint</p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="relative">
+                        <div className="absolute inset-0 flex items-center">
+                            <span className="w-full border-t border-slate-200" />
+                        </div>
+                        <div className="relative flex justify-center text-xs uppercase">
+                            <span className="bg-white px-2 text-slate-400">Or paste text</span>
+                        </div>
+                    </div>
+
                     <Textarea 
                         value={text}
                         onChange={e => setText(e.target.value)}
-                        placeholder="Paste text here..."
-                        className="h-48 resize-none font-mono text-sm"
+                        placeholder="Paste your notes here..."
+                        className="h-32 resize-none font-mono text-sm"
                     />
                 </div>
                 <div className="p-6 bg-slate-50 flex justify-end gap-3">
                     <Button variant="ghost" onClick={onClose}>Cancel</Button>
                     <Button 
-                        onClick={() => onImport(text)} 
-                        disabled={!text.trim()}
+                        onClick={() => onImport({ text, file })} 
+                        disabled={!text.trim() && !file}
                         className="bg-indigo-600 hover:bg-indigo-700 text-white"
                     >
                         Generate Flashcards

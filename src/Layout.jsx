@@ -764,7 +764,7 @@ export default function Layout({ children, currentPageName }) {
       requiresClass: false,
       blocked: isQuizModeActive,
       blockedReason: "Complete your quiz to access other pages.",
-      roles: ['student', 'teacher']
+      roles: ['student']
     },
     { 
       name: t('nav.aiTools', language), 
