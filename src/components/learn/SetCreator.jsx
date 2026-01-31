@@ -222,7 +222,7 @@ function AIImportModal({ onClose, onImport }) {
                 <div className="p-6 border-b border-slate-100 flex justify-between items-center">
                     <h3 className="text-xl font-bold text-slate-900 flex items-center gap-2">
                         <Sparkles className="w-5 h-5 text-indigo-500" />
-                        Magic Import
+                        Import
                     </h3>
                     <Button variant="ghost" size="icon" onClick={onClose}><X className="w-4 h-4" /></Button>
                 </div>
