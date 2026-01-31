@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { BrainCircuit } from 'lucide-react';
 
 const FACTS = [
-    '"Yesterday is history, tomorrow is a mystery, but today is a gift. That is why it is called the present"'
+    `"Yesterday is history, tomorrow is a mystery, but\ntoday is a gift. That's why it's called the present."`
 ];
 
 export default function AceTransition() {
@@ -43,7 +43,7 @@ export default function AceTransition() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.4 }}
-                    className="text-lg font-medium leading-relaxed"
+                    className="text-lg font-medium leading-relaxed whitespace-pre-line"
                     style={{ color: 'rgb(var(--color-textSecondary))' }}
                 >
                     {fact}
