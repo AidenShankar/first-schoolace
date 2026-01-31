@@ -3,25 +3,7 @@ import { motion } from 'framer-motion';
 import { BrainCircuit } from 'lucide-react';
 
 const FACTS = [
-    "The Eiffel Tower can be 15 cm taller during the summer due to thermal expansion.",
-    "Bananas are berries, but strawberries aren't.",
-    "A group of flamingos is called a 'flamboyance'.",
-    "Octopuses have three hearts.",
-    "Honey never spoils. Archaeologists have found pots of honey in ancient Egyptian tombs that are over 3,000 years old.",
-    "The shortest war in history lasted 38 minutes.",
-    "The unicorn is the national animal of Scotland.",
-    "A day on Venus is longer than a year on Venus.",
-    "There are more stars in the universe than grains of sand on all the Earth's beaches.",
-    "The first computer bug was an actual real bug (a moth).",
-    "It takes 8 minutes and 20 seconds for light to travel from the Sun to the Earth.",
-    "DNA is fireproof.",
-    "The inventor of the Pringles can is now buried in one.",
-    "Hot water turns into ice faster than cold water.",
-    "The strongest muscle in the body is the tongue.",
-    "Ants take rest for around 8 minutes in 12-hour period.",
-    "Coca-Cola was originally green.",
-    "The most common name in the world is Mohammed.",
-    "When the moon is directly overhead, you will weigh slightly less."
+    "You got this!",
 ];
 
 export default function AceTransition() {
