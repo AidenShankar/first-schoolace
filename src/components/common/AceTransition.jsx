@@ -33,7 +33,7 @@ export default function AceTransition() {
     }, []);
 
     return (
-        <div className="fixed inset-0 bg-[#0f172a] flex items-center justify-center z-[9999] flex-col">
+        <div className="fixed inset-0 flex items-center justify-center z-[9999] flex-col" style={{ backgroundColor: 'rgb(var(--color-background))' }}>
             <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -52,7 +52,8 @@ export default function AceTransition() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
-                    className="text-white font-bold tracking-widest text-sm mb-4 uppercase"
+                    className="font-bold tracking-widest text-sm mb-4 uppercase"
+                    style={{ color: 'rgb(var(--color-text))' }}
                 >
                     Did You Know
                 </motion.h2>
@@ -61,7 +62,8 @@ export default function AceTransition() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.4 }}
-                    className="text-slate-300 text-lg font-medium leading-relaxed"
+                    className="text-lg font-medium leading-relaxed"
+                    style={{ color: 'rgb(var(--color-textSecondary))' }}
                 >
                     {fact}
                 </motion.p>
