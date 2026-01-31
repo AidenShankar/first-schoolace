@@ -7,10 +7,12 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Checkbox } from "@/components/ui/checkbox";
 import { CheckCircle, AlertCircle, Loader2, BookOpen, Calendar } from 'lucide-react';
 import { motion } from 'framer-motion';
+import AceTransition, { LOADING_DURATION } from "@/components/common/AceTransition";
 
 export default function ChooseCourses() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [pageLoading, setPageLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [availableCourses, setAvailableCourses] = useState([]);
   const [selectedCourses, setSelectedCourses] = useState([]);
@@ -20,6 +22,13 @@ export default function ChooseCourses() {
   const [currentSchoolYear, setCurrentSchoolYear] = useState('');
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+        setPageLoading(false);
+    }, LOADING_DURATION);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     loadData();
@@ -181,15 +190,8 @@ export default function ChooseCourses() {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-4">
-        <div className="text-center">
-          <Loader2 className="w-12 h-12 animate-spin text-indigo-600 mx-auto mb-4" />
-          <p className="text-slate-600">Loading course catalog...</p>
-        </div>
-      </div>
-    );
+  if (pageLoading || loading) {
+    return <AceTransition />;
   }
 
   if (error) {

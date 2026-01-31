@@ -7,9 +7,22 @@ import { Label } from "@/components/ui/label";
 import { GraduationCap, Users, BookOpen, Building } from "lucide-react";
 import { motion } from "framer-motion";
 import { createPageUrl } from '@/utils';
+import AceTransition, { LOADING_DURATION } from "@/components/common/AceTransition";
 
 export default function Setup() {
   const [selectedRole, setSelectedRole] = useState(null);
+  const [pageLoading, setPageLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+        setPageLoading(false);
+    }, LOADING_DURATION);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (pageLoading) {
+    return <AceTransition />;
+  }
   const [loading, setLoading] = useState(false);
   const [adminCode, setAdminCode] = useState('');
   const [schoolName, setSchoolName] = useState('');

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
+import AceTransition, { LOADING_DURATION } from "@/components/common/AceTransition";
 
 const SCHEDULE_DATA = [
   {
@@ -357,6 +358,18 @@ const AIChatWidget = () => {
 
 export default function APExamSchedule() {
   const [selectedExam, setSelectedExam] = useState(null);
+  const [pageLoading, setPageLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+        setPageLoading(false);
+    }, LOADING_DURATION);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (pageLoading) {
+    return <AceTransition />;
+  }
 
   const handleExamClick = (examName, date, time) => {
     setSelectedExam({ name: examName, date, time });

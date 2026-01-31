@@ -3,11 +3,25 @@ import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { ArrowLeft, FileText, GraduationCap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import AceTransition, { LOADING_DURATION } from "@/components/common/AceTransition";
 
 const specificDate = "September 1, 2025";
 const lastUpdated = "October 12, 2025";
 
 export default function TermsOfService() {
+  const [pageLoading, setPageLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+        setPageLoading(false);
+    }, LOADING_DURATION);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (pageLoading) {
+    return <AceTransition />;
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-slate-950 to-purple-950 text-white">
       {/* Header - Landing Page Style */}

@@ -1,7 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Check, X, AlertCircle } from 'lucide-react';
+import AceTransition, { LOADING_DURATION } from "@/components/common/AceTransition";
 
 export default function ComplianceTable() {
+  const [pageLoading, setPageLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+        setPageLoading(false);
+    }, LOADING_DURATION);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (pageLoading) {
+    return <AceTransition />;
+  }
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterLaw, setFilterLaw] = useState('all');
 

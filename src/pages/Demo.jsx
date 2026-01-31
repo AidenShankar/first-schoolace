@@ -3,9 +3,22 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { GraduationCap, ArrowRight, Play, Volume2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
+import AceTransition, { LOADING_DURATION } from "@/components/common/AceTransition";
 
 export default function Demo() {
   const [showFullDemo, setShowFullDemo] = useState(false);
+  const [pageLoading, setPageLoading] = useState(true);
+
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+        setPageLoading(false);
+    }, LOADING_DURATION);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (pageLoading) {
+    return <AceTransition />;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-slate-950 to-purple-950 text-white flex flex-col">
