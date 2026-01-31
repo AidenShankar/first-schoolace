@@ -48,59 +48,59 @@
  * The mainPage value must match a key in the PAGES object exactly.
  */
 import AIPersonalAgent from './pages/AIPersonalAgent';
+import AITools from './pages/AITools';
 import APExamSchedule from './pages/APExamSchedule';
 import AceSpaceDetail from './pages/AceSpaceDetail';
 import AceSpaces from './pages/AceSpaces';
+import Chat from './pages/Chat';
 import ChooseCourses from './pages/ChooseCourses';
+import ClassTools from './pages/ClassTools';
 import Compliance from './pages/Compliance';
+import Dashboard from './pages/Dashboard';
 import Demo from './pages/Demo';
 import Gradebook from './pages/Gradebook';
 import Landing from './pages/Landing';
 import Learn from './pages/Learn';
 import LearnerDashboard from './pages/LearnerDashboard';
 import LessonPlans from './pages/LessonPlans';
+import PersonalizedLearning from './pages/PersonalizedLearning';
+import PowerSchool from './pages/PowerSchool';
 import PrivacyPolicy from './pages/PrivacyPolicy';
+import Scheduler from './pages/Scheduler';
 import Setup from './pages/Setup';
 import StudySet from './pages/StudySet';
 import TermsOfService from './pages/TermsOfService';
 import compliance from './pages/compliance';
 import examplelearningtracker from './pages/examplelearningtracker';
-import AITools from './pages/AITools';
-import Chat from './pages/Chat';
-import ClassTools from './pages/ClassTools';
-import Dashboard from './pages/Dashboard';
-import PersonalizedLearning from './pages/PersonalizedLearning';
-import PowerSchool from './pages/PowerSchool';
-import Scheduler from './pages/Scheduler';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "AIPersonalAgent": AIPersonalAgent,
+    "AITools": AITools,
     "APExamSchedule": APExamSchedule,
     "AceSpaceDetail": AceSpaceDetail,
     "AceSpaces": AceSpaces,
+    "Chat": Chat,
     "ChooseCourses": ChooseCourses,
+    "ClassTools": ClassTools,
     "Compliance": Compliance,
+    "Dashboard": Dashboard,
     "Demo": Demo,
     "Gradebook": Gradebook,
     "Landing": Landing,
     "Learn": Learn,
     "LearnerDashboard": LearnerDashboard,
     "LessonPlans": LessonPlans,
+    "PersonalizedLearning": PersonalizedLearning,
+    "PowerSchool": PowerSchool,
     "PrivacyPolicy": PrivacyPolicy,
+    "Scheduler": Scheduler,
     "Setup": Setup,
     "StudySet": StudySet,
     "TermsOfService": TermsOfService,
     "compliance": compliance,
     "examplelearningtracker": examplelearningtracker,
-    "AITools": AITools,
-    "Chat": Chat,
-    "ClassTools": ClassTools,
-    "Dashboard": Dashboard,
-    "PersonalizedLearning": PersonalizedLearning,
-    "PowerSchool": PowerSchool,
-    "Scheduler": Scheduler,
 }
 
 export const pagesConfig = {
