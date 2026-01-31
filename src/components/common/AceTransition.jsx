@@ -33,10 +33,7 @@ export default function AceTransition() {
     }, []);
 
     return (
-        <div 
-            className="fixed inset-0 flex items-center justify-center z-[9999] flex-col transition-colors duration-300"
-            style={{ backgroundColor: 'rgb(var(--color-background))' }}
-        >
+        <div className="fixed inset-0 bg-[#0f172a] flex items-center justify-center z-[9999] flex-col">
             <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -48,15 +45,14 @@ export default function AceTransition() {
                     transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
                     className="mb-8"
                 >
-                    <BrainCircuit className="w-16 h-16 text-indigo-600" />
+                    <BrainCircuit className="w-16 h-16 text-indigo-500" />
                 </motion.div>
 
                 <motion.h2 
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
-                    className="font-bold tracking-widest text-sm mb-4 uppercase"
-                    style={{ color: 'rgb(var(--color-text))' }}
+                    className="text-white font-bold tracking-widest text-sm mb-4 uppercase"
                 >
                     Did You Know
                 </motion.h2>
@@ -65,8 +61,7 @@ export default function AceTransition() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.4 }}
-                    className="text-lg font-medium leading-relaxed"
-                    style={{ color: 'rgb(var(--color-textSecondary))' }}
+                    className="text-slate-300 text-lg font-medium leading-relaxed"
                 >
                     {fact}
                 </motion.p>

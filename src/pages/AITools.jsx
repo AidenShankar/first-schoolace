@@ -13,7 +13,6 @@ import { Button } from '@/components/ui/button';
 import { createPageUrl } from '@/utils';
 import { motion } from "framer-motion";
 import { useTranslation } from '../components/i18n/useTranslation';
-import AceTransition from "@/components/common/AceTransition";
 
 // --- Tool Definitions ---
 
@@ -298,7 +297,25 @@ export default function AITools() {
     };
 
     if (pageLoading) {
-        return <AceTransition />;
+        return (
+            <div className="fixed inset-0 flex items-center justify-center z-[9999]" style={{ backgroundColor: `rgb(var(--color-background))` }}>
+                <div className="text-center">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                        className="text-center"
+                    >
+                        <h1 className="text-5xl font-bold tracking-tight" style={{ color: `rgb(var(--color-text))` }}>
+                            {t('aiTools.title')}
+                        </h1>
+                        <p className="text-lg mt-4 font-medium tracking-wide" style={{ color: `rgb(var(--color-textSecondary))` }}>
+                            {t('common.poweredByACE')}
+                        </p>
+                    </motion.div>
+                </div>
+            </div>
+        );
     }
 
     if (isLoading) {

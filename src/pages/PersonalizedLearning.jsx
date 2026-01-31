@@ -25,7 +25,6 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useTranslation } from '../components/i18n/useTranslation';
-import AceTransition from "@/components/common/AceTransition";
 
 export default function PersonalizedLearning() {
     const { t, language } = useTranslation();
@@ -292,9 +291,268 @@ export default function PersonalizedLearning() {
         }
     }, [pageLoading]); // Dependency on pageLoading
 
-    // Render the new simplified transition screen
+    // Render the dramatic animated loading screen
     if (pageLoading || isLoading) {
-        return <AceTransition />;
+        return (
+            <div className="fixed inset-0 overflow-hidden bg-gradient-to-br from-gray-900 via-purple-900 to-violet-900 z-[9999]">
+                {/* Animated gradient background - darker purples */}
+                <motion.div
+                    className="absolute inset-0"
+                    animate={{
+                        background: [
+                            'radial-gradient(circle at 20% 30%, #1e1b4b 0%, #581c87 25%, #7e22ce 50%, #1e1b4b 100%)',
+                            'radial-gradient(circle at 80% 70%, #312e81 0%, #6b21a8 25%, #9333ea 50%, #312e81 100%)',
+                            'radial-gradient(circle at 50% 50%, #1e1b4b 0%, #7e22ce 25%, #a855f7 50%, #1e1b4b 100%)',
+                            'radial-gradient(circle at 30% 80%, #312e81 0%, #581c87 25%, #7e22ce 50%, #312e81 100%)',
+                            'radial-gradient(circle at 20% 30%, #1e1b4b 0%, #581c87 25%, #7e22ce 50%, #1e1b4b 100%)',
+                        ]
+                    }}
+                    transition={{
+                        duration: 15,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                    }}
+                />
+
+                {/* Multiple layered orbs for depth */}
+                <motion.div
+                    className="absolute top-1/3 left-1/3 w-[500px] h-[500px] rounded-full"
+                    style={{
+                        background: 'radial-gradient(circle, rgba(124, 58, 237, 0.4) 0%, rgba(139, 92, 246, 0.2) 40%, transparent 70%)',
+                        filter: 'blur(90px)',
+                    }}
+                    animate={{
+                        x: [0, 150, -100, 50, 0],
+                        y: [0, -120, 80, -60, 0],
+                        scale: [1, 1.4, 0.8, 1.2, 1],
+                        opacity: [0.2, 0.5, 0.3, 0.6, 0.2],
+                    }}
+                    transition={{
+                        duration: 20,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                    }}
+                />
+
+                <motion.div
+                    className="absolute bottom-1/3 right-1/3 w-[400px] h-[400px] rounded-full"
+                    style={{
+                        background: 'radial-gradient(circle, rgba(147, 51, 234, 0.5) 0%, rgba(168, 85, 247, 0.3) 40%, transparent 70%)',
+                        filter: 'blur(100px)',
+                    }}
+                    animate={{
+                        x: [0, -180, 120, -80, 0],
+                        y: [0, 140, -90, 70, 0],
+                        scale: [1, 0.7, 1.3, 0.9, 1],
+                        opacity: [0.3, 0.7, 0.4, 0.8, 0.3],
+                    }}
+                    transition={{
+                        duration: 18,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                        delay: 2
+                    }}
+                />
+
+                <motion.div
+                    className="absolute top-1/2 left-1/2 w-[350px] h-[350px] rounded-full"
+                    style={{
+                        background: 'radial-gradient(circle, rgba(168, 85, 247, 0.6) 0%, rgba(192, 132, 252, 0.3) 40%, transparent 70%)',
+                        filter: 'blur(85px)',
+                        transform: 'translate(-50%, -50%)',
+                    }}
+                    animate={{
+                        scale: [1, 1.5, 0.9, 1.3, 1],
+                        opacity: [0.3, 0.6, 0.4, 0.7, 0.3],
+                        rotate: [0, 90, 180, 270, 360],
+                    }}
+                    transition={{
+                        duration: 16,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                        delay: 1
+                    }}
+                />
+
+                {/* Enhanced floating particles */}
+                {[...Array(40)].map((_, i) => (
+                    <motion.div
+                        key={i}
+                        className="absolute rounded-full bg-purple-300"
+                        style={{
+                            left: `${Math.random() * 100}%`,
+                            top: `${Math.random() * 100}%`,
+                            width: `${Math.random() * 4 + 1}px`,
+                            height: `${Math.random() * 4 + 1}px`,
+                            opacity: Math.random() * 0.4 + 0.1,
+                        }}
+                        animate={{
+                            y: [0, -150, 80, -100, 0],
+                            x: [0, Math.random() * 80 - 40, Math.random() * 60 - 30, Math.random() * 40 - 20, 0],
+                            opacity: [0.1, 0.6, 0.3, 0.8, 0.1],
+                            scale: [1, 2.5, 1.5, 3, 1],
+                        }}
+                        transition={{
+                            duration: 12 + Math.random() * 6,
+                            repeat: Infinity,
+                            delay: Math.random() * 4,
+                            ease: "easeInOut"
+                        }}
+                    />
+                ))}
+
+                {/* Main content */}
+                <div className="relative z-10 flex flex-col items-center justify-center h-full px-6">
+                    {/* Large central glow */}
+                    <motion.div
+                        className="absolute w-[700px] h-[700px] rounded-full"
+                        style={{
+                            background: 'radial-gradient(circle, rgba(139, 92, 246, 0.5) 0%, rgba(168, 85, 247, 0.3) 40%, transparent 70%)',
+                            filter: 'blur(120px)',
+                        }}
+                        animate={{
+                            scale: [1, 1.5, 1.1, 1.4, 1],
+                            opacity: [0.3, 0.6, 0.4, 0.7, 0.3],
+                            rotate: [0, 120, 240, 360],
+                        }}
+                        transition={{
+                            duration: 14,
+                            repeat: Infinity,
+                            ease: "easeInOut"
+                        }}
+                    />
+
+                    {/* Title with dramatic entrance */}
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.6, y: 40 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
+                        className="text-center relative z-20"
+                    >
+                        <motion.h1 
+                            className="text-7xl md:text-8xl lg:text-9xl font-black text-white mb-8 tracking-tight"
+                            animate={{
+                                textShadow: [
+                                    '0 0 40px rgba(139, 92, 246, 1), 0 0 80px rgba(124, 58, 237, 0.8)',
+                                    '0 0 50px rgba(168, 85, 247, 1), 0 0 100px rgba(147, 51, 234, 0.8)',
+                                    '0 0 40px rgba(139, 92, 246, 1), 0 0 80px rgba(124, 58, 237, 0.8)',
+                                ]
+                            }}
+                            transition={{ duration: 5, repeat: Infinity }}
+                        >
+                            {t('personalizedLearning.title')}
+                        </motion.h1>
+                        
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 1.2, delay: 0.8 }}
+                            className="relative"
+                        >
+                            {/* ACE AI badge */}
+                            <div className="inline-block px-12 py-6 rounded-3xl bg-white/5 backdrop-blur-3xl border border-purple-300/20 shadow-[0_0_40px_rgba(139,92,246,0.6),0_0_80px_rgba(124,58,237,0.4)]">
+                                <div className="flex items-center gap-5">
+                                    <motion.div
+                                        initial={{ rotate: 0 }}
+                                        animate={{ rotate: 360 }}
+                                        transition={{
+                                            duration: 1.5,
+                                            ease: "easeInOut"
+                                        }}
+                                    >
+                                        <BrainCircuit className="w-10 h-10 text-purple-200" />
+                                    </motion.div>
+                                    <span className="text-4xl font-bold text-white tracking-wide">
+                                        {t('personalizedLearning.poweredByACEAI')}
+                                    </span>
+                                </div>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+
+                    {/* Circular loading animation */}
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 1.2 }}
+                        className="mt-24 relative"
+                    >
+                        <div className="relative w-32 h-32">
+                            {[0, 1, 2, 3, 4, 5].map((i) => (
+                                <motion.div
+                                    key={i}
+                                    className="absolute w-5 h-5 rounded-full"
+                                    style={{
+                                        left: '50%',
+                                        top: '50%',
+                                        marginLeft: '-10px',
+                                        marginTop: '-10px',
+                                        background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.8), rgba(139, 92, 246, 1))',
+                                        boxShadow: '0 0 20px rgba(168, 85, 247, 0.8)',
+                                    }}
+                                    animate={{
+                                        x: [
+                                            0,
+                                            Math.cos((i * 60 * Math.PI) / 180) * 50,
+                                            Math.cos(((i * 60 + 60) * Math.PI) / 180) * 50,
+                                            0
+                                        ],
+                                        y: [
+                                            0,
+                                            Math.sin((i * 60 * Math.PI) / 180) * 50,
+                                            Math.sin(((i * 60 + 60) * Math.PI) / 180) * 50,
+                                            0
+                                        ],
+                                        scale: [1, 1.8, 1.2, 1],
+                                        opacity: [0.3, 1, 0.5, 0.3],
+                                    }}
+                                    transition={{
+                                        duration: 4,
+                                        repeat: Infinity,
+                                        delay: i * 0.15,
+                                        ease: "easeInOut"
+                                    }}
+                                />
+                            ))}
+                        </div>
+                    </motion.div>
+
+                    {/* Loading text */}
+                    <motion.p
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 1.8 }}
+                        className="text-purple-200 text-lg mt-16 font-medium tracking-wider"
+                    >
+                        {isLoading && !pageLoading ? t('personalizedLearning.gatheringData') : t('personalizedLearning.preparingExperience')}
+                    </motion.p>
+                </div>
+
+                {/* Animated border effects */}
+                <motion.div 
+                    className="absolute top-0 left-0 w-full h-1"
+                    animate={{
+                        background: [
+                            'linear-gradient(90deg, transparent, rgba(139, 92, 246, 1), transparent)',
+                            'linear-gradient(90deg, transparent, rgba(168, 85, 247, 1), transparent)',
+                            'linear-gradient(90deg, transparent, rgba(139, 92, 246, 1), transparent)',
+                        ]
+                    }}
+                    transition={{ duration: 4, repeat: Infinity }}
+                />
+                <motion.div 
+                    className="absolute bottom-0 left-0 w-full h-1"
+                    animate={{
+                        background: [
+                            'linear-gradient(90deg, transparent, rgba(168, 85, 247, 1), transparent)',
+                            'linear-gradient(90deg, transparent, rgba(139, 92, 246, 1), transparent)',
+                            'linear-gradient(90deg, transparent, rgba(168, 85, 247, 1), transparent)',
+                        ]
+                    }}
+                    transition={{ duration: 4, repeat: Infinity, delay: 2 }}
+                />
+            </div>
+        );
     }
 
     return (
