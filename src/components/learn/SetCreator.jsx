@@ -276,7 +276,7 @@ function AIImportModal({ onClose, onImport }) {
                     <Textarea 
                         value={text}
                         onChange={e => setText(e.target.value)}
-                        placeholder="Paste your notes here..."
+                        placeholder="Paste comprehensive text here(No limit)..."
                         className="h-32 resize-none font-mono text-sm"
                     />
                 </div>
