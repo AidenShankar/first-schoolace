@@ -3,7 +3,16 @@ import { motion } from 'framer-motion';
 import { BrainCircuit } from 'lucide-react';
 
 const FACTS = [
-    `"Yesterday is history, tomorrow is a mystery, but\ntoday is a gift. That's why it's called the present."`
+    "Honey never spoils. Archaeologists have found pots of honey in ancient Egyptian tombs that are over 3,000 years old and still perfectly edible.",
+    "A day on Venus is longer than a year on Venus.",
+    "Bananas are curved because they grow towards the sun.",
+    "The Eiffel Tower can be 15 cm taller during the summer due to thermal expansion.",
+    "Octopuses have three hearts.",
+    "The world's oldest wooden wheel has been around for more than 5,000 years.",
+    "It's impossible to hum while holding your nose.",
+    "The unicorn is the national animal of Scotland.",
+    "A group of flamingos is called a 'flamboyance'.",
+    "There are more stars in the universe than grains of sand on all the Earth's beaches."
 ];
 
 export const LOADING_DURATION = 2500;
@@ -38,27 +47,17 @@ export default function AceTransition() {
                     className="font-bold tracking-widest text-sm mb-4 uppercase"
                     style={{ color: 'rgb(var(--color-text))' }}
                 >
-                    Quote of the Day
+                    Did You Know?
                 </motion.h2>
 
                 <motion.p 
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.4 }}
-                    className="text-lg font-medium leading-relaxed whitespace-pre-line"
+                    className="text-lg font-medium leading-relaxed"
                     style={{ color: 'rgb(var(--color-textSecondary))' }}
                 >
                     {fact}
-                </motion.p>
-                <style>{`@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500&display=swap');`}</style>
-                <motion.p 
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.6 }}
-                    className="text-lg mt-4 opacity-80"
-                    style={{ color: 'rgb(var(--color-textSecondary))', fontFamily: '"Dancing Script", cursive' }}
-                >
-                    - from, the Schoolace team
                 </motion.p>
             </motion.div>
         </div>
