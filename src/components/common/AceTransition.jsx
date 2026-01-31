@@ -65,7 +65,7 @@ export default function AceTransition() {
                     className="font-bold tracking-widest text-sm mb-4 uppercase"
                     style={{ color: 'rgb(var(--color-text))' }}
                 >
-                    Did You Know?
+                    Did You Know
                 </motion.h2>
 
                 <motion.p 
