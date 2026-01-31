@@ -21,6 +21,7 @@ import LessonPlanEditor from "../components/lesson_plans/LessonPlanEditor";
 import LessonPlanViewer from "../components/lesson_plans/LessonPlanViewer";
 import LessonPlanCalendar from "../components/lesson_plans/LessonPlanCalendar";
 import AssignmentRecommendationModal from "../components/lesson_plans/AssignmentRecommendationModal";
+import AceTransition from "@/components/common/AceTransition";
 
 export default function LessonPlansPage() {
     const { t } = useTranslation();
@@ -410,25 +411,7 @@ If some sections are missing, leave them as empty strings or arrays. Here is the
     const isTeacher = user?.app_role === 'teacher';
 
     if (pageLoading) {
-        return (
-            <div className="fixed inset-0 flex items-center justify-center z-[9999]" style={{ backgroundColor: `rgb(var(--color-background))` }}>
-                <div className="text-center">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-                        className="text-center"
-                    >
-                        <h1 className="text-5xl font-bold tracking-tight" style={{ color: `rgb(var(--color-text))` }}>
-                            {t('lessonPlans.title')}
-                        </h1>
-                        <p className="text-lg mt-4 font-medium tracking-wide" style={{ color: `rgb(var(--color-textSecondary))` }}>
-                            {t('common.poweredByACE')}
-                        </p>
-                    </motion.div>
-                </div>
-            </div>
-        );
+        return <AceTransition />;
     }
 
     if (isLoading) {

@@ -22,6 +22,7 @@ import { format } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
 import { useTranslation } from '../components/i18n/useTranslation';
 import { useLanguage } from '../components/i18n/LanguageContext';
+import AceTransition from "@/components/common/AceTransition";
 
 const FuturisticButton = ({ action, onExecute, autoExecute = false }) => {
     const buttonRef = useRef(null);
@@ -1560,25 +1561,7 @@ You are an expert quiz question writer. Your task is to generate a set of quiz q
     : t('aiAgent.studentPlaceholder');
 
   if (pageLoading) {
-    return (
-        <div className="fixed inset-0 bg-white flex items-center justify-center z-[9999]">
-            <div className="text-center">
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-                    className="text-center"
-                >
-                    <h1 className="text-5xl font-bold tracking-tight text-slate-900">
-                        {t('aiAgent.title')}
-                    </h1>
-                    <p className="text-lg text-slate-500 mt-4 font-medium tracking-wide">
-                        {t('common.poweredByACE')}
-                    </p>
-                </motion.div>
-            </div>
-        </div>
-    );
+    return <AceTransition />;
   }
 
   if (!user) {
