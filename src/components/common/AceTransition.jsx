@@ -19,7 +19,7 @@ export default function AceTransition() {
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5 }}
-                className="flex flex-col items-center justify-center max-w-md px-6 text-center"
+                className="flex flex-col items-center justify-center max-w-2xl px-6 text-center"
             >
                 <motion.div
                     animate={{ rotate: 360, scale: [1, 0.8, 1] }}
