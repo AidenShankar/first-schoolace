@@ -73,32 +73,21 @@ Deno.serve(async (req) => {
              return Response.json({ error: "No text could be extracted." }, { status: 400 });
         }
 
-        // Chunk size optimized for context window vs granularity - increased overlap for better context
-        const chunks = chunkText(textToProcess, 12000, 2000); 
+        // Chunk size optimized for context window vs granularity
+        const chunks = chunkText(textToProcess, 12000, 500); 
         console.log(`Processing ${chunks.length} chunks...`);
 
-        // Process all chunks in parallel (with reasonable limit)
-        // Note: For very large files, we might process more than 10 chunks if needed, but let's cap at 15 to be safe on timeouts
-        const promises = chunks.slice(0, 15).map(async (chunk, index) => {
+        // Process chunks in parallel (limit concurrency if needed, but 5-10 is usually fine)
+        const promises = chunks.slice(0, 10).map(async (chunk, index) => {
             try {
                 const res = await base44.asServiceRole.integrations.Core.InvokeLLM({
-                    prompt: `You are an expert AI tutor tasked with creating a massive, exhaustive study set from unstructured source material.
+                    prompt: `You are an expert tutor creating a comprehensive study set. 
+                    Extract EVERY single distinct fact, definition, concept, and detail from the text below into a flashcard.
+                    Do not summarize or skip details. Be exhaustive. 
+                    If the text contains a list, create a card for every item.
+                    If the text is dense, create many specific cards rather than few broad ones.
                     
-                    GOAL: Extract EVERY single piece of information, no matter how small, into a flashcard. Aim for maximum coverage.
-                    
-                    INSTRUCTIONS:
-                    1. Read the text deeply. It is unstructured and may not be formatted nicely. You must Reason and Synthesize.
-                    2. Identify every concept, fact, date, person, formula, vocabulary word, and relationship.
-                    3. Create a distinct flashcard for each one.
-                    4. If the text mentions a list of 10 items, create 10 separate cards.
-                    5. Use your GENERAL KNOWLEDGE to flesh out definitions if the text is brief, but ensuring the core fact from the text is preserved.
-                    6. Do NOT summarize. Do NOT skip "minor" details. Capture everything.
-                    7. If a sentence implies a question, turn it into a Term (Question) and Definition (Answer).
-                    
-                    This is segment ${index + 1} of a larger file. Treat it as a dense source of truth.
-                    GENERATE AS MANY CARDS AS POSSIBLE from this text segment (aim for 20-50+ if the text supports it).
-                    
-                    Text Segment:
+                    Text Segment ${index + 1}:
                     ${chunk}`,
                     response_json_schema: {
                         type: "object",
