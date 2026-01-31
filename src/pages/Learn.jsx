@@ -17,12 +17,12 @@ export default function LearnPage({ user, currentClass }) {
     }, [user]);
 
     const loadSets = async () => {
-        if (!user) return;
         setIsLoading(true);
         try {
             // Fetch user's sets
             const userSets = await base44.entities.StudySet.filter({ owner_id: user.id }, "-created_date");
-            setSets(Array.isArray(userSets) ? userSets : []);
+            // Could also fetch public sets or class sets here
+            setSets(userSets);
         } catch (error) {
             console.error("Error loading sets:", error);
         } finally {
@@ -31,11 +31,6 @@ export default function LearnPage({ user, currentClass }) {
     };
 
     const handleCreateSet = async (setData) => {
-        if (!user?.id) {
-            alert("User ID missing. Please reload the page.");
-            return;
-        }
-        
         try {
             // 1. Create StudySet
             const set = await base44.entities.StudySet.create({
@@ -44,34 +39,24 @@ export default function LearnPage({ user, currentClass }) {
                 owner_id: user.id,
                 owner_name: user.full_name,
                 is_public: false, // Default private for now
-                subject: "General"
+                subject: "General" // Default
             });
 
-            // 2. Create Flashcards - Using Promise.all for reliability
-            // Filter out empty cards just in case
-            const validCards = setData.cards.filter(c => c.term.trim() && c.definition.trim());
-            
-            const cardPromises = validCards.map((c, i) => 
-                base44.entities.Flashcard.create({
-                    study_set_id: set.id,
-                    term: c.term,
-                    definition: c.definition,
-                    rank: i
-                })
-            );
-            
-            await Promise.all(cardPromises);
+            // 2. Create Flashcards
+            const cardsToCreate = setData.cards.map((c, i) => ({
+                study_set_id: set.id,
+                term: c.term,
+                definition: c.definition,
+                rank: i
+            }));
 
-            // 3. Update UI
+            // Bulk create not always available in frontend SDK directly unless configured, looping is safer if unsure, but bulkCreate exists in prompt docs.
+            await base44.entities.Flashcard.bulkCreate(cardsToCreate);
+
             setView("list");
-            // Add a small delay to ensure DB consistency before fetching
-            setTimeout(() => {
-                loadSets();
-            }, 500);
-            
+            loadSets();
         } catch (error) {
             console.error("Failed to create set:", error);
-            alert(`Error creating set: ${error.message}`);
             throw error;
         }
     };
@@ -117,10 +102,7 @@ export default function LearnPage({ user, currentClass }) {
                         </div>
                         <h2 className="text-2xl font-bold text-slate-800 mb-2">No study sets yet</h2>
                         <p className="text-slate-500 mb-8 max-w-md mx-auto">Create your first set of flashcards to start learning effectively with our AI tutor.</p>
-                        <div className="flex flex-col gap-3 justify-center items-center">
-                            <Button onClick={() => setView("create")} size="lg" className="rounded-xl">Create your first set</Button>
-                            <Button variant="ghost" size="sm" onClick={loadSets}>Refresh List</Button>
-                        </div>
+                        <Button onClick={() => setView("create")} size="lg" className="rounded-xl">Create your first set</Button>
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
