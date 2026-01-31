@@ -20,12 +20,13 @@ export default function Setup() {
     return () => clearTimeout(timer);
   }, []);
 
-  if (pageLoading) {
-    return <AceTransition />;
-  }
   const [loading, setLoading] = useState(false);
   const [adminCode, setAdminCode] = useState('');
   const [schoolName, setSchoolName] = useState('');
+
+  if (pageLoading) {
+    return <AceTransition />;
+  }
 
   const handleRoleSelect = async (role) => {
     setSelectedRole(role);
