@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
@@ -18,6 +17,7 @@ import CategoriesView from "../components/gradebook/CategoriesView";
 import AnalyticsView from "../components/gradebook/AnalyticsView";
 import FinalGradesView from "../components/gradebook/FinalGradesView";
 import StudentGradebookView from "../components/gradebook/StudentGradebookView";
+import AceTransition from "@/components/common/AceTransition";
 
 export default function GradebookPage({ user: layoutUser, allClasses: layoutAllClasses }) {
   const [user, setUser] = useState(layoutUser);
@@ -150,11 +150,7 @@ export default function GradebookPage({ user: layoutUser, allClasses: layoutAllC
   };
 
   if (loading || !user || !currentClass) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
-      </div>
-    );
+    return <AceTransition />;
   }
 
   return (

@@ -6,14 +6,23 @@ import { motion, AnimatePresence } from "framer-motion";
 import { createPageUrl } from '@/utils';
 import { Link } from "react-router-dom";
 import SetCreator from "@/components/learn/SetCreator";
+import AceTransition from "@/components/common/AceTransition";
 
 export default function LearnPage({ user, currentClass }) {
     const [view, setView] = useState("list"); // "list", "create"
     const [sets, setSets] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [pageLoading, setPageLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
     const [initialEditData, setInitialEditData] = useState(null);
     const [layout, setLayout] = useState("grid"); // "grid" or "list"
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setPageLoading(false);
+        }, 2000);
+        return () => clearTimeout(timer);
+    }, []);
 
     useEffect(() => {
         const load = async () => {
@@ -130,6 +139,10 @@ export default function LearnPage({ user, currentClass }) {
         const sum = id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
         return gradients[sum % gradients.length];
     };
+
+    if (pageLoading) {
+        return <AceTransition />;
+    }
 
     if (view === "create") {
         return <SetCreator onCancel={() => { setView("list"); setInitialEditData(null); window.history.pushState({}, '', createPageUrl("Learn")); }} onSave={handleSaveSet} initialData={initialEditData} />;

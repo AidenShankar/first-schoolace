@@ -15,6 +15,7 @@ import ScheduleBuilder from "../components/scheduler/ScheduleBuilder";
 import VisualScheduler from "../components/scheduler/VisualScheduler";
 import SchedulerReports from "../components/scheduler/SchedulerReports";
 import ScenarioManager from "../components/scheduler/ScenarioManager";
+import AceTransition from "@/components/common/AceTransition";
 
 export default function Scheduler({ user: layoutUser }) {
   const [user, setUser] = useState(layoutUser);
@@ -65,14 +66,7 @@ export default function Scheduler({ user: layoutUser }) {
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
-          <p className="text-slate-600">Loading...</p>
-        </div>
-      </div>
-    );
+    return <AceTransition />;
   }
 
   if (!user || user.app_role !== 'admin') {
