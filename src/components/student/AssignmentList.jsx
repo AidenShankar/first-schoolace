@@ -275,7 +275,7 @@ export default function AssignmentList({ assignments, onUpload, userSubmissions,
                                 <h4 className="font-semibold mb-2" style={{ color: `rgb(var(--color-text))` }}>Assignment Files</h4>
                                 <div className="space-y-3">
                                   {assignment.attachment_urls.map((url, index) => (
-                                    <div key={index} className="rounded-lg p-4 border" style={{ backgroundColor: `rgb(var(--color-accentLight))`, borderColor: `rgb(var(--color-border))` }}>
+                                    <div key={index} className="rounded-lg p-4 border" style={{ backgroundColor: `rgb(var(--color-surface))`, borderColor: `rgb(var(--color-border))` }}>
                                       <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-3">
                                           <Paperclip className="w-5 h-5" style={{ color: `rgb(var(--color-textSecondary))` }} />
