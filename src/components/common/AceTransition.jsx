@@ -5,9 +5,34 @@ import { BrainCircuit } from 'lucide-react';
 const FACTS = [
     "Honey never spoils.",
     "Octopuses have three hearts.",
-    "Bananas are curved because they grow towards the sun.",
+    "Bananas are berries, but strawberries aren't.",
     "Wombat poop is cube-shaped.",
-    "The Eiffel Tower can be 15 cm taller during the summer."
+    "The Eiffel Tower can be 15 cm taller during the summer.",
+    "A day on Venus is longer than a year on Venus.",
+    "A group of flamingos is called a 'flamboyance'.",
+    "Hot water turns into ice faster than cold water.",
+    "The shortest war in history lasted 38 minutes.",
+    "A snail can sleep for three years.",
+    "Elephants are the only animal that can't jump.",
+    "The heart of a shrimp is located in its head.",
+    "Sloths can hold their breath longer than dolphins can.",
+    "A cloud can weigh more than a million pounds.",
+    "Your nose and ears never stop growing.",
+    "A bolt of lightning contains enough energy to toast 100,000 slices of bread.",
+    "Butterflies taste with their feet.",
+    "Sea otters hold hands when they sleep to keep from drifting apart.",
+    "Cows have best friends and get stressed when they are separated.",
+    "The moon has moonquakes.",
+    "Goats have rectangular pupils.",
+    "There are more stars in the universe than grains of sand on Earth.",
+    "A blue whale's heart is so big a human could swim through its arteries.",
+    "The unicorn is the national animal of Scotland.",
+    "Venus is the only planet to spin clockwise.",
+    "Koalas have fingerprints that are almost indistinguishable from human ones.",
+    "It rains diamonds on Saturn and Jupiter.",
+    "The average person walks the equivalent of five times around the world in a lifetime.",
+    "An ostrich's eye is bigger than its brain.",
+    "The longest time between two twins being born is 87 days."
 ];
 
 export const LOADING_DURATION = 2000;
