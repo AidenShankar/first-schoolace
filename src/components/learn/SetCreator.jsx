@@ -61,32 +61,17 @@ export default function SetCreator({ onCancel, onSave, initialData = null }) {
                 fileUrl = uploadRes.file_url;
             }
 
-            const prompt = `Extract flashcards from the provided content (text or file). Return ONLY a JSON object with a key "cards" containing an array of objects with "term" and "definition" keys.
-            
-            ${text ? `Text content:\n${text}` : ''}
-            `;
-            
-            const result = await InvokeLLM({
-                prompt: prompt,
-                file_urls: fileUrl ? [fileUrl] : undefined,
-                response_json_schema: {
-                    type: "object",
-                    properties: {
-                        cards: {
-                            type: "array",
-                            items: {
-                                type: "object",
-                                properties: {
-                                    term: { type: "string" },
-                                    definition: { type: "string" }
-                                },
-                                required: ["term", "definition"]
-                            }
-                        }
-                    },
-                    required: ["cards"]
-                }
+            const { data, error } = await base44.functions.invoke('generateFlashcards', { 
+                file_url: fileUrl, 
+                text: text,
+                file_name: file?.name
             });
+
+            if (error) {
+                throw new Error(error.response?.data?.error || error.message);
+            }
+            
+            const result = data;
             
             if (result && result.cards) {
                 const newCards = result.cards.map(c => ({ id: Date.now() + Math.random(), ...c }));
@@ -94,7 +79,7 @@ export default function SetCreator({ onCancel, onSave, initialData = null }) {
             }
         } catch (error) {
             console.error("AI Import failed:", error);
-            alert("AI Generation failed. Please try again.");
+            alert(`AI Generation failed: ${error.message || "Please try again."}`);
         } finally {
             setIsSaving(false);
         }
