@@ -53,7 +53,7 @@ export default function PersonalizedLearning() {
     useEffect(() => {
         const timer = setTimeout(() => {
             setPageLoading(false); // Dismiss intro screen
-        }, LOADING_DURATION);
+        }, 2200);
         return () => clearTimeout(timer);
     }, []);
 
