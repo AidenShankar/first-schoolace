@@ -44,6 +44,7 @@ import ProcessingModal from "../components/common/ProcessingModal"; // New impor
 import ReactQuill from "react-quill"; // New import
 import LanguageSelector from "../components/i18n/LanguageSelector";
 import ThemeSelector from "../components/theme/ThemeSelector";
+import PromoPopup from "../components/dashboard/PromoPopup";
 
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
@@ -70,6 +71,7 @@ export default function Dashboard({ user: layoutUser, allClasses: layoutAllClass
     const [isUpgrading, setIsUpgrading] = useState(false);
     const [isSyncing, setIsSyncing] = useState(false);
     const [textSubmissionState, setTextSubmissionState] = useState({ show: false, status: 'processing', message: '' });
+    const [showPromo, setShowPromo] = useState(true);
 
     // Add retry logic for rate-limited requests
     const retryWithBackoff = useCallback(async (fn, maxRetries = 3, delay = 1000) => {
@@ -1651,6 +1653,12 @@ Output your response as JSON with:
                     </div>
                 )}
             </AnimatePresence>
+
+            <PromoPopup 
+                isOpen={showPromo} 
+                onClose={() => setShowPromo(false)} 
+                userRole={user?.app_role}
+            />
 
         </div>
     );

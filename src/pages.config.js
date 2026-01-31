@@ -60,6 +60,7 @@ import Dashboard from './pages/Dashboard';
 import Demo from './pages/Demo';
 import Gradebook from './pages/Gradebook';
 import Landing from './pages/Landing';
+import Learn from './pages/Learn';
 import LearnerDashboard from './pages/LearnerDashboard';
 import LessonPlans from './pages/LessonPlans';
 import PersonalizedLearning from './pages/PersonalizedLearning';
@@ -67,11 +68,10 @@ import PowerSchool from './pages/PowerSchool';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import Scheduler from './pages/Scheduler';
 import Setup from './pages/Setup';
+import StudySet from './pages/StudySet';
 import TermsOfService from './pages/TermsOfService';
 import compliance from './pages/compliance';
 import examplelearningtracker from './pages/examplelearningtracker';
-import StudySet from './pages/StudySet';
-import Learn from './pages/Learn';
 import __Layout from './Layout.jsx';
 
 
@@ -89,6 +89,7 @@ export const PAGES = {
     "Demo": Demo,
     "Gradebook": Gradebook,
     "Landing": Landing,
+    "Learn": Learn,
     "LearnerDashboard": LearnerDashboard,
     "LessonPlans": LessonPlans,
     "PersonalizedLearning": PersonalizedLearning,
@@ -96,11 +97,10 @@ export const PAGES = {
     "PrivacyPolicy": PrivacyPolicy,
     "Scheduler": Scheduler,
     "Setup": Setup,
+    "StudySet": StudySet,
     "TermsOfService": TermsOfService,
     "compliance": compliance,
     "examplelearningtracker": examplelearningtracker,
-    "StudySet": StudySet,
-    "Learn": Learn,
 }
 
 export const pagesConfig = {
