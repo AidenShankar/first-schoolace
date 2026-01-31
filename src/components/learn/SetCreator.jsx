@@ -297,7 +297,7 @@ function AIImportModal({ onClose, onImport }) {
                         disabled={!text.trim() && files.length === 0}
                         className="bg-indigo-600 hover:bg-indigo-700 text-white"
                     >
-                        Generate Flashcards
+                        Generate Set
                     </Button>
                 </div>
             </motion.div>
