@@ -45,6 +45,7 @@ import ReactQuill from "react-quill"; // New import
 import LanguageSelector from "../components/i18n/LanguageSelector";
 import ThemeSelector from "../components/theme/ThemeSelector";
 import PromoPopup from "../components/dashboard/PromoPopup";
+import AceTransition from "@/components/common/AceTransition";
 
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
@@ -1145,25 +1146,7 @@ Output your response as JSON with:
     const handleUploadClick = (assignment) => { setUploadingAssignment(assignment); setShowUploadModal(true); };
 
     if (pageLoading || (isLayoutLoading && !user)) {
-        return (
-            <div className="fixed inset-0 flex items-center justify-center z-[9999]" style={{ backgroundColor: `rgb(var(--color-background))` }}>
-                <div className="text-center">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-                        className="text-center"
-                    >
-                        <h1 className="text-5xl font-bold tracking-tight" style={{ color: `rgb(var(--color-text))` }}>
-                            {t('dashboard.teachingHub')}
-                        </h1>
-                        <p className="text-lg mt-4 font-medium tracking-wide" style={{ color: `rgb(var(--color-textSecondary))` }}>
-                            {t('common.poweredByACE')}
-                        </p>
-                    </motion.div>
-                </div>
-            </div>
-        );
+        return <AceTransition />;
     }
 
     if (isRedirecting) {
