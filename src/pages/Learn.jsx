@@ -45,7 +45,14 @@ export default function LearnPage({ user, currentClass }) {
         setIsLoading(true);
         try {
             const userSets = await base44.entities.StudySet.filter({ owner_id: user.id }, "-created_date");
-            setSets(userSets);
+            
+            // Fetch card counts for each set
+            const setsWithCounts = await Promise.all(userSets.map(async (set) => {
+                const cards = await base44.entities.Flashcard.filter({ study_set_id: set.id });
+                return { ...set, cards_count: cards.length };
+            }));
+
+            setSets(setsWithCounts);
         } catch (error) {
             console.error("Error loading sets:", error);
         } finally {
