@@ -16,58 +16,83 @@ function chunkText(text, chunkSize = 15000, overlap = 1000) {
     return chunks;
 }
 
+// Helper to extract text from a single file
+async function extractTextFromFile(fileUrl, fileName) {
+    if (!fileUrl) return "";
+    
+    console.log(`Downloading file: ${fileName}`);
+    try {
+        const fileRes = await fetch(fileUrl);
+        if (!fileRes.ok) throw new Error(`Failed to download file: ${fileName}`);
+        
+        const arrayBuffer = await fileRes.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+        const lowerName = (fileName || "").toLowerCase();
+        let text = "";
+
+        if (lowerName.endsWith(".docx")) {
+            const result = await mammoth.extractRawText({ arrayBuffer });
+            text = result.value;
+        } else if (lowerName.endsWith(".pptx")) {
+            const zip = await JSZip.loadAsync(arrayBuffer);
+            const slideFiles = Object.keys(zip.files).filter(name => name.match(/ppt\/slides\/slide\d+\.xml/));
+            slideFiles.sort((a, b) => {
+                const numA = parseInt(a.match(/slide(\d+)\.xml/)[1]);
+                const numB = parseInt(b.match(/slide(\d+)\.xml/)[1]);
+                return numA - numB;
+            });
+            for (const slide of slideFiles) {
+                const content = await zip.file(slide).async("string");
+                text += content.replace(/<[^>]+>/g, " ") + "\n";
+            }
+        } else if (lowerName.endsWith(".pdf")) {
+            const data = await pdf(buffer);
+            text = data.text;
+        } else {
+            text = new TextDecoder().decode(arrayBuffer);
+        }
+        
+        return text + "\n\n";
+    } catch (e) {
+        console.error(`Error extracting text from ${fileName}:`, e);
+        return `(Failed to extract text from ${fileName})\n\n`;
+    }
+}
+
 Deno.serve(async (req) => {
     try {
         const base44 = createClientFromRequest(req);
         const user = await base44.auth.me();
         if (!user) return Response.json({ error: "Unauthorized" }, { status: 401 });
 
-        const { file_url, text: userText, file_name } = await req.json();
+        // file_urls should be an array of objects: { url, name }
+        const { file_urls, text: userText } = await req.json();
         
-        let extractedText = "";
+        let allExtractedText = "";
 
-        if (file_url) {
-            console.log(`Downloading file: ${file_name}`);
-            const fileRes = await fetch(file_url);
-            if (!fileRes.ok) throw new Error("Failed to download file");
+        // Handle multiple files if provided
+        if (file_urls && Array.isArray(file_urls) && file_urls.length > 0) {
+            console.log(`Processing ${file_urls.length} files...`);
             
-            const arrayBuffer = await fileRes.arrayBuffer();
-            const buffer = Buffer.from(arrayBuffer);
-            const lowerName = (file_name || "").toLowerCase();
-
-            try {
-                if (lowerName.endsWith(".docx")) {
-                    const result = await mammoth.extractRawText({ arrayBuffer });
-                    extractedText = result.value;
-                } else if (lowerName.endsWith(".pptx")) {
-                    const zip = await JSZip.loadAsync(arrayBuffer);
-                    const slideFiles = Object.keys(zip.files).filter(name => name.match(/ppt\/slides\/slide\d+\.xml/));
-                    slideFiles.sort((a, b) => {
-                        const numA = parseInt(a.match(/slide(\d+)\.xml/)[1]);
-                        const numB = parseInt(b.match(/slide(\d+)\.xml/)[1]);
-                        return numA - numB;
-                    });
-                    for (const slide of slideFiles) {
-                        const content = await zip.file(slide).async("string");
-                        extractedText += content.replace(/<[^>]+>/g, " ") + "\n";
-                    }
-                } else if (lowerName.endsWith(".pdf")) {
-                    const data = await pdf(buffer);
-                    extractedText = data.text;
-                } else {
-                    extractedText = new TextDecoder().decode(arrayBuffer);
-                }
-            } catch (extractError) {
-                console.error("Text extraction failed:", extractError);
-                extractedText = `(Text extraction failed for ${file_name})`;
-            }
+            // Process files in parallel
+            const extractionPromises = file_urls.map(file => 
+                extractTextFromFile(file.url, file.name)
+            );
+            
+            const results = await Promise.all(extractionPromises);
+            allExtractedText = results.join("");
+        } 
+        // Backward compatibility for single file
+        else if (req.body.file_url) {
+             const { file_url, file_name } = await req.json();
+             allExtractedText = await extractTextFromFile(file_url, file_name);
         }
 
-        const combinedText = (userText || "") + "\n\n" + extractedText;
+        const combinedText = (userText || "") + "\n\n" + allExtractedText;
         
         // Use a chunking strategy to process large texts thoroughly
-        // Limit total processed text to avoid excessive costs/timeouts (e.g. 300k chars)
-        const textToProcess = combinedText.slice(0, 300000);
+        // Limit total processed text to avoid excessive costs/timeouts (e.g. 500k chars for multiple files)
+        const textToProcess = combinedText.slice(0, 500000);
         
         if (!textToProcess.trim() || textToProcess.trim().length < 10) {
              return Response.json({ error: "No text could be extracted." }, { status: 400 });
@@ -77,8 +102,9 @@ Deno.serve(async (req) => {
         const chunks = chunkText(textToProcess, 12000, 500); 
         console.log(`Processing ${chunks.length} chunks...`);
 
-        // Process chunks in parallel (limit concurrency if needed, but 5-10 is usually fine)
-        const promises = chunks.slice(0, 10).map(async (chunk, index) => {
+        // Process chunks in parallel (limit concurrency if needed, but 10 is usually fine for Deno Deploy)
+        // Cap at 20 chunks to prevent timeout on huge sets
+        const promises = chunks.slice(0, 20).map(async (chunk, index) => {
             try {
                 const res = await base44.asServiceRole.integrations.Core.InvokeLLM({
                     prompt: `You are an expert tutor creating a comprehensive study set. 

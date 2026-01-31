@@ -51,20 +51,26 @@ export default function SetCreator({ onCancel, onSave, initialData = null }) {
         }
     };
 
-    const handleImportFromAI = async ({ text, file }) => {
+    const handleImportFromAI = async ({ text, files }) => {
         setShowAIModal(false);
         setIsSaving(true); 
         try {
-            let fileUrl = null;
-            if (file) {
-                const uploadRes = await UploadFile({ file });
-                fileUrl = uploadRes.file_url;
+            const fileUrls = [];
+            if (files && files.length > 0) {
+                // Upload all files in parallel
+                const uploadPromises = files.map(file => UploadFile({ file }));
+                const results = await Promise.all(uploadPromises);
+                results.forEach((res, index) => {
+                    fileUrls.push({
+                        url: res.file_url,
+                        name: files[index].name
+                    });
+                });
             }
 
             const { data, error } = await base44.functions.invoke('generateFlashcards', { 
-                file_url: fileUrl, 
-                text: text,
-                file_name: file?.name
+                file_urls: fileUrls, 
+                text: text
             });
 
             if (error) {
@@ -189,7 +195,17 @@ export default function SetCreator({ onCancel, onSave, initialData = null }) {
 
 function AIImportModal({ onClose, onImport }) {
     const [text, setText] = useState("");
-    const [file, setFile] = useState(null);
+    const [files, setFiles] = useState([]);
+
+    const handleFileChange = (e) => {
+        if (e.target.files && e.target.files.length > 0) {
+            setFiles(prev => [...prev, ...Array.from(e.target.files)]);
+        }
+    };
+
+    const removeFile = (index) => {
+        setFiles(prev => prev.filter((_, i) => i !== index));
+    };
 
     return (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
@@ -208,26 +224,43 @@ function AIImportModal({ onClose, onImport }) {
                 </div>
                 <div className="p-6 space-y-6">
                     <div className="space-y-2">
-                        <label className="text-sm font-medium text-slate-700">Upload a File</label>
-                        <div className="border-2 border-dashed border-slate-200 rounded-xl p-6 text-center hover:bg-slate-50 transition-colors cursor-pointer relative">
+                        <label className="text-sm font-medium text-slate-700">Upload Files</label>
+                        
+                        {/* File List */}
+                        {files.length > 0 && (
+                            <div className="mb-3 space-y-2 max-h-32 overflow-y-auto">
+                                {files.map((f, idx) => (
+                                    <div key={idx} className="flex items-center justify-between bg-slate-50 p-2 rounded-lg border border-slate-100">
+                                        <div className="flex items-center gap-2 text-sm text-slate-700 overflow-hidden">
+                                            <FileText className="w-4 h-4 text-indigo-500 shrink-0" />
+                                            <span className="truncate">{f.name}</span>
+                                        </div>
+                                        <Button 
+                                            variant="ghost" 
+                                            size="icon" 
+                                            className="h-6 w-6 text-slate-400 hover:text-red-500"
+                                            onClick={() => removeFile(idx)}
+                                        >
+                                            <X className="w-3 h-3" />
+                                        </Button>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        <div className="border-2 border-dashed border-slate-200 rounded-xl p-6 text-center hover:bg-slate-50 transition-colors cursor-pointer relative group">
                             <input 
                                 type="file" 
-                                onChange={(e) => setFile(e.target.files[0])}
-                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                onChange={handleFileChange}
+                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                                 accept=".pdf,.doc,.docx,.ppt,.pptx,.txt"
+                                multiple
                             />
-                            {file ? (
-                                <div className="flex items-center justify-center gap-2 text-indigo-600 font-medium">
-                                    <FileText className="w-5 h-5" />
-                                    {file.name}
-                                </div>
-                            ) : (
-                                <div className="text-slate-500 text-sm">
-                                    <Upload className="w-8 h-8 mx-auto mb-2 text-slate-400" />
-                                    <span className="font-semibold text-indigo-600">Click to upload</span> or drag and drop
-                                    <p className="text-xs mt-1 text-slate-400">PDF, Word, PowerPoint</p>
-                                </div>
-                            )}
+                            <div className="text-slate-500 text-sm group-hover:scale-105 transition-transform">
+                                <Plus className="w-8 h-8 mx-auto mb-2 text-indigo-400" />
+                                <span className="font-semibold text-indigo-600">Add {files.length > 0 ? 'another' : 'a'} file</span>
+                                <p className="text-xs mt-1 text-slate-400">PDF, Word, PowerPoint (Multiple allowed)</p>
+                            </div>
                         </div>
                     </div>
 
@@ -250,8 +283,8 @@ function AIImportModal({ onClose, onImport }) {
                 <div className="p-6 bg-slate-50 flex justify-end gap-3">
                     <Button variant="ghost" onClick={onClose}>Cancel</Button>
                     <Button 
-                        onClick={() => onImport({ text, file })} 
-                        disabled={!text.trim() && !file}
+                        onClick={() => onImport({ text, files })} 
+                        disabled={!text.trim() && files.length === 0}
                         className="bg-indigo-600 hover:bg-indigo-700 text-white"
                     >
                         Generate Flashcards
