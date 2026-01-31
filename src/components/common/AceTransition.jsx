@@ -12,7 +12,6 @@ const FACTS = [
     "The unicorn is the national animal of Scotland.",
     "A day on Venus is longer than a year on Venus.",
     "There are more stars in the universe than grains of sand on all the Earth's beaches.",
-    "Wombat poop is cube-shaped.",
     "The first computer bug was an actual real bug (a moth).",
     "It takes 8 minutes and 20 seconds for light to travel from the Sun to the Earth.",
     "DNA is fireproof.",
