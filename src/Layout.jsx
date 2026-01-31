@@ -177,6 +177,21 @@ export default function Layout({ children, currentPageName }) {
       try {
         const userData = await retryWithBackoff(() => User.me());
 
+        // Session timeout check (24 hours)
+        if (userData) {
+            const lastActive = localStorage.getItem('lastActive');
+            const now = Date.now();
+            const sessionTimeout = 24 * 60 * 60 * 1000;
+
+            if (lastActive && (now - parseInt(lastActive) > sessionTimeout)) {
+                await User.logout();
+                localStorage.removeItem('lastActive');
+                window.location.href = createPageUrl('Landing');
+                return;
+            }
+            localStorage.setItem('lastActive', now.toString());
+        }
+
         // FIX: If user is logged in but hasn't completed setup, redirect them.
         // BUT: Don't redirect if we're already on the Setup page to avoid infinite loop
         if (userData && !userData.setup_complete && currentPageName !== 'Setup') {
@@ -294,6 +309,29 @@ export default function Layout({ children, currentPageName }) {
     }
   }, [user, quizInProgress, currentPageName, currentClassId, location.pathname]);
 
+
+  // Track user activity for session timeout
+  useEffect(() => {
+    const updateActivity = () => {
+      if (user) {
+        localStorage.setItem('lastActive', Date.now().toString());
+      }
+    };
+    
+    if (user) {
+        window.addEventListener('click', updateActivity);
+        window.addEventListener('keypress', updateActivity);
+        window.addEventListener('scroll', updateActivity);
+        window.addEventListener('mousemove', updateActivity);
+    }
+    
+    return () => {
+      window.removeEventListener('click', updateActivity);
+      window.removeEventListener('keypress', updateActivity);
+      window.removeEventListener('scroll', updateActivity);
+      window.removeEventListener('mousemove', updateActivity);
+    };
+  }, [user]);
 
   const isQuizModeActive = user?.app_role === 'student' && quizInProgress;
   const isLandingPage = currentPageName === 'Landing';
