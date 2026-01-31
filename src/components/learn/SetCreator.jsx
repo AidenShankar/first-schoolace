@@ -35,7 +35,7 @@ export default function SetCreator({ onCancel, onSave, initialData = null }) {
             alert("Please enter a title");
             return;
         }
-        if (cards.some(c => !c.term.trim() || !c.definition.trim())) {
+        if (cards.some(c => !(c.term || "").trim() || !(c.definition || "").trim())) {
             alert("Please fill in all terms and definitions");
             return;
         }
@@ -80,7 +80,11 @@ export default function SetCreator({ onCancel, onSave, initialData = null }) {
             const result = data;
             
             if (result && result.cards) {
-                const newCards = result.cards.map(c => ({ id: Date.now() + Math.random(), ...c }));
+                const newCards = result.cards.map(c => ({ 
+                    id: Date.now() + Math.random(), 
+                    term: c.term || "", 
+                    definition: c.definition || "" 
+                }));
                 setCards([...cards, ...newCards].filter(c => c.term || c.definition)); 
             }
         } catch (error) {
