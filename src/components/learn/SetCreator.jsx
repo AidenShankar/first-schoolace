@@ -12,6 +12,7 @@ export default function SetCreator({ onCancel, onSave, initialData = null }) {
     const [description, setDescription] = useState(initialData?.description || "");
     const [cards, setCards] = useState(initialData?.cards || [{ id: Date.now(), term: "", definition: "" }]);
     const [isSaving, setIsSaving] = useState(false);
+    const [isGenerating, setIsGenerating] = useState(false);
     const [showAIModal, setShowAIModal] = useState(false);
 
     const addCard = () => {
@@ -53,7 +54,7 @@ export default function SetCreator({ onCancel, onSave, initialData = null }) {
 
     const handleImportFromAI = async ({ text, files }) => {
         setShowAIModal(false);
-        setIsSaving(true); 
+        setIsGenerating(true); 
         try {
             const fileUrls = [];
             if (files && files.length > 0) {
@@ -91,7 +92,7 @@ export default function SetCreator({ onCancel, onSave, initialData = null }) {
             console.error("AI Import failed:", error);
             alert(`AI Generation failed: ${error.message || "Please try again."}`);
         } finally {
-            setIsSaving(false);
+            setIsGenerating(false);
         }
     };
 
@@ -102,7 +103,7 @@ export default function SetCreator({ onCancel, onSave, initialData = null }) {
                     <h2 className="text-2xl font-bold text-slate-900">{initialData ? "Edit Study Set" : "Create New Study Set"}</h2>
                     <div className="flex gap-2">
                         <Button variant="ghost" onClick={onCancel}>Cancel</Button>
-                        <Button onClick={handleSave} disabled={isSaving} className="bg-indigo-600 hover:bg-indigo-700 text-white">
+                        <Button onClick={handleSave} disabled={isSaving || isGenerating} className="bg-indigo-600 hover:bg-indigo-700 text-white">
                             {isSaving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
                             {isSaving ? "Saving..." : "Create"}
                         </Button>
@@ -131,9 +132,14 @@ export default function SetCreator({ onCancel, onSave, initialData = null }) {
                 </div>
 
                 <div className="flex items-center justify-between pt-4">
-                    <Button variant="outline" onClick={() => setShowAIModal(true)} className="border-indigo-200 text-indigo-700 hover:bg-indigo-50">
-                        <Sparkles className="w-4 h-4 mr-2 text-indigo-500" />
-                        Auto-generate with AI
+                    <Button 
+                        variant="outline" 
+                        onClick={() => setShowAIModal(true)} 
+                        disabled={isGenerating || isSaving}
+                        className="border-indigo-200 text-indigo-700 hover:bg-indigo-50"
+                    >
+                        {isGenerating ? <Loader2 className="w-4 h-4 mr-2 text-indigo-500 animate-spin" /> : <Sparkles className="w-4 h-4 mr-2 text-indigo-500" />}
+                        {isGenerating ? "Generating..." : "Auto-generate with AI"}
                     </Button>
                 </div>
 
