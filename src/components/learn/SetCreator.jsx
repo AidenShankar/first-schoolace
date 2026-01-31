@@ -1,0 +1,244 @@
+import React, { useState, useEffect } from 'react';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Plus, Sparkles, Image as ImageIcon, Trash2, Save, X, Loader2 } from "lucide-react";
+import { base44 } from "@/api/base44Client";
+import { UploadFile, InvokeLLM } from "@/integrations/Core";
+import { motion, AnimatePresence } from "framer-motion";
+
+export default function SetCreator({ onCancel, onSave, initialData = null }) {
+    const [title, setTitle] = useState(initialData?.title || "");
+    const [description, setDescription] = useState(initialData?.description || "");
+    const [cards, setCards] = useState(initialData?.cards || [{ id: Date.now(), term: "", definition: "" }]);
+    const [isSaving, setIsSaving] = useState(false);
+    const [showAIModal, setShowAIModal] = useState(false);
+
+    const addCard = () => {
+        setCards([...cards, { id: Date.now(), term: "", definition: "" }]);
+    };
+
+    const removeCard = (index) => {
+        const newCards = [...cards];
+        newCards.splice(index, 1);
+        setCards(newCards);
+    };
+
+    const updateCard = (index, field, value) => {
+        const newCards = [...cards];
+        newCards[index][field] = value;
+        setCards(newCards);
+    };
+
+    const handleSave = async () => {
+        if (!title.trim()) {
+            alert("Please enter a title");
+            return;
+        }
+        if (cards.some(c => !c.term.trim() || !c.definition.trim())) {
+            alert("Please fill in all terms and definitions");
+            return;
+        }
+
+        setIsSaving(true);
+        try {
+            await onSave({ title, description, cards });
+        } catch (error) {
+            console.error("Error saving set:", error);
+            alert("Failed to save set");
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
+    const handleImportFromAI = async (text) => {
+        setShowAIModal(false);
+        // Show loading state or toast
+        // This logic is usually better in a separate function but for simplicity I'll put it here or rely on the parent
+        // Actually I should implement the AI call here
+        setIsSaving(true); // Reuse saving spinner for "Thinking"
+        try {
+            const prompt = `Extract flashcards from the following text. Return ONLY a JSON object with a key "cards" containing an array of objects with "term" and "definition" keys.
+            
+            Text:
+            ${text}
+            `;
+            
+            const result = await InvokeLLM({
+                prompt: prompt,
+                response_json_schema: {
+                    type: "object",
+                    properties: {
+                        cards: {
+                            type: "array",
+                            items: {
+                                type: "object",
+                                properties: {
+                                    term: { type: "string" },
+                                    definition: { type: "string" }
+                                },
+                                required: ["term", "definition"]
+                            }
+                        }
+                    },
+                    required: ["cards"]
+                }
+            });
+            
+            if (result && result.cards) {
+                const newCards = result.cards.map(c => ({ id: Date.now() + Math.random(), ...c }));
+                setCards([...cards, ...newCards].filter(c => c.term || c.definition)); // keep existing empty one if needed, or filter
+            }
+        } catch (error) {
+            console.error("AI Import failed:", error);
+            alert("AI Generation failed. Please try again.");
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
+    return (
+        <div className="bg-white min-h-screen p-6 md:p-8 animate-in fade-in duration-300">
+            <div className="max-w-4xl mx-auto space-y-8">
+                <div className="flex items-center justify-between sticky top-0 bg-white/80 backdrop-blur-sm z-10 py-4 border-b">
+                    <h2 className="text-2xl font-bold text-slate-900">{initialData ? "Edit Study Set" : "Create New Study Set"}</h2>
+                    <div className="flex gap-2">
+                        <Button variant="ghost" onClick={onCancel}>Cancel</Button>
+                        <Button onClick={handleSave} disabled={isSaving} className="bg-indigo-600 hover:bg-indigo-700 text-white">
+                            {isSaving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
+                            {isSaving ? "Saving..." : "Create"}
+                        </Button>
+                    </div>
+                </div>
+
+                <div className="space-y-4">
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium text-slate-700">Title</label>
+                        <Input 
+                            value={title} 
+                            onChange={e => setTitle(e.target.value)} 
+                            placeholder='e.g., "AP Biology Chapter 5"'
+                            className="text-lg font-medium"
+                        />
+                    </div>
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium text-slate-700">Description</label>
+                        <Textarea 
+                            value={description} 
+                            onChange={e => setDescription(e.target.value)} 
+                            placeholder="Add a description..." 
+                            className="resize-none h-20"
+                        />
+                    </div>
+                </div>
+
+                <div className="flex items-center justify-between pt-4">
+                    <Button variant="outline" onClick={() => setShowAIModal(true)} className="border-indigo-200 text-indigo-700 hover:bg-indigo-50">
+                        <Sparkles className="w-4 h-4 mr-2 text-indigo-500" />
+                        Auto-generate with AI
+                    </Button>
+                </div>
+
+                <div className="space-y-6">
+                    {cards.map((card, index) => (
+                        <motion.div 
+                            key={card.id}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm relative group"
+                        >
+                            <div className="flex justify-between items-start mb-4 border-b border-slate-200 pb-2">
+                                <span className="text-slate-400 font-medium text-sm">{index + 1}</span>
+                                <Button variant="ghost" size="icon" onClick={() => removeCard(index)} className="h-8 w-8 text-slate-400 hover:text-red-500">
+                                    <Trash2 className="w-4 h-4" />
+                                </Button>
+                            </div>
+                            <div className="grid md:grid-cols-2 gap-6">
+                                <div className="space-y-2">
+                                    <Input 
+                                        value={card.term} 
+                                        onChange={e => updateCard(index, "term", e.target.value)}
+                                        placeholder="Term" 
+                                        className="bg-white border-slate-200 focus:ring-indigo-500"
+                                    />
+                                    <div className="text-xs text-slate-400 uppercase font-semibold tracking-wider">Term</div>
+                                </div>
+                                <div className="space-y-2">
+                                    <Input 
+                                        value={card.definition} 
+                                        onChange={e => updateCard(index, "definition", e.target.value)}
+                                        placeholder="Definition" 
+                                        className="bg-white border-slate-200 focus:ring-indigo-500"
+                                    />
+                                    <div className="text-xs text-slate-400 uppercase font-semibold tracking-wider">Definition</div>
+                                </div>
+                            </div>
+                        </motion.div>
+                    ))}
+                    
+                    <Button 
+                        variant="outline" 
+                        onClick={addCard}
+                        className="w-full py-8 border-dashed border-2 border-slate-300 text-slate-500 hover:border-indigo-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all font-bold text-lg"
+                    >
+                        <Plus className="w-6 h-6 mr-2" />
+                        Add Card
+                    </Button>
+                </div>
+            </div>
+
+            <AnimatePresence>
+                {showAIModal && (
+                    <AIImportModal 
+                        onClose={() => setShowAIModal(false)} 
+                        onImport={handleImportFromAI} 
+                    />
+                )}
+            </AnimatePresence>
+        </div>
+    );
+}
+
+function AIImportModal({ onClose, onImport }) {
+    const [text, setText] = useState("");
+
+    return (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+            <motion.div 
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                className="bg-white rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl"
+            >
+                <div className="p-6 border-b border-slate-100 flex justify-between items-center">
+                    <h3 className="text-xl font-bold text-slate-900 flex items-center gap-2">
+                        <Sparkles className="w-5 h-5 text-indigo-500" />
+                        Magic Import
+                    </h3>
+                    <Button variant="ghost" size="icon" onClick={onClose}><X className="w-4 h-4" /></Button>
+                </div>
+                <div className="p-6 space-y-4">
+                    <p className="text-slate-600 text-sm">
+                        Paste your notes, a paragraph, or a list of terms below. Our AI will magically convert them into flashcards.
+                    </p>
+                    <Textarea 
+                        value={text}
+                        onChange={e => setText(e.target.value)}
+                        placeholder="Paste text here..."
+                        className="h-48 resize-none font-mono text-sm"
+                    />
+                </div>
+                <div className="p-6 bg-slate-50 flex justify-end gap-3">
+                    <Button variant="ghost" onClick={onClose}>Cancel</Button>
+                    <Button 
+                        onClick={() => onImport(text)} 
+                        disabled={!text.trim()}
+                        className="bg-indigo-600 hover:bg-indigo-700 text-white"
+                    >
+                        Generate Flashcards
+                    </Button>
+                </div>
+            </motion.div>
+        </div>
+    );
+}
