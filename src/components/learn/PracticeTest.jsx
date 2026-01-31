@@ -153,9 +153,13 @@ export default function PracticeTest({ cards, onRetake }) {
                                     <RadioGroup onValueChange={(val) => handleAnswer(q.id, val)} value={userAnswers[q.id]}>
                                         <div className="grid gap-3">
                                             {q.options.map((opt, idx) => (
-                                                <div key={idx} className="flex items-center space-x-2 border p-4 rounded-xl hover:bg-slate-50 transition-colors">
-                                                    <RadioGroupItem value={opt} id={`q${q.id}-opt${idx}`} />
-                                                    <Label htmlFor={`q${q.id}-opt${idx}`} className="flex-grow cursor-pointer">{opt}</Label>
+                                                <div 
+                                                    key={idx} 
+                                                    className="flex items-center space-x-2 border p-4 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
+                                                    onClick={() => handleAnswer(q.id, opt)}
+                                                >
+                                                    <RadioGroupItem value={opt} id={`q${q.id}-opt${idx}`} className="pointer-events-none" />
+                                                    <Label htmlFor={`q${q.id}-opt${idx}`} className="flex-grow cursor-pointer pointer-events-none">{opt}</Label>
                                                 </div>
                                             ))}
                                         </div>
@@ -165,13 +169,19 @@ export default function PracticeTest({ cards, onRetake }) {
                                 {q.type === 'tf' && (
                                     <RadioGroup onValueChange={(val) => handleAnswer(q.id, val)} value={userAnswers[q.id]}>
                                         <div className="flex gap-4">
-                                            <div className="flex items-center space-x-2 border p-4 rounded-xl flex-1 hover:bg-slate-50">
-                                                <RadioGroupItem value="true" id={`q${q.id}-true`} />
-                                                <Label htmlFor={`q${q.id}-true`}>True</Label>
+                                            <div 
+                                                className="flex items-center space-x-2 border p-4 rounded-xl flex-1 hover:bg-slate-50 cursor-pointer"
+                                                onClick={() => handleAnswer(q.id, "true")}
+                                            >
+                                                <RadioGroupItem value="true" id={`q${q.id}-true`} className="pointer-events-none" />
+                                                <Label htmlFor={`q${q.id}-true`} className="pointer-events-none cursor-pointer">True</Label>
                                             </div>
-                                            <div className="flex items-center space-x-2 border p-4 rounded-xl flex-1 hover:bg-slate-50">
-                                                <RadioGroupItem value="false" id={`q${q.id}-false`} />
-                                                <Label htmlFor={`q${q.id}-false`}>False</Label>
+                                            <div 
+                                                className="flex items-center space-x-2 border p-4 rounded-xl flex-1 hover:bg-slate-50 cursor-pointer"
+                                                onClick={() => handleAnswer(q.id, "false")}
+                                            >
+                                                <RadioGroupItem value="false" id={`q${q.id}-false`} className="pointer-events-none" />
+                                                <Label htmlFor={`q${q.id}-false`} className="pointer-events-none cursor-pointer">False</Label>
                                             </div>
                                         </div>
                                     </RadioGroup>
