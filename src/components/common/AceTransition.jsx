@@ -66,12 +66,13 @@ export default function AceTransition() {
                 >
                     {fact}
                 </motion.p>
+                <style>{`@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500&display=swap');`}</style>
                 <motion.p 
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.6 }}
-                    className="text-sm mt-4 font-medium opacity-60"
-                    style={{ color: 'rgb(var(--color-textSecondary))' }}
+                    className="text-2xl mt-4 opacity-80"
+                    style={{ color: 'rgb(var(--color-textSecondary))', fontFamily: '"Dancing Script", cursive' }}
                 >
                     - from, the Schoolace team
                 </motion.p>
