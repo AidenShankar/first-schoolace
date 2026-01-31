@@ -31,6 +31,11 @@ export default function LearnPage({ user, currentClass }) {
     };
 
     const handleCreateSet = async (setData) => {
+        if (!user?.id) {
+            alert("User ID missing. Please reload the page.");
+            return;
+        }
+        
         try {
             // 1. Create StudySet
             const set = await base44.entities.StudySet.create({
@@ -39,24 +44,34 @@ export default function LearnPage({ user, currentClass }) {
                 owner_id: user.id,
                 owner_name: user.full_name,
                 is_public: false, // Default private for now
-                subject: "General" // Default
+                subject: "General"
             });
 
-            // 2. Create Flashcards
-            const cardsToCreate = setData.cards.map((c, i) => ({
-                study_set_id: set.id,
-                term: c.term,
-                definition: c.definition,
-                rank: i
-            }));
+            // 2. Create Flashcards - Using Promise.all for reliability
+            // Filter out empty cards just in case
+            const validCards = setData.cards.filter(c => c.term.trim() && c.definition.trim());
+            
+            const cardPromises = validCards.map((c, i) => 
+                base44.entities.Flashcard.create({
+                    study_set_id: set.id,
+                    term: c.term,
+                    definition: c.definition,
+                    rank: i
+                })
+            );
+            
+            await Promise.all(cardPromises);
 
-            // Bulk create not always available in frontend SDK directly unless configured, looping is safer if unsure, but bulkCreate exists in prompt docs.
-            await base44.entities.Flashcard.bulkCreate(cardsToCreate);
-
+            // 3. Update UI
             setView("list");
-            loadSets();
+            // Add a small delay to ensure DB consistency before fetching
+            setTimeout(() => {
+                loadSets();
+            }, 500);
+            
         } catch (error) {
             console.error("Failed to create set:", error);
+            alert(`Error creating set: ${error.message}`);
             throw error;
         }
     };
