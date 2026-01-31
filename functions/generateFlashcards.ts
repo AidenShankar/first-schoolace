@@ -4,6 +4,18 @@ import mammoth from "npm:mammoth@1.6.0";
 import pdf from "npm:pdf-parse@1.1.1";
 import { Buffer } from "node:buffer";
 
+// Helper to chunk text
+function chunkText(text, chunkSize = 15000, overlap = 1000) {
+    const chunks = [];
+    let start = 0;
+    while (start < text.length) {
+        const end = Math.min(start + chunkSize, text.length);
+        chunks.push(text.slice(start, end));
+        start += chunkSize - overlap;
+    }
+    return chunks;
+}
+
 Deno.serve(async (req) => {
     try {
         const base44 = createClientFromRequest(req);
@@ -21,7 +33,6 @@ Deno.serve(async (req) => {
             
             const arrayBuffer = await fileRes.arrayBuffer();
             const buffer = Buffer.from(arrayBuffer);
-
             const lowerName = (file_name || "").toLowerCase();
 
             try {
@@ -30,73 +41,94 @@ Deno.serve(async (req) => {
                     extractedText = result.value;
                 } else if (lowerName.endsWith(".pptx")) {
                     const zip = await JSZip.loadAsync(arrayBuffer);
-                    // Find slide XML files
                     const slideFiles = Object.keys(zip.files).filter(name => name.match(/ppt\/slides\/slide\d+\.xml/));
-                    // Sort by slide number
                     slideFiles.sort((a, b) => {
                         const numA = parseInt(a.match(/slide(\d+)\.xml/)[1]);
                         const numB = parseInt(b.match(/slide(\d+)\.xml/)[1]);
                         return numA - numB;
                     });
-                    
                     for (const slide of slideFiles) {
                         const content = await zip.file(slide).async("string");
-                        // Remove XML tags
-                        const plain = content.replace(/<[^>]+>/g, " ");
-                        extractedText += plain + "\n";
+                        extractedText += content.replace(/<[^>]+>/g, " ") + "\n";
                     }
                 } else if (lowerName.endsWith(".pdf")) {
                     const data = await pdf(buffer);
                     extractedText = data.text;
                 } else {
-                    // Try plain text for others
                     extractedText = new TextDecoder().decode(arrayBuffer);
                 }
             } catch (extractError) {
                 console.error("Text extraction failed:", extractError);
-                // Fallback: If extraction fails (e.g. encrypted PDF), we might proceed with just userText
-                // or try to inform user. But let's log and continue with what we have.
                 extractedText = `(Text extraction failed for ${file_name})`;
             }
         }
 
         const combinedText = (userText || "") + "\n\n" + extractedText;
         
-        // Truncate to avoid massive token usage (approx 50k tokens)
-        const finalText = combinedText.slice(0, 200000); 
-
-        if (!finalText.trim() || finalText.trim().length < 10) {
-             return Response.json({ error: "No text could be extracted from the file. Please try converting it to text or copy-pasting the content." }, { status: 400 });
+        // Use a chunking strategy to process large texts thoroughly
+        // Limit total processed text to avoid excessive costs/timeouts (e.g. 300k chars)
+        const textToProcess = combinedText.slice(0, 300000);
+        
+        if (!textToProcess.trim() || textToProcess.trim().length < 10) {
+             return Response.json({ error: "No text could be extracted." }, { status: 400 });
         }
 
-        console.log("Extracted text length:", finalText.length);
+        // Chunk size optimized for context window vs granularity
+        const chunks = chunkText(textToProcess, 12000, 500); 
+        console.log(`Processing ${chunks.length} chunks...`);
 
-        const llmRes = await base44.asServiceRole.integrations.Core.InvokeLLM({
-             prompt: `Extract flashcards from the following text. Return ONLY a JSON object with a key "cards" containing an array of objects with "term" and "definition" keys.
-             Create comprehensive flashcards that cover the key concepts found in the text.
-             
-             Text:
-             ${finalText}`,
-             response_json_schema: {
-                type: "object",
-                properties: {
-                    cards: {
-                        type: "array",
-                        items: {
-                            type: "object",
-                            properties: {
-                                term: { type: "string" },
-                                definition: { type: "string" }
-                            },
-                            required: ["term", "definition"]
-                        }
+        // Process chunks in parallel (limit concurrency if needed, but 5-10 is usually fine)
+        const promises = chunks.slice(0, 10).map(async (chunk, index) => {
+            try {
+                const res = await base44.asServiceRole.integrations.Core.InvokeLLM({
+                    prompt: `You are an expert tutor creating a comprehensive study set. 
+                    Extract EVERY single distinct fact, definition, concept, and detail from the text below into a flashcard.
+                    Do not summarize or skip details. Be exhaustive. 
+                    If the text contains a list, create a card for every item.
+                    If the text is dense, create many specific cards rather than few broad ones.
+                    
+                    Text Segment ${index + 1}:
+                    ${chunk}`,
+                    response_json_schema: {
+                        type: "object",
+                        properties: {
+                            cards: {
+                                type: "array",
+                                items: {
+                                    type: "object",
+                                    properties: {
+                                        term: { type: "string" },
+                                        definition: { type: "string" }
+                                    },
+                                    required: ["term", "definition"]
+                                }
+                            }
+                        },
+                        required: ["cards"]
                     }
-                },
-                required: ["cards"]
+                });
+                return res.cards || [];
+            } catch (e) {
+                console.error(`Error processing chunk ${index}:`, e);
+                return [];
             }
         });
 
-        return Response.json(llmRes);
+        const results = await Promise.all(promises);
+        const allCards = results.flat();
+
+        // Simple deduplication based on term
+        const seenTerms = new Set();
+        const uniqueCards = allCards.filter(card => {
+            const normalized = card.term.toLowerCase().trim();
+            if (seenTerms.has(normalized)) return false;
+            seenTerms.add(normalized);
+            return true;
+        });
+
+        console.log(`Generated ${uniqueCards.length} cards from ${chunks.length} chunks.`);
+
+        return Response.json({ cards: uniqueCards });
 
     } catch (error) {
         console.error("Generate Flashcards Error:", error);
