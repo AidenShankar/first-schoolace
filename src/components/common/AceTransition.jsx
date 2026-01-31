@@ -3,10 +3,14 @@ import { motion } from 'framer-motion';
 import { BrainCircuit } from 'lucide-react';
 
 const FACTS = [
-    `"Yesterday is history, tomorrow is a mystery, but\ntoday is a gift. That's why it's called the present."`
+    "Honey never spoils.",
+    "Octopuses have three hearts.",
+    "Bananas are curved because they grow towards the sun.",
+    "Wombat poop is cube-shaped.",
+    "The Eiffel Tower can be 15 cm taller during the summer."
 ];
 
-export const LOADING_DURATION = 2500;
+export const LOADING_DURATION = 2000;
 
 export default function AceTransition() {
     const [fact, setFact] = useState("");
@@ -38,7 +42,7 @@ export default function AceTransition() {
                     className="font-bold tracking-widest text-sm mb-4 uppercase"
                     style={{ color: 'rgb(var(--color-text))' }}
                 >
-                    Quote of the Day
+                    Did You Know?
                 </motion.h2>
 
                 <motion.p 
