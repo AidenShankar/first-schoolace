@@ -34,20 +34,7 @@ export default function PersonalizedLearning() {
     const [performanceData, setPerformanceData] = useState(null);
     const [isLoading, setIsLoading] = useState(true); // Controls data loading spinner after intro
     const [error, setError] = useState(null);
-    const [activeTool, setActiveTool] = useState(null); // 'flashcards', 'test', 'guide'
     const [isPersonalizedMode, setIsPersonalizedMode] = useState(true);
-
-    // Block body scroll when modal is open
-    useEffect(() => {
-        if (activeTool) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = 'unset';
-        }
-        return () => {
-            document.body.style.overflow = 'unset';
-        };
-    }, [activeTool]);
 
     // Effect for initial intro screen duration
     useEffect(() => {
@@ -580,77 +567,26 @@ export default function PersonalizedLearning() {
                         <Users className="w-4 h-4" />
                         Ace Spaces
                     </Button>
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button 
-                                variant="outline" 
-                                className="gap-2 backdrop-blur-sm transition-colors"
-                                style={{ 
-                                    backgroundColor: 'rgb(var(--color-surface))',
-                                    borderColor: 'rgb(var(--color-border))',
-                                    color: 'rgb(var(--color-primary))'
-                                }}
-                                onMouseEnter={(e) => {
-                                    e.currentTarget.style.backgroundColor = `rgba(var(--color-primary), 0.1)`;
-                                }}
-                                onMouseLeave={(e) => {
-                                    e.currentTarget.style.backgroundColor = 'rgb(var(--color-surface))';
-                                }}
-                            >
-                                <BrainCircuit className="w-4 h-4" />
-                                {t('personalizedLearning.aiStudyTools')}
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-56">
-                            <DropdownMenuLabel>{t('personalizedLearning.generateContent')}</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem onClick={() => setActiveTool('flashcards')}>
-                                <RotateCw className="w-4 h-4 mr-2 text-indigo-500" />
-                                <span>{t('personalizedLearning.flashcards')}</span>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => setActiveTool('test')}>
-                                <FileQuestion className="w-4 h-4 mr-2 text-blue-500" />
-                                <span>{t('personalizedLearning.practiceTest')}</span>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => setActiveTool('guide')}>
-                                <BookOpen className="w-4 h-4 mr-2 text-green-500" />
-                                <span>{t('personalizedLearning.studyGuide')}</span>
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
+                    <Button 
+                        variant="outline" 
+                        className="gap-2 backdrop-blur-sm transition-colors"
+                        style={{ 
+                            backgroundColor: 'rgb(var(--color-surface))',
+                            borderColor: 'rgb(var(--color-border))',
+                            color: 'rgb(var(--color-primary))'
+                        }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.backgroundColor = `rgba(var(--color-primary), 0.1)`;
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.backgroundColor = 'rgb(var(--color-surface))';
+                        }}
+                        onClick={() => window.location.href = createPageUrl('Learn')}
+                    >
+                        <BrainCircuit className="w-4 h-4" />
+                        {t('personalizedLearning.aiStudyTools')}
+                    </Button>
                 </div>
-
-                {/* Tool Overlay */}
-                <AnimatePresence>
-                    {activeTool && (
-                        <motion.div 
-                            initial={{ opacity: 0 }} 
-                            animate={{ opacity: 1 }} 
-                            exit={{ opacity: 0 }}
-                            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
-                            onClick={() => setActiveTool(null)}
-                        >
-                            <motion.div 
-                                initial={{ scale: 0.9, y: 20 }} 
-                                animate={{ scale: 1, y: 0 }} 
-                                exit={{ scale: 0.9, y: 20 }}
-                                className="bg-white rounded-3xl shadow-2xl w-full max-w-4xl h-[90vh] flex flex-col"
-                                onClick={(e) => e.stopPropagation()}
-                            >
-                                <div className="flex justify-end p-4 border-b border-slate-100 flex-shrink-0">
-                                    <Button variant="ghost" size="icon" onClick={() => setActiveTool(null)} className="rounded-full hover:bg-slate-100">
-                                        <X className="w-5 h-5 text-slate-500" />
-                                    </Button>
-                                </div>
-                                <div className="flex-1 min-h-0 bg-slate-50/50 flex flex-col overflow-hidden">
-                                    {activeTool === 'flashcards' && <FlashcardGenerator onClose={() => setActiveTool(null)} />}
-                                    {activeTool === 'test' && <PracticeTestGenerator onClose={() => setActiveTool(null)} />}
-                                    {activeTool === 'guide' && <StudyGuideGenerator onClose={() => setActiveTool(null)} />}
-                                </div>
-                            </motion.div>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
 
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
