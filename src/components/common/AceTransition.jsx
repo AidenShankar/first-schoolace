@@ -3,10 +3,8 @@ import { motion } from 'framer-motion';
 import { BrainCircuit } from 'lucide-react';
 
 const FACTS = [
-    "Honey never spoils.",
     "Octopuses have three hearts.",
     "Bananas are berries, but strawberries aren't.",
-    "Wombat poop is cube-shaped.",
     "The Eiffel Tower can be 15 cm taller during the summer.",
     "A day on Venus is longer than a year on Venus.",
     "A group of flamingos is called a 'flamboyance'.",
