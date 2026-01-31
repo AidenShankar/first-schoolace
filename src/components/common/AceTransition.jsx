@@ -41,8 +41,8 @@ export default function AceTransition() {
                 className="flex flex-col items-center justify-center max-w-md px-6 text-center"
             >
                 <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+                    animate={{ rotate: 360, scale: [1, 0.8, 1] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
                     className="mb-8"
                 >
                     <BrainCircuit className="w-16 h-16 text-indigo-500" />
