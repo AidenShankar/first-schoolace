@@ -17,16 +17,12 @@ export default function FlashcardViewer({ cards }) {
 
     const handleNext = () => {
         setIsFlipped(false);
-        setTimeout(() => {
-            setCurrentIndex((prev) => (prev + 1) % displayCards.length);
-        }, 150);
+        setCurrentIndex((prev) => (prev + 1) % displayCards.length);
     };
 
     const handlePrev = () => {
         setIsFlipped(false);
-        setTimeout(() => {
-            setCurrentIndex((prev) => (prev - 1 + displayCards.length) % displayCards.length);
-        }, 150);
+        setCurrentIndex((prev) => (prev - 1 + displayCards.length) % displayCards.length);
     };
 
     const handleShuffle = () => {
@@ -69,7 +65,7 @@ export default function FlashcardViewer({ cards }) {
         <div className="flex flex-col items-center gap-6 w-full max-w-3xl mx-auto py-8">
             <div className="perspective-1000 w-full aspect-[5/3] cursor-pointer group" onClick={handleFlip}>
                 <motion.div 
-                    className="relative w-full h-full transition-all duration-500 preserve-3d"
+                    className="relative w-full h-full transition-all duration-300 preserve-3d"
                     animate={{ rotateX: isFlipped ? 180 : 0 }}
                     transition={{ type: "spring", stiffness: 260, damping: 20 }}
                 >
@@ -108,9 +104,7 @@ export default function FlashcardViewer({ cards }) {
                     </Button>
                 </div>
 
-                <Button variant="ghost" size="icon" onClick={() => setIsFlipped(false)} className="text-slate-400">
-                    <RotateCw className="w-5 h-5" />
-                </Button>
+                <div className="w-10" />
             </div>
             
             <p className="text-sm text-slate-400 font-medium">

@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Layers, BrainCircuit, FileText, ArrowLeft, Settings, Share2, MoreHorizontal } from "lucide-react";
+import { Layers, BrainCircuit, FileText, ArrowLeft, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import FlashcardViewer from "@/components/learn/FlashcardViewer";
 import LearnMode from "@/components/learn/LearnMode";
 import PracticeTest from "@/components/learn/PracticeTest";
@@ -56,12 +57,31 @@ export default function StudySetPage() {
                     </div>
                     
                     <div className="flex items-center gap-2">
-                        <Button variant="ghost" size="icon" className="text-slate-500">
-                            <Share2 className="w-5 h-5" />
-                        </Button>
-                        <Button variant="ghost" size="icon" className="text-slate-500">
-                            <MoreHorizontal className="w-5 h-5" />
-                        </Button>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="icon" className="text-slate-500">
+                                    <MoreHorizontal className="w-5 h-5" />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                                <DropdownMenuItem onClick={() => window.location.href = createPageUrl(`Learn?editSetId=${set.id}`)}>
+                                    <Pencil className="w-4 h-4 mr-2" />
+                                    Edit Set
+                                </DropdownMenuItem>
+                                <DropdownMenuItem 
+                                    className="text-red-600 focus:text-red-600"
+                                    onClick={async () => {
+                                        if (confirm("Are you sure you want to delete this study set?")) {
+                                            await base44.entities.StudySet.delete(set.id);
+                                            window.location.href = createPageUrl("Learn");
+                                        }
+                                    }}
+                                >
+                                    <Trash2 className="w-4 h-4 mr-2" />
+                                    Delete Set
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     </div>
                 </div>
             </div>

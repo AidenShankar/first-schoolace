@@ -12,16 +12,38 @@ export default function LearnPage({ user, currentClass }) {
     const [sets, setSets] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
+    const [initialEditData, setInitialEditData] = useState(null);
+
     useEffect(() => {
-        loadSets();
+        const load = async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const editSetId = urlParams.get('editSetId');
+            
+            if (editSetId) {
+                setIsLoading(true);
+                try {
+                    const [set, cards] = await Promise.all([
+                        base44.entities.StudySet.get(editSetId),
+                        base44.entities.Flashcard.filter({ study_set_id: editSetId })
+                    ]);
+                    setInitialEditData({ ...set, cards });
+                    setView("create");
+                } catch (e) {
+                    console.error("Failed to load set for editing", e);
+                } finally {
+                    setIsLoading(false);
+                }
+            } else {
+                loadSets();
+            }
+        };
+        load();
     }, [user]);
 
     const loadSets = async () => {
         setIsLoading(true);
         try {
-            // Fetch user's sets
             const userSets = await base44.entities.StudySet.filter({ owner_id: user.id }, "-created_date");
-            // Could also fetch public sets or class sets here
             setSets(userSets);
         } catch (error) {
             console.error("Error loading sets:", error);
@@ -30,39 +52,70 @@ export default function LearnPage({ user, currentClass }) {
         }
     };
 
-    const handleCreateSet = async (setData) => {
+    const handleSaveSet = async (setData) => {
         try {
-            // 1. Create StudySet
-            const set = await base44.entities.StudySet.create({
-                title: setData.title,
-                description: setData.description,
-                owner_id: user.id,
-                owner_name: user.full_name,
-                is_public: false, // Default private for now
-                subject: "General" // Default
-            });
+            let setId = initialEditData?.id;
 
-            // 2. Create Flashcards
-            const cardsToCreate = setData.cards.map((c, i) => ({
-                study_set_id: set.id,
-                term: c.term,
-                definition: c.definition,
-                rank: i
-            }));
+            if (setId) {
+                // Update existing set
+                await base44.entities.StudySet.update(setId, {
+                    title: setData.title,
+                    description: setData.description
+                });
+                
+                // Naive approach for cards: delete all and recreate (easiest for syncing) 
+                // OR diff them. For MVP, we'll try to update existing and create new.
+                // Actually, given SDK limits, simplest robust way is often:
+                // Delete existing cards, recreate all.
+                
+                const existingCards = await base44.entities.Flashcard.filter({ study_set_id: setId });
+                // We'll delete them one by one or if there's a bulk delete (usually not exposed safely).
+                // Let's iterate delete.
+                await Promise.all(existingCards.map(c => base44.entities.Flashcard.delete(c.id)));
+                
+                // Recreate all
+                const cardsToCreate = setData.cards.map((c, i) => ({
+                    study_set_id: setId,
+                    term: c.term,
+                    definition: c.definition,
+                    rank: i
+                }));
+                await base44.entities.Flashcard.bulkCreate(cardsToCreate);
 
-            // Bulk create not always available in frontend SDK directly unless configured, looping is safer if unsure, but bulkCreate exists in prompt docs.
-            await base44.entities.Flashcard.bulkCreate(cardsToCreate);
+            } else {
+                // Create New
+                const set = await base44.entities.StudySet.create({
+                    title: setData.title,
+                    description: setData.description,
+                    owner_id: user.id,
+                    owner_name: user.full_name,
+                    is_public: false,
+                    subject: "General"
+                });
+                setId = set.id;
+
+                const cardsToCreate = setData.cards.map((c, i) => ({
+                    study_set_id: setId,
+                    term: c.term,
+                    definition: c.definition,
+                    rank: i
+                }));
+                await base44.entities.Flashcard.bulkCreate(cardsToCreate);
+            }
 
             setView("list");
+            setInitialEditData(null);
+            // Clear URL param
+            window.history.pushState({}, '', createPageUrl("Learn"));
             loadSets();
         } catch (error) {
-            console.error("Failed to create set:", error);
-            throw error;
+            console.error("Failed to save set:", error);
+            alert("Failed to save set. Please try again.");
         }
     };
 
     if (view === "create") {
-        return <SetCreator onCancel={() => setView("list")} onSave={handleCreateSet} />;
+        return <SetCreator onCancel={() => { setView("list"); setInitialEditData(null); window.history.pushState({}, '', createPageUrl("Learn")); }} onSave={handleSaveSet} initialData={initialEditData} />;
     }
 
     return (
