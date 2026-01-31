@@ -15,13 +15,21 @@ import ScheduleBuilder from "../components/scheduler/ScheduleBuilder";
 import VisualScheduler from "../components/scheduler/VisualScheduler";
 import SchedulerReports from "../components/scheduler/SchedulerReports";
 import ScenarioManager from "../components/scheduler/ScenarioManager";
-import AceTransition from "@/components/common/AceTransition";
+import AceTransition, { LOADING_DURATION } from "@/components/common/AceTransition";
 
 export default function Scheduler({ user: layoutUser }) {
   const [user, setUser] = useState(layoutUser);
   const [loading, setLoading] = useState(true);
+  const [pageLoading, setPageLoading] = useState(true);
   const [copied, setCopied] = useState(false);
   const [activeScenario, setActiveScenario] = useState(null);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+        setPageLoading(false);
+    }, LOADING_DURATION);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     loadUser();
@@ -65,7 +73,7 @@ export default function Scheduler({ user: layoutUser }) {
     }
   };
 
-  if (loading) {
+  if (pageLoading || loading) {
     return <AceTransition />;
   }
 

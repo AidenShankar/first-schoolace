@@ -17,13 +17,14 @@ import CategoriesView from "../components/gradebook/CategoriesView";
 import AnalyticsView from "../components/gradebook/AnalyticsView";
 import FinalGradesView from "../components/gradebook/FinalGradesView";
 import StudentGradebookView from "../components/gradebook/StudentGradebookView";
-import AceTransition from "@/components/common/AceTransition";
+import AceTransition, { LOADING_DURATION } from "@/components/common/AceTransition";
 
 export default function GradebookPage({ user: layoutUser, allClasses: layoutAllClasses }) {
   const [user, setUser] = useState(layoutUser);
   const [currentClass, setCurrentClass] = useState(null);
   const [allClasses, setAllClasses] = useState(layoutAllClasses || []);
   const [loading, setLoading] = useState(true);
+  const [pageLoading, setPageLoading] = useState(true);
   const [syncing, setSyncing] = useState(false);
   const [syncStatus, setSyncStatus] = useState(null);
 
@@ -31,6 +32,13 @@ export default function GradebookPage({ user: layoutUser, allClasses: layoutAllC
     setUser(layoutUser);
     setAllClasses(layoutAllClasses || []);
   }, [layoutUser, layoutAllClasses]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+        setPageLoading(false);
+    }, LOADING_DURATION);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     if (allClasses && allClasses.length > 0) { // Added 'allClasses &&' for safer access
@@ -149,7 +157,7 @@ export default function GradebookPage({ user: layoutUser, allClasses: layoutAllC
     }
   };
 
-  if (loading || !user || !currentClass) {
+  if (pageLoading || loading || !user || !currentClass) {
     return <AceTransition />;
   }
 

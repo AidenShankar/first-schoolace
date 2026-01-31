@@ -10,6 +10,7 @@ import { Loader2, Plus, Users, LogIn, ArrowRight } from 'lucide-react';
 import { createPageUrl } from '@/utils';
 import { motion } from 'framer-motion';
 import { useTranslation } from "@/components/i18n/useTranslation";
+import AceTransition, { LOADING_DURATION } from "@/components/common/AceTransition";
 
 export default function AceSpaces({ user }) {
     const { t } = useTranslation();
@@ -20,6 +21,14 @@ export default function AceSpaces({ user }) {
     const [newSpaceDesc, setNewSpaceDesc] = useState("");
     const [joinCode, setJoinCode] = useState("");
     const [processing, setProcessing] = useState(false);
+    const [pageLoading, setPageLoading] = useState(true);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setPageLoading(false);
+        }, LOADING_DURATION);
+        return () => clearTimeout(timer);
+    }, []);
 
     const { data: spacesData, isLoading: loading } = useQuery({
         queryKey: ['ace-spaces', user?.id],
@@ -134,7 +143,7 @@ export default function AceSpaces({ user }) {
         }
     };
 
-    if (loading) return <div className="flex justify-center py-20"><Loader2 className="animate-spin h-8 w-8 text-indigo-600" /></div>;
+    if (pageLoading || loading) return <AceTransition />;
 
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 min-h-screen">

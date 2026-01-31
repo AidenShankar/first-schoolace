@@ -9,16 +9,25 @@ import LearnMode from "@/components/learn/LearnMode";
 import PracticeTest from "@/components/learn/PracticeTest";
 import { createPageUrl } from '@/utils';
 import { Link } from "react-router-dom";
+import AceTransition, { LOADING_DURATION } from "@/components/common/AceTransition";
 
 export default function StudySetPage() {
     const [set, setSet] = useState(null);
     const [cards, setCards] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [pageLoading, setPageLoading] = useState(true);
     const [activeTab, setActiveTab] = useState("flashcards");
     
     // Get ID from URL
     const urlParams = new URLSearchParams(window.location.search);
     const setId = urlParams.get('id');
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setPageLoading(false);
+        }, LOADING_DURATION);
+        return () => clearTimeout(timer);
+    }, []);
 
     useEffect(() => {
         if (setId) {
@@ -41,7 +50,7 @@ export default function StudySetPage() {
         }
     };
 
-    if (isLoading) return <div className="min-h-screen flex items-center justify-center bg-slate-50">Loading...</div>;
+    if (pageLoading || isLoading) return <AceTransition />;
     if (!set) return <div className="min-h-screen flex items-center justify-center bg-slate-50">Set not found</div>;
 
     return (

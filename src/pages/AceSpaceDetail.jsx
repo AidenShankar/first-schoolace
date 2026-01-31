@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useTranslation } from "@/components/i18n/useTranslation";
 import { useLanguage } from "@/components/i18n/LanguageContext";
+import AceTransition, { LOADING_DURATION } from "@/components/common/AceTransition";
 
 
 export default function AceSpaceDetail({ user }) {
@@ -35,6 +36,7 @@ export default function AceSpaceDetail({ user }) {
     const [messages, setMessages] = useState([]);
     const [notes, setNotes] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [pageLoading, setPageLoading] = useState(true);
     const [inputValue, setInputValue] = useState("");
     const [isAiMode, setIsAiMode] = useState(false);
     const [sending, setSending] = useState(false);
@@ -60,6 +62,13 @@ export default function AceSpaceDetail({ user }) {
 
     const urlParams = new URLSearchParams(window.location.search);
     const spaceId = urlParams.get('id');
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setPageLoading(false);
+        }, LOADING_DURATION);
+        return () => clearTimeout(timer);
+    }, []);
 
     useEffect(() => {
         if (spaceId && user) {
@@ -337,7 +346,7 @@ export default function AceSpaceDetail({ user }) {
         }
     };
 
-    if (loading) return <div className="h-screen flex items-center justify-center"><Loader2 className="animate-spin h-8 w-8 text-indigo-600" /></div>;
+    if (pageLoading || loading) return <AceTransition />;
 
     if (!space) return <div className="p-8 text-center">Space not found</div>;
 
