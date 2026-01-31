@@ -84,7 +84,7 @@ const CommentThread = ({ assignment, currentUser, onTextSubmission, isSubmitting
       <h4 className="font-semibold mb-2 flex items-center" style={{ color: `rgb(var(--color-text))` }}>
       <MessageSquare className="w-4 h-4 mr-2" /> Private Comments
       </h4>
-      <div className="space-y-3 max-h-60 overflow-y-auto p-3 rounded-lg" style={{ backgroundColor: `rgb(var(--color-accentLight))` }}>
+      <div className="space-y-3 max-h-60 overflow-y-auto p-3 rounded-lg border" style={{ backgroundColor: `rgb(var(--color-surface))`, borderColor: `rgb(var(--color-border))` }}>
         {comments.map(comment => (
           <div key={comment.id} className={`flex items-start gap-2 ${comment.user_id === currentUser.id ? "flex-row-reverse" : ""}`}>
             <div className={`text-sm p-3 rounded-lg ${comment.user_id === currentUser.id ? "text-white" : "border"}`} style={{ backgroundColor: comment.user_id === currentUser.id ? `rgb(var(--color-primary))` : `rgb(var(--color-surface))`, borderColor: comment.user_id === currentUser.id ? 'transparent' : `rgb(var(--color-border))`, color: comment.user_id === currentUser.id ? 'white' : `rgb(var(--color-text))` }}>
@@ -334,7 +334,7 @@ export default function AssignmentList({ assignments, onUpload, userSubmissions,
                                 <h4 className="font-semibold mb-2" style={{ color: `rgb(var(--color-text))` }}>Your Submissions</h4>
                                 <div className="space-y-2">
                                   {submissions.map(sub => (
-                                    <div key={sub.id} className="flex items-center justify-between p-3 rounded-lg" style={{ backgroundColor: `rgb(var(--color-accentLight))` }}>
+                                    <div key={sub.id} className="flex items-center justify-between p-3 rounded-lg border" style={{ backgroundColor: `rgb(var(--color-surface))`, borderColor: `rgb(var(--color-border))` }}>
                                       <FilePreview fileUrl={sub.file_url} fileName={sub.file_name} />
                                       <div className="flex items-center gap-2">
                                         <span className="text-xs" style={{ color: `rgb(var(--color-textSecondary))` }}>
