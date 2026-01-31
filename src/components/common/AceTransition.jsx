@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { BrainCircuit } from 'lucide-react';
 
 const FACTS = [
-    "You got this!",
+    "You got this!"
 ];
 
 export default function AceTransition() {
