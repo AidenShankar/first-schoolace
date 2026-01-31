@@ -6,6 +6,8 @@ const FACTS = [
     `"Yesterday is history, tomorrow is a mystery, but\ntoday is a gift. That's why it's called the present."`
 ];
 
+export const LOADING_DURATION = 2500;
+
 export default function AceTransition() {
     const [fact, setFact] = useState("");
 

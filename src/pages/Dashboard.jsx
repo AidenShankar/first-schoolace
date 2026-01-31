@@ -45,7 +45,7 @@ import ReactQuill from "react-quill"; // New import
 import LanguageSelector from "../components/i18n/LanguageSelector";
 import ThemeSelector from "../components/theme/ThemeSelector";
 import PromoPopup from "../components/dashboard/PromoPopup";
-import AceTransition from "@/components/common/AceTransition";
+import AceTransition, { LOADING_DURATION } from "@/components/common/AceTransition";
 
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
@@ -236,7 +236,7 @@ export default function Dashboard({ user: layoutUser, allClasses: layoutAllClass
     useEffect(() => {
         const timer = setTimeout(() => {
             setPageLoading(false);
-        }, 2000);
+        }, LOADING_DURATION);
         return () => clearTimeout(timer);
     }, []);
 

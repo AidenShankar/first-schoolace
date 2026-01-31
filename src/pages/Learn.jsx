@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { createPageUrl } from '@/utils';
 import { Link } from "react-router-dom";
 import SetCreator from "@/components/learn/SetCreator";
-import AceTransition from "@/components/common/AceTransition";
+import AceTransition, { LOADING_DURATION } from "@/components/common/AceTransition";
 
 export default function LearnPage({ user, currentClass }) {
     const [view, setView] = useState("list"); // "list", "create"
@@ -20,7 +20,7 @@ export default function LearnPage({ user, currentClass }) {
     useEffect(() => {
         const timer = setTimeout(() => {
             setPageLoading(false);
-        }, 2000);
+        }, LOADING_DURATION);
         return () => clearTimeout(timer);
     }, []);
 

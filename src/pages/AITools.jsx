@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button';
 import { createPageUrl } from '@/utils';
 import { motion } from "framer-motion";
 import { useTranslation } from '../components/i18n/useTranslation';
-import AceTransition from "@/components/common/AceTransition";
+import AceTransition, { LOADING_DURATION } from "@/components/common/AceTransition";
 
 // --- Tool Definitions ---
 
@@ -227,7 +227,7 @@ export default function AITools() {
     useEffect(() => {
         const timer = setTimeout(() => {
             setPageLoading(false);
-        }, 2000);
+        }, LOADING_DURATION);
         return () => clearTimeout(timer);
     }, []);
 
