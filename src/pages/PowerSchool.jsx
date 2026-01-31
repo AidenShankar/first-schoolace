@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { GraduationCap, Zap, CheckCircle } from 'lucide-react';
 import { useTranslation } from '../components/i18n/useTranslation';
-import AceTransition from "@/components/common/AceTransition";
+import AceTransition, { LOADING_DURATION } from "@/components/common/AceTransition";
 
 const SchoolaceLogo = () => (
     <div className="flex items-center space-x-3">
@@ -29,7 +29,7 @@ export default function PowerSchoolPage() {
     useEffect(() => {
         const timer = setTimeout(() => {
             setPageLoading(false);
-        }, 2000);
+        }, LOADING_DURATION);
         return () => clearTimeout(timer);
     }, []);
 

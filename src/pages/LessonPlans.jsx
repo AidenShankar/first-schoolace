@@ -21,7 +21,7 @@ import LessonPlanEditor from "../components/lesson_plans/LessonPlanEditor";
 import LessonPlanViewer from "../components/lesson_plans/LessonPlanViewer";
 import LessonPlanCalendar from "../components/lesson_plans/LessonPlanCalendar";
 import AssignmentRecommendationModal from "../components/lesson_plans/AssignmentRecommendationModal";
-import AceTransition from "@/components/common/AceTransition";
+import AceTransition, { LOADING_DURATION } from "@/components/common/AceTransition";
 
 export default function LessonPlansPage() {
     const { t } = useTranslation();
@@ -44,7 +44,7 @@ export default function LessonPlansPage() {
     useEffect(() => {
         const timer = setTimeout(() => {
             setPageLoading(false);
-        }, 2000);
+        }, LOADING_DURATION);
         return () => clearTimeout(timer);
     }, []);
 

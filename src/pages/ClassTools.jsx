@@ -4,7 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { motion } from 'framer-motion';
 import { useTranslation } from '../components/i18n/useTranslation';
-import AceTransition from "@/components/common/AceTransition";
+import AceTransition, { LOADING_DURATION } from "@/components/common/AceTransition";
 
 // Lazy import components to prevent them from loading until needed
 const ScheduleView = React.lazy(() => import('@/components/class_tools/schedule/ScheduleView'));
@@ -36,7 +36,7 @@ export default function ClassTools({ user, currentClass: initialCurrentClass, al
     useEffect(() => {
         const timer = setTimeout(() => {
             setPageLoading(false);
-        }, 2000);
+        }, LOADING_DURATION);
         return () => clearTimeout(timer);
     }, []);
 

@@ -25,6 +25,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useTranslation } from '../components/i18n/useTranslation';
+import AceTransition, { LOADING_DURATION } from "@/components/common/AceTransition";
 
 export default function PersonalizedLearning() {
     const { t, language } = useTranslation();
@@ -52,7 +53,7 @@ export default function PersonalizedLearning() {
     useEffect(() => {
         const timer = setTimeout(() => {
             setPageLoading(false); // Dismiss intro screen
-        }, 2200);
+        }, LOADING_DURATION);
         return () => clearTimeout(timer);
     }, []);
 

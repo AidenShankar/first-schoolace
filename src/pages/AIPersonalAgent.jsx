@@ -22,7 +22,7 @@ import { format } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
 import { useTranslation } from '../components/i18n/useTranslation';
 import { useLanguage } from '../components/i18n/LanguageContext';
-import AceTransition from "@/components/common/AceTransition";
+import AceTransition, { LOADING_DURATION } from "@/components/common/AceTransition";
 
 const FuturisticButton = ({ action, onExecute, autoExecute = false }) => {
     const buttonRef = useRef(null);
@@ -116,7 +116,7 @@ export default function AIPersonalAgentPage() { // Renamed from AIPersonalAgent
   useEffect(() => {
     const timer = setTimeout(() => {
       setPageLoading(false);
-    }, 2000);
+    }, LOADING_DURATION);
     return () => clearTimeout(timer);
   }, []);
 
