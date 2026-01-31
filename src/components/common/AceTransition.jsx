@@ -66,6 +66,15 @@ export default function AceTransition() {
                 >
                     {fact}
                 </motion.p>
+                <motion.p 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.6 }}
+                    className="text-sm mt-4 font-medium opacity-60"
+                    style={{ color: 'rgb(var(--color-textSecondary))' }}
+                >
+                    - from, the Schoolace team
+                </motion.p>
             </motion.div>
         </div>
     );
