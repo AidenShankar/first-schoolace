@@ -71,7 +71,7 @@ export default function AceTransition() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.6 }}
-                    className="text-2xl mt-4 opacity-80"
+                    className="text-lg mt-4 opacity-80"
                     style={{ color: 'rgb(var(--color-textSecondary))', fontFamily: '"Dancing Script", cursive' }}
                 >
                     - from, the Schoolace team
