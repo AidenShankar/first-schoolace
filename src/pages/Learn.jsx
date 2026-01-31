@@ -17,12 +17,12 @@ export default function LearnPage({ user, currentClass }) {
     }, [user]);
 
     const loadSets = async () => {
+        if (!user) return;
         setIsLoading(true);
         try {
             // Fetch user's sets
             const userSets = await base44.entities.StudySet.filter({ owner_id: user.id }, "-created_date");
-            // Could also fetch public sets or class sets here
-            setSets(userSets);
+            setSets(Array.isArray(userSets) ? userSets : []);
         } catch (error) {
             console.error("Error loading sets:", error);
         } finally {
@@ -117,7 +117,10 @@ export default function LearnPage({ user, currentClass }) {
                         </div>
                         <h2 className="text-2xl font-bold text-slate-800 mb-2">No study sets yet</h2>
                         <p className="text-slate-500 mb-8 max-w-md mx-auto">Create your first set of flashcards to start learning effectively with our AI tutor.</p>
-                        <Button onClick={() => setView("create")} size="lg" className="rounded-xl">Create your first set</Button>
+                        <div className="flex flex-col gap-3 justify-center items-center">
+                            <Button onClick={() => setView("create")} size="lg" className="rounded-xl">Create your first set</Button>
+                            <Button variant="ghost" size="sm" onClick={loadSets}>Refresh List</Button>
+                        </div>
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
