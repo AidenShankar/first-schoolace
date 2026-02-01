@@ -34,10 +34,10 @@ import { BrainCircuit } from 'lucide-react';
 // ];
 
 const FACTS = [
-    "ACE remembers every assignment you submit so you don't have to.",
+    "You can ask ACE about any of your past assignments.",
     "Learn mode adapts in real-time to how *you* learn best.",
     "ACE analyzes your quiz scores to figure out exactly what you need to study next.",
-    "Upload a picture of your notes, and ACE turns them into a study guide.",
+    "Upload a picture of your notes, and ACE can turns them into a study guide.",
     "Schoolace gets smarter and more personalized the more you use it.",
     "Your AI tutor is ready 24/7 to answer any question you have.",
     "Schoolace connects with your other apps to keep your entire academic life in one place.",
@@ -45,7 +45,6 @@ const FACTS = [
     "The first version of ACE was trained on thousands of textbooks to understand how students think.",
     "Schoolace was designed by students who were tired of having 20 tabs open.",
     "Our team stayed up for 48 hours straight just to perfect the study algorithm.",
-    "Schoolace was born when our founder couldn't find their notes for a final exam.",
     "The 'Learn' button was clicked 10,000 times in our very first hour of testing.",
     "You can ask ACE to generate a custom practice quiz for you instantly, right inside the chat.",
     "Schoolace's first line of code was written at 3 AM in a dorm room.",
@@ -54,10 +53,10 @@ const FACTS = [
     "You can switch up your entire aesthetic by changing the color theme in your dashboard settings.",
     "The name 'Schoolace' was originally a typo in a group chat that just stuck.",
     "Our first server crashed because too many students tried to join the beta at once.",
-    "The AI's personality is modeled after the most patient teacher we ever knew.",
-    "Our team pulled two all-nighters in a row on launch day just to squash the bugs.",
-    "Our logo was almost a shoelace because, well... 'Schoolace' sounds like 'shoelace'.",
-    "The first prototype was built entirely during a weekend hackathon.",
+    "ACE's personality is modeled after the most patient teacher we ever knew.",
+    "Our team pulled two all-nighters in a row on launch day just to fix the bugs.",
+    "Our logo was almost a shoelace because, 'Schoolace' sounds like 'shoelace'.",
+    "Schoolace's first prototype was built entirely during a weekend hackathon.",
     "We celebrated our first 100 users with a dinner of instant ramen."
 ];
 
