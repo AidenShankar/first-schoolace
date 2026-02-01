@@ -50,7 +50,11 @@ const FACTS = [
     "You can ask ACE to generate a custom practice quiz for you instantly, right inside the chat.",
     "Schoolace's first line of code was written at 3 AM in a dorm room.",
     "We designed the interface to feel less like homework and more like your favorite app.",
-    "Schoolace's color palette was specifically chosen to reduce eye strain during late-night study sessions."
+    "Schoolace's color palette was specifically chosen to reduce eye strain during late-night study sessions.",
+    "You can switch up your entire aesthetic by changing the color theme in your dashboard settings.",
+    "The name 'Schoolace' was originally a typo in a group chat that just stuck.",
+    "Our first server crashed because too many students tried to join the beta at once.",
+    "The AI's personality is modeled after the most patient teacher we ever knew."
 ];
 
 export const LOADING_DURATION = 2000;
