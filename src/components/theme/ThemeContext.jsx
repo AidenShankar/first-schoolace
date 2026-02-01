@@ -21,7 +21,6 @@ export const themes = {
   },
   cherry: {
     name: 'Cherry Blossom',
-    popular: true,
     colors: {
       primary: '244 114 182', // pink-400
       primaryHover: '236 72 153', // pink-500
@@ -37,7 +36,6 @@ export const themes = {
   },
   nord: {
     name: 'Nord',
-    popular: true,
     colors: {
       primary: '136 192 208', // #88c0d0
       primaryHover: '129 161 193', // #81a1c1
