@@ -54,7 +54,11 @@ const FACTS = [
     "You can switch up your entire aesthetic by changing the color theme in your dashboard settings.",
     "The name 'Schoolace' was originally a typo in a group chat that just stuck.",
     "Our first server crashed because too many students tried to join the beta at once.",
-    "The AI's personality is modeled after the most patient teacher we ever knew."
+    "The AI's personality is modeled after the most patient teacher we ever knew.",
+    "Our team pulled two all-nighters in a row on launch day just to squash the bugs.",
+    "Our logo was almost a shoelace because, well... 'Schoolace' sounds like 'shoelace'.",
+    "The first prototype was built entirely during a weekend hackathon.",
+    "We celebrated our first 100 users with a dinner of instant ramen."
 ];
 
 export const LOADING_DURATION = 2000;
