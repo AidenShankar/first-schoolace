@@ -46,19 +46,21 @@ const FACTS = [
     "Schoolace was designed by students who were tired of having 20 tabs open.",
     "Our team stayed up for 48 hours straight just to perfect the study algorithm.",
     "The 'Learn' button was clicked 10,000 times in our very first hour of testing.",
+    "Schoolace's color palette was specifically chosen to reduce eye strain during late-night study sessions.",
     "You can ask ACE to generate a custom practice quiz for you instantly, right inside the chat.",
     "Schoolace's first line of code was written at 3 AM in a dorm room.",
     "We designed the interface to feel less like homework and more like your favorite app.",
     "Schoolace's color palette was specifically chosen to reduce eye strain during late-night study sessions.",
     "You can switch up your entire aesthetic by changing the color theme in your dashboard settings.",
-    "The name 'Schoolace' was originally a typo in a group chat that just stuck.",
+    "The name 'Schoolace' was originally a typo in a tennis group chat that just stuck.",
     "Our first server crashed because too many students tried to join the beta at once.",
     "ACE's personality is modeled after the most patient teacher we ever knew.",
     "Our team pulled two all-nighters in a row on launch day just to fix the bugs.",
     "Our logo was almost a shoelace because, 'Schoolace' sounds like 'shoelace'.",
     "Schoolace's first prototype was built entirely during a weekend hackathon.",
     "We celebrated our first 100 users with a dinner of instant ramen.",
-    "ACE's personality changes based on the time of day."
+    "ACE's personality changes based on the time of day.",
+    "Got an idea? Use the feedback button to request features—you might see yours added next."
 ];
 
 export const LOADING_DURATION = 2000;
