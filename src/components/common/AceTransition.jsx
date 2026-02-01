@@ -57,7 +57,8 @@ const FACTS = [
     "Our team pulled two all-nighters in a row on launch day just to fix the bugs.",
     "Our logo was almost a shoelace because, 'Schoolace' sounds like 'shoelace'.",
     "Schoolace's first prototype was built entirely during a weekend hackathon.",
-    "We celebrated our first 100 users with a dinner of instant ramen."
+    "We celebrated our first 100 users with a dinner of instant ramen.",
+    "ACE's personality changes based on the time of day."
 ];
 
 export const LOADING_DURATION = 2000;
