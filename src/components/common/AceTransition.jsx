@@ -35,22 +35,22 @@ import { BrainCircuit } from 'lucide-react';
 
 const FACTS = [
     "ACE remembers every assignment you submit so you don't have to.",
-    "Learn mode changes based on how *you* learn best.",
-    "ACE looks at your quiz scores to figure out exactly what you need to study.",
+    "Learn mode adapts in real-time to how *you* learn best.",
+    "ACE analyzes your quiz scores to figure out exactly what you need to study next.",
     "Upload a picture of your notes, and ACE turns them into a study guide.",
-    "Schoolace gets smarter the more you use it.",
+    "Schoolace gets smarter and more personalized the more you use it.",
     "Your AI tutor is ready 24/7 to answer any question you have.",
-    "Schoolace connects with your other apps to keep everything in one place.",
+    "Schoolace connects with your other apps to keep your entire academic life in one place.",
     "Schoolace started as a sketch on a napkin during a boring history lecture.",
     "The first version of ACE was trained on thousands of textbooks to understand how students think.",
-    "We named it Schoolace because we wanted you to ace school, not just survive it.",
     "Schoolace was designed by students who were tired of having 20 tabs open.",
     "Our team stayed up for 48 hours straight just to perfect the study algorithm.",
-    "The idea came when our founder couldn't find their notes for a final exam.",
-    "Schoolace helps you learn faster so you can actually get some sleep.",
-    "We built this because regular school software felt like it was from the 90s.",
+    "Schoolace was born when our founder couldn't find their notes for a final exam.",
     "The 'Learn' button was clicked 10,000 times in our very first hour of testing.",
-    "Schoolace turns a 2-hour lecture into a 5-minute summary."
+    "You can ask ACE to generate a custom practice quiz for you instantly, right inside the chat.",
+    "Schoolace's first line of code was written at 3 AM in a dorm room.",
+    "We designed the interface to feel less like homework and more like your favorite app.",
+    "Schoolace's color palette was specifically chosen to reduce eye strain during late-night study sessions."
 ];
 
 export const LOADING_DURATION = 2000;
