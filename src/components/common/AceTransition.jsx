@@ -34,21 +34,23 @@ import { BrainCircuit } from 'lucide-react';
 // ];
 
 const FACTS = [
-    "ACE can instantly recall details from any of your past assignment submissions.",
-    "Our 'Learn' mode adapts in real-time to your unique learning style.",
-    "ACE continuously analyzes your assessment results to tailor your study plan.",
-    "You can upload handwritten notes, and ACE will digitize and synthesize them instantly.",
-    "Schoolace's architecture evolves with you, becoming smarter the more you use it.",
-    "Quantum computers could theoretically solve problems in seconds that would take today's supercomputers millennia.",
-    "Neural networks are inspired by the biological neural networks that constitute animal brains.",
-    "The concept of 'artificial intelligence' was first coined in 1956.",
-    "Your personalized AI tutor is available 24/7 to answer any question.",
-    "Schoolace integrates seamlessly with your existing tools to centralize your academic life.",
-    "Schoolace was born from a late-night coding session fueled by a desire to make learning actually feel intuitive.",
-    "The core idea for ACE sparked when we realized standard LMS platforms were designed for administration, not education.",
-    "Every line of code in Schoolace is crafted to reduce academic friction and maximize your cognitive potential.",
-    "We built Schoolace to be the tool we wished we had during our own most challenging academic moments.",
-    "The architecture of Schoolace was inspired by the way the human brain forms and strengthens neural connections."
+    "ACE remembers every assignment you submit so you don't have to.",
+    "Learn mode changes based on how *you* learn best.",
+    "ACE looks at your quiz scores to figure out exactly what you need to study.",
+    "Upload a picture of your notes, and ACE turns them into a study guide.",
+    "Schoolace gets smarter the more you use it.",
+    "Your AI tutor is ready 24/7 to answer any question you have.",
+    "Schoolace connects with your other apps to keep everything in one place.",
+    "Schoolace started as a sketch on a napkin during a boring history lecture.",
+    "The first version of ACE was trained on thousands of textbooks to understand how students think.",
+    "We named it Schoolace because we wanted you to ace school, not just survive it.",
+    "Schoolace was designed by students who were tired of having 20 tabs open.",
+    "Our team stayed up for 48 hours straight just to perfect the study algorithm.",
+    "The idea came when our founder couldn't find their notes for a final exam.",
+    "Schoolace helps you learn faster so you can actually get some sleep.",
+    "We built this because regular school software felt like it was from the 90s.",
+    "The 'Learn' button was clicked 10,000 times in our very first hour of testing.",
+    "Schoolace turns a 2-hour lecture into a 5-minute summary."
 ];
 
 export const LOADING_DURATION = 2000;
