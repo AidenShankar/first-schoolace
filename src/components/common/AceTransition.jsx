@@ -37,7 +37,6 @@ const FACTS = [
     "You can ask ACE about any of your past assignments.",
     "Learn mode adapts in real-time to how *you* learn best.",
     "ACE analyzes your quiz scores to figure out exactly what you need to study next.",
-    "Upload a picture of your notes, and ACE can turns them into a study guide.",
     "Schoolace gets smarter and more personalized the more you use it.",
     "Your AI tutor is ready 24/7 to answer any question you have.",
     "Schoolace connects with your other apps to keep your entire academic life in one place.",
