@@ -43,7 +43,12 @@ const FACTS = [
     "Neural networks are inspired by the biological neural networks that constitute animal brains.",
     "The concept of 'artificial intelligence' was first coined in 1956.",
     "Your personalized AI tutor is available 24/7 to answer any question.",
-    "Schoolace integrates seamlessly with your existing tools to centralize your academic life."
+    "Schoolace integrates seamlessly with your existing tools to centralize your academic life.",
+    "Schoolace was born from a late-night coding session fueled by a desire to make learning actually feel intuitive.",
+    "The core idea for ACE sparked when we realized standard LMS platforms were designed for administration, not education.",
+    "Every line of code in Schoolace is crafted to reduce academic friction and maximize your cognitive potential.",
+    "We built Schoolace to be the tool we wished we had during our own most challenging academic moments.",
+    "The architecture of Schoolace was inspired by the way the human brain forms and strengthens neural connections."
 ];
 
 export const LOADING_DURATION = 2000;
