@@ -1,12 +1,20 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
+// Helper to wait
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
 Deno.serve(async (req) => {
     try {
         const base44 = createClientFromRequest(req);
         
-        // Get all users using service role (admin access)
-        // Fetching up to 1000 users to ensure we reach everyone
-        const users = await base44.asServiceRole.entities.User.list("-created_date", 1000);
+        // Skip the first 120 users who already got the email
+        // Fetch remaining users
+        const SKIP_COUNT = 120;
+        const LIMIT_COUNT = 1000;
+        
+        // Using filter to allow skipping
+        // users are sorted by created_date desc (newest first)
+        const users = await base44.asServiceRole.entities.User.filter({}, "-created_date", LIMIT_COUNT, SKIP_COUNT);
         
         const emailSubject = "Help us improve Schoolace";
         const emailBody = `Hi! We’re building tools to make school easier, and your input matters.
@@ -22,9 +30,8 @@ Thanks for helping us improve Schoolace.`;
         let sentCount = 0;
         let errors = [];
 
-        console.log(`Found ${users.length} users. Starting broadcast...`);
+        console.log(`Resuming broadcast. Found ${users.length} remaining users (skipped ${SKIP_COUNT}).`);
 
-        // Send emails sequentially to avoid overwhelming the rate limits
         for (const user of users) {
             if (user.email) {
                 try {
@@ -34,17 +41,27 @@ Thanks for helping us improve Schoolace.`;
                         body: emailBody
                     });
                     sentCount++;
-                    console.log(`Sent to ${user.email}`);
+                    console.log(`Sent to ${user.email} (${sentCount}/${users.length})`);
+                    
+                    // Wait 500ms to avoid rate limits
+                    await delay(500); 
+                    
                 } catch (err) {
                     console.error(`Failed to send to ${user.email}:`, err);
                     errors.push({ email: user.email, error: err.message });
+                    
+                    // If rate limited, wait longer
+                    if (err.message?.includes("Rate limit") || err.status === 429) {
+                         console.log("Rate limit hit, waiting 5 seconds...");
+                         await delay(5000);
+                    }
                 }
             }
         }
 
         return Response.json({ 
             success: true, 
-            total_users: users.length, 
+            total_remaining: users.length, 
             sent_count: sentCount,
             errors: errors 
         });
