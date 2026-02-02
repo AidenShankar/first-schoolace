@@ -13,14 +13,13 @@ import {
 } from "@/components/ui/dialog";
 
 
-import { User, FileText, Star, Send, Edit, CheckCircle, Paperclip, AlertTriangle, MessageSquare, Users, Inbox, LayoutGrid, List, Eye, Sparkles } from "lucide-react";
+import { User, FileText, Star, Send, Edit, CheckCircle, Paperclip, AlertTriangle, MessageSquare, Users, Inbox, LayoutGrid, List, Eye } from "lucide-react";
 import { format, subHours } from "date-fns";
 import { motion } from "framer-motion";
 import FilePreview from "../common/FilePreview";
 import { AssignmentComment } from "@/entities/AssignmentComment";
 import { ClassEnrollment } from "@/entities/ClassEnrollment";
 import { Submission } from "@/entities/Submission";
-import { base44 } from "@/api/base44Client";
 
 const statusColors = {
   pending: "bg-yellow-100 text-yellow-800 border-yellow-200",
@@ -183,7 +182,7 @@ const CommentThread = ({ assignment, currentUser, allClassStudents }) => {
     );
 };
 
-export default function SubmissionsList({ submissions, assignment, onReleaseGrade, onManualGrade, currentUser, onRefresh }) {
+export default function SubmissionsList({ submissions, assignment, onReleaseGrade, onManualGrade, currentUser }) {
   const [selectedStudentId, setSelectedStudentId] = useState(null);
   const [selectedSubmission, setSelectedSubmission] = useState(null);
   const [showGradeModal, setShowGradeModal] = useState(false);
@@ -192,7 +191,6 @@ export default function SubmissionsList({ submissions, assignment, onReleaseGrad
   const [feedbackAttachment, setFeedbackAttachment] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [allClassStudents, setAllClassStudents] = useState([]);
-  const [isRetrying, setIsRetrying] = useState(null);
   
   // Bulk Release State
   const [showBulkReleaseModal, setShowBulkReleaseModal] = useState(false);
@@ -256,23 +254,6 @@ export default function SubmissionsList({ submissions, assignment, onReleaseGrad
       alert("Failed to save the grade. Please try again.");
     } finally {
       setIsSubmitting(false);
-    }
-  };
-
-  const handleRetryAiGrading = async (submission) => {
-    setIsRetrying(submission.id);
-    try {
-        await base44.functions.invoke('gradeSubmission', { submission_id: submission.id });
-        if (onRefresh) {
-            onRefresh();
-        } else {
-            window.location.reload();
-        }
-    } catch (error) {
-        console.error("AI Grading retry failed:", error);
-        alert("Failed to trigger AI grading: " + error.message);
-    } finally {
-        setIsRetrying(null);
     }
   };
 
@@ -605,23 +586,9 @@ export default function SubmissionsList({ submissions, assignment, onReleaseGrad
                             )}
                             
                             {(submission.grading_status === "pending" || submission.grading_status === "manual_review") && (
-                                <>
-                                    {assignment.use_ai_grading && (
-                                        <Button 
-                                            size="sm" 
-                                            variant="outline" 
-                                            onClick={() => handleRetryAiGrading(submission)} 
-                                            disabled={isRetrying === submission.id}
-                                            className="text-blue-600 border-blue-200 hover:bg-blue-50 rounded-lg px-3 py-1 text-xs"
-                                        >
-                                            <Sparkles className="w-3 h-3 mr-1.5" /> 
-                                            {isRetrying === submission.id ? "Grading..." : "Auto Grade"}
-                                        </Button>
-                                    )}
-                                    <Button size="sm" variant="outline" onClick={() => openGradeModal(submission)} className="text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 rounded-lg px-3 py-1 text-xs">
-                                        <Edit className="w-3 h-3 mr-1.5" /> Manual Grade
-                                    </Button>
-                                </>
+                            <Button size="sm" variant="outline" onClick={() => openGradeModal(submission)} className="text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 rounded-lg px-3 py-1 text-xs">
+                                <Edit className="w-3 h-3 mr-1.5" /> Grade Now
+                            </Button>
                             )}
                         </div>
                         )}

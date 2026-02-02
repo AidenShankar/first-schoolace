@@ -1381,14 +1381,7 @@ export default function Dashboard({ user: layoutUser, allClasses: layoutAllClass
                                                     <Trash2 className="w-5 h-5" />
                                                 </Button>
                                             </div>
-                                            <SubmissionsList 
-                                                submissions={submissions.filter(s => s.assignment_id === selectedAssignment.id)} 
-                                                assignment={selectedAssignment} 
-                                                onReleaseGrade={handleReleaseGrade} 
-                                                onManualGrade={handleManualGrade} 
-                                                currentUser={user}
-                                                onRefresh={loadSubmissions}
-                                            />
+                                            <SubmissionsList submissions={submissions.filter(s => s.assignment_id === selectedAssignment.id)} assignment={selectedAssignment} onReleaseGrade={handleReleaseGrade} onManualGrade={handleManualGrade} currentUser={user} />
                                         </div>
                                     )}
                                     {!showAssignmentForm && !selectedAssignment && !showCreateForm && (
