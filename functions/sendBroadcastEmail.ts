@@ -7,9 +7,9 @@ Deno.serve(async (req) => {
     try {
         const base44 = createClientFromRequest(req);
         
-        // Skip the first 120 users who already got the email
+        // Skip the first 299 users who already got the email (120 batch 1 + 179 batch 2)
         // Fetch remaining users
-        const SKIP_COUNT = 120;
+        const SKIP_COUNT = 299;
         const LIMIT_COUNT = 1000;
         
         // Using filter to allow skipping
