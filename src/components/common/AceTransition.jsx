@@ -41,7 +41,6 @@ const FACTS = [
     "Your AI tutor is ready 24/7 to answer any question you have.",
     "Schoolace connects with your other apps to keep your entire academic life in one place.",
     "Schoolace started as a sketch on a napkin during a boring history lecture.",
-    "Schoolace has been pitched to over 10,000 people.",
     "The first version of ACE was trained on thousands of textbooks to understand how students think.",
     "Our team stayed up for 48 hours straight just to perfect the study algorithm.",
     "The 'Learn' button was clicked 10,000 times in our very first hour of testing.",
