@@ -1,4 +1,4 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.3';
 
 const STANDARDS_DATA = {
   "NGSS (Science)": {
@@ -48,16 +48,27 @@ const getStandardDescription = (standardSet, code) => {
 
 Deno.serve(async (req) => {
     try {
+        // Log the start of the function
+        console.log("gradeSubmission function started");
+
         const base44 = createClientFromRequest(req);
         
-        // Check if this is an automation event
-        const payload = await req.json();
+        let payload;
+        try {
+            payload = await req.json();
+            console.log("Payload received:", JSON.stringify(payload));
+        } catch (e) {
+            console.error("Failed to parse payload:", e);
+            return Response.json({ error: "Invalid JSON payload" }, { status: 400 });
+        }
+
         const { event, data } = payload;
 
         // If not an event payload, check if it's a direct invocation
         const submissionId = event?.entity_id || payload.submission_id;
 
         if (!submissionId) {
+            console.error("Missing submission_id in payload");
             return Response.json({ error: "Missing submission_id" }, { status: 400 });
         }
 
@@ -67,23 +78,29 @@ Deno.serve(async (req) => {
         // Fetch submission
         const submissions = await client.entities.Submission.filter({ id: submissionId });
         if (submissions.length === 0) {
+             console.error(`Submission not found: ${submissionId}`);
              return Response.json({ error: "Submission not found" }, { status: 404 });
         }
         const submission = submissions[0];
+        console.log(`Processing submission: ${submission.id} for assignment: ${submission.assignment_id}`);
 
         // Fetch assignment
         const assignments = await client.entities.Assignment.filter({ id: submission.assignment_id });
         if (assignments.length === 0) {
+            console.error(`Assignment not found: ${submission.assignment_id}`);
             return Response.json({ error: "Assignment not found" }, { status: 404 });
         }
         const assignment = assignments[0];
 
         if (!assignment.use_ai_grading) {
+            console.log("AI grading disabled for this assignment.");
             return Response.json({ message: "AI grading disabled for this assignment" });
         }
 
-        // Update status to ai_grading
-        await client.entities.Submission.update(submission.id, { grading_status: "ai_grading" });
+        // Update status to ai_grading (if not already set by frontend)
+        if (submission.grading_status !== "ai_grading") {
+            await client.entities.Submission.update(submission.id, { grading_status: "ai_grading" });
+        }
 
         // Grading Logic
         let fileContent = 'File content could not be extracted.';
@@ -99,6 +116,7 @@ Deno.serve(async (req) => {
                     grading_status: "manual_review",
                     ai_feedback: "This is a video/audio file that requires manual review by your teacher."
                 });
+                console.log("Marked as manual_review (media file)");
                 return Response.json({ message: "Marked for manual review (media file)" });
             }
 
@@ -107,16 +125,21 @@ Deno.serve(async (req) => {
                     grading_status: "manual_review",
                     ai_feedback: "File processing error. This submission requires manual review by your teacher."
                 });
+                console.log("Marked as manual_review (invalid file url)");
                 return Response.json({ message: "Marked for manual review (invalid file url)" });
             }
 
             try {
+                console.log(`Extracting data from file: ${submission.file_url}`);
                 const extraction = await client.integrations.Core.ExtractDataFromUploadedFile({ 
                     file_url: submission.file_url, 
                     json_schema: { type: 'object', properties: { content: { type: 'string' } } } 
                 });
                 if (extraction.status === 'success' && extraction.output?.content) {
                     fileContent = extraction.output.content;
+                    console.log("File extraction successful");
+                } else {
+                    console.warn("File extraction returned no content or failed:", extraction);
                 }
             } catch (e) { 
                 console.error("File extraction failed:", e);
@@ -189,6 +212,7 @@ Output your response as JSON with:
 - feedback: detailed explanation of what was correct/incorrect, starting with the student's name (e.g., "${submission.student_name}, you did a great job on...").
 `;
 
+        console.log("Invoking LLM for grading...");
         const result = await client.integrations.Core.InvokeLLM({
             prompt: prompt,
             response_json_schema: {
@@ -200,21 +224,22 @@ Output your response as JSON with:
                 required: ["grade", "feedback"]
             }
         });
+        console.log("LLM grading complete. Result:", JSON.stringify(result));
 
         await client.entities.Submission.update(submission.id, {
             ai_grade: result.grade,
             ai_feedback: result.feedback,
             grading_status: "ai_graded"
         });
+        console.log("Submission updated with grade.");
 
         return Response.json({ success: true, grade: result.grade });
 
     } catch (error) {
-        console.error("Backend grading failed:", error);
+        console.error("Backend grading failed with error:", error);
         // Try to update submission to manual review if possible
         try {
              const base44 = createClientFromRequest(req);
-             // Re-parse payload to get submission id in catch block
              const payload = await req.json().catch(() => ({}));
              const submissionId = payload.event?.entity_id || payload.submission_id;
              if (submissionId) {

@@ -409,7 +409,7 @@ export default function Dashboard({ user: layoutUser, allClasses: layoutAllClass
                 submission_type: "text",
                 file_name: "Text Submission",
                 submitted_at: new Date().toISOString(),
-                grading_status: assignment.use_ai_grading ? "pending" : "manual_review"
+                grading_status: assignment.use_ai_grading ? "ai_grading" : "manual_review"
             }));
 
             // If there was a previously released submission, "unrelease" all of them
@@ -658,7 +658,7 @@ export default function Dashboard({ user: layoutUser, allClasses: layoutAllClass
                 file_url: file_url,
                 file_name: submissionData.file.name,
                 submitted_at: new Date().toISOString(),
-                grading_status: uploadingAssignment.use_ai_grading ? "pending" : "manual_review"
+                grading_status: uploadingAssignment.use_ai_grading ? "ai_grading" : "manual_review"
             }));
 
             // If there was a previously released submission, "unreleased" all of them
