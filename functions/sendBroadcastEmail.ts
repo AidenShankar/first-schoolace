@@ -7,14 +7,13 @@ Deno.serve(async (req) => {
     try {
         const base44 = createClientFromRequest(req);
         
-        // Skip the first 299 users who already got the email (120 batch 1 + 179 batch 2)
-        // Fetch remaining users
-        const SKIP_COUNT = 299;
-        const LIMIT_COUNT = 1000;
-        
-        // Using filter to allow skipping
-        // users are sorted by created_date desc (newest first)
-        const users = await base44.asServiceRole.entities.User.filter({}, "-created_date", LIMIT_COUNT, SKIP_COUNT);
+        // Final cleanup: Send to the 4 users who failed due to rate limits
+        const specificEmails = [
+            "rebekah.varghese@warriorlife.net",
+            "vbui@warriorlife.net",
+            "cash.slezak@gmail.com",
+            "sammourmahfouz@gmail.com"
+        ];
         
         const emailSubject = "Help us improve Schoolace";
         const emailBody = `Hi! We’re building tools to make school easier, and your input matters.
@@ -30,38 +29,26 @@ Thanks for helping us improve Schoolace.`;
         let sentCount = 0;
         let errors = [];
 
-        console.log(`Resuming broadcast. Found ${users.length} remaining users (skipped ${SKIP_COUNT}).`);
+        console.log(`Sending final retry to ${specificEmails.length} users.`);
 
-        for (const user of users) {
-            if (user.email) {
-                try {
-                    await base44.integrations.Core.SendEmail({
-                        to: user.email,
-                        subject: emailSubject,
-                        body: emailBody
-                    });
-                    sentCount++;
-                    console.log(`Sent to ${user.email} (${sentCount}/${users.length})`);
-                    
-                    // Wait 500ms to avoid rate limits
-                    await delay(500); 
-                    
-                } catch (err) {
-                    console.error(`Failed to send to ${user.email}:`, err);
-                    errors.push({ email: user.email, error: err.message });
-                    
-                    // If rate limited, wait longer
-                    if (err.message?.includes("Rate limit") || err.status === 429) {
-                         console.log("Rate limit hit, waiting 5 seconds...");
-                         await delay(5000);
-                    }
-                }
+        for (const email of specificEmails) {
+            try {
+                await base44.integrations.Core.SendEmail({
+                    to: email,
+                    subject: emailSubject,
+                    body: emailBody
+                });
+                sentCount++;
+                console.log(`Sent to ${email}`);
+                await delay(1000); // Be very gentle
+            } catch (err) {
+                console.error(`Failed to send to ${email}:`, err);
+                errors.push({ email: email, error: err.message });
             }
         }
 
         return Response.json({ 
             success: true, 
-            total_remaining: users.length, 
             sent_count: sentCount,
             errors: errors 
         });
