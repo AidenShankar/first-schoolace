@@ -53,7 +53,6 @@ const FACTS = [
     "Schoolace's color palette was specifically chosen to reduce eye strain during late-night study sessions.",
     "You can switch up your entire aesthetic by changing the color theme in your dashboard settings.",
     "Schoolace has been pitched to more than 10,000 people.",
-    "The name 'Schoolace' was originally a typo in a tennis group chat that just stuck.",
     "Our first server crashed because too many students tried to join the beta at once.",
     "ACE's personality is modeled after the most patient teacher we ever knew.",
     "Our team pulled two all-nighters in a row on launch day just to fix the bugs.",
