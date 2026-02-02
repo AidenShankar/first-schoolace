@@ -840,7 +840,7 @@ Output your response as JSON with:
             setShowUploadModal(false);
             setUploadingAssignment(null);
             loadSubmissions();
-            alert("Failed to submit assignment. Please try again.");
+            alert(`Failed to submit assignment: ${error.message || "Unknown error"}`);
         }
     };
     

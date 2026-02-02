@@ -1,4 +1,3 @@
-
 import React, { useState, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -25,7 +24,7 @@ export default function SubmissionUpload({ assignment, onSubmit, onCancel, isSub
       "audio/mp4" // .m4a
     ];
 
-    const MAX_FILE_SIZE_MB = 25;
+    const MAX_FILE_SIZE_MB = 50;
     const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
 
     if (selectedFile.size > MAX_FILE_SIZE_BYTES) {
