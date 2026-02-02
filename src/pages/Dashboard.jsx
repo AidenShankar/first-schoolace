@@ -278,7 +278,7 @@ export default function Dashboard({ user: layoutUser, allClasses: layoutAllClass
             await retryWithBackoff(() => ClassEnrollment.create({
                 class_id: targetClass.id,
                 student_id: user.id,
-                student_name: user.full_name || user.email || "Student",
+                student_name: user.full_name,
                 student_email: user.email,
                 enrolled_at: new Date().toISOString()
             }));
@@ -539,7 +539,7 @@ Output your response as JSON with:
             const submission = await retryWithBackoff(() => Submission.create({
                 assignment_id: assignment.id,
                 student_id: user.id,
-                student_name: user.full_name || user.email || "Student",
+                student_name: user.full_name,
                 student_email: user.email,
                 text_content: textContent,
                 submission_type: "text",
@@ -793,7 +793,7 @@ Output your response as JSON with:
             const submission = await retryWithBackoff(() => Submission.create({
                 assignment_id: uploadingAssignment.id,
                 student_id: user.id,
-                student_name: user.full_name || user.email || "Student",
+                student_name: user.full_name,
                 student_email: user.email,
                 file_url: file_url,
                 file_name: submissionData.file.name,
@@ -840,7 +840,7 @@ Output your response as JSON with:
             setShowUploadModal(false);
             setUploadingAssignment(null);
             loadSubmissions();
-            alert(`Failed to submit assignment: ${error.message || "Unknown error"}`);
+            alert("Failed to submit assignment. Please try again.");
         }
     };
     
