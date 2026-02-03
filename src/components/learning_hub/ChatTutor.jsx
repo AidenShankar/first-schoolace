@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, Loader2, Sparkles, CheckCircle, X, Plus, File, FileText, Image, BrainCircuit, Upload, GraduationCap } from 'lucide-react';
+import { Send, Loader2, Sparkles, CheckCircle, X, Plus, File, FileText, Image, BrainCircuit, Upload, GraduationCap, FileQuestion } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
 import { UploadFile, ExtractDataFromUploadedFile } from '@/integrations/Core';
 import ReactMarkdown from 'react-markdown';
@@ -737,6 +737,27 @@ export default function ChatTutor({ user, learningData, language = 'EN', isPerso
                                         {learningMode 
                                             ? t('personalizedLearning.learningModeDesc', language)
                                             : t('personalizedLearning.solutionModeDesc', language)}
+                                    </p>
+                                </div>
+                                <DropdownMenuSeparator />
+                                <div className="px-2 py-3">
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-2">
+                                            <FileQuestion className="w-4 h-4 text-purple-600" />
+                                            <Label htmlFor="quiz-enabled" className="text-sm font-medium cursor-pointer">
+                                                Enable Quizzes
+                                            </Label>
+                                        </div>
+                                        <Switch 
+                                            id="quiz-enabled"
+                                            checked={quizEnabled}
+                                            onCheckedChange={setQuizEnabled}
+                                        />
+                                    </div>
+                                    <p className="text-xs text-slate-500 mt-2 ml-6">
+                                        {quizEnabled 
+                                            ? "Ace can generate practice quizzes for you."
+                                            : "Quiz generation is disabled."}
                                     </p>
                                 </div>
                             </DropdownMenuContent>
