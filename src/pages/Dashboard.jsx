@@ -366,10 +366,146 @@ export default function Dashboard({ user: layoutUser, allClasses: layoutAllClass
         }
       };
 
-    // AI grading is now handled by a backend automation
     const gradeSubmission = async (submission, assignment) => {
-        // Fallback or debug log
-        console.log("Grading initiated in background for submission:", submission.id);
+        try {
+            await retryWithBackoff(() => Submission.update(submission.id, { grading_status: "ai_grading" }));
+            loadSubmissions(); // Refresh UI to show "ai_grading" status
+
+            const gradingPromise = (async () => {
+                let fileContent = 'File content could not be extracted.';
+                
+                // Handle text submissions differently
+                if (submission.submission_type === "text" && submission.text_content) {
+                    fileContent = submission.text_content;
+                } else {
+                    // Handle non-gradable file types
+                    const fileName = submission.file_name.toLowerCase();
+                    if (fileName.endsWith('.mp3') || fileName.endsWith('.mp4') || fileName.endsWith('.mov') || fileName.endsWith('.m4a')) {
+                        return retryWithBackoff(() => Submission.update(submission.id, {
+                            grading_status: "manual_review",
+                            ai_feedback: "This is a video/audio file that requires manual review by your teacher."
+                        }));
+                    }
+
+                    if (!submission.file_url || submission.file_url.startsWith('blob:')) {
+                        return retryWithBackoff(() => Submission.update(submission.id, {
+                            grading_status: "manual_review",
+                            ai_feedback: "File processing error. This submission requires manual review by your teacher."
+                        }));
+                    }
+
+                    try {
+                        const extraction = await ExtractDataFromUploadedFile({ 
+                            file_url: submission.file_url, 
+                            json_schema: { type: 'object', properties: { content: { type: 'string' } } } 
+                        });
+                        if (extraction.status === 'success' && extraction.output?.content) {
+                            fileContent = extraction.output.content;
+                        }
+                    } catch (e) { 
+                        console.error("File extraction failed:", e);
+                        return retryWithBackoff(() => Submission.update(submission.id, {
+                            grading_status: "manual_review",
+                            ai_feedback: "This file format requires manual review by your teacher."
+                        }));
+                    }
+                }
+
+                let answerKeyContent = 'No answer key provided.';
+                if (assignment.answer_key_url && !assignment.answer_key_url.startsWith('blob:')) {
+                    try {
+                        const keyExtraction = await ExtractDataFromUploadedFile({ 
+                            file_url: assignment.answer_key_url, 
+                            json_schema: { type: 'object', properties: { content: { type: 'string' } } } 
+                        } );
+                        if (keyExtraction.status === 'success' && keyExtraction.output?.content) {
+                            answerKeyContent = keyExtraction.output.content;
+                        }
+                    } catch (e) { 
+                        console.error("Answer key extraction failed:", e);
+                    }
+                }
+
+                const prompt = `
+You are an expert academic grader. Your task is to grade a student's work with absolute precision and accuracy based on a specific leniency level.
+
+**GRADING TASK CONTEXT:**
+- **Student's Name:** ${submission.student_name}
+- **Assignment Title:** ${assignment.title}
+- **Teacher's Instructions:** ${assignment.instructions}
+- **Maximum Points:** ${assignment.max_points}
+- **Grading Leniency:** ${assignment.leniency || 'Neutral'}. Interpret this as follows:
+    - **Strict:** Be exacting. No partial credit unless explicitly stated in instructions. Minor errors are penalized. The final grade must precisely reflect the number of correct answers.
+    - **Neutral:** Grade fairly based on the instructions. Award partial credit where it makes sense. The final grade should be a balanced reflection of the student's work.
+    - **Lenient:** Focus on understanding and effort. Be generous with partial credit. Minor errors should not significantly impact the grade.
+
+${assignment.grading_standards?.selected_codes?.length > 0 ? `
+**GRADING STANDARDS (NGSS):**
+The teacher has selected specific standards to grade against. You have access to the full description of these standards below. You must evaluate the student's mastery of EACH of these specific standards:
+${assignment.grading_standards.selected_codes.map(code => {
+    const desc = getStandardDescription(assignment.grading_standards.standard_set, code) || "";
+    return `- ${code} (${desc})`;
+}).join('\n')}
+
+**MANDATORY FEEDBACK REQUIREMENT:**
+In your feedback response, you MUST explicitly address each selected standard individually.
+For every standard listed above, type the standard code and specific feedback on how the student met or did not meet that specific standard.
+
+Example format:
+"Regarding [Standard Code]: You successfully demonstrated..."
+"Regarding [Standard Code]: You missed the key concept of..."
+` : ''}
+
+- **Answer Key:** ${answerKeyContent}
+- **Student Submission:** ${fileContent}
+
+**CRITICAL RULES:**
+- **Address the student directly by their name, ${submission.student_name}, in your feedback.**
+- If a student's answer matches the correct answer, it is CORRECT. Never say an answer is wrong when it matches the correct answer.
+- Be precise in your calculations.
+- If you cannot clearly read the submission, state that clearly in your feedback.
+- Provide constructive feedback that helps the student learn.
+- **If the grade is lower than the maximum points (${assignment.max_points}) or less than 100%, you MUST explicitly state what was missing or incorrect to achieve full marks. Structure the feedback as "Good Feedback" (what they did well) followed by "Gap Feedback" (what was missing/wrong) to help them close the gap.**
+
+Output your response as JSON with:
+- grade: numerical score (0 to ${assignment.max_points})
+- feedback: detailed explanation of what was correct/incorrect, starting with the student's name (e.g., "${submission.student_name}, you did a great job on...").
+`;
+
+                const result = await InvokeLLM({
+                    prompt: prompt,
+                    response_json_schema: {
+                        type: "object",
+                        properties: {
+                            grade: { type: "number" },
+                            feedback: { type: "string" }
+                        },
+                        required: ["grade", "feedback"]
+                    }
+                });
+
+                return retryWithBackoff(() => Submission.update(submission.id, {
+                    ai_grade: result.grade,
+                    ai_feedback: result.feedback,
+                    grading_status: "ai_graded"
+                }));
+            })();
+            
+            const timeoutPromise = new Promise((_, reject) => 
+              setTimeout(() => reject(new Error('Grading timed out after 3 minutes.')), 180000)
+            );
+
+            await Promise.race([gradingPromise, timeoutPromise]);
+
+        } catch (error) {
+            console.error("Error grading submission:", error);
+            await retryWithBackoff(() => Submission.update(submission.id, { 
+                grading_status: "manual_review", 
+                ai_feedback: `AI grading failed or timed out and requires manual review. Error: ${error.message}`
+            }));
+        } finally {
+            loadSubmissions();
+        }
     };
 
     const handleTextSubmission = async (assignment, textContent) => {
@@ -409,7 +545,7 @@ export default function Dashboard({ user: layoutUser, allClasses: layoutAllClass
                 submission_type: "text",
                 file_name: "Text Submission",
                 submitted_at: new Date().toISOString(),
-                grading_status: assignment.use_ai_grading ? "ai_grading" : "manual_review"
+                grading_status: assignment.use_ai_grading ? "pending" : "manual_review"
             }));
 
             // If there was a previously released submission, "unrelease" all of them
@@ -436,8 +572,12 @@ export default function Dashboard({ user: layoutUser, allClasses: layoutAllClass
                 await Promise.all(updatePromises);
             }
 
-            // AI grading handled by automation
-            setTextSubmissionState({ show: true, status: 'success', message: 'Text submission submitted! AI grading has started.' });
+            if (assignment.use_ai_grading) {
+                setTextSubmissionState({ show: true, status: 'processing', message: 'Processing...' });
+                await gradeSubmission(submission, assignment);
+            }
+            
+            setTextSubmissionState({ show: true, status: 'success', message: 'Text submission submitted!' });
 
             setTimeout(() => {
                 setTextSubmissionState({ show: false, status: 'processing', message: '' });
@@ -658,7 +798,7 @@ export default function Dashboard({ user: layoutUser, allClasses: layoutAllClass
                 file_url: file_url,
                 file_name: submissionData.file.name,
                 submitted_at: new Date().toISOString(),
-                grading_status: uploadingAssignment.use_ai_grading ? "ai_grading" : "manual_review"
+                grading_status: uploadingAssignment.use_ai_grading ? "pending" : "manual_review"
             }));
 
             // If there was a previously released submission, "unreleased" all of them
@@ -685,7 +825,11 @@ export default function Dashboard({ user: layoutUser, allClasses: layoutAllClass
                 await Promise.all(updatePromises);
             }
 
-            // Close modal immediately - grading happens in background
+            // The important part: only close modal after AI grading is done
+            if (uploadingAssignment.use_ai_grading) {
+                await gradeSubmission(submission, uploadingAssignment); // Wait for it to finish
+            }
+            // Now close modal and reset UI
             setShowUploadModal(false);
             setUploadingAssignment(null);
             setIsSubmitting(false);
