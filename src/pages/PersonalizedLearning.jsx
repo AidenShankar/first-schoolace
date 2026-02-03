@@ -24,8 +24,6 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
 import { useTranslation } from '../components/i18n/useTranslation';
 import AceTransition, { LOADING_DURATION } from "@/components/common/AceTransition";
 
@@ -37,7 +35,6 @@ export default function PersonalizedLearning() {
     const [isLoading, setIsLoading] = useState(true); // Controls data loading spinner after intro
     const [error, setError] = useState(null);
     const [isPersonalizedMode, setIsPersonalizedMode] = useState(true);
-    const [disableQuizzes, setDisableQuizzes] = useState(false);
 
     // Effect for initial intro screen duration
     useEffect(() => {
@@ -550,17 +547,7 @@ export default function PersonalizedLearning() {
         <div className="min-h-screen" style={{ background: `rgb(var(--color-background))` }}>
             
             <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16 relative">
-                <div className="absolute top-8 right-8 z-50 flex gap-4 items-center">
-                    <div className="flex items-center gap-2 bg-white/50 backdrop-blur-sm px-3 py-2 rounded-lg border border-slate-200/50 shadow-sm">
-                        <Label htmlFor="disable-quizzes" className="text-sm font-medium text-slate-700 cursor-pointer">
-                            Disable Quizzes
-                        </Label>
-                        <Switch 
-                            id="disable-quizzes"
-                            checked={disableQuizzes}
-                            onCheckedChange={setDisableQuizzes}
-                        />
-                    </div>
+                <div className="absolute top-8 right-8 z-50 flex gap-2">
                     <Button 
                         variant="outline" 
                         className="gap-2 backdrop-blur-sm transition-colors"
@@ -633,7 +620,6 @@ export default function PersonalizedLearning() {
                                 language={language}
                                 isPersonalizedMode={isPersonalizedMode}
                                 setIsPersonalizedMode={setIsPersonalizedMode}
-                                disableQuizzes={disableQuizzes}
                             />
                         </motion.div>
 
