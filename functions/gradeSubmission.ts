@@ -84,6 +84,13 @@ Deno.serve(async (req) => {
         const submission = submissions[0];
         console.log(`Processing submission: ${submission.id} for assignment: ${submission.assignment_id}`);
 
+        // Loop protection: Skip if already graded or in a terminal state
+        const terminalStatuses = ["ai_graded", "manual_review", "graded", "released", "error"];
+        if (terminalStatuses.includes(submission.grading_status)) {
+            console.log(`Skipping grading for terminal status: ${submission.grading_status}`);
+            return Response.json({ message: `Skipping grading (status is ${submission.grading_status})` });
+        }
+
         // Fetch assignment
         const assignments = await client.entities.Assignment.filter({ id: submission.assignment_id });
         if (assignments.length === 0) {
