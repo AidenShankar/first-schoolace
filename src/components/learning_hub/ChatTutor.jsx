@@ -196,7 +196,7 @@ const MessageContent = ({ content, isUser }) => {
     );
 };
 
-export default function ChatTutor({ user, learningData, language = 'EN', isPersonalizedMode, setIsPersonalizedMode }) {
+export default function ChatTutor({ user, learningData, language = 'EN', isPersonalizedMode, setIsPersonalizedMode, disableQuizzes }) {
     const [conversation, setConversation] = useState([]);
     const [input, setInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -471,7 +471,8 @@ export default function ChatTutor({ user, learningData, language = 'EN', isPerso
                 conversationHistory: [...conversation, userMessage],
                 isPersonalizedMode,
                 learningMode,
-                language
+                language,
+                disableQuizzes
             });
 
             if (error) throw new Error(error.response?.data?.error || "Unknown error");

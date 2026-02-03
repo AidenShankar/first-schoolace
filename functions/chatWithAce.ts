@@ -17,7 +17,8 @@ export async function chatWithAce(req) {
             isPersonalizedMode = true, 
             learningMode = false, 
             language = 'EN',
-            attachedFiles = [] 
+            attachedFiles = [],
+            disableQuizzes = false
         } = await req.json();
 
         // 1. Moderate the student message
