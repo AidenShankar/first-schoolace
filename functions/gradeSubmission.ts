@@ -76,9 +76,15 @@ Deno.serve(async (req) => {
         const client = base44.asServiceRole;
 
         // Fetch submission
+        console.log(`Attempting to fetch submission with ID: ${submissionId}`);
         const submissions = await client.entities.Submission.filter({ id: submissionId });
+        
         if (submissions.length === 0) {
              console.error(`Submission not found: ${submissionId}`);
+             // DEBUG: List recent submissions to see what's visible
+             const allSubmissions = await client.entities.Submission.list('-created_date', 5);
+             console.log("Visible submissions:", JSON.stringify(allSubmissions.map(s => s.id)));
+             
              return Response.json({ error: "Submission not found" }, { status: 404 });
         }
         const submission = submissions[0];
