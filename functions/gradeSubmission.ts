@@ -75,19 +75,31 @@ Deno.serve(async (req) => {
         // Use service role for backend operations
         const client = base44.asServiceRole;
 
-        // Fetch submission
-        console.log(`Attempting to fetch submission with ID: ${submissionId}`);
-        const submissions = await client.entities.Submission.filter({ id: submissionId });
-        
-        if (submissions.length === 0) {
-             console.error(`Submission not found: ${submissionId}`);
+        // Fetch submission with retries to handle read-after-write consistency
+        let submission = null;
+        for (let i = 0; i < 5; i++) {
+            console.log(`Attempting to fetch submission with ID: ${submissionId} (Attempt ${i + 1}/5)`);
+            const submissions = await client.entities.Submission.filter({ id: submissionId });
+            if (submissions.length > 0) {
+                submission = submissions[0];
+                break;
+            }
+            // Wait 1 second before retrying
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+
+        if (!submission) {
+             console.error(`Submission not found after retries: ${submissionId}`);
              // DEBUG: List recent submissions to see what's visible
-             const allSubmissions = await client.entities.Submission.list('-created_date', 5);
-             console.log("Visible submissions:", JSON.stringify(allSubmissions.map(s => s.id)));
+             try {
+                const allSubmissions = await client.entities.Submission.list('-created_date', 5);
+                console.log("Visible submissions:", JSON.stringify(allSubmissions.map(s => s.id)));
+             } catch (e) {
+                console.error("Failed to list submissions:", e);
+             }
              
              return Response.json({ error: "Submission not found" }, { status: 404 });
         }
-        const submission = submissions[0];
         console.log(`Processing submission: ${submission.id} for assignment: ${submission.assignment_id}`);
 
         // Fetch assignment
