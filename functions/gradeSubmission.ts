@@ -46,134 +46,105 @@ const getStandardDescription = (standardSet, code) => {
   return null;
 };
 
-Deno.serve(async (req) => {
-    try {
-        // Log the start of the function
-        console.log("gradeSubmission function started");
+// Core grading logic function
+async function gradeSingleSubmission(client, submissionId) {
+    // Fetch submission
+    const submissions = await client.entities.Submission.filter({ id: submissionId });
+    if (submissions.length === 0) {
+         throw new Error(`Submission not found: ${submissionId}`);
+    }
+    const submission = submissions[0];
+    console.log(`Processing submission: ${submission.id} for assignment: ${submission.assignment_id}`);
 
-        const base44 = createClientFromRequest(req);
-        
-        let payload;
+    // Loop protection: Skip if already graded or in a terminal state
+    const terminalStatuses = ["ai_graded", "manual_review", "graded", "released", "error"];
+    if (terminalStatuses.includes(submission.grading_status)) {
+        console.log(`Skipping grading for terminal status: ${submission.grading_status}`);
+        return { skipped: true, reason: `Status is ${submission.grading_status}` };
+    }
+
+    // Fetch assignment
+    const assignments = await client.entities.Assignment.filter({ id: submission.assignment_id });
+    if (assignments.length === 0) {
+        throw new Error(`Assignment not found: ${submission.assignment_id}`);
+    }
+    const assignment = assignments[0];
+
+    if (!assignment.use_ai_grading) {
+        console.log("AI grading disabled for this assignment.");
+        return { skipped: true, reason: "AI grading disabled" };
+    }
+
+    // Update status to ai_grading (if not already set)
+    if (submission.grading_status !== "ai_grading") {
+        await client.entities.Submission.update(submission.id, { grading_status: "ai_grading" });
+    }
+
+    // Grading Logic
+    let fileContent = 'File content could not be extracted.';
+    
+    // Handle text submissions differently
+    if (submission.submission_type === "text" && submission.text_content) {
+        fileContent = submission.text_content;
+    } else {
+        // Handle non-gradable file types
+        const fileName = (submission.file_name || "").toLowerCase();
+        if (fileName.endsWith('.mp3') || fileName.endsWith('.mp4') || fileName.endsWith('.mov') || fileName.endsWith('.m4a')) {
+             await client.entities.Submission.update(submission.id, {
+                grading_status: "manual_review",
+                ai_feedback: "This is a video/audio file that requires manual review by your teacher."
+            });
+            console.log("Marked as manual_review (media file)");
+            return { skipped: true, reason: "Marked for manual review (media file)" };
+        }
+
+        if (!submission.file_url || submission.file_url.startsWith('blob:')) {
+             await client.entities.Submission.update(submission.id, {
+                grading_status: "manual_review",
+                ai_feedback: "File processing error. This submission requires manual review by your teacher."
+            });
+            console.log("Marked as manual_review (invalid file url)");
+            return { skipped: true, reason: "Marked for manual review (invalid file url)" };
+        }
+
         try {
-            payload = await req.json();
-            console.log("Payload received:", JSON.stringify(payload));
-        } catch (e) {
-            console.error("Failed to parse payload:", e);
-            return Response.json({ error: "Invalid JSON payload" }, { status: 400 });
-        }
-
-        const { event, data } = payload;
-
-        // If not an event payload, check if it's a direct invocation
-        const submissionId = event?.entity_id || payload.submission_id;
-
-        if (!submissionId) {
-            console.error("Missing submission_id in payload");
-            return Response.json({ error: "Missing submission_id" }, { status: 400 });
-        }
-
-        // Use service role for backend operations
-        const client = base44.asServiceRole;
-
-        // Fetch submission
-        const submissions = await client.entities.Submission.filter({ id: submissionId });
-        if (submissions.length === 0) {
-             console.error(`Submission not found: ${submissionId}`);
-             return Response.json({ error: "Submission not found" }, { status: 404 });
-        }
-        const submission = submissions[0];
-        console.log(`Processing submission: ${submission.id} for assignment: ${submission.assignment_id}`);
-
-        // Loop protection: Skip if already graded or in a terminal state
-        const terminalStatuses = ["ai_graded", "manual_review", "graded", "released", "error"];
-        if (terminalStatuses.includes(submission.grading_status)) {
-            console.log(`Skipping grading for terminal status: ${submission.grading_status}`);
-            return Response.json({ message: `Skipping grading (status is ${submission.grading_status})` });
-        }
-
-        // Fetch assignment
-        const assignments = await client.entities.Assignment.filter({ id: submission.assignment_id });
-        if (assignments.length === 0) {
-            console.error(`Assignment not found: ${submission.assignment_id}`);
-            return Response.json({ error: "Assignment not found" }, { status: 404 });
-        }
-        const assignment = assignments[0];
-
-        if (!assignment.use_ai_grading) {
-            console.log("AI grading disabled for this assignment.");
-            return Response.json({ message: "AI grading disabled for this assignment" });
-        }
-
-        // Update status to ai_grading (if not already set by frontend)
-        if (submission.grading_status !== "ai_grading") {
-            await client.entities.Submission.update(submission.id, { grading_status: "ai_grading" });
-        }
-
-        // Grading Logic
-        let fileContent = 'File content could not be extracted.';
-        
-        // Handle text submissions differently
-        if (submission.submission_type === "text" && submission.text_content) {
-            fileContent = submission.text_content;
-        } else {
-            // Handle non-gradable file types
-            const fileName = (submission.file_name || "").toLowerCase();
-            if (fileName.endsWith('.mp3') || fileName.endsWith('.mp4') || fileName.endsWith('.mov') || fileName.endsWith('.m4a')) {
-                 await client.entities.Submission.update(submission.id, {
-                    grading_status: "manual_review",
-                    ai_feedback: "This is a video/audio file that requires manual review by your teacher."
-                });
-                console.log("Marked as manual_review (media file)");
-                return Response.json({ message: "Marked for manual review (media file)" });
+            console.log(`Extracting data from file: ${submission.file_url}`);
+            const extraction = await client.integrations.Core.ExtractDataFromUploadedFile({ 
+                file_url: submission.file_url, 
+                json_schema: { type: 'object', properties: { content: { type: 'string' } } } 
+            });
+            if (extraction.status === 'success' && extraction.output?.content) {
+                fileContent = extraction.output.content;
+                console.log("File extraction successful");
+            } else {
+                console.warn("File extraction returned no content or failed:", extraction);
             }
-
-            if (!submission.file_url || submission.file_url.startsWith('blob:')) {
-                 await client.entities.Submission.update(submission.id, {
-                    grading_status: "manual_review",
-                    ai_feedback: "File processing error. This submission requires manual review by your teacher."
-                });
-                console.log("Marked as manual_review (invalid file url)");
-                return Response.json({ message: "Marked for manual review (invalid file url)" });
-            }
-
-            try {
-                console.log(`Extracting data from file: ${submission.file_url}`);
-                const extraction = await client.integrations.Core.ExtractDataFromUploadedFile({ 
-                    file_url: submission.file_url, 
-                    json_schema: { type: 'object', properties: { content: { type: 'string' } } } 
-                });
-                if (extraction.status === 'success' && extraction.output?.content) {
-                    fileContent = extraction.output.content;
-                    console.log("File extraction successful");
-                } else {
-                    console.warn("File extraction returned no content or failed:", extraction);
-                }
-            } catch (e) { 
-                console.error("File extraction failed:", e);
-                await client.entities.Submission.update(submission.id, {
-                    grading_status: "manual_review",
-                    ai_feedback: "This file format requires manual review by your teacher."
-                });
-                return Response.json({ message: "Marked for manual review (extraction failed)" });
-            }
+        } catch (e) { 
+            console.error("File extraction failed:", e);
+            await client.entities.Submission.update(submission.id, {
+                grading_status: "manual_review",
+                ai_feedback: "This file format requires manual review by your teacher."
+            });
+            return { skipped: true, reason: "Marked for manual review (extraction failed)" };
         }
+    }
 
-        let answerKeyContent = 'No answer key provided.';
-        if (assignment.answer_key_url && !assignment.answer_key_url.startsWith('blob:')) {
-            try {
-                const keyExtraction = await client.integrations.Core.ExtractDataFromUploadedFile({ 
-                    file_url: assignment.answer_key_url, 
-                    json_schema: { type: 'object', properties: { content: { type: 'string' } } } 
-                } );
-                if (keyExtraction.status === 'success' && keyExtraction.output?.content) {
-                    answerKeyContent = keyExtraction.output.content;
-                }
-            } catch (e) { 
-                console.error("Answer key extraction failed:", e);
+    let answerKeyContent = 'No answer key provided.';
+    if (assignment.answer_key_url && !assignment.answer_key_url.startsWith('blob:')) {
+        try {
+            const keyExtraction = await client.integrations.Core.ExtractDataFromUploadedFile({ 
+                file_url: assignment.answer_key_url, 
+                json_schema: { type: 'object', properties: { content: { type: 'string' } } } 
+            } );
+            if (keyExtraction.status === 'success' && keyExtraction.output?.content) {
+                answerKeyContent = keyExtraction.output.content;
             }
+        } catch (e) { 
+            console.error("Answer key extraction failed:", e);
         }
+    }
 
-        const prompt = `
+    const prompt = `
 You are an expert academic grader. Your task is to grade a student's work with absolute precision and accuracy based on a specific leniency level.
 
 **GRADING TASK CONTEXT:**
@@ -219,46 +190,101 @@ Output your response as JSON with:
 - feedback: detailed explanation of what was correct/incorrect, starting with the student's name (e.g., "${submission.student_name}, you did a great job on...").
 `;
 
-        console.log("Invoking LLM for grading...");
-        const result = await client.integrations.Core.InvokeLLM({
-            prompt: prompt,
-            response_json_schema: {
-                type: "object",
-                properties: {
-                    grade: { type: "number" },
-                    feedback: { type: "string" }
-                },
-                required: ["grade", "feedback"]
-            }
-        });
-        console.log("LLM grading complete. Result:", JSON.stringify(result));
+    console.log("Invoking LLM for grading...");
+    const result = await client.integrations.Core.InvokeLLM({
+        prompt: prompt,
+        response_json_schema: {
+            type: "object",
+            properties: {
+                grade: { type: "number" },
+                feedback: { type: "string" }
+            },
+            required: ["grade", "feedback"]
+        }
+    });
+    console.log("LLM grading complete. Result:", JSON.stringify(result));
 
-        await client.entities.Submission.update(submission.id, {
-            ai_grade: result.grade,
-            ai_feedback: result.feedback,
-            grading_status: "ai_graded"
-        });
-        console.log("Submission updated with grade.");
+    await client.entities.Submission.update(submission.id, {
+        ai_grade: result.grade,
+        ai_feedback: result.feedback,
+        grading_status: "ai_graded"
+    });
+    console.log("Submission updated with grade.");
 
-        return Response.json({ success: true, grade: result.grade });
+    return { success: true, grade: result.grade, feedback: result.feedback };
+}
 
-    } catch (error) {
-        console.error("Backend grading failed with error:", error);
-        // Try to update submission to manual review if possible
+
+Deno.serve(async (req) => {
+    try {
+        console.log("gradeSubmission function started");
+        const base44 = createClientFromRequest(req);
+        const client = base44.asServiceRole;
+        
+        let payload = {};
         try {
-             const base44 = createClientFromRequest(req);
-             const payload = await req.json().catch(() => ({}));
-             const submissionId = payload.event?.entity_id || payload.submission_id;
-             if (submissionId) {
-                await base44.asServiceRole.entities.Submission.update(submissionId, { 
-                    grading_status: "manual_review", 
-                    ai_feedback: `AI grading failed or timed out and requires manual review. Error: ${error.message}`
-                });
-             }
+            payload = await req.json();
+            console.log("Payload received:", JSON.stringify(payload));
         } catch (e) {
-            console.error("Failed to update submission status in catch block:", e);
+            console.error("Failed to parse payload:", e);
         }
 
+        const { event } = payload;
+        const submissionId = event?.entity_id || payload.submission_id;
+
+        // MODE 1: Single Submission (Event or direct call)
+        if (submissionId) {
+            try {
+                const result = await gradeSingleSubmission(client, submissionId);
+                return Response.json(result);
+            } catch (error) {
+                console.error("Single grading failed:", error);
+                
+                // Try to update status if failed
+                try {
+                     await client.entities.Submission.update(submissionId, { 
+                        grading_status: "manual_review", 
+                        ai_feedback: `AI grading failed: ${error.message}`
+                    });
+                } catch(e) {}
+                
+                return Response.json({ error: error.message }, { status: 500 });
+            }
+        }
+
+        // MODE 2: Bulk Pickup (Scheduled)
+        // Find up to 5 oldest submissions stuck in 'ai_grading'
+        // Sorting by created_date ASC to process oldest first
+        const stuckSubmissions = await client.entities.Submission.filter({
+            grading_status: "ai_grading"
+        }, "created_date", 5);
+
+        console.log(`Found ${stuckSubmissions.length} stuck submissions`);
+        
+        const results = [];
+        for (const sub of stuckSubmissions) {
+            try {
+                const res = await gradeSingleSubmission(client, sub.id);
+                results.push({ id: sub.id, status: 'success', result: res });
+            } catch (e) {
+                console.error(`Error processing stuck submission ${sub.id}:`, e);
+                
+                 // Update status to manual_review to prevent infinite retries of broken items
+                try {
+                     await client.entities.Submission.update(sub.id, { 
+                        grading_status: "manual_review", 
+                        ai_feedback: `AI grading failed (bulk): ${e.message}`
+                    });
+                } catch(updateErr) {}
+                
+                results.push({ id: sub.id, status: 'error', error: e.message });
+            }
+        }
+
+        return Response.json({ message: "Bulk processing complete", results });
+
+    } catch (error) {
+        console.error("Handler error:", error);
         return Response.json({ error: error.message }, { status: 500 });
     }
 });
