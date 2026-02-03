@@ -40,9 +40,7 @@ const FACTS = [
     "Schoolace gets smarter and more personalized the more you use it.",
     "Your AI tutor is ready 24/7 to answer any question you have.",
     "Schoolace connects with your other apps to keep your entire academic life in one place.",
-    "Schoolace started as a sketch on a napkin during a boring history lecture.",
     "The first version of ACE was trained on thousands of textbooks to understand how students think.",
-    "Our team stayed up for 48 hours straight just to perfect the study algorithm.",
     "The 'Learn' button was clicked 10,000 times in our very first hour of testing.",
     "You can switch up your entire aesthetic by changing the color theme in your dashboard settings.",
     "Schoolace's color palette was specifically chosen to reduce eye strain during late-night study sessions.",
@@ -50,11 +48,7 @@ const FACTS = [
     "We designed the interface to feel less like homework and more like your favorite app.",
     "Schoolace's color palette was specifically chosen to reduce eye strain during late-night study sessions.",
     "You can switch up your entire aesthetic by changing the color theme in your dashboard settings.",
-    "Our first server crashed because too many students tried to join the beta at once.",
     "ACE's personality is modeled after the most patient teacher we ever knew.",
-    "Our team pulled two all-nighters in a row on launch day just to fix the bugs.",
-    "Our logo was almost a shoelace because, 'Schoolace' sounds like 'shoelace'.",
-    "We celebrated our first 100 users with a dinner of instant ramen.",
     "ACE's personality changes based on the time of day.",
     "Got an idea? Use the feedback button to request features—you might see yours added next."
 ];
