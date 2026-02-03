@@ -205,6 +205,7 @@ export default function ChatTutor({ user, learningData, language = 'EN', isPerso
     const [uploadedFiles, setUploadedFiles] = useState([]); 
     const [isUploadingFile, setIsUploadingFile] = useState(false);
     const [learningMode, setLearningMode] = useState(false); // Default OFF (Solution Mode)
+    const [quizEnabled, setQuizEnabled] = useState(true); // Default ON
     const [isDragOver, setIsDragOver] = useState(false);
     const [showUploadNotice, setShowUploadNotice] = useState(false);
     const conversationEndRef = useRef(null);
@@ -471,6 +472,7 @@ export default function ChatTutor({ user, learningData, language = 'EN', isPerso
                 conversationHistory: [...conversation, userMessage],
                 isPersonalizedMode,
                 learningMode,
+                quizEnabled,
                 language
             });
 

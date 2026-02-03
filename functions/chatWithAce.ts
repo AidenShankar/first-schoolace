@@ -16,6 +16,7 @@ export async function chatWithAce(req) {
             conversationHistory = [], 
             isPersonalizedMode = true, 
             learningMode = false, 
+            quizEnabled = true,
             language = 'EN',
             attachedFiles = [] 
         } = await req.json();
@@ -177,7 +178,8 @@ ${JSON.stringify(learningData || {}, null, 2)}
 - **Student asks about an assignment(Always check submission):** Why did I get a 14/20 on historical thinking?
 - **Your Response(If a student asks about an assignment, make sure to always check the submission the student submitted, not just the feedback. Make sure to give feedback on their submssion, do not just look at the feedback.)
 
-**QUIZ GENERATION (ONLY When Explicitly Requested):**
+**QUIZ GENERATION:**
+${quizEnabled ? `
 CRITICAL WARNING: DO NOT GENERATE QUIZZES UNLESS EXPLICITLY REQUESTED
 
 ONLY generate quizzes when the student uses these EXACT phrases or similar explicit requests:
@@ -203,6 +205,12 @@ When a quiz IS explicitly requested, use this exact JSON format:
   }
 }
 \`\`\`
+` : `
+QUIZ GENERATION IS CURRENTLY DISABLED BY THE USER.
+If the student asks for a quiz, practice test, or questions, you MUST REFUSE.
+Explain politely that quizzes are currently turned off in the settings.
+DO NOT output a "quiz" object in your JSON response.
+`}
 
 **DEFAULT RESPONSE STYLE:**
 Your default response should ALWAYS be conversational, using Socratic questioning to guide learning.
