@@ -4,31 +4,38 @@ Deno.serve(async (req) => {
     try {
         const base44 = createClientFromRequest(req);
         
+        // Fetch just a few to inspect
+        const users = await base44.entities.User.list('-created_date', 5);
+        
+        // Check structure
+        const firstUser = users[0];
+        
+        // Count again properly if we can figure out the structure
         let allUsers = [];
         let page = 0;
         let hasMore = true;
         const limit = 100;
 
-        // Fetch up to 5000 users to get a count
         while (hasMore) {
-             const users = await base44.entities.User.list('-created_date', limit, page * limit);
-             allUsers = allUsers.concat(users);
-             if (users.length < limit) hasMore = false;
+             const batch = await base44.entities.User.list('-created_date', limit, page * limit);
+             allUsers = allUsers.concat(batch);
+             if (batch.length < limit) hasMore = false;
              page++;
              if (page > 50) break; 
         }
 
-        // Filter out teachers. 
-        // Note: app_role is in `data.app_role` usually, but the entity might flatten it or not.
-        // Looking at previous output: `data: {'app_role': 'teacher', ...}`.
-        // So we check u.data?.app_role.
+        // Try to filter
+        // Option A: user.app_role (flattened)
+        // Option B: user.data.app_role (nested)
         
-        const recipients = allUsers.filter(u => u.data?.app_role !== 'teacher');
+        const teachersA = allUsers.filter(u => u.app_role === 'teacher').length;
+        const teachersB = allUsers.filter(u => u.data?.app_role === 'teacher').length;
         
         return Response.json({ 
-            total_users: allUsers.length,
-            recipients_count: recipients.length,
-            teachers_count: allUsers.length - recipients.length
+            sample_user: firstUser,
+            total: allUsers.length,
+            teachers_flattened: teachersA,
+            teachers_nested: teachersB
         });
     } catch (error) {
         return Response.json({ error: error.message }, { status: 500 });
