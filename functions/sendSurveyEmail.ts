@@ -16,7 +16,7 @@ Deno.serve(async (req) => {
 
         const result = await base44.integrations.Core.SendEmail({
             to: recipient,
-            subject: "Reminder: Schoolace Survey (Deadline Feb 7)",
+            subject: "Reminder: Schoolace Survey",
             body: `<p>Hi,</p>
 <p>This is a quick reminder to complete the Schoolace survey by Friday, Feb 7, if you haven’t already.</p>
 <p>It takes less than 30 seconds, and your input directly helps us improve Schoolace for students like you.</p>
