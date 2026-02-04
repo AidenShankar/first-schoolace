@@ -57,8 +57,8 @@ Deno.serve(async (req) => {
 <p>The Schoolace Team</p>`
                 });
                 sentCount++;
-                // Add delay of 200ms
-                await new Promise(resolve => setTimeout(resolve, 200));
+                // Add delay of 500ms
+                await new Promise(resolve => setTimeout(resolve, 500));
             } catch (e) {
                 errors.push({ email: user.email, error: e.message });
                 // If rate limit error, wait longer
