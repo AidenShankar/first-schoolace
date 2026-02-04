@@ -74,28 +74,16 @@ export default function Dashboard({ user: layoutUser, allClasses: layoutAllClass
     const [textSubmissionState, setTextSubmissionState] = useState({ show: false, status: 'processing', message: '' });
     const [showPromo, setShowPromo] = useState(false);
 
-    const hasCheckedPromo = React.useRef(false);
-
     useEffect(() => {
-        if (user && !hasCheckedPromo.current) {
-            const viewCount = user.promo_popup_view_count || 0;
-            if (viewCount < 1) {
-                setShowPromo(true);
-            }
-            hasCheckedPromo.current = true;
-        }
-    }, [user]);
-
-    const handleClosePromo = useCallback(() => {
-        setShowPromo(false);
         if (user) {
             const viewCount = user.promo_popup_view_count || 0;
-            if (viewCount < 1) {
-                // Update in background
+            if (viewCount < 2) {
+                setShowPromo(true);
+                // Increment view count immediately so this session counts
                 retryWithBackoff(() => User.updateMyUserData({ promo_popup_view_count: viewCount + 1 })).catch(console.error);
             }
         }
-    }, [user, retryWithBackoff]);
+    }, [user]); // Only run when user loads
 
     // Add retry logic for rate-limited requests
     const retryWithBackoff = useCallback(async (fn, maxRetries = 3, delay = 1000) => {
@@ -1662,7 +1650,7 @@ Output your response as JSON with:
 
             <PromoPopup 
                 isOpen={showPromo} 
-                onClose={handleClosePromo} 
+                onClose={() => setShowPromo(false)} 
                 userRole={user?.app_role}
             />
 
