@@ -79,7 +79,7 @@ export default function Dashboard({ user: layoutUser, allClasses: layoutAllClass
     useEffect(() => {
         if (user && !hasCheckedPromo.current) {
             const viewCount = user.promo_popup_view_count || 0;
-            if (viewCount < 2) {
+            if (viewCount < 1) {
                 setShowPromo(true);
             }
             hasCheckedPromo.current = true;
@@ -90,7 +90,7 @@ export default function Dashboard({ user: layoutUser, allClasses: layoutAllClass
         setShowPromo(false);
         if (user) {
             const viewCount = user.promo_popup_view_count || 0;
-            if (viewCount < 2) {
+            if (viewCount < 1) {
                 // Update in background
                 retryWithBackoff(() => User.updateMyUserData({ promo_popup_view_count: viewCount + 1 })).catch(console.error);
             }
