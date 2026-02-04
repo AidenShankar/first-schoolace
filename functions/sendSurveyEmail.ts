@@ -17,11 +17,11 @@ Deno.serve(async (req) => {
         const result = await base44.integrations.Core.SendEmail({
             to: recipient,
             subject: "Help us improve Schoolace",
-            body: `<p>Hi there,</p>
-<p>This is a quick reminder to fill out the Schoolace survey if you haven’t already.</p>
-<p>It takes less than 30 seconds, and your answers help us make Schoolace better for students like you.</p>
-<p>If you already completed it, thank you!</p>
-<p>You can take the survey here:</p>
+            body: `<p>Hi,</p>
+<p>This is a quick reminder to complete the Schoolace survey by Friday, Feb 7, if you haven’t already.</p>
+<p>It takes less than 30 seconds, and your input directly helps us improve Schoolace for students like you.</p>
+<p>If you’ve already completed it—thank you!</p>
+<p>Take the survey here:</p>
 <p><a href="https://forms.gle/SDQxQ6mahv4X6noZ9">https://forms.gle/SDQxQ6mahv4X6noZ9</a></p>
 <p>Thanks,</p>
 <p>The Schoolace Team</p>`
