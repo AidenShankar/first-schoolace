@@ -9,7 +9,7 @@ async function unifiedInvokeAI(base44, { prompt, file_urls, response_json_schema
         try {
             const genAI = new GoogleGenerativeAI(googleApiKey);
             const model = genAI.getGenerativeModel({
-                model: "gemini-3-pro",
+                model: "gemini-2.0-flash-exp",
                 generationConfig: {
                     responseMimeType: response_json_schema ? "application/json" : "text/plain",
                     responseSchema: response_json_schema
