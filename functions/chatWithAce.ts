@@ -381,51 +381,11 @@ If a student ever asks about an assignment or quiz, always check their submissio
 `;
 
         const MATH_RULES = `
-BEFORE YOU WRITE YOUR RESPONSE, CHECK EVERY SINGLE WORD FOR MATH CONTENT.
-
-**GOLDEN RULE:** If it's a number, variable, equation, or contains ANY mathematical notation → WRAP IT IN DOLLAR SIGNS
-
-**YOU MUST FORMAT:**
-✓ Single variables: $x$, $y$, $a$, $n$
-✓ Numbers in equations: $3$, $42$, $2x$
-✓ Simple expressions: $x + 1$, $3a^2$
-✓ Complex expressions: $3a^2 + 3x^2 + 6ax$
-✓ Fractions with backslashes: $\\\\frac{3}{ax}$, $\\\\frac{3x}{a^2x}$
-✓ Parenthetical expressions: $\\\\left( \\\\frac{3}{ax} + \\\\frac{3x}{a^2x} \\\\right)$
-✓ Exponents: $x^2$, $a^{2x}$, $e^{2\\\\pi i}$
-✓ EVERYTHING with LaTeX backslashes: They NEED dollar signs!
-
-**WRONG vs CORRECT - STUDY THESE:**
-wrong "the expression ( \\frac{3}{ax} + \\frac{3x}{a^2x} + \\frac{7x}{x+a} )"
-correct "the expression $\\\\left( \\\\frac{3}{ax} + \\\\frac{3x}{a^2x} + \\\\frac{7x}{x+a} \\\\right)$"
-
-wrong "you wrote ( \\frac{3a^2 + 3x^2 + 6ax + 7a^2x^2}{a^2x(x+a)} )"
-correct "you wrote $\\\\left( \\\\frac{3a^2 + 3x^2 + 6ax + 7a^2x^2}{a^2x(x+a)} \\\\right)$"
-
-wrong "The denominator is a^2x(x+a)"
-correct "The denominator is $a^2x(x+a)$"
-
-wrong "3a^2 + 3x^2"
-correct "$3a^2 + 3x^2$"
-
-wrong "In your final expression, you wrote ( \\frac{3a^2 + 3x^2}"
-correct "In your final expression, you wrote $\\\\left( \\\\frac{3a^2 + 3x^2} \\\\right.$"
-
-**SPECIAL ATTENTION FOR IMAGES:**
-When analyzing uploaded images containing math:
-- Extract the mathematical expressions you see
-- IMMEDIATELY wrap them in dollar signs when referencing them
-- Use proper LaTeX formatting with double backslashes
-- Example: If image shows "x²+1", write it as "$x^2 + 1$" in your response
-
-**LaTeX Commands (DOUBLE backslashes required):**
-- $\\\\frac{num}{den}$ for fractions
-- $\\\\left( ... \\\\right)$ for parentheses
-- $\\\\sqrt{x}$ for square roots
-- $x^{power}$ for exponents
-- $x_{subscript}$ for subscripts
-
-TRIPLE-CHECK YOUR RESPONSE: Before finalizing, scan for ANY mathematical notation and ensure it's wrapped in $ or $$.
+**MATH FORMATTING:**
+Use LaTeX for all mathematical expressions.
+- Inline math: $E=mc^2$
+- Block math: $$E=mc^2$$
+- Do not use \\( ... \\) or \\[ ... \\].
 
 Please respond to the student's latest message, maintaining full conversation context and file access.`;
 
