@@ -432,7 +432,7 @@ You are an expert academic grader. Your task is to grade a student's work with a
 **GRADING TASK CONTEXT:**
 - **Student's Name:** ${submission.student_name}
 - **Assignment Title:** ${assignment.title}
-- **Subject:** ${assignment.subject}
+- **Assignment Subject:** ${assignment.subject}
 - **Teacher's Instructions:** ${assignment.instructions}
 - **Maximum Points:** ${assignment.max_points}
 - **Grading Leniency:** ${assignment.leniency || 'Neutral'}. Interpret this as follows:
