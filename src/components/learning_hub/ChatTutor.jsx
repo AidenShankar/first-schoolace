@@ -46,10 +46,13 @@ const MathText = ({ children, className = "" }) => {
 
 const InteractiveQuiz = ({ quiz, onQuizSubmit, onCancel, language = 'EN' }) => {
     const [answers, setAnswers] = useState({});
-    const isSubmittable = Object.keys(answers).length === quiz.questions.length;
+    const isSubmittable = quiz.questions.every((q, index) => {
+        const answer = answers[index];
+        return answer && answer.trim().length > 0;
+    });
 
-    const handleAnswer = (qIndex, option) => {
-        setAnswers(prev => ({ ...prev, [qIndex]: option }));
+    const handleAnswer = (qIndex, value) => {
+        setAnswers(prev => ({ ...prev, [qIndex]: value }));
     };
     
     return (
