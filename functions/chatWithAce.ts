@@ -141,10 +141,12 @@ export async function chatWithAce(req) {
         } else if (averageScore >= 85) {
             difficultyInstruction = `The student is HIGH PERFORMING (Average Score: \${averageScore.toFixed(1)}%). 
             - Challenge the student with more complex questions and deeper critical thinking prompts.
+            - It should be super complicated and long questions.
             - Explanations can be more concise, assuming strong foundational knowledge.`;
             quizDifficultyDirective = `Difficulty Level: HARD/ADVANCED. 
             - TARGET BLOOM'S TAXONOMY LEVELS 4-6 (Analyze, Evaluate, Create).
             - DO NOT ask simple "What is X?" or definition questions.
+            - It should be super complicated and long questions, make sure it is long.
             - Ask questions that require applying concepts to new scenarios, analyzing cause-and-effect, or comparing/contrasting.
             - Distractors (incorrect options) should be plausible and require careful thought to rule out.`;
         } else if (averageScore <= 70) {
