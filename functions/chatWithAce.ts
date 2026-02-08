@@ -137,21 +137,29 @@ export async function chatWithAce(req) {
         
         if (totalItems === 0) {
             difficultyInstruction = "The student has no past performance data. Assume an average difficulty level for explanations and questions.";
-            quizDifficultyDirective = "Difficulty Level: STANDARD/MEDIUM.";
+            quizDifficultyDirective = "Difficulty Level: STANDARD. Use Bloom's Taxonomy Levels 2-3 (Understand, Apply). Mixed difficulty.";
         } else if (averageScore >= 85) {
             difficultyInstruction = `The student is HIGH PERFORMING (Average Score: \${averageScore.toFixed(1)}%). 
             - Challenge the student with more complex questions and deeper critical thinking prompts.
             - Explanations can be more concise, assuming strong foundational knowledge.`;
-            quizDifficultyDirective = "Difficulty Level: HARD/ADVANCED. Create challenging questions that require deep understanding, synthesis, and critical thinking.";
+            quizDifficultyDirective = `Difficulty Level: HARD/ADVANCED. 
+            - TARGET BLOOM'S TAXONOMY LEVELS 4-6 (Analyze, Evaluate, Create).
+            - DO NOT ask simple "What is X?" or definition questions.
+            - Ask questions that require applying concepts to new scenarios, analyzing cause-and-effect, or comparing/contrasting.
+            - Distractors (incorrect options) should be plausible and require careful thought to rule out.`;
         } else if (averageScore <= 70) {
             difficultyInstruction = `The student is LOW PERFORMING (Average Score: \${averageScore.toFixed(1)}%).
             - Focus on foundational concepts and provide simpler, step-by-step explanations.
             - Break down complex topics into smaller, manageable parts.`;
-            quizDifficultyDirective = "Difficulty Level: EASY/FOUNDATIONAL. Create simple, direct, and encouraging questions to build confidence and reinforce basics.";
+            quizDifficultyDirective = `Difficulty Level: EASY/FOUNDATIONAL.
+            - TARGET BLOOM'S TAXONOMY LEVELS 1-2 (Remember, Understand).
+            - Focus on basic definitions, key terms, and simple recall.
+            - Questions should be direct and straightforward.
+            - Distractors should be clearly incorrect to build confidence.`;
         } else {
              difficultyInstruction = `The student is AVERAGE PERFORMING (Average Score: \${averageScore.toFixed(1)}%).
              - Balance difficulty to maintain engagement without overwhelming.`;
-             quizDifficultyDirective = "Difficulty Level: MEDIUM/STANDARD. Mix basic and slightly challenging questions.";
+             quizDifficultyDirective = "Difficulty Level: MEDIUM. Mix basic recall and application questions. Standard high school level.";
         }
         
         console.log(`[chatWithAce] Student Performance: Score=\${averageScore.toFixed(1)}%, Directive=\${quizDifficultyDirective}`);
