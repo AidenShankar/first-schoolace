@@ -418,6 +418,23 @@ export default function ChatTutor({ user, learningData, language = 'EN', isPerso
 
     const handleQuizSubmit = async (answers) => {
         const questions = activeQuiz.quiz.questions;
+        const isFreeResponse = questions.some(q => q.type === 'free-response');
+
+        if (isFreeResponse) {
+             // Construct message for AI evaluation
+             let submissionText = `I completed the assignment "${activeQuiz.quiz.title}". Here are my answers:\n\n`;
+             questions.forEach((q, index) => {
+                 submissionText += `Question ${index + 1}: ${q.question}\n`;
+                 submissionText += `My Answer: ${answers[index] || '(No answer)'}\n\n`;
+             });
+             submissionText += `Please evaluate my answers and provide feedback.`;
+             
+             setActiveQuiz(null);
+             handleSend(submissionText);
+             return;
+        }
+
+        // Standard Multiple Choice Logic
         const results = questions.map((q, index) => ({
             question: q.question,
             correct_answer: q.correct_answer,
