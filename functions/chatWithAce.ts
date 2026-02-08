@@ -109,6 +109,48 @@ export async function chatWithAce(req) {
             attachedFiles = [] 
         } = await req.json();
 
+        // Calculate student performance for adaptive difficulty
+        let totalScore = 0;
+        let totalItems = 0;
+        
+        const assignments = learningData?.assignments || [];
+        const quizzes = learningData?.quizzes || [];
+
+        assignments.forEach(a => {
+            if (typeof a.percentage === 'number') {
+                totalScore += a.percentage;
+                totalItems++;
+            }
+        });
+
+        quizzes.forEach(q => {
+             if (typeof q.percentage === 'number') {
+                totalScore += q.percentage;
+                totalItems++;
+            }
+        });
+
+        const averageScore = totalItems > 0 ? totalScore / totalItems : 0;
+        let difficultyInstruction = "";
+
+        if (totalItems === 0) {
+            difficultyInstruction = "The student has no past performance data. Assume an average difficulty level for explanations and questions.";
+        } else if (averageScore >= 85) {
+            difficultyInstruction = `The student is HIGH PERFORMING (Average Score: \${averageScore.toFixed(1)}%). 
+            - Challenge the student with more complex questions and deeper critical thinking prompts.
+            - When generating quizzes/assignments, use harder questions that require synthesis and evaluation.
+            - Explanations can be more concise, assuming strong foundational knowledge.`;
+        } else if (averageScore <= 70) {
+            difficultyInstruction = `The student is LOW PERFORMING (Average Score: \${averageScore.toFixed(1)}%).
+            - Focus on foundational concepts and provide simpler, step-by-step explanations.
+            - When generating quizzes/assignments, use easier questions to build confidence and basic understanding.
+            - Break down complex topics into smaller, manageable parts.`;
+        } else {
+             difficultyInstruction = `The student is AVERAGE PERFORMING (Average Score: \${averageScore.toFixed(1)}%).
+             - Balance difficulty to maintain engagement without overwhelming.
+             - When generating quizzes/assignments, use a mix of medium difficulty questions.`;
+        }
+
         // 1. Moderate the student message
         let isFlagged = false;
         let flagReason = "";
