@@ -79,7 +79,7 @@ const InteractiveQuiz = ({ quiz, onQuizSubmit, onCancel, language = 'EN' }) => {
                                 <Textarea
                                     value={answers[qIndex] || ''}
                                     onChange={(e) => handleAnswer(qIndex, e.target.value)}
-                                    placeholder={t('personalizedLearning.typeAnswerHere', language) || "Type your answer here..."}
+                                    placeholder={t('', language) || "Type your answer here..."}
                                     className="min-h-[120px] text-base p-4 rounded-2xl border-2 resize-y"
                                     style={{ 
                                         backgroundColor: `rgb(var(--color-surface))`, 
