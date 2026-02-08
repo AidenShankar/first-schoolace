@@ -11,25 +11,30 @@ async function unifiedInvokeAI(base44, { prompt, file_urls, response_json_schema
         try {
             console.log(`[UnifiedInvokeAI] Attempting to use Gemini model: gemini-2.0-flash-exp`);
             const genAI = new GoogleGenerativeAI(googleApiKey);
+            // LIST MODELS TEST
+            /*
             const model = genAI.getGenerativeModel({
                 model: "gemini-2.0-flash-exp",
+                // ...
+            });
+            */
+           // Try to find if the model exists in the list (this is a hack to debug)
+           // The SDK doesn't expose listModels directly on genAI instance usually, 
+           // it's usually via a ModelService or similar, which might not be in this simple SDK usage.
+           
+           // Instead, let's try to force v1alpha which usually has the experimental models
+           const model = genAI.getGenerativeModel({
+                model: "gemini-2.0-flash-exp",
+                apiVersion: "v1alpha", // TRY ALPHA
                 generationConfig: {
                     responseMimeType: response_json_schema ? "application/json" : "text/plain",
                     responseSchema: response_json_schema
                 }
             });
-
-            const parts = [{ text: prompt }];
-            if (file_urls && file_urls.length > 0) {
-                 // Mock file fetch skipping for test
-            }
-
-            const result = await model.generateContent(parts);
-            const response = result.response;
-            const text = response.text();
             
-            console.log(`[UnifiedInvokeAI] Gemini response received. Length: ${text.length}`);
-            return text;
+            const parts = [{ text: prompt }];
+            const result = await model.generateContent(parts);
+            return result.response.text();
 
         } catch (e) {
             console.error("[UnifiedInvokeAI] Gemini API Failed:", e);
