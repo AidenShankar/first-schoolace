@@ -8,7 +8,6 @@ async function unifiedInvokeAI(base44, { prompt, file_urls, response_json_schema
     if (aiProvider === 'gemini' && googleApiKey) {
         try {
             const genAI = new GoogleGenerativeAI(googleApiKey);
-            console.log(`Using AI model: gemini-2.0-flash-exp`);
             const model = genAI.getGenerativeModel({
                 model: "gemini-2.0-flash-exp",
                 generationConfig: {
