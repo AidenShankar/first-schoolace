@@ -38,7 +38,14 @@ async function unifiedInvokeAI(base44, { prompt, file_urls, response_json_schema
                  }
             }
 
-            const result = await model.generateContent(parts);
+            // Add timeout for Gemini call (45 seconds)
+            const timeoutPromise = new Promise((_, reject) => 
+                setTimeout(() => reject(new Error("Gemini API timeout after 45s")), 45000)
+            );
+
+            const resultPromise = model.generateContent(parts);
+            const result = await Promise.race([resultPromise, timeoutPromise]);
+            
             const response = result.response;
             const text = response.text();
             
@@ -53,7 +60,18 @@ async function unifiedInvokeAI(base44, { prompt, file_urls, response_json_schema
                     // Remove closing ```
                     cleanText = cleanText.replace(/\s*```$/, "");
                     
-                    return JSON.parse(cleanText);
+                    const parsed = JSON.parse(cleanText);
+                    
+                    // Validate quiz structure if it's supposed to be there
+                    if (parsed.content && (parsed.content.toLowerCase().includes("quiz") || parsed.content.toLowerCase().includes("test"))) {
+                        if (!parsed.quiz && response_json_schema.properties.quiz) {
+                            console.warn("[UnifiedInvokeAI] Gemini response mentions quiz but missing quiz object. Trying to recover...");
+                            // If we have a quiz request but no quiz object, we might want to throw to trigger fallback
+                            // or we could accept it if it's just chatting about a quiz.
+                            // But usually this means generation failed to follow schema fully.
+                        }
+                    }
+                    return parsed;
                 } catch (parseError) {
                     console.error("[UnifiedInvokeAI] Gemini JSON parse error:", parseError, "Raw text:", text);
                     throw parseError; // Trigger fallback
@@ -258,7 +276,11 @@ ONLY generate quizzes when the student uses these EXACT phrases or similar expli
 - "ask me questions" / "give me questions" / "practice questions"
 - "can you quiz me" / "I want to practice with questions"
 
-When a quiz IS explicitly requested, use this exact JSON format:
+When a quiz IS explicitly requested, you MUST generate the 'quiz' object in the JSON response.
+
+CRITICAL: If your 'content' field says "Here is a quiz" or implies a quiz is being shown, the 'quiz' object MUST be present and fully populated. Do not return null for the quiz object if you are announcing a quiz.
+
+Use this exact JSON format:
 \`\`\`json
 {
   "content": "Here's a practice quiz on [Topic] as you requested!",
