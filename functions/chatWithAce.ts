@@ -133,23 +133,28 @@ export async function chatWithAce(req) {
         const averageScore = totalItems > 0 ? totalScore / totalItems : 0;
         let difficultyInstruction = "";
 
+        let quizDifficultyDirective = "";
+        
         if (totalItems === 0) {
             difficultyInstruction = "The student has no past performance data. Assume an average difficulty level for explanations and questions.";
+            quizDifficultyDirective = "Difficulty Level: STANDARD/MEDIUM.";
         } else if (averageScore >= 85) {
             difficultyInstruction = `The student is HIGH PERFORMING (Average Score: \${averageScore.toFixed(1)}%). 
             - Challenge the student with more complex questions and deeper critical thinking prompts.
-            - When generating quizzes/assignments, use harder questions that require synthesis and evaluation.
             - Explanations can be more concise, assuming strong foundational knowledge.`;
+            quizDifficultyDirective = "Difficulty Level: HARD/ADVANCED. Create challenging questions that require deep understanding, synthesis, and critical thinking.";
         } else if (averageScore <= 70) {
             difficultyInstruction = `The student is LOW PERFORMING (Average Score: \${averageScore.toFixed(1)}%).
             - Focus on foundational concepts and provide simpler, step-by-step explanations.
-            - When generating quizzes/assignments, use easier questions to build confidence and basic understanding.
             - Break down complex topics into smaller, manageable parts.`;
+            quizDifficultyDirective = "Difficulty Level: EASY/FOUNDATIONAL. Create simple, direct, and encouraging questions to build confidence and reinforce basics.";
         } else {
              difficultyInstruction = `The student is AVERAGE PERFORMING (Average Score: \${averageScore.toFixed(1)}%).
-             - Balance difficulty to maintain engagement without overwhelming.
-             - When generating quizzes/assignments, use a mix of medium difficulty questions.`;
+             - Balance difficulty to maintain engagement without overwhelming.`;
+             quizDifficultyDirective = "Difficulty Level: MEDIUM/STANDARD. Mix basic and slightly challenging questions.";
         }
+        
+        console.log(`[chatWithAce] Student Performance: Score=\${averageScore.toFixed(1)}%, Directive=\${quizDifficultyDirective}`);
 
         // 1. Moderate the student message
         let isFlagged = false;
