@@ -319,6 +319,9 @@ ${JSON.stringify(learningData || {}, null, 2)}
 **QUIZ GENERATION (ONLY When Explicitly Requested):**
 CRITICAL WARNING: DO NOT GENERATE QUIZZES UNLESS EXPLICITLY REQUESTED
 
+**GENERATION DIFFICULTY SETTING:**
+${quizDifficultyDirective}
+
 ONLY generate quizzes/assignments when the student uses these EXACT phrases or similar explicit requests:
 - "give me a quiz" / "quiz me" / "I want a quiz" (Generate Multiple Choice)
 - "give me an assignment" / "I want an assignment" / "practice assignment" (Generate Free Response)
