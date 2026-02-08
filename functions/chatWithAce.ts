@@ -9,26 +9,14 @@ async function unifiedInvokeAI(base44, { prompt, file_urls, response_json_schema
         try {
             const genAI = new GoogleGenerativeAI(googleApiKey);
             const model = genAI.getGenerativeModel({
-                model: "gemini-1.5-pro",
+                model: "gemini-2.0-flash-exp",
                 generationConfig: {
                     responseMimeType: response_json_schema ? "application/json" : "text/plain",
                     responseSchema: response_json_schema
                 }
             });
 
-            // Ensure the AI knows its identity and doesn't claim to be OpenAI
-            let finalPrompt = prompt;
-            if (typeof prompt === 'string') {
-                 // Replace OpenAI references to prevent identity hallucination
-                 finalPrompt = prompt.replace(/OpenAI/g, "Google");
-                 
-                 // Reinforce Ace AI identity if not present
-                 if (!finalPrompt.includes("You are Ace AI")) {
-                     finalPrompt = "You are Ace AI, a helpful AI tutor powered by Google Gemini. " + finalPrompt;
-                 }
-            }
-
-            const parts = [{ text: finalPrompt }];
+            const parts = [{ text: prompt }];
             if (file_urls && file_urls.length > 0) {
                  for (const url of file_urls) {
                      try {
