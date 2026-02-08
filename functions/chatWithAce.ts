@@ -330,13 +330,16 @@ CRITICAL WARNING: DO NOT GENERATE QUIZZES UNLESS EXPLICITLY REQUESTED
 **GENERATION DIFFICULTY SETTING:**
 ${quizDifficultyDirective}
 
-ONLY generate quizzes/assignments when the student uses these EXACT phrases or similar explicit requests:
-- "give me a quiz" / "quiz me" / "I want a quiz" (Generate Multiple Choice)
-- "give me an assignment" / "I want an assignment" / "practice assignment" (Generate Free Response)
+ONLY generate quizzes/assignments when the student uses these phrases or ANY similar request for practice work:
+- Quizzes (Multiple Choice): "give me a quiz", "quiz me", "I want a quiz", "test me", "multiple choice practice"
+- Assignments (Free Response): "give me an assignment", "I want an assignment", "practice assignment", "create a worksheet", "give me practice problems", "homework", "open ended questions", "essay questions"
 
 When a quiz or assignment IS explicitly requested, you MUST generate the 'quiz' object in the JSON response.
 
-CRITICAL: If your 'content' field says "Here is a quiz/assignment" or implies one is being shown, the 'quiz' object MUST be present and fully populated.
+CRITICAL ENFORCEMENT: 
+1. NEVER output a list of questions or an assignment as plain text in the 'content' field.
+2. If you are generating questions for the student to answer, you MUST use the 'quiz' JSON object.
+3. If the user asks for an assignment, the 'quiz' object with type="free-response" is MANDATORY. Do not just write the questions in the chat.
 
 For "Assignments" (Free Response), set "type": "free-response" and "options": [] (empty array).
 For "Quizzes" (Multiple Choice), set "type": "multiple-choice" (default).
