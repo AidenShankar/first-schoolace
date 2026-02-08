@@ -333,6 +333,8 @@ CRITICAL: If your 'content' field says "Here is a quiz/assignment" or implies on
 For "Assignments" (Free Response), set "type": "free-response" and "options": [] (empty array).
 For "Quizzes" (Multiple Choice), set "type": "multiple-choice" (default).
 
+IMPORTANT: Ensure the questions match the **${quizDifficultyDirective}** defined above.
+
 Use this exact JSON format:
 \`\`\`json
 {
