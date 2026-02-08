@@ -75,36 +75,50 @@ const InteractiveQuiz = ({ quiz, onQuizSubmit, onCancel, language = 'EN' }) => {
                             {qIndex + 1}. {q.question}
                         </MathText>
                         <div className="grid grid-cols-1 gap-3">
-                            {q.options.map((opt, oIndex) => (
-                                <button
-                                    key={oIndex}
-                                    className={`text-left p-4 rounded-2xl text-base font-medium transition-all duration-300 ease-out border-2 ${
-                                        answers[qIndex] === opt 
-                                            ? 'text-white shadow-lg transform scale-[1.02]' 
-                                            : 'hover:shadow-md'
-                                    }`}
-                                    style={
-                                        answers[qIndex] === opt
-                                            ? { background: `linear-gradient(to right, rgb(var(--color-primary)), rgb(var(--color-secondary)))`, borderColor: `rgb(var(--color-primary))` }
-                                            : { backgroundColor: `rgb(var(--color-surface))`, borderColor: `rgb(var(--color-border))` }
-                                    }
-                                    onMouseEnter={(e) => {
-                                        if (answers[qIndex] !== opt) {
-                                            e.currentTarget.style.backgroundColor = `rgba(var(--color-border), 0.5)`;
-                                            e.currentTarget.style.borderColor = `rgb(var(--color-textSecondary))`;
-                                        }
+                            {q.type === 'free-response' ? (
+                                <Textarea
+                                    value={answers[qIndex] || ''}
+                                    onChange={(e) => handleAnswer(qIndex, e.target.value)}
+                                    placeholder={t('personalizedLearning.typeAnswerHere', language) || "Type your answer here..."}
+                                    className="min-h-[120px] text-base p-4 rounded-2xl border-2 resize-y"
+                                    style={{ 
+                                        backgroundColor: `rgb(var(--color-surface))`, 
+                                        borderColor: `rgb(var(--color-border))`,
+                                        color: `rgb(var(--color-text))`
                                     }}
-                                    onMouseLeave={(e) => {
-                                        if (answers[qIndex] !== opt) {
-                                            e.currentTarget.style.backgroundColor = `rgb(var(--color-surface))`;
-                                            e.currentTarget.style.borderColor = `rgb(var(--color-border))`;
+                                />
+                            ) : (
+                                q.options.map((opt, oIndex) => (
+                                    <button
+                                        key={oIndex}
+                                        className={`text-left p-4 rounded-2xl text-base font-medium transition-all duration-300 ease-out border-2 ${
+                                            answers[qIndex] === opt 
+                                                ? 'text-white shadow-lg transform scale-[1.02]' 
+                                                : 'hover:shadow-md'
+                                        }`}
+                                        style={
+                                            answers[qIndex] === opt
+                                                ? { background: `linear-gradient(to right, rgb(var(--color-primary)), rgb(var(--color-secondary)))`, borderColor: `rgb(var(--color-primary))` }
+                                                : { backgroundColor: `rgb(var(--color-surface))`, borderColor: `rgb(var(--color-border))` }
                                         }
-                                    }}
-                                    onClick={() => handleAnswer(qIndex, opt)}
-                                >
-                                    <MathText>{opt}</MathText>
-                                </button>
-                            ))}
+                                        onMouseEnter={(e) => {
+                                            if (answers[qIndex] !== opt) {
+                                                e.currentTarget.style.backgroundColor = `rgba(var(--color-border), 0.5)`;
+                                                e.currentTarget.style.borderColor = `rgb(var(--color-textSecondary))`;
+                                            }
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            if (answers[qIndex] !== opt) {
+                                                e.currentTarget.style.backgroundColor = `rgb(var(--color-surface))`;
+                                                e.currentTarget.style.borderColor = `rgb(var(--color-border))`;
+                                            }
+                                        }}
+                                        onClick={() => handleAnswer(qIndex, opt)}
+                                    >
+                                        <MathText>{opt}</MathText>
+                                    </button>
+                                ))
+                            )}
                         </div>
                     </div>
                 ))}
