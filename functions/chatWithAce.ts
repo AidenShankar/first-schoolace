@@ -463,6 +463,7 @@ ${MATH_RULES}`;
                                 items: {
                                     type: "object",
                                     properties: {
+                                        type: { type: "string", enum: ["multiple-choice", "free-response"] },
                                         question: { type: "string" },
                                         options: { type: "array", items: { type: "string" } },
                                         correct_answer: { type: "string" }
@@ -509,6 +510,7 @@ ${JSON.stringify(response.quiz)}`;
                                 items: {
                                     type: "object",
                                     properties: {
+                                        type: { type: "string", enum: ["multiple-choice", "free-response"] },
                                         question: { type: "string" },
                                         options: { type: "array", items: { type: "string" } },
                                         correct_answer: { type: "string" }
