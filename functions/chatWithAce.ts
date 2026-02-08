@@ -269,28 +269,29 @@ ${JSON.stringify(learningData || {}, null, 2)}
 **QUIZ GENERATION (ONLY When Explicitly Requested):**
 CRITICAL WARNING: DO NOT GENERATE QUIZZES UNLESS EXPLICITLY REQUESTED
 
-ONLY generate quizzes when the student uses these EXACT phrases or similar explicit requests:
-- "give me a quiz" / "quiz me" / "I want a quiz"
-- "can I take a practice quiz" / "practice quiz"
-- "test me on this" / "give me a test" / "practice test"
-- "ask me questions" / "give me questions" / "practice questions"
-- "can you quiz me" / "I want to practice with questions"
+ONLY generate quizzes/assignments when the student uses these EXACT phrases or similar explicit requests:
+- "give me a quiz" / "quiz me" / "I want a quiz" (Generate Multiple Choice)
+- "give me an assignment" / "I want an assignment" / "practice assignment" (Generate Free Response)
 
-When a quiz IS explicitly requested, you MUST generate the 'quiz' object in the JSON response.
+When a quiz or assignment IS explicitly requested, you MUST generate the 'quiz' object in the JSON response.
 
-CRITICAL: If your 'content' field says "Here is a quiz" or implies a quiz is being shown, the 'quiz' object MUST be present and fully populated. Do not return null for the quiz object if you are announcing a quiz.
+CRITICAL: If your 'content' field says "Here is a quiz/assignment" or implies one is being shown, the 'quiz' object MUST be present and fully populated.
+
+For "Assignments" (Free Response), set "type": "free-response" and "options": [] (empty array).
+For "Quizzes" (Multiple Choice), set "type": "multiple-choice" (default).
 
 Use this exact JSON format:
 \`\`\`json
 {
-  "content": "Here's a practice quiz on [Topic] as you requested!",
+  "content": "Here's a practice quiz/assignment on [Topic] as you requested!",
   "quiz": {
-    "title": "Practice Quiz: [Topic]",
+    "title": "Practice [Quiz/Assignment]: [Topic]",
     "questions": [
       {
-        "question": "Question text based on a concept they struggled with?",
-        "options": ["Option 1", "Option 2", "Option 3", "Option 4"],
-        "correct_answer": "Correct Option"
+        "type": "multiple-choice" | "free-response",
+        "question": "Question text?",
+        "options": ["Option 1", "Option 2", "Option 3", "Option 4"], // Empty for free-response
+        "correct_answer": "Correct Option OR Model Answer"
       }
     ]
   }
