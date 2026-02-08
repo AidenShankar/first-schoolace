@@ -4,6 +4,9 @@ import { Send, Loader2, Sparkles, CheckCircle, X, Plus, File, FileText, Image, B
 import { Textarea } from '@/components/ui/textarea';
 import { UploadFile, ExtractDataFromUploadedFile } from '@/integrations/Core';
 import ReactMarkdown from 'react-markdown';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+import 'katex/dist/katex.min.css';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,32 +19,30 @@ import { Label } from "@/components/ui/label";
 import { t } from '../i18n/translations';
 import { base44 } from '@/api/base44Client';
 
-// Fix AI outputs: wrap unwrapped LaTeX-like math in dollar signs for KaTeX/Markdown rendering
-function autoWrapLatex(content) {
-  // This regex catches things like ( \frac{...} ), [ \frac{...} ], and other LaTeX fragments not inside $
-  // You can expand this regex as needed to catch more patterns (exponents, \sqrt{}, etc)
-  return content.replace(/(?<!\$)([\(\[][ ]*\\[a-zA-Z]+{[^}]+}[^$\)\]\n]*)[\)\]](?!\$)/g, m => `$${m}$`);
+// Pre-process content to normalize LaTeX delimiters for remark-math
+// remark-math expects $...$ and $$...$$, but some LLMs output \(...\) and \[...\]
+function normalizeLatex(content) {
+  if (!content) return "";
+  return content
+    // Replace \[ ... \] with $$ ... $$
+    .replace(/\\\[([\s\S]*?)\\\]/g, '$$$$$1$$$$')
+    // Replace \( ... \) with $ ... $
+    .replace(/\\\(([\s\S]*?)\\\)/g, '$$$1$$');
 }
 
-// Component to render text with math
+// Component to render text with math using remark-math and rehype-katex
 const MathText = ({ children, className = "" }) => {
-    const mathRef = useRef(null);
-    
-    useEffect(() => {
-        if (mathRef.current && window.renderMathInElement) {
-            window.renderMathInElement(mathRef.current, {
-                delimiters: [
-                    {left: '$$', right: '$$', display: true},
-                    {left: '$', right: '$', display: false},
-                    {left: '\\(', right: '\\)', display: false},
-                    {left: '\\[', right: '\\]', display: true}
-                ],
-                throwOnError: false
-            });
-        }
-    }, [children]);
-
-    return <div ref={mathRef} className={className}>{children}</div>;
+    return (
+        <div className={className}>
+            <ReactMarkdown
+                remarkPlugins={[remarkMath]}
+                rehypePlugins={[rehypeKatex]}
+                className="prose prose-sm max-w-none prose-p:my-1"
+            >
+                {normalizeLatex(typeof children === 'string' ? children : '')}
+            </ReactMarkdown>
+        </div>
+    );
 };
 
 const InteractiveQuiz = ({ quiz, onQuizSubmit, onCancel, language = 'EN' }) => {
@@ -180,31 +181,18 @@ const FilePreview = ({ file, onRemove, isUploading, language = 'EN' }) => {
 
 // Component to render message with KaTeX support
 const MessageContent = ({ content, isUser }) => {
-    const contentRef = useRef(null);
-
-    useEffect(() => {
-        if (contentRef.current && window.renderMathInElement) {
-            window.renderMathInElement(contentRef.current, {
-                delimiters: [
-                    {left: '$$', right: '$$', display: true},
-                    {left: '$', right: '$', display: false},
-                    {left: '\\(', right: '\\)', display: false},
-                    {left: '\\[', right: '\\]', display: true}
-                ],
-                throwOnError: false
-            });
-        }
-    }, [content]);
-    const safeContent = autoWrapLatex(content);
-
     return (
-        <div ref={contentRef}>
-            <ReactMarkdown className={`prose prose-sm max-w-none ${
-                isUser 
-                    ? 'prose-invert prose-p:my-2' 
-                    : 'prose-p:my-2 prose-a:text-purple-600 prose-a:font-medium hover:prose-a:text-purple-800'
-            }`}>
-                {safeContent}
+        <div>
+            <ReactMarkdown 
+                remarkPlugins={[remarkMath]}
+                rehypePlugins={[rehypeKatex]}
+                className={`prose prose-sm max-w-none ${
+                    isUser 
+                        ? 'prose-invert prose-p:my-2' 
+                        : 'prose-p:my-2 prose-a:text-purple-600 prose-a:font-medium hover:prose-a:text-purple-800'
+                }`}
+            >
+                {normalizeLatex(content)}
             </ReactMarkdown>
         </div>
     );
@@ -227,32 +215,7 @@ export default function ChatTutor({ user, learningData, language = 'EN', isPerso
     const prevConversationLengthRef = useRef(0);
 
     // Load KaTeX from CDN
-    useEffect(() => {
-        // Only load if not already loaded (check for a specific KaTeX element or global function)
-        if (document.getElementById('katex-css') || window.renderMathInElement) return;
-
-        const katexCSS = document.createElement('link');
-        katexCSS.id = 'katex-css';
-        katexCSS.rel = 'stylesheet';
-        katexCSS.href = 'https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css';
-        katexCSS.crossOrigin = 'anonymous';
-        document.head.appendChild(katexCSS);
-
-        const katexJS = document.createElement('script');
-        katexJS.src = 'https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js';
-        katexJS.crossOrigin = 'anonymous';
-        katexJS.onload = () => {
-            const autoRenderJS = document.createElement('script');
-            autoRenderJS.src = 'https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js';
-            autoRenderJS.crossOrigin = 'anonymous';
-            autoRenderJS.onload = () => {
-                // Ensure auto-render.min.js has loaded and added renderMathInElement to window
-                // You might want to add a more robust check if needed.
-            };
-            document.head.appendChild(autoRenderJS);
-        };
-        document.head.appendChild(katexJS);
-    }, []);
+    // KaTeX is now imported via npm package in the file header
 
     const getIntroMessage = useCallback(() => {
         const allItems = [
