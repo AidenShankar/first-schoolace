@@ -7,6 +7,7 @@ async function unifiedInvokeAI(base44, { prompt, file_urls, response_json_schema
 
     if (aiProvider === 'gemini' && googleApiKey) {
         try {
+            console.log(`[UnifiedInvokeAI] Attempting to use Gemini model: gemini-2.0-flash-exp`);
             const genAI = new GoogleGenerativeAI(googleApiKey);
             const model = genAI.getGenerativeModel({
                 model: "gemini-2.0-flash-exp",
@@ -40,22 +41,32 @@ async function unifiedInvokeAI(base44, { prompt, file_urls, response_json_schema
             const result = await model.generateContent(parts);
             const response = result.response;
             const text = response.text();
+            
+            console.log(`[UnifiedInvokeAI] Gemini response received. Length: ${text.length}`);
 
             if (response_json_schema) {
-                // Gemini sometimes returns markdown code blocks for JSON
-                const cleanText = text.replace(/```json\n|\n```/g, "").trim();
-                return JSON.parse(cleanText);
+                try {
+                    // Robust cleanup for markdown code blocks
+                    let cleanText = text.trim();
+                    // Remove opening ```json or ```
+                    cleanText = cleanText.replace(/^```(?:json)?\s*/i, "");
+                    // Remove closing ```
+                    cleanText = cleanText.replace(/\s*```$/, "");
+                    
+                    return JSON.parse(cleanText);
+                } catch (parseError) {
+                    console.error("[UnifiedInvokeAI] Gemini JSON parse error:", parseError, "Raw text:", text);
+                    throw parseError; // Trigger fallback
+                }
             }
             return text;
 
         } catch (e) {
-            console.error("Gemini API Error:", e);
-            // Fallback to InvokeLLM if Gemini fails? Or rethrow?
-            // For now, let's log and fall through to InvokeLLM as backup, or throw to be explicit?
-            // User wants to switch, so if it fails, they might want to know.
-            // But falling back is safer for uptime.
-            console.log("Falling back to standard InvokeLLM...");
+            console.error("[UnifiedInvokeAI] Gemini API Failed:", e);
+            console.log("[UnifiedInvokeAI] Falling back to standard InvokeLLM...");
         }
+    } else {
+        console.log(`[UnifiedInvokeAI] Not using Gemini. Provider: ${aiProvider}, Key present: ${!!googleApiKey}`);
     }
     return await base44.integrations.Core.InvokeLLM({ prompt, file_urls, response_json_schema });
 }
