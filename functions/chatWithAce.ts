@@ -248,21 +248,25 @@ ${JSON.stringify(learningData || {}, null, 2)}
 - **Student asks about an assignment(Always check submission):** Why did I get a 14/20 on historical thinking?
 - **Your Response(If a student asks about an assignment, make sure to always check the submission the student submitted, not just the feedback. Make sure to give feedback on their submssion, do not just look at the feedback.)
 
-**QUIZ & ASSIGNMENT GENERATION (ONLY When Explicitly Requested):**
-CRITICAL WARNING: DO NOT GENERATE QUIZZES OR ASSIGNMENTS UNLESS EXPLICITLY REQUESTED
+**QUIZ GENERATION (ONLY When Explicitly Requested):**
+CRITICAL WARNING: DO NOT GENERATE QUIZZES UNLESS EXPLICITLY REQUESTED
 
-**1. QUIZZES (Multiple Choice)**
-Triggered by: "give me a quiz", "quiz me", "practice quiz", "test me"
-Format:
+ONLY generate quizzes when the student uses these EXACT phrases or similar explicit requests:
+- "give me a quiz" / "quiz me" / "I want a quiz"
+- "can I take a practice quiz" / "practice quiz"
+- "test me on this" / "give me a test" / "practice test"
+- "ask me questions" / "give me questions" / "practice questions"
+- "can you quiz me" / "I want to practice with questions"
+
+When a quiz IS explicitly requested, use this exact JSON format:
 \`\`\`json
 {
-  "content": "Here's a practice quiz on [Topic]!",
+  "content": "Here's a practice quiz on [Topic] as you requested!",
   "quiz": {
     "title": "Practice Quiz: [Topic]",
     "questions": [
       {
-        "type": "multiple-choice",
-        "question": "Question text?",
+        "question": "Question text based on a concept they struggled with?",
         "options": ["Option 1", "Option 2", "Option 3", "Option 4"],
         "correct_answer": "Correct Option"
       }
@@ -270,33 +274,6 @@ Format:
   }
 }
 \`\`\`
-
-**2. ASSIGNMENTS (Free Response)**
-Triggered by: "give me an assignment", "create an assignment", "assign me work"
-Format:
-\`\`\`json
-{
-  "content": "Here is a practice assignment for you.",
-  "quiz": {
-    "title": "Assignment: [Topic]",
-    "questions": [
-      {
-        "type": "free-response",
-        "question": "Open-ended question text?",
-        "options": [],
-        "correct_answer": "" // Optional for free response
-      }
-    ]
-  }
-}
-\`\`\`
-
-**GRADING INSTRUCTIONS:**
-If the user submits answers to a free-response assignment (they will come as a text message starting with "SUBMISSION:"), you must:
-1. Analyze their answer against the question.
-2. Provide a grade (e.g., "Score: 8/10").
-3. Give detailed feedback on what they did well and how to improve.
-4. Do NOT generate a new quiz/assignment unless asked.
 
 **DEFAULT RESPONSE STYLE:**
 Your default response should ALWAYS be conversational, using Socratic questioning to guide learning.
@@ -463,7 +440,6 @@ ${MATH_RULES}`;
                                 items: {
                                     type: "object",
                                     properties: {
-                                        type: { type: "string", enum: ["multiple-choice", "free-response"] },
                                         question: { type: "string" },
                                         options: { type: "array", items: { type: "string" } },
                                         correct_answer: { type: "string" }

@@ -46,13 +46,10 @@ const MathText = ({ children, className = "" }) => {
 
 const InteractiveQuiz = ({ quiz, onQuizSubmit, onCancel, language = 'EN' }) => {
     const [answers, setAnswers] = useState({});
-    const isSubmittable = quiz.questions.every((q, index) => {
-        const answer = answers[index];
-        return answer && answer.trim().length > 0;
-    });
+    const isSubmittable = Object.keys(answers).length === quiz.questions.length;
 
-    const handleAnswer = (qIndex, value) => {
-        setAnswers(prev => ({ ...prev, [qIndex]: value }));
+    const handleAnswer = (qIndex, option) => {
+        setAnswers(prev => ({ ...prev, [qIndex]: option }));
     };
     
     return (
@@ -77,52 +74,38 @@ const InteractiveQuiz = ({ quiz, onQuizSubmit, onCancel, language = 'EN' }) => {
                         <MathText className="text-lg font-medium text-slate-800 leading-relaxed">
                             {qIndex + 1}. {q.question}
                         </MathText>
-                        {q.type === 'free-response' || (!q.options || q.options.length === 0) ? (
-                            <Textarea
-                                placeholder="Type your answer here..."
-                                value={answers[qIndex] || ''}
-                                onChange={(e) => handleAnswer(qIndex, e.target.value)}
-                                className="w-full min-h-[120px] p-4 rounded-2xl text-base border-2 resize-y focus:ring-2 focus:ring-purple-500/20"
-                                style={{ 
-                                    backgroundColor: `rgb(var(--color-surface))`, 
-                                    borderColor: `rgb(var(--color-border))`,
-                                    color: `rgb(var(--color-text))` 
-                                }}
-                            />
-                        ) : (
-                            <div className="grid grid-cols-1 gap-3">
-                                {q.options.map((opt, oIndex) => (
-                                    <button
-                                        key={oIndex}
-                                        className={`text-left p-4 rounded-2xl text-base font-medium transition-all duration-300 ease-out border-2 ${
-                                            answers[qIndex] === opt 
-                                                ? 'text-white shadow-lg transform scale-[1.02]' 
-                                                : 'hover:shadow-md'
-                                        }`}
-                                        style={
-                                            answers[qIndex] === opt
-                                                ? { background: `linear-gradient(to right, rgb(var(--color-primary)), rgb(var(--color-secondary)))`, borderColor: `rgb(var(--color-primary))` }
-                                                : { backgroundColor: `rgb(var(--color-surface))`, borderColor: `rgb(var(--color-border))` }
+                        <div className="grid grid-cols-1 gap-3">
+                            {q.options.map((opt, oIndex) => (
+                                <button
+                                    key={oIndex}
+                                    className={`text-left p-4 rounded-2xl text-base font-medium transition-all duration-300 ease-out border-2 ${
+                                        answers[qIndex] === opt 
+                                            ? 'text-white shadow-lg transform scale-[1.02]' 
+                                            : 'hover:shadow-md'
+                                    }`}
+                                    style={
+                                        answers[qIndex] === opt
+                                            ? { background: `linear-gradient(to right, rgb(var(--color-primary)), rgb(var(--color-secondary)))`, borderColor: `rgb(var(--color-primary))` }
+                                            : { backgroundColor: `rgb(var(--color-surface))`, borderColor: `rgb(var(--color-border))` }
+                                    }
+                                    onMouseEnter={(e) => {
+                                        if (answers[qIndex] !== opt) {
+                                            e.currentTarget.style.backgroundColor = `rgba(var(--color-border), 0.5)`;
+                                            e.currentTarget.style.borderColor = `rgb(var(--color-textSecondary))`;
                                         }
-                                        onMouseEnter={(e) => {
-                                            if (answers[qIndex] !== opt) {
-                                                e.currentTarget.style.backgroundColor = `rgba(var(--color-border), 0.5)`;
-                                                e.currentTarget.style.borderColor = `rgb(var(--color-textSecondary))`;
-                                            }
-                                        }}
-                                        onMouseLeave={(e) => {
-                                            if (answers[qIndex] !== opt) {
-                                                e.currentTarget.style.backgroundColor = `rgb(var(--color-surface))`;
-                                                e.currentTarget.style.borderColor = `rgb(var(--color-border))`;
-                                            }
-                                        }}
-                                        onClick={() => handleAnswer(qIndex, opt)}
-                                    >
-                                        <MathText>{opt}</MathText>
-                                    </button>
-                                ))}
-                            </div>
-                        )}
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        if (answers[qIndex] !== opt) {
+                                            e.currentTarget.style.backgroundColor = `rgb(var(--color-surface))`;
+                                            e.currentTarget.style.borderColor = `rgb(var(--color-border))`;
+                                        }
+                                    }}
+                                    onClick={() => handleAnswer(qIndex, opt)}
+                                >
+                                    <MathText>{opt}</MathText>
+                                </button>
+                            ))}
+                        </div>
                     </div>
                 ))}
             </div>
@@ -421,26 +404,6 @@ export default function ChatTutor({ user, learningData, language = 'EN', isPerso
 
     const handleQuizSubmit = async (answers) => {
         const questions = activeQuiz.quiz.questions;
-        
-        // Check if this is a free-response assignment (any question is free-response or has no options)
-        const isAssignment = questions.some(q => q.type === 'free-response' || (!q.options || q.options.length === 0));
-
-        if (isAssignment) {
-            // Format submission for AI evaluation
-            let submissionText = `SUBMISSION: I have completed the assignment "${activeQuiz.quiz.title}".\n\n`;
-            questions.forEach((q, index) => {
-                submissionText += `Question ${index + 1}: ${q.question}\n`;
-                submissionText += `My Answer: ${answers[index] || '(No answer provided)'}\n\n`;
-            });
-            submissionText += "Please grade my work and provide feedback.";
-
-            // Send to AI as a user message
-            handleSend(submissionText);
-            setActiveQuiz(null);
-            return;
-        }
-
-        // Standard Quiz Logic (Multiple Choice)
         const results = questions.map((q, index) => ({
             question: q.question,
             correct_answer: q.correct_answer,
