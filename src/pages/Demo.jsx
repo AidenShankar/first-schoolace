@@ -9,18 +9,7 @@ export default function Demo() {
 
   return (
     <div className="fixed inset-0 w-full h-full bg-slate-950 z-50 flex flex-col">
-       {/* Top Bar overlay */}
-       <div className="absolute top-0 left-0 w-full h-16 pointer-events-none z-20 flex items-center justify-between px-6 pt-4">
-          <Link 
-            to={createPageUrl('Landing')} 
-            className="pointer-events-auto bg-black/50 backdrop-blur-md hover:bg-black/70 text-white px-4 py-2 rounded-full flex items-center gap-2 transition-all border border-white/10 shadow-lg group"
-          >
-            <Home className="w-4 h-4 group-hover:scale-110 transition-transform" />
-            <span className="text-sm font-medium">Back to Schoolace</span>
-          </Link>
-          
-
-       </div>
+       
 
        {/* Loading State */}
        {loading && (
