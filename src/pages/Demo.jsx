@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { Home, ExternalLink } from 'lucide-react';
+import { Home } from 'lucide-react';
 
 export default function Demo() {
   const [loading, setLoading] = useState(true);
@@ -19,15 +19,7 @@ export default function Demo() {
             <span className="text-sm font-medium">Back to Schoolace</span>
           </Link>
           
-          <a 
-            href={demoUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="pointer-events-auto bg-indigo-600/90 backdrop-blur-md hover:bg-indigo-600 text-white px-4 py-2 rounded-full flex items-center gap-2 transition-all shadow-lg group"
-          >
-            <span className="text-sm font-medium">Open in New Tab</span>
-            <ExternalLink className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-          </a>
+
        </div>
 
        {/* Loading State */}
