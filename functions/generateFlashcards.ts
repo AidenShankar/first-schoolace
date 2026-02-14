@@ -3,7 +3,6 @@ import JSZip from "npm:jszip@3.10.1";
 import mammoth from "npm:mammoth@1.6.0";
 import pdf from "npm:pdf-parse@1.1.1";
 import { Buffer } from "node:buffer";
-import { GoogleGenerativeAI } from "npm:@google/generative-ai";
 
 // Helper to chunk text
 function chunkText(text, chunkSize = 15000, overlap = 1000) {
@@ -60,59 +59,14 @@ async function extractTextFromFile(fileUrl, fileName) {
     }
 }
 
-async function unifiedInvokeAI(base44, { prompt, response_json_schema }) {
-    const aiProvider = Deno.env.get("AI_PROVIDER");
-    const googleApiKey = Deno.env.get("GOOGLE_API_KEY");
-
-    if (aiProvider === 'gemini' && googleApiKey) {
-        try {
-            console.log(`[UnifiedInvokeAI] Attempting to use Gemini model: gemini-3-flash-preview`);
-            const genAI = new GoogleGenerativeAI(googleApiKey);
-            const model = genAI.getGenerativeModel({
-                model: "gemini-3-flash-preview",
-                generationConfig: {
-                    responseMimeType: response_json_schema ? "application/json" : "text/plain",
-                    responseSchema: response_json_schema
-                }
-            });
-
-            const result = await model.generateContent(prompt);
-            const response = result.response;
-            const text = response.text();
-
-            console.log(`[UnifiedInvokeAI] Gemini response received. Length: ${text.length}`);
-
-            if (response_json_schema) {
-                try {
-                    let cleanText = text.trim();
-                    cleanText = cleanText.replace(/^```(?:json)?\s*/i, "");
-                    cleanText = cleanText.replace(/\s*```$/, "");
-                    return JSON.parse(cleanText);
-                } catch (parseError) {
-                    console.error("[UnifiedInvokeAI] Gemini JSON parse error:", parseError, "Raw text:", text);
-                    throw parseError;
-                }
-            }
-            return text;
-
-        } catch (e) {
-            console.error("[UnifiedInvokeAI] Gemini API Failed:", e);
-            console.log("[UnifiedInvokeAI] Falling back to standard InvokeLLM...");
-        }
-    }
-    
-    return await base44.asServiceRole.integrations.Core.InvokeLLM({ prompt, response_json_schema });
-}
-
 Deno.serve(async (req) => {
     try {
         const base44 = createClientFromRequest(req);
         const user = await base44.auth.me();
         if (!user) return Response.json({ error: "Unauthorized" }, { status: 401 });
 
-        const body = await req.json();
-        // Handle both older single file format and newer multiple files format
-        const { file_urls, text: userText, file_url, file_name } = body;
+        // file_urls should be an array of objects: { url, name }
+        const { file_urls, text: userText } = await req.json();
         
         let allExtractedText = "";
 
@@ -129,7 +83,8 @@ Deno.serve(async (req) => {
             allExtractedText = results.join("");
         } 
         // Backward compatibility for single file
-        else if (file_url) {
+        else if (req.body.file_url) {
+             const { file_url, file_name } = await req.json();
              allExtractedText = await extractTextFromFile(file_url, file_name);
         }
 
@@ -151,7 +106,7 @@ Deno.serve(async (req) => {
         // Cap at 20 chunks to prevent timeout on huge sets
         const promises = chunks.slice(0, 20).map(async (chunk, index) => {
             try {
-                const res = await unifiedInvokeAI(base44, {
+                const res = await base44.asServiceRole.integrations.Core.InvokeLLM({
                     prompt: `You are an expert tutor creating a comprehensive study set. 
                     Extract EVERY single distinct fact, definition, concept, and detail from the text below into a flashcard.
                     Do not summarize or skip details. Be exhaustive. 

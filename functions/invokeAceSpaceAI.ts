@@ -1,75 +1,4 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
-import { GoogleGenerativeAI } from "npm:@google/generative-ai";
-
-async function unifiedInvokeAI(base44, { prompt, file_urls, response_json_schema }) {
-    const aiProvider = Deno.env.get("AI_PROVIDER");
-    const googleApiKey = Deno.env.get("GOOGLE_API_KEY");
-
-    if (aiProvider === 'gemini' && googleApiKey) {
-        try {
-            console.log(`[UnifiedInvokeAI] Attempting to use Gemini model: gemini-3-flash-preview`);
-            const genAI = new GoogleGenerativeAI(googleApiKey);
-            const model = genAI.getGenerativeModel({
-                model: "gemini-3-flash-preview",
-                generationConfig: {
-                    responseMimeType: response_json_schema ? "application/json" : "text/plain",
-                    responseSchema: response_json_schema
-                }
-            });
-
-            const parts = [{ text: prompt }];
-            if (file_urls && file_urls.length > 0) {
-                 for (const url of file_urls) {
-                     try {
-                         const resp = await fetch(url);
-                         if (resp.ok) {
-                             const buf = await resp.arrayBuffer();
-                             const base64 = btoa(String.fromCharCode(...new Uint8Array(buf)));
-                             parts.push({
-                                 inlineData: {
-                                     data: base64,
-                                     mimeType: resp.headers.get("content-type") || "image/jpeg"
-                                 }
-                             });
-                         }
-                     } catch (e) {
-                         console.error("Failed to fetch file for Gemini:", url, e);
-                     }
-                 }
-            }
-
-            const result = await model.generateContent(parts);
-            const response = result.response;
-            const text = response.text();
-
-            console.log(`[UnifiedInvokeAI] Gemini response received. Length: ${text.length}`);
-
-            if (response_json_schema) {
-                try {
-                    // Robust cleanup for markdown code blocks
-                    let cleanText = text.trim();
-                    // Remove opening ```json or ```
-                    cleanText = cleanText.replace(/^```(?:json)?\s*/i, "");
-                    // Remove closing ```
-                    cleanText = cleanText.replace(/\s*```$/, "");
-                    
-                    return JSON.parse(cleanText);
-                } catch (parseError) {
-                    console.error("[UnifiedInvokeAI] Gemini JSON parse error:", parseError, "Raw text:", text);
-                    throw parseError; // Trigger fallback
-                }
-            }
-            return text;
-
-        } catch (e) {
-            console.error("[UnifiedInvokeAI] Gemini API Failed:", e);
-            console.log("[UnifiedInvokeAI] Falling back to standard InvokeLLM...");
-        }
-    } else {
-        console.log(`[UnifiedInvokeAI] Not using Gemini. Provider: ${aiProvider}, Key present: ${!!googleApiKey}`);
-    }
-    return await base44.integrations.Core.InvokeLLM({ prompt, file_urls, response_json_schema });
-}
 
 Deno.serve(async (req) => {
     try {
@@ -146,7 +75,7 @@ Deno.serve(async (req) => {
             ...conversationHistory,
         ];
 
-        const response = await unifiedInvokeAI(base44, {
+        const response = await base44.integrations.Core.InvokeLLM({
             prompt: JSON.stringify(messages),
             file_urls: fileUrls
         });

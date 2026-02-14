@@ -1,93 +1,4 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.14';
-import { GoogleGenerativeAI } from "npm:@google/generative-ai";
-
-async function unifiedInvokeAI(base44, { prompt, file_urls, response_json_schema }) {
-    const aiProvider = Deno.env.get("AI_PROVIDER");
-    const googleApiKey = Deno.env.get("GOOGLE_API_KEY");
-
-    if (aiProvider === 'gemini' && googleApiKey) {
-        try {
-            console.log(`[UnifiedInvokeAI] Attempting to use Gemini model: gemini-3-flash-preview`);
-            const genAI = new GoogleGenerativeAI(googleApiKey);
-            const model = genAI.getGenerativeModel({
-                model: "gemini-3-flash-preview",
-                generationConfig: {
-                    responseMimeType: response_json_schema ? "application/json" : "text/plain",
-                    responseSchema: response_json_schema
-                }
-            });
-
-            const parts = [{ text: prompt }];
-            if (file_urls && file_urls.length > 0) {
-                 for (const url of file_urls) {
-                     try {
-                         const resp = await fetch(url);
-                         if (resp.ok) {
-                             const buf = await resp.arrayBuffer();
-                             const base64 = btoa(String.fromCharCode(...new Uint8Array(buf)));
-                             parts.push({
-                                 inlineData: {
-                                     data: base64,
-                                     mimeType: resp.headers.get("content-type") || "image/jpeg"
-                                 }
-                             });
-                         }
-                     } catch (e) {
-                         console.error("Failed to fetch file for Gemini:", url, e);
-                     }
-                 }
-            }
-
-            // Add timeout for Gemini call (45 seconds)
-            const timeoutPromise = new Promise((_, reject) => 
-                setTimeout(() => reject(new Error("Gemini API timeout after 45s")), 45000)
-            );
-
-            const resultPromise = model.generateContent(parts);
-            const result = await Promise.race([resultPromise, timeoutPromise]);
-            
-            const response = result.response;
-            const text = response.text();
-            
-            console.log(`[UnifiedInvokeAI] Gemini response received. Length: ${text.length}`);
-
-            if (response_json_schema) {
-                try {
-                    // Robust cleanup for markdown code blocks
-                    let cleanText = text.trim();
-                    // Remove opening ```json or ```
-                    cleanText = cleanText.replace(/^```(?:json)?\s*/i, "");
-                    // Remove closing ```
-                    cleanText = cleanText.replace(/\s*```$/, "");
-                    
-                    const parsed = JSON.parse(cleanText);
-                    
-                    // Validate quiz structure if it's supposed to be there
-                    if (parsed.content && (parsed.content.toLowerCase().includes("quiz") || parsed.content.toLowerCase().includes("test"))) {
-                        if (!parsed.quiz && response_json_schema.properties.quiz) {
-                            console.warn("[UnifiedInvokeAI] Gemini response mentions quiz but missing quiz object. Trying to recover...");
-                            // If we have a quiz request but no quiz object, we might want to throw to trigger fallback
-                            // or we could accept it if it's just chatting about a quiz.
-                            // But usually this means generation failed to follow schema fully.
-                        }
-                    }
-                    return parsed;
-                } catch (parseError) {
-                    console.error("[UnifiedInvokeAI] Gemini JSON parse error:", parseError, "Raw text:", text);
-                    throw parseError; // Trigger fallback
-                }
-            }
-            return text;
-
-        } catch (e) {
-            console.error("[UnifiedInvokeAI] Gemini API Failed:", e);
-            console.log("[UnifiedInvokeAI] Falling back to standard InvokeLLM...");
-        }
-    } else {
-        console.log(`[UnifiedInvokeAI] Not using Gemini. Provider: ${aiProvider}, Key present: ${!!googleApiKey}`);
-    }
-    return await base44.integrations.Core.InvokeLLM({ prompt, file_urls, response_json_schema });
-}
 
 export async function chatWithAce(req) {
     try {
@@ -109,63 +20,6 @@ export async function chatWithAce(req) {
             attachedFiles = [] 
         } = await req.json();
 
-        // Calculate student performance for adaptive difficulty
-        let totalScore = 0;
-        let totalItems = 0;
-        
-        const assignments = learningData?.assignments || [];
-        const quizzes = learningData?.quizzes || [];
-
-        assignments.forEach(a => {
-            if (typeof a.percentage === 'number') {
-                totalScore += a.percentage;
-                totalItems++;
-            }
-        });
-
-        quizzes.forEach(q => {
-             if (typeof q.percentage === 'number') {
-                totalScore += q.percentage;
-                totalItems++;
-            }
-        });
-
-        const averageScore = totalItems > 0 ? totalScore / totalItems : 0;
-        let difficultyInstruction = "";
-
-        let quizDifficultyDirective = "";
-        
-        if (totalItems === 0) {
-            difficultyInstruction = "The student has no past performance data. Assume an average difficulty level for explanations and questions.";
-            quizDifficultyDirective = "Difficulty Level: STANDARD. Use Bloom's Taxonomy Levels 2-3 (Understand, Apply). Mixed difficulty.";
-        } else if (averageScore >= 85) {
-            difficultyInstruction = `The student is HIGH PERFORMING (Average Score: \${averageScore.toFixed(1)}%). 
-            - Challenge the student with more complex questions and deeper critical thinking prompts.
-            - It should be super complicated and long questions.
-            - Explanations can be more concise, assuming strong foundational knowledge.`;
-            quizDifficultyDirective = `Difficulty Level: HARD/ADVANCED. 
-            - TARGET BLOOM'S TAXONOMY LEVELS 4-6 (Analyze, Evaluate, Create).
-            - DO NOT ask simple "What is X?" or definition questions.
-            - It should be super complicated and long questions, make sure it is long.
-            - Ask questions that require applying concepts to new scenarios, analyzing cause-and-effect, or comparing/contrasting.
-            - Distractors (incorrect options) should be plausible and require careful thought to rule out.`;
-        } else if (averageScore <= 70) {
-            difficultyInstruction = `The student is LOW PERFORMING (Average Score: \${averageScore.toFixed(1)}%).
-            - Focus on foundational concepts and provide simpler, step-by-step explanations.
-            - Break down complex topics into smaller, manageable parts.`;
-            quizDifficultyDirective = `Difficulty Level: EASY/FOUNDATIONAL.
-            - TARGET BLOOM'S TAXONOMY LEVELS 1-2 (Remember, Understand).
-            - Focus on basic definitions, key terms, and simple recall.
-            - Questions should be direct and straightforward.
-            - Distractors should be clearly incorrect to build confidence.`;
-        } else {
-             difficultyInstruction = `The student is AVERAGE PERFORMING (Average Score: \${averageScore.toFixed(1)}%).
-             - Balance difficulty to maintain engagement without overwhelming.`;
-             quizDifficultyDirective = "Difficulty Level: MEDIUM. Mix basic recall and application questions. Standard high school level.";
-        }
-        
-        console.log(`[chatWithAce] Student Performance: Score=\${averageScore.toFixed(1)}%, Directive=\${quizDifficultyDirective}`);
-
         // 1. Moderate the student message
         let isFlagged = false;
         let flagReason = "";
@@ -186,7 +40,7 @@ export async function chatWithAce(req) {
                 Student message: "${message}"
             `;
             
-            const moderationResult = await unifiedInvokeAI(base44, {
+            const moderationResult = await base44.integrations.Core.InvokeLLM({
                 prompt: moderationPrompt,
                 response_json_schema: {
                     type: "object",
@@ -243,9 +97,6 @@ export async function chatWithAce(req) {
 You are 'Ace', a supportive and expert AI tutor for ${user.full_name}.
 
 ${modeInstructions}
-
-**ADAPTIVE DIFFICULTY INSTRUCTIONS:**
-${difficultyInstruction}
 
 **ACCESS INSTRUCTIONS:**
 You have access to the student's entire academic record, including:
@@ -329,37 +180,24 @@ ${JSON.stringify(learningData || {}, null, 2)}
 **QUIZ GENERATION (ONLY When Explicitly Requested):**
 CRITICAL WARNING: DO NOT GENERATE QUIZZES UNLESS EXPLICITLY REQUESTED
 
-**GENERATION DIFFICULTY SETTING:**
-${quizDifficultyDirective}
+ONLY generate quizzes when the student uses these EXACT phrases or similar explicit requests:
+- "give me a quiz" / "quiz me" / "I want a quiz"
+- "can I take a practice quiz" / "practice quiz"
+- "test me on this" / "give me a test" / "practice test"
+- "ask me questions" / "give me questions" / "practice questions"
+- "can you quiz me" / "I want to practice with questions"
 
-ONLY generate quizzes/assignments when the student uses these phrases or ANY similar request for practice work:
-- Quizzes (Multiple Choice): "give me a quiz", "quiz me", "I want a quiz", "test me", "multiple choice practice"
-- Assignments (Free Response): "give me an assignment", "I want an assignment", "practice assignment", "create a worksheet", "give me practice problems", "homework", "open ended questions", "essay questions"
-
-When a quiz or assignment IS explicitly requested, you MUST generate the 'quiz' object in the JSON response.
-
-CRITICAL ENFORCEMENT: 
-1. NEVER output a list of questions or an assignment as plain text in the 'content' field.
-2. If you are generating questions for the student to answer, you MUST use the 'quiz' JSON object.
-3. If the user asks for an assignment, the 'quiz' object with type="free-response" is MANDATORY. Do not just write the questions in the chat.
-
-For "Assignments" (Free Response), set "type": "free-response" and "options": [] (empty array).
-For "Quizzes" (Multiple Choice), set "type": "multiple-choice" (default).
-
-IMPORTANT: Ensure the questions match the **${quizDifficultyDirective}** defined above.
-
-Use this exact JSON format:
+When a quiz IS explicitly requested, use this exact JSON format:
 \`\`\`json
 {
-  "content": "Here's a practice quiz/assignment on [Topic] as you requested!",
+  "content": "Here's a practice quiz on [Topic] as you requested!",
   "quiz": {
-    "title": "Practice [Quiz/Assignment]: [Topic]",
+    "title": "Practice Quiz: [Topic]",
     "questions": [
       {
-        "type": "multiple-choice" | "free-response",
-        "question": "Question text?",
-        "options": ["Option 1", "Option 2", "Option 3", "Option 4"], // Empty for free-response
-        "correct_answer": "Correct Option OR Model Answer"
+        "question": "Question text based on a concept they struggled with?",
+        "options": ["Option 1", "Option 2", "Option 3", "Option 4"],
+        "correct_answer": "Correct Option"
       }
     ]
   }
@@ -515,7 +353,7 @@ ${MATH_RULES}`;
             .map(file => file.file_url) : [];
         
         // 4. Call AI Tutor
-        const response = await unifiedInvokeAI(base44, {
+        const response = await base44.integrations.Core.InvokeLLM({
             prompt: fullPrompt,
             file_urls: allFileUrls.length > 0 ? allFileUrls : undefined,
             response_json_schema: {
@@ -531,7 +369,6 @@ ${MATH_RULES}`;
                                 items: {
                                     type: "object",
                                     properties: {
-                                        type: { type: "string", enum: ["multiple-choice", "free-response"] },
                                         question: { type: "string" },
                                         options: { type: "array", items: { type: "string" } },
                                         correct_answer: { type: "string" }
@@ -558,7 +395,7 @@ ${MATH_RULES}`;
 Response to translate:
 ${response.content}`;
 
-            const translatedResponse = await unifiedInvokeAI(base44, { prompt: translationPrompt });
+            const translatedResponse = await base44.integrations.Core.InvokeLLM({ prompt: translationPrompt });
             finalContent = translatedResponse;
 
             if (response.quiz && Array.isArray(response.quiz.questions) && response.quiz.questions.length > 0) {
@@ -567,7 +404,7 @@ ${response.content}`;
 Quiz to translate:
 ${JSON.stringify(response.quiz)}`;
 
-                const translatedQuiz = await unifiedInvokeAI(base44, { 
+                const translatedQuiz = await base44.integrations.Core.InvokeLLM({ 
                     prompt: quizTranslationPrompt,
                     response_json_schema: {
                         type: "object",
@@ -578,7 +415,6 @@ ${JSON.stringify(response.quiz)}`;
                                 items: {
                                     type: "object",
                                     properties: {
-                                        type: { type: "string", enum: ["multiple-choice", "free-response"] },
                                         question: { type: "string" },
                                         options: { type: "array", items: { type: "string" } },
                                         correct_answer: { type: "string" }
