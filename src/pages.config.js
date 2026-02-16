@@ -57,6 +57,7 @@ import ChooseCourses from './pages/ChooseCourses';
 import ClassTools from './pages/ClassTools';
 import Compliance from './pages/Compliance';
 import Dashboard from './pages/Dashboard';
+import Demo from './pages/Demo';
 import Gradebook from './pages/Gradebook';
 import Landing from './pages/Landing';
 import Learn from './pages/Learn';
@@ -85,6 +86,7 @@ export const PAGES = {
     "ClassTools": ClassTools,
     "Compliance": Compliance,
     "Dashboard": Dashboard,
+    "Demo": Demo,
     "Gradebook": Gradebook,
     "Landing": Landing,
     "Learn": Learn,
