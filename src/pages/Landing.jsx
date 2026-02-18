@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, useScroll, useTransform, useInView, animate } from 'framer-motion';
 import { createPageUrl } from '@/utils';
@@ -1316,7 +1315,7 @@ export default function LandingPage() {
       quote: t('landing.testimonial14'),
       name: "Yohaan Narayanan",
       role: t('roles.student'),
-      imageUrl: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/b64bc24dc_Screenshot2026-01-03at120431PM.png"
+      imageUrl: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/cc92e6bb9_Screenshot2026-02-17at64039PM.png"
     },
     {
       quote: t('landing.testimonial15'),
