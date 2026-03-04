@@ -374,6 +374,7 @@ export default function AssignmentForm({ onSubmit, onCancel, isSubmitting, assig
                   toolbar: [
                     ['bold', 'italic', 'underline'],
                     [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                    ['link'],
                     ['clean']
                   ]
                 }}

@@ -8,7 +8,7 @@ import { motion } from "framer-motion";
 import FilePreview from "../common/FilePreview";
 import { AssignmentComment } from "@/entities/AssignmentComment";
 import { Textarea } from "@/components/ui/textarea";
-import ReactQuill from "react-quill";
+
 import {
   Dialog,
   DialogContent,
@@ -261,11 +261,9 @@ export default function AssignmentList({ assignments, onUpload, userSubmissions,
                             {assignment.description && (
                               <div>
                                 <h4 className="font-semibold mb-2" style={{ color: `rgb(var(--color-text))` }}>Description</h4>
-                                <ReactQuill
-                                  value={assignment.description}
-                                  readOnly={true}
-                                  theme="bubble"
-                                  className="[&_.ql-editor]:p-0 [&_.ql-container]:border-none"
+                                <div 
+                                  className="prose prose-sm max-w-none [&_a]:text-blue-600 [&_a]:underline [&_a:hover]:text-blue-800"
+                                  dangerouslySetInnerHTML={{ __html: assignment.description }}
                                 />
                               </div>
                             )}
