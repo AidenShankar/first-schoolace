@@ -41,7 +41,7 @@ import AssignmentList from "../components/student/AssignmentList";
 import SubmissionUpload from "../components/student/SubmissionUpload";
 // New import
 import ProcessingModal from "../components/common/ProcessingModal"; // New import
-import ReactQuill from "react-quill"; // New import
+
 import LanguageSelector from "../components/i18n/LanguageSelector";
 import ThemeSelector from "../components/theme/ThemeSelector";
 import PromoPopup from "../components/dashboard/PromoPopup";
