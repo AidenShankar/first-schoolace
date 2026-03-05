@@ -23,7 +23,16 @@ import {
 } from "@/components/ui/alert-dialog";
 // This import is not directly used in the modified handleSubmit but might be used elsewhere.
 import { format } from "date-fns";
-import ReactQuill from "react-quill";
+import ReactQuill, { Quill } from "react-quill";
+
+// Ensure links always have an absolute URL (e.g. https://)
+const QuillLink = Quill.import('formats/link');
+QuillLink.sanitize = function(url) {
+  if (url && !url.startsWith('http://') && !url.startsWith('https://') && !url.startsWith('mailto:')) {
+    return `https://${url}`;
+  }
+  return url;
+};
 import "react-quill/dist/quill.snow.css";
 import { useTranslation } from "../i18n/useTranslation";
 import { base44 } from "@/api/base44Client";

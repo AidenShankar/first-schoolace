@@ -261,12 +261,21 @@ export default function AssignmentList({ assignments, onUpload, userSubmissions,
                             {assignment.description && (
                               <div>
                                 <h4 className="font-semibold mb-2" style={{ color: `rgb(var(--color-text))` }}>Description</h4>
-                                <ReactQuill
-                                  value={assignment.description}
-                                  readOnly={true}
-                                  theme="bubble"
-                                  className="[&_.ql-editor]:p-0 [&_.ql-container]:border-none"
-                                />
+                                <div
+                                  onClick={(e) => {
+                                    if (e.target.tagName === 'A') {
+                                      e.preventDefault();
+                                      window.open(e.target.href, '_blank', 'noopener,noreferrer');
+                                    }
+                                  }}
+                                >
+                                  <ReactQuill
+                                    value={assignment.description}
+                                    readOnly={true}
+                                    theme="bubble"
+                                    className="[&_.ql-editor]:p-0 [&_.ql-container]:border-none [&_.ql-editor_a]:text-blue-600 [&_.ql-editor_a]:underline [&_.ql-editor_a]:cursor-pointer"
+                                  />
+                                </div>
                               </div>
                             )}
 
