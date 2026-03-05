@@ -41,7 +41,7 @@ import AssignmentList from "../components/student/AssignmentList";
 import SubmissionUpload from "../components/student/SubmissionUpload";
 // New import
 import ProcessingModal from "../components/common/ProcessingModal"; // New import
-
+import ReactQuill from "react-quill"; // New import
 import LanguageSelector from "../components/i18n/LanguageSelector";
 import ThemeSelector from "../components/theme/ThemeSelector";
 import PromoPopup from "../components/dashboard/PromoPopup";
@@ -1509,12 +1509,12 @@ Output your response as JSON with:
                                                     </Button>
                                                     <div>
                                                         <h3 className="text-2xl font-bold" style={{ color: `rgb(var(--color-text))` }}>{selectedAssignment.title}</h3>
-                                                        {selectedAssignment.description && (
-                                                          <div 
-                                                            className="text-slate-600 prose prose-sm max-w-none [&_a]:text-blue-600 [&_a]:underline [&_a:hover]:text-blue-800"
-                                                            dangerouslySetInnerHTML={{ __html: selectedAssignment.description }}
-                                                          />
-                                                        )}
+                                                        <ReactQuill
+                                                          value={selectedAssignment.description}
+                                                          readOnly={true}
+                                                          theme="bubble"
+                                                          className="text-slate-600 [&_.ql-editor]:p-0 [&_.ql-container]:border-none"
+                                                        />
                                                     </div>
                                                 </div>
                                                 <Button
