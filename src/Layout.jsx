@@ -889,6 +889,7 @@ export default function Layout({ children, currentPageName }) {
           currentPageName={currentPageName}
           isQuizModeActive={isQuizModeActive}
           isLandingPage={isLandingPage}
+          isAITutorPage={isAITutorPage}
           isCompliancePage={isCompliancePage}
           isDemoPage={isDemoPage}
           isExampleLearningTrackerPage={isExampleLearningTrackerPage}
