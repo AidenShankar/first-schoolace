@@ -165,12 +165,12 @@ export default function AITutor() {
 
         {/* Top logo */}
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50, padding: '1.2rem 2rem', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.25rem' }}>
+          <a href={createPageUrl('Landing')} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.25rem', textDecoration: 'none', cursor: 'pointer' }}>
             <div style={{ width: 36, height: 36, borderRadius: 10, background: 'linear-gradient(135deg, #6d28d9, #a855f7)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <GraduationCap size={20} color="white" />
             </div>
             <span style={{ fontFamily: 'Oxanium, sans-serif', fontWeight: 700, fontSize: '0.7rem', color: '#e2e8f0', letterSpacing: '0.05em' }}>School<span style={{ color: '#a78bfa' }}>ACE</span></span>
-          </div>
+          </a>
         </div>
 
         <div style={{ position: 'relative', zIndex: 10, maxWidth: '860px', width: '100%' }}>
