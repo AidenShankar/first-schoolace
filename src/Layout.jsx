@@ -912,7 +912,7 @@ export default function Layout({ children, currentPageName }) {
 
 function LayoutContent({ 
   user, allClasses, currentClass, currentClassId, quizInProgress, currentPageName,
-  isQuizModeActive, isLandingPage, isCompliancePage, isDemoPage, isExampleLearningTrackerPage, isLearnerDashboard, isAPExamSchedulePage, isPersonalizedLearning,
+  isQuizModeActive, isLandingPage, isAITutorPage, isCompliancePage, isDemoPage, isExampleLearningTrackerPage, isLearnerDashboard, isAPExamSchedulePage, isPersonalizedLearning,
   location, handleNavClick, fetchUserAndClasses, isLayoutLoading, getNavLinks, filterNavLinks, children 
 }) {
   const { language } = useLanguage();
