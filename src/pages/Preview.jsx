@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 
 export default function Preview() {
   const [loading, setLoading] = useState(true);
-  const previewUrl = "http://mimir-internal-admin-7k6mnc7qga-uc.a.run.app/preview";
-  //const previewUrl = "http://mimir-internal-admin-7k6mnc7qga-uc.a.run.app/preview";
+  const previewUrl = "https://mimir-internal-admin-7k6mnc7qga-uc.a.run.app/preview";
+  //const previewUrl = "https://mimir-internal-admin-7k6mnc7qga-uc.a.run.app/preview";
 
   return (
     <div className="fixed inset-0 w-full h-full bg-slate-950 z-50 flex flex-col">
