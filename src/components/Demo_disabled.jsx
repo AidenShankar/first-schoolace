@@ -3,7 +3,7 @@ import { Home } from 'lucide-react';
 
 export default function Demo() {
   const [loading, setLoading] = useState(true);
-  const demoUrl = "https://mimir-internal-admin-7k6mnc7qga-uc.a.run.app/student-dashboard";
+  const demoUrl = "http://mimir-internal-admin-7k6mnc7qga-uc.a.run.app/";
 
   return (
     <div className="fixed inset-0 w-full h-full bg-slate-950 z-50 flex flex-col">
