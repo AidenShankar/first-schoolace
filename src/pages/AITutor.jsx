@@ -9,7 +9,7 @@ const ACE_LINE = "AI Learning Companion for Education";
 
 // Render the ACE line, coloring A (index 0), C (index 12), E (index 26)
 function AceLineColored({ text }) {
-  const colored = { 0: '#a855f7', 12: '#c084fc', 26: '#818cf8' };
+  const colored = { 0: '#a78bfa', 12: '#a78bfa', 26: '#a78bfa' };
   return (
     <span>
       {text.split('').map((char, i) =>
