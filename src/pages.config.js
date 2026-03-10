@@ -49,6 +49,7 @@
  */
 import AIPersonalAgent from './pages/AIPersonalAgent';
 import AITools from './pages/AITools';
+import AITutor from './pages/AITutor';
 import APExamSchedule from './pages/APExamSchedule';
 import AceSpaceDetail from './pages/AceSpaceDetail';
 import AceSpaces from './pages/AceSpaces';
@@ -73,13 +74,13 @@ import StudySet from './pages/StudySet';
 import TermsOfService from './pages/TermsOfService';
 import compliance from './pages/compliance';
 import examplelearningtracker from './pages/examplelearningtracker';
-import AITutor from './pages/AITutor';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "AIPersonalAgent": AIPersonalAgent,
     "AITools": AITools,
+    "AITutor": AITutor,
     "APExamSchedule": APExamSchedule,
     "AceSpaceDetail": AceSpaceDetail,
     "AceSpaces": AceSpaces,
@@ -104,7 +105,6 @@ export const PAGES = {
     "TermsOfService": TermsOfService,
     "compliance": compliance,
     "examplelearningtracker": examplelearningtracker,
-    "AITutor": AITutor,
 }
 
 export const pagesConfig = {
