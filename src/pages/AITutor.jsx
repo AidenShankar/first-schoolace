@@ -197,7 +197,7 @@ export default function AITutor() {
               fontSize: 'clamp(1.1rem, 3vw, 1.75rem)',
               fontWeight: 600,
               color: '#cbd5e1',
-              marginBottom: '3rem',
+              marginBottom: '1.5rem',
               minHeight: '1.5em',
               letterSpacing: '0.02em',
             }}>
