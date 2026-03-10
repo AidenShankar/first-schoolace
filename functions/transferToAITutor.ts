@@ -1,0 +1,62 @@
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.20';
+
+// URL of your GCP AI Tutor app - update this to your actual domain
+const GCP_AITUTOR_URL = "https://aitutor.schoolace.org";
+
+Deno.serve(async (req) => {
+    try {
+        const base44 = createClientFromRequest(req);
+        const user = await base44.auth.me();
+
+        if (!user) {
+            return Response.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+
+        const sharedSecret = Deno.env.get('GCP_SHARED_SECRET');
+        if (!sharedSecret) {
+            return Response.json({ error: 'Server misconfiguration: missing GCP_SHARED_SECRET' }, { status: 500 });
+        }
+
+        // Build a payload with user info + 5-minute expiry
+        const payload = {
+            id: user.id,
+            email: user.email,
+            full_name: user.full_name,
+            app_role: user.app_role || 'student',
+            exp: Date.now() + 5 * 60 * 1000 // 5 minutes from now
+        };
+
+        const payloadStr = JSON.stringify(payload);
+        const encoder = new TextEncoder();
+
+        // HMAC-SHA256 sign the payload using the shared secret
+        const key = await crypto.subtle.importKey(
+            'raw',
+            encoder.encode(sharedSecret),
+            { name: 'HMAC', hash: 'SHA-256' },
+            false,
+            ['sign']
+        );
+
+        const signatureBuffer = await crypto.subtle.sign('HMAC', key, encoder.encode(payloadStr));
+        const sigHex = Array.from(new Uint8Array(signatureBuffer))
+            .map(b => b.toString(16).padStart(2, '0'))
+            .join('');
+
+        // Encode: base64(payload) + "." + hex(signature)
+        const payloadB64 = btoa(payloadStr);
+        const token = `${payloadB64}.${sigHex}`;
+
+        const redirectUrl = `${GCP_AITUTOR_URL}/auth/schoolace-handoff?token=${encodeURIComponent(token)}`;
+
+        return Response.json({ 
+            success: true,
+            token,
+            redirect_url: redirectUrl
+        });
+
+    } catch (error) {
+        console.error('transferToAITutor error:', error);
+        return Response.json({ error: error.message }, { status: 500 });
+    }
+});
