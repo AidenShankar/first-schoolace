@@ -206,27 +206,30 @@ export default function AITutor() {
             </h2>
           )}
 
-          {/* AI Tutor for Everyone + Button */}
-          {showBottom && (
-            <div className="fade-up" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.4rem' }}>
-              <p style={{
-                fontSize: 'clamp(0.85rem, 1.8vw, 1.05rem)',
-                color: '#94a3b8',
-                fontWeight: 400,
-                letterSpacing: '0.05em',
-              }}>
-                AI Tutor for Everyone
-              </p>
+          {/* AI Tutor for Everyone + Button — always reserves space */}
+          <div style={{ minHeight: '120px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1.4rem' }}>
+            {showBottom && (
+              <>
+                <p className="fade-up" style={{
+                  fontSize: 'clamp(0.85rem, 1.8vw, 1.05rem)',
+                  color: '#94a3b8',
+                  fontWeight: 400,
+                  letterSpacing: '0.05em',
+                }}>
+                  AI Tutor for Everyone
+                </p>
 
-              <button
-                className="learn-btn"
-                onClick={handleLearnClick}
-                disabled={transferring || !authChecked}
-              >
-                {transferring ? 'Launching...' : "Let's Learn"}
-              </button>
-            </div>
-          )}
+                <button
+                  className="learn-btn fade-up"
+                  onClick={handleLearnClick}
+                  disabled={transferring || !authChecked}
+                  style={{ animationDelay: '0.15s' }}
+                >
+                  {transferring ? 'Launching...' : "Let's Learn"}
+                </button>
+              </>
+            )}
+          </div>
         </div>
       </div>
     </>
