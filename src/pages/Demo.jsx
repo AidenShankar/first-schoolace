@@ -5,7 +5,7 @@ import { Home } from 'lucide-react';
 
 export default function Demo() {
   const [loading, setLoading] = useState(true);
-  const demoUrl = "https://mimir-internal-admin-7k6mnc7qga-uc.a.run.app/student-dashboard";
+  const demoUrl = "http://mimir-internal-admin-7k6mnc7qga-uc.a.run.app/";
   //https://mimir-internal-admin-7k6mnc7qga-uc.a.run.app/student-dashboard
 
   return (
