@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 export default function Preview() {
   const [loading, setLoading] = useState(true);
-  const previewUrl = "https://schoolace.org";
+  const previewUrl = "https://mimir-internal-admin-7k6mnc7qga-uc.a.run.app/student-dashboard";
   //const previewUrl = "https://mimir-internal-admin-7k6mnc7qga-uc.a.run.app/preview";
 
   return (
