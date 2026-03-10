@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { transferToAITutor } from '@/functions/transferToAITutor';
 import { createPageUrl } from '@/utils';
+import { GraduationCap } from 'lucide-react';
 
 const MEET_ACE = "MEET ACE";
 const ACE_LINE = "AI Learning Companion for Education";
