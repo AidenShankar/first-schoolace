@@ -1,7 +1,8 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.20';
 
 // URL of your GCP AI Tutor app - update this to your actual domain
-const GCP_AITUTOR_URL = "https://mimir-core-v3-7k6mnc7qga-uc.a.run.app";
+const GCP_AITUTOR_URL = "schoolace.org";
+//https://mimir-core-v3-7k6mnc7qga-uc.a.run.app
 
 Deno.serve(async (req) => {
     try {
