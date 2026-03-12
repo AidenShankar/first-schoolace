@@ -426,11 +426,16 @@ export default function Dashboard({ user: layoutUser, allClasses: layoutAllClass
                     }
                 }
 
+                const nameParts = (submission.student_name || '').trim().split(' ');
+                const studentDisplayName = nameParts.length > 1
+                    ? `${nameParts[0]} ${nameParts[nameParts.length - 1].charAt(0)}.`
+                    : nameParts[0] || 'Student';
+
                 const prompt = `
 You are an expert academic grader. Your task is to grade a student's work with absolute precision and accuracy based on a specific leniency level.
 
 **GRADING TASK CONTEXT:**
-- **Student's Name:** ${submission.student_name}
+- **Student's Name:** ${studentDisplayName}
 - **Assignment Title:** ${assignment.title}
 - **Assignment Subject:** ${assignment.subject}
 - **Teacher's Instructions:** ${assignment.instructions}
