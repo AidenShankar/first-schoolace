@@ -6,11 +6,14 @@ function renderSectionHTML(section) {
     case "key_points":
       return `<ul style="margin-top:8px;padding-left:18px;">${Array.isArray(section.content) ? section.content.map(p => `<li style="margin-bottom:6px;color:#d1d5db;">${p}</li>`).join("") : ""}</ul>`;
     case "reading_check":
-      return Array.isArray(section.content) ? section.content.map(item => `
-        <div style="margin-bottom:12px;">
-          <p style="color:#818cf8;font-weight:500;">• ${item.question}</p>
-          <blockquote style="margin:4px 0 0 16px;padding-left:12px;border-left:2px solid #4c1d95;color:#9ca3af;font-style:italic;">${item.answer}</blockquote>
-        </div>`).join("") : "";
+      return Array.isArray(section.content) ? section.content.map(item => {
+        const q = item.question || item.prompt || item.title || Object.values(item)[0] || "";
+        const a = item.answer || item.response || item.text || Object.values(item)[1] || "";
+        return `<div style="margin-bottom:12px;">
+          <p style="color:#818cf8;font-weight:500;">• ${q}</p>
+          <blockquote style="margin:4px 0 0 16px;padding-left:12px;border-left:2px solid #4c1d95;color:#9ca3af;font-style:italic;">${a}</blockquote>
+        </div>`;
+      }).join("") : "";
     case "compare_contrast":
       if (!section.content?.rows) return "";
       return `<table style="width:100%;border-collapse:collapse;margin-top:12px;">
