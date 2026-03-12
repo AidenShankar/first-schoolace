@@ -123,7 +123,7 @@ export default function NotesChat({ notesData, onQuiz, quizLoading }) {
         }
       `}</style>
 
-      <div className="w-72 xl:w-80 flex flex-col shrink-0 border-l"
+      <div className="flex flex-col shrink-0 border-l" style={{ width: "380px", minWidth: "380px" }}
         style={{ background: "#141414", borderColor: "#2a2a2a" }}>
 
         {/* Top bar */}
