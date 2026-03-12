@@ -104,7 +104,7 @@ export default function GradeDispute({ submission, assignment, onDisputed }) {
               <p className="text-sm font-semibold text-amber-800">Dispute Your Grade</p>
               <p className="text-xs text-amber-700 mt-0.5">
                 Explain why you believe the grade is incorrect. Provide specific evidence from your work.
-                Your original submission and feedback will be reviewed, and a teacher will release the response.
+                Your original submission and feedback will be reviewed by AI, and a teacher will release the response.
               </p>
             </div>
           </div>
