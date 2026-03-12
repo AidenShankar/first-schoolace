@@ -54,7 +54,7 @@ export default function GradeDispute({ submission, assignment, onDisputed }) {
           <div className="bg-blue-50 rounded-lg p-3 border border-blue-200">
             <div className="flex items-center justify-between mb-1">
               <p className="text-xs font-semibold text-blue-700 flex items-center gap-1">
-                <CheckCircle className="w-3 h-3" /> AI Response to Your Dispute
+                <CheckCircle className="w-3 h-3" /> Response to Your Dispute
               </p>
               {submission.dispute_ai_grade !== null && submission.dispute_ai_grade !== undefined && (
                 <Badge className="bg-white text-blue-700 border-blue-300 text-xs font-bold">
