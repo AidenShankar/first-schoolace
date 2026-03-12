@@ -620,7 +620,7 @@ const translations = {
       proPlan: "Pro",
       schoolPlan: "School",
       freePrice: "$0 /mo",
-      proPrice: "$21 /teacher/mo",
+      proPrice: "$21 /teacher/class/mo",
       schoolPrice: "Contact for Pricing",
       freeFeature1: "1 Class",
       freeFeature2: "Max 30 Students",
