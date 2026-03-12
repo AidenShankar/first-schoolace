@@ -335,6 +335,11 @@ export default function AssignmentList({ assignments, onUpload, userSubmissions,
                                       />
                                     </div>
                                   )}
+                                  <GradeDispute
+                                    submission={latestSubmission}
+                                    assignment={assignment}
+                                    onDisputed={onDisputeSubmitted}
+                                  />
                                 </div>
                               </div>
                             )}
