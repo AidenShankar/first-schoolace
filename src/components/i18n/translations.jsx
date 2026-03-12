@@ -626,6 +626,7 @@ const translations = {
       freeFeature2: "Max 30 Students",
       freeFeature3: "Limited ACE AI Features",
       freeFeature4: "Community Support",
+      freeFeature5: "Usage Limits Apply",
       proFeature1: "Full ACE AI Features & Agents",
       proFeature2: "Personalized Learning",
       proFeature3: "Email Support",
