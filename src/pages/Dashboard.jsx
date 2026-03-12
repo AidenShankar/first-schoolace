@@ -466,7 +466,7 @@ Example format:
 - **Student Submission:** ${fileContent}
 
 **CRITICAL RULES:**
-- **Address the student directly by their name, ${submission.student_name}, in your feedback.**
+- **Address the student directly by their name, ${studentDisplayName}, in your feedback.**
 - If a student's answer matches the correct answer, it is CORRECT. Never say an answer is wrong when it matches the correct answer.
 - Be precise in your calculations.
 - If you cannot clearly read the submission, state that clearly in your feedback.
