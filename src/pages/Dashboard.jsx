@@ -904,6 +904,87 @@ Output your response as JSON with:
         }
     };
 
+    const handleDisputeSubmitted = () => {
+        loadSubmissions();
+    };
+
+    const processDispute = async (submission, assignment) => {
+        try {
+            await Submission.update(submission.id, { grading_status: "dispute_reviewing" });
+            loadSubmissions();
+
+            let fileContent = submission.text_content || 'File content could not be extracted.';
+            if (submission.submission_type !== "text" && submission.file_url && !submission.file_url.startsWith('blob:')) {
+                try {
+                    const extraction = await ExtractDataFromUploadedFile({
+                        file_url: submission.file_url,
+                        json_schema: { type: 'object', properties: { content: { type: 'string' } } }
+                    });
+                    if (extraction.status === 'success' && extraction.output?.content) {
+                        fileContent = extraction.output.content;
+                    }
+                } catch (e) {
+                    console.error("Could not re-extract file for dispute:", e);
+                }
+            }
+
+            const nameParts = (submission.student_name || '').trim().split(' ');
+            const studentDisplayName = nameParts.length > 1
+                ? `${nameParts[0]} ${nameParts[nameParts.length - 1].charAt(0)}.`
+                : nameParts[0] || 'Student';
+
+            const prompt = `
+You are an expert academic grader reviewing a student's grade dispute.
+
+**CONTEXT:**
+- Student: ${studentDisplayName}
+- Assignment: ${assignment.title}
+- Max Points: ${assignment.max_points}
+- Original AI Grade: ${submission.ai_grade}/${assignment.max_points}
+- Original AI Feedback: ${submission.ai_feedback}
+
+**STUDENT'S ORIGINAL SUBMISSION:**
+${fileContent}
+
+**STUDENT'S COUNTER-ARGUMENT:**
+${submission.student_dispute}
+
+**YOUR TASK:**
+Carefully review the student's counter-argument alongside their original submission and the initial feedback.
+- If the student makes valid points supported by evidence in their submission, acknowledge them and adjust the grade if warranted.
+- If the student's argument is not supported by their submission, explain clearly and politely why the original grade stands.
+- Be fair, specific, and constructive. Address each point the student raised.
+- Start your response by addressing the student by name (${studentDisplayName}).
+
+Output JSON with:
+- grade: your final suggested grade (number, 0 to ${assignment.max_points}) — can be the same or different from the original
+- response: your detailed response to the student's dispute
+`;
+
+            const result = await InvokeLLM({
+                prompt,
+                response_json_schema: {
+                    type: "object",
+                    properties: {
+                        grade: { type: "number" },
+                        response: { type: "string" }
+                    },
+                    required: ["grade", "response"]
+                }
+            });
+
+            await retryWithBackoff(() => Submission.update(submission.id, {
+                dispute_ai_response: result.response,
+                dispute_ai_grade: result.grade,
+                grading_status: "dispute_reviewed",
+            }));
+            loadSubmissions();
+        } catch (e) {
+            console.error("Error processing dispute:", e);
+            await retryWithBackoff(() => Submission.update(submission.id, { grading_status: "disputed" }));
+        }
+    };
+
     const handleManualGrade = async (submissionId, gradeData) => {
         try {
             const updateData = {
