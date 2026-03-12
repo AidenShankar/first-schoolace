@@ -26,18 +26,24 @@ function renderSectionHTML(section) {
         </tr>`).join("")}</tbody>
       </table>`;
     case "definitions":
-      return Array.isArray(section.content) ? section.content.map(item => `
-        <div style="margin-bottom:8px;font-size:14px;">
-          <span style="color:#a78bfa;font-weight:600;">${item.term}:</span>
-          <span style="color:#d1d5db;margin-left:6px;">${item.definition}</span>
-        </div>`).join("") : "";
+      return Array.isArray(section.content) ? section.content.map(item => {
+        const term = item.term || item.word || item.key || item.name || Object.values(item)[0] || "";
+        const def = item.definition || item.meaning || item.desc || item.description || item.value || Object.values(item)[1] || "";
+        return `<div style="margin-bottom:8px;font-size:14px;">
+          <span style="color:#a78bfa;font-weight:600;">${term}:</span>
+          <span style="color:#d1d5db;margin-left:6px;">${def}</span>
+        </div>`;
+      }).join("") : "";
     case "timeline":
       return `<div style="padding-left:12px;border-left:2px solid #4c1d95;margin-top:8px;">
-        ${Array.isArray(section.content) ? section.content.map(item => `
-          <div style="margin-bottom:12px;font-size:14px;">
-            <span style="color:#a78bfa;font-weight:600;">${item.date}</span>
-            <span style="color:#d1d5db;margin-left:8px;">${item.event}</span>
-          </div>`).join("") : ""}
+        ${Array.isArray(section.content) ? section.content.map(item => {
+          const date = item.date || item.year || item.time || item.period || Object.values(item)[0] || "";
+          const event = item.event || item.description || item.text || item.detail || Object.values(item)[1] || "";
+          return `<div style="margin-bottom:12px;font-size:14px;">
+            <span style="color:#a78bfa;font-weight:600;">${date}</span>
+            <span style="color:#d1d5db;margin-left:8px;">${event}</span>
+          </div>`;
+        }).join("") : ""}
       </div>`;
     case "summary":
       return `<p style="margin-top:8px;font-size:14px;line-height:1.6;color:#d1d5db;">${section.content}</p>`;
