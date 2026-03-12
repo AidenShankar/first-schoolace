@@ -1714,7 +1714,8 @@ Output JSON with:
                                             onDeleteSubmission={handleDeleteSubmission} 
                                             currentUser={user} 
                                             onTextSubmission={handleTextSubmission} 
-                                            isSubmitting={isSubmitting || textSubmissionState.show} 
+                                                isSubmitting={isSubmitting || textSubmissionState.show}
+                                                onDisputeSubmitted={handleDisputeSubmitted}
                                         />
                                     </motion.div>
                                 </>
