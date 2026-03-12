@@ -2148,7 +2148,7 @@ export default function LandingPage() {
                   t('landing.freeFeature1'),
                   t('landing.freeFeature2'),
                   t('landing.freeFeature3'),
-                  t('landing.freeFeature4')],
+                  t('landing.freeFeature4'),
                   t('landing.freeFeature5')]
                 }
                 cta={t('landing.startForFree')}
