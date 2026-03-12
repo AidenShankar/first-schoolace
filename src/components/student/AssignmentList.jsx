@@ -6,6 +6,7 @@ import { FileText, Clock, Award, Upload, Paperclip, Trash2, MessageSquare, Eye }
 import { format, subHours } from "date-fns";
 import { motion } from "framer-motion";
 import FilePreview from "../common/FilePreview";
+import GradeDispute from "./GradeDispute";
 import { AssignmentComment } from "@/entities/AssignmentComment";
 import { Textarea } from "@/components/ui/textarea";
 import ReactQuill from "react-quill";
