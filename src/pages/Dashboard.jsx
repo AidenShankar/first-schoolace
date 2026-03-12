@@ -237,7 +237,7 @@ export default function Dashboard({ user: layoutUser, allClasses: layoutAllClass
     useEffect(() => {
         if (user?.app_role !== 'teacher') return;
         if (assignments.length === 0) return; // wait until assignments are loaded
-        const disputedSubmissions = submissions.filter(s => s.grading_status === 'disputed');
+        const disputedSubmissions = submissions.filter(s => s.grading_status === 'disputed' || s.grading_status === 'dispute_reviewing');
         for (const sub of disputedSubmissions) {
             const assignment = assignments.find(a => a.id === sub.assignment_id);
             if (assignment) {
