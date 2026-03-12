@@ -554,6 +554,14 @@ export default function SubmissionsList({ submissions, assignment, onReleaseGrad
                         )}
                         
 
+                        {isNewestSubmission && submission.student_dispute && (
+                          <DisputeReview
+                            submission={submission}
+                            assignment={assignment}
+                            onReleased={onDisputeReleased}
+                          />
+                        )}
+
                         {isNewestSubmission && (
                         <div className="flex flex-wrap gap-2 pt-2 border-t border-slate-100">
                             {(submission.grading_status === "ai_graded" || submission.grading_status === "ai_grading") && !submission.is_released && (
