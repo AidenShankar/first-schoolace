@@ -2161,7 +2161,8 @@ export default function LandingPage() {
                   t('landing.proFeature1'),
                   t('landing.proFeature2'),
                   t('landing.proFeature3'),
-                  t('landing.proFeature4')]
+                  t('landing.proFeature4'),
+                  t('landing.proFeature5')]
                 }
                 cta={t('landing.getStarted')}
                 isFeatured
