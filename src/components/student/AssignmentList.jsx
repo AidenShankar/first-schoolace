@@ -129,7 +129,7 @@ const CommentThread = ({ assignment, currentUser, onTextSubmission, isSubmitting
   );
 };
 
-export default function AssignmentList({ assignments, onUpload, userSubmissions, onDeleteSubmission, currentUser, onTextSubmission, isSubmitting }) {
+export default function AssignmentList({ assignments, onUpload, userSubmissions, onDeleteSubmission, currentUser, onTextSubmission, isSubmitting, onDisputeSubmitted }) {
 
   const getSubmissionsForAssignment = (assignmentId) => {
     return userSubmissions.filter(sub => sub.assignment_id === assignmentId);
