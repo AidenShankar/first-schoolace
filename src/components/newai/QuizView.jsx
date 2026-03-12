@@ -155,7 +155,7 @@ export default function QuizView({ questions, notesData, onBack }) {
 
           {/* Scrollable main content */}
           <div className="flex-1 overflow-y-auto px-8 pt-4 pb-8">
-            <div className="w-full max-w-2xl mx-auto rounded-2xl px-8 py-7" style={{ background: "#1a1a1a", border: "1px solid #2a2a2a" }}>
+            <div className="w-full max-w-3xl mx-auto rounded-2xl px-10 py-8" style={{ background: "#1a1a1a", border: "1px solid #2a2a2a" }}>
 
               {/* Question header */}
               <div className="flex items-center justify-between mb-5">
