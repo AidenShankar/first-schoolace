@@ -41,6 +41,7 @@ export default function DisputeReview({ submission, assignment, onReleased }) {
         dispute_ai_response: editedResponse,
         ...((!isNaN(gradeNum)) && { dispute_ai_grade: gradeNum }),
       });
+      setIsEditing(false);
       onReleased?.();
     } catch (e) {
       console.error("Error releasing dispute response:", e);
