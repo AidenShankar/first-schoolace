@@ -1,130 +1,91 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 
-function KeyPoints({ content }) {
-  return (
-    <ul className="mt-2 space-y-1.5">
-      {content.map((point, i) => (
-        <li key={i} className="flex items-start gap-2 text-sm" style={{ color: "#d1d5db" }}>
-          <span className="mt-2 w-1.5 h-1.5 rounded-full shrink-0" style={{ background: "#6b6b6b" }} />
-          {point}
-        </li>
-      ))}
-    </ul>
-  );
+function renderSectionHTML(section) {
+  if (!section.content) return "";
+  switch (section.type) {
+    case "key_points":
+      return `<ul style="margin-top:8px;padding-left:18px;">${Array.isArray(section.content) ? section.content.map(p => `<li style="margin-bottom:6px;color:#d1d5db;">${p}</li>`).join("") : ""}</ul>`;
+    case "reading_check":
+      return Array.isArray(section.content) ? section.content.map(item => `
+        <div style="margin-bottom:12px;">
+          <p style="color:#818cf8;font-weight:500;">• ${item.question}</p>
+          <blockquote style="margin:4px 0 0 16px;padding-left:12px;border-left:2px solid #4c1d95;color:#9ca3af;font-style:italic;">${item.answer}</blockquote>
+        </div>`).join("") : "";
+    case "compare_contrast":
+      if (!section.content?.rows) return "";
+      return `<table style="width:100%;border-collapse:collapse;margin-top:12px;">
+        <thead><tr>
+          <th style="text-align:left;padding:8px;background:#2a2a2a;border:1px solid #3a3a3a;color:#9ca3af;font-size:12px;">Topic</th>
+          <th style="text-align:left;padding:8px;background:#2a2a2a;border:1px solid #3a3a3a;color:#a78bfa;font-size:12px;">${section.content.left_label}</th>
+          <th style="text-align:left;padding:8px;background:#2a2a2a;border:1px solid #3a3a3a;color:#818cf8;font-size:12px;">${section.content.right_label}</th>
+        </tr></thead>
+        <tbody>${section.content.rows.map((row, i) => `<tr style="background:${i%2===0?"#1e1e1e":"#242424"}">
+          <td style="padding:8px;border:1px solid #2e2e2e;color:#d1d5db;">${row.label}</td>
+          <td style="padding:8px;border:1px solid #2e2e2e;color:#9ca3af;">${row.left}</td>
+          <td style="padding:8px;border:1px solid #2e2e2e;color:#9ca3af;">${row.right}</td>
+        </tr>`).join("")}</tbody>
+      </table>`;
+    case "definitions":
+      return Array.isArray(section.content) ? section.content.map(item => `
+        <div style="margin-bottom:8px;font-size:14px;">
+          <span style="color:#a78bfa;font-weight:600;">${item.term}:</span>
+          <span style="color:#d1d5db;margin-left:6px;">${item.definition}</span>
+        </div>`).join("") : "";
+    case "timeline":
+      return `<div style="padding-left:12px;border-left:2px solid #4c1d95;margin-top:8px;">
+        ${Array.isArray(section.content) ? section.content.map(item => `
+          <div style="margin-bottom:12px;font-size:14px;">
+            <span style="color:#a78bfa;font-weight:600;">${item.date}</span>
+            <span style="color:#d1d5db;margin-left:8px;">${item.event}</span>
+          </div>`).join("") : ""}
+      </div>`;
+    case "summary":
+      return `<p style="margin-top:8px;font-size:14px;line-height:1.6;color:#d1d5db;">${section.content}</p>`;
+    default:
+      if (Array.isArray(section.content)) {
+        return `<ul style="margin-top:8px;padding-left:18px;">${section.content.map(p => `<li style="margin-bottom:6px;color:#d1d5db;">${p}</li>`).join("")}</ul>`;
+      }
+      if (typeof section.content === "string") {
+        return `<p style="margin-top:8px;font-size:14px;color:#d1d5db;">${section.content}</p>`;
+      }
+      return "";
+  }
 }
 
-function ReadingCheck({ content }) {
-  return (
-    <div className="mt-2 space-y-4">
-      {content.map((item, i) => (
-        <div key={i}>
-          <p className="text-sm font-medium" style={{ color: "#818cf8" }}>• {item.question}</p>
-          <blockquote className="mt-1 ml-4 pl-3 border-l-2 text-sm italic" style={{ borderColor: "#4c1d95", color: "#9ca3af" }}>
-            {item.answer}
-          </blockquote>
-        </div>
-      ))}
-    </div>
-  );
+function buildInitialHTML(notesData) {
+  let html = `<h1 style="font-size:28px;font-weight:700;color:#f3f4f6;margin-bottom:20px;">${notesData.title}</h1>`;
+  if (notesData.overview) {
+    html += `<h2 style="font-size:16px;font-weight:700;color:#f3f4f6;margin-bottom:6px;">Brief Overview</h2>`;
+    html += `<p style="font-size:14px;line-height:1.6;color:#d1d5db;margin-bottom:24px;">${notesData.overview}</p>`;
+    html += `<hr style="border:none;border-top:1px solid #2e2e2e;margin:24px 0;">`;
+  }
+  notesData.sections?.forEach(section => {
+    html += `<h2 style="font-size:18px;font-weight:700;color:#f3f4f6;margin-bottom:8px;margin-top:24px;">${section.heading}</h2>`;
+    html += renderSectionHTML(section);
+  });
+  return html;
 }
 
-function CompareContrast({ content }) {
-  return (
-    <div className="mt-3 overflow-x-auto">
-      <table className="w-full text-sm border-collapse">
-        <thead>
-          <tr>
-            <th className="text-left p-2 font-semibold text-xs" style={{ background: "#2a2a2a", border: "1px solid #3a3a3a", color: "#9ca3af" }}>Topic</th>
-            <th className="text-left p-2 font-semibold text-xs" style={{ background: "#2a2a2a", border: "1px solid #3a3a3a", color: "#a78bfa" }}>{content.left_label}</th>
-            <th className="text-left p-2 font-semibold text-xs" style={{ background: "#2a2a2a", border: "1px solid #3a3a3a", color: "#818cf8" }}>{content.right_label}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {content.rows?.map((row, i) => (
-            <tr key={i} style={{ background: i % 2 === 0 ? "#1e1e1e" : "#242424" }}>
-              <td className="p-2 font-medium text-sm" style={{ border: "1px solid #2e2e2e", color: "#d1d5db" }}>{row.label}</td>
-              <td className="p-2 text-sm" style={{ border: "1px solid #2e2e2e", color: "#9ca3af" }}>{row.left}</td>
-              <td className="p-2 text-sm" style={{ border: "1px solid #2e2e2e", color: "#9ca3af" }}>{row.right}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
+export default function NotesContent({ notesData, editorRef }) {
+  const innerRef = useRef(null);
+  const ref = editorRef || innerRef;
 
-function Definitions({ content }) {
-  return (
-    <div className="mt-2 space-y-2">
-      {content.map((item, i) => (
-        <div key={i} className="flex gap-2 text-sm">
-          <span className="font-semibold shrink-0" style={{ color: "#a78bfa" }}>{item.term}:</span>
-          <span style={{ color: "#d1d5db" }}>{item.definition}</span>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function Timeline({ content }) {
-  return (
-    <div className="mt-2 space-y-3 pl-3 border-l-2" style={{ borderColor: "#4c1d95" }}>
-      {content.map((item, i) => (
-        <div key={i} className="text-sm">
-          <span className="font-semibold" style={{ color: "#a78bfa" }}>{item.date}</span>
-          <span className="ml-2" style={{ color: "#d1d5db" }}>{item.event}</span>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function Section({ section }) {
-  const renderContent = () => {
-    if (!section.content) return null;
-    switch (section.type) {
-      case "key_points": return <KeyPoints content={section.content} />;
-      case "reading_check": return <ReadingCheck content={section.content} />;
-      case "compare_contrast": return <CompareContrast content={section.content} />;
-      case "definitions": return <Definitions content={section.content} />;
-      case "timeline": return <Timeline content={section.content} />;
-      case "summary": return <p className="mt-2 text-sm leading-relaxed" style={{ color: "#d1d5db" }}>{section.content}</p>;
-      default:
-        if (Array.isArray(section.content)) return <KeyPoints content={section.content} />;
-        if (typeof section.content === "string") return <p className="mt-2 text-sm" style={{ color: "#d1d5db" }}>{section.content}</p>;
-        return null;
+  useEffect(() => {
+    if (ref.current && notesData) {
+      ref.current.innerHTML = buildInitialHTML(notesData);
     }
-  };
-
-  return (
-    <div className="mb-8">
-      <h2 className="text-lg font-bold mb-2" style={{ color: "#f3f4f6" }}>{section.heading}</h2>
-      {renderContent()}
-    </div>
-  );
-}
-
-export default function NotesContent({ notesData }) {
-  if (!notesData) return null;
+  }, [notesData]);
 
   return (
     <div className="flex-1 overflow-y-auto" style={{ background: "#1a1a1a" }}>
-      <div className="max-w-2xl mx-auto px-10 py-10">
-        <h1 className="text-3xl font-bold mb-5" style={{ color: "#f3f4f6" }}>{notesData.title}</h1>
-
-        {notesData.overview && (
-          <div className="mb-8">
-            <h2 className="text-base font-bold mb-1" style={{ color: "#f3f4f6" }}>Brief Overview</h2>
-            <p className="text-sm leading-relaxed" style={{ color: "#d1d5db" }}>{notesData.overview}</p>
-          </div>
-        )}
-
-        <hr className="my-6" style={{ borderColor: "#2e2e2e" }} />
-
-        {notesData.sections?.map((section, i) => (
-          <Section key={i} section={section} />
-        ))}
-      </div>
+      <div
+        ref={ref}
+        contentEditable
+        suppressContentEditableWarning
+        spellCheck={false}
+        className="max-w-2xl mx-auto px-10 py-10 outline-none"
+        style={{ color: "#d1d5db", minHeight: "100%", lineHeight: 1.6 }}
+      />
     </div>
   );
 }
