@@ -475,7 +475,7 @@ Example format:
 
 Output your response as JSON with:
 - grade: numerical score (0 to ${assignment.max_points})
-- feedback: detailed explanation of what was correct/incorrect, starting with the student's name (e.g., "${submission.student_name}, you did a great job on...").
+- feedback: detailed explanation of what was correct/incorrect, starting with the student's name (e.g., "${studentDisplayName}, you did a great job on...").
 `;
 
                 const result = await InvokeLLM({
