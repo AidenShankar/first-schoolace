@@ -3,7 +3,7 @@ import { Send, Mic, Paperclip, Maximize2 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import ReactMarkdown from "react-markdown";
 
-export default function NotesChat({ notesData }) {
+export default function NotesChat({ notesData, onQuiz, quizLoading }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
