@@ -233,6 +233,18 @@ export default function Dashboard({ user: layoutUser, allClasses: layoutAllClass
         }
     }, [currentClass, loadAssignments, loadSubmissions]);
 
+    // Auto-process any newly disputed submissions that haven't been reviewed yet
+    useEffect(() => {
+        if (user?.app_role !== 'teacher') return;
+        const disputedSubmissions = submissions.filter(s => s.grading_status === 'disputed');
+        for (const sub of disputedSubmissions) {
+            const assignment = assignments.find(a => a.id === sub.assignment_id);
+            if (assignment) {
+                processDispute(sub, assignment);
+            }
+        }
+    }, [submissions, user?.app_role]);
+
     useEffect(() => {
         const timer = setTimeout(() => {
             setPageLoading(false);
