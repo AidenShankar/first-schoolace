@@ -631,6 +631,7 @@ const translations = {
       proFeature2: "Personalized Learning",
       proFeature3: "Email Support",
       proFeature4: "Community Support",
+      proFeature5: "Usage Limits Apply",
       schoolFeature1: "Full ACE AI Features & Agents",
       schoolFeature2: "Personalized Learning",
       schoolFeature3: "Direct Agent Support",
