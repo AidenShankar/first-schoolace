@@ -183,7 +183,7 @@ const CommentThread = ({ assignment, currentUser, allClassStudents }) => {
     );
 };
 
-export default function SubmissionsList({ submissions, assignment, onReleaseGrade, onManualGrade, currentUser }) {
+export default function SubmissionsList({ submissions, assignment, onReleaseGrade, onManualGrade, currentUser, onDisputeReleased }) {
   const [selectedStudentId, setSelectedStudentId] = useState(null);
   const [selectedSubmission, setSelectedSubmission] = useState(null);
   const [showGradeModal, setShowGradeModal] = useState(false);
