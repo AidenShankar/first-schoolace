@@ -52,7 +52,8 @@ export default function NotesChat({ notesData, onQuiz, quizLoading }) {
 
       {/* Quiz & Flashcard buttons */}
       <div className="grid grid-cols-2 gap-2 px-3 pt-2 pb-3">
-        <button className="rounded-xl p-3 text-left border transition-colors hover:border-purple-500"
+        <button onClick={onQuiz} disabled={quizLoading}
+          className="rounded-xl p-3 text-left border transition-colors hover:border-purple-500 disabled:opacity-50"
           style={{ background: "#1a1a1a", borderColor: "#2e2e2e" }}>
           <div className="flex items-center gap-2 mb-1">
             <span className="text-orange-400 text-sm">?</span>
@@ -60,7 +61,7 @@ export default function NotesChat({ notesData, onQuiz, quizLoading }) {
             <span className="ml-auto text-xs px-1.5 py-0.5 rounded-full font-semibold"
               style={{ background: "#166534", color: "#4ade80" }}>Popular</span>
           </div>
-          <p className="text-xs" style={{ color: "#6b6b6b" }}>Test your knowledge</p>
+          <p className="text-xs" style={{ color: "#6b6b6b" }}>{quizLoading ? "Generating..." : "Test your knowledge"}</p>
         </button>
         <button className="rounded-xl p-3 text-left border transition-colors hover:border-purple-500"
           style={{ background: "#1a1a1a", borderColor: "#2e2e2e" }}>
