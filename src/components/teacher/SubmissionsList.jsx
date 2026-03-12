@@ -20,6 +20,7 @@ import FilePreview from "../common/FilePreview";
 import { AssignmentComment } from "@/entities/AssignmentComment";
 import { ClassEnrollment } from "@/entities/ClassEnrollment";
 import { Submission } from "@/entities/Submission";
+import DisputeReview from "./DisputeReview";
 
 const statusColors = {
   pending: "bg-yellow-100 text-yellow-800 border-yellow-200",
