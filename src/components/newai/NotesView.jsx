@@ -22,38 +22,39 @@ export default function NotesView({ notesData, onReset }) {
     try {
       const notesText = editorRef.current?.innerText || JSON.stringify(notesData);
       const raw = await base44.integrations.Core.InvokeLLM({
-        prompt: `You are a quiz generator. Based on these study notes, generate exactly 20 multiple-choice questions.
+        prompt: `You are a quiz generator. Based on these study notes, generate exactly 20 multiple-choice questions. Make them challenging and diverse, covering all major topics.
 
 Notes:
-${notesText}
-
-Return ONLY a valid JSON array (no markdown) like:
-[
-  {
-    "question": "Question text here?",
-    "topic": "Short topic label",
-    "options": [
-      {"letter": "A", "text": "Option A"},
-      {"letter": "B", "text": "Option B"},
-      {"letter": "C", "text": "Option C"},
-      {"letter": "D", "text": "Option D"}
-    ],
-    "correct": "B"
-  }
-]
-
-Make questions challenging and diverse, covering all major topics in the notes.`,
+${notesText}`,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            questions: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  question: { type: "string" },
+                  topic: { type: "string" },
+                  options: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        letter: { type: "string" },
+                        text: { type: "string" }
+                      }
+                    }
+                  },
+                  correct: { type: "string" }
+                }
+              }
+            }
+          }
+        }
       });
 
-      let questions;
-      if (typeof raw === "string") {
-        const match = raw.match(/\[[\s\S]*\]/);
-        questions = JSON.parse(match ? match[0] : raw);
-      } else if (Array.isArray(raw)) {
-        questions = raw;
-      } else {
-        questions = raw.questions || raw;
-      }
+      const questions = raw?.questions || raw;
 
       setQuizQuestions(questions);
       setShowQuiz(true);
