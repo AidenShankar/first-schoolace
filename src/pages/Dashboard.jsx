@@ -968,6 +968,7 @@ Carefully review the student's counter-argument alongside their original submiss
 - If the student's argument is not supported by their submission, explain clearly and politely why the original grade stands.
 - Be fair, specific, and constructive. Address each point the student raised.
 - Start your response by addressing the student by name (${studentDisplayName}).
+- Do NOT end with any sign-off, closing phrase, "Best regards", "Sincerely", or any name. End with your final point or decision only.
 
 Output JSON with:
 - grade: your final suggested grade (number, 0 to ${assignment.max_points}) — can be the same or different from the original
