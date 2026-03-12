@@ -31,40 +31,45 @@ export default function NewAI() {
       setProcessingLabel("Extracting content...");
       setProgress(25);
 
-      const result = await base44.integrations.Core.InvokeLLM({
-        prompt: `You are an expert study notes creator. A student has uploaded a document. Analyze it and produce structured study notes.
+      const raw = await base44.integrations.Core.InvokeLLM({
+        prompt: `You are an expert study notes creator. A student has uploaded a document. Analyze it carefully and produce comprehensive structured study notes.
 
-File URL: ${file_url}
 File name: ${file.name}
 
-Create comprehensive, well-organized study notes from this document. Return a JSON object with:
-- title: a short, descriptive title with an emoji prefix (e.g. "📚 Chapter 5: Colonial America")
-- overview: a 2-3 sentence brief overview of what the document covers
-- sections: array of section objects, each with:
-  - heading: section heading (with relevant emoji)
-  - type: one of "key_points", "reading_check", "compare_contrast", "summary", "definitions", "timeline"
-  - content: for key_points → array of strings; for reading_check → array of {question, answer}; for compare_contrast → {left_label, right_label, rows: [{label, left, right}]}; for summary → string; for definitions → array of {term, definition}; for timeline → array of {date, event}
-`,
+Return ONLY a valid JSON object (no markdown, no explanation) with this exact structure:
+{
+  "title": "emoji + short descriptive title",
+  "overview": "2-3 sentence overview of the document",
+  "sections": [
+    {
+      "heading": "Section heading with emoji",
+      "type": "key_points",
+      "content": ["point 1", "point 2", "point 3"]
+    },
+    {
+      "heading": "Reading Check heading",
+      "type": "reading_check",
+      "content": [{"question": "Q?", "answer": "A."}]
+    },
+    {
+      "heading": "Compare & Contrast heading",
+      "type": "compare_contrast",
+      "content": {"left_label": "A", "right_label": "B", "rows": [{"label": "Topic", "left": "...", "right": "..."}]}
+    }
+  ]
+}
+
+Use a mix of section types: key_points, reading_check, compare_contrast, summary, definitions, timeline — whichever fit the content best.`,
         file_urls: [file_url],
-        response_json_schema: {
-          type: "object",
-          properties: {
-            title: { type: "string" },
-            overview: { type: "string" },
-            sections: {
-              type: "array",
-              items: {
-                type: "object",
-                properties: {
-                  heading: { type: "string" },
-                  type: { type: "string" },
-                  content: {}
-                }
-              }
-            }
-          }
-        }
       });
+
+      let result;
+      if (typeof raw === "string") {
+        const jsonMatch = raw.match(/\{[\s\S]*\}/);
+        result = JSON.parse(jsonMatch ? jsonMatch[0] : raw);
+      } else {
+        result = raw;
+      }
 
       clearInterval(ticker);
       setProgress(100);
