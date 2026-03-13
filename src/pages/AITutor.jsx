@@ -192,19 +192,18 @@ export default function AITutor() {
           </h1>
 
           {/* AI Learning Companion for Education */}
-          {phase >= 1 && (
-            <h2 style={{
-              fontSize: 'clamp(1.1rem, 3vw, 1.75rem)',
-              fontWeight: 600,
-              color: '#cbd5e1',
-              marginBottom: '1.5rem',
-              minHeight: '1.5em',
-              letterSpacing: '0.02em',
-            }}>
-              <AceLineColored text={aceLineText} />
-              {phase === 1 && <span className="cursor-blink" style={{ color: '#a78bfa' }}>|</span>}
-            </h2>
-          )}
+          <h2 style={{
+            fontSize: 'clamp(1.1rem, 3vw, 1.75rem)',
+            fontWeight: 600,
+            color: '#cbd5e1',
+            marginBottom: '1.5rem',
+            minHeight: '1.5em',
+            letterSpacing: '0.02em',
+            visibility: phase >= 1 ? 'visible' : 'hidden',
+          }}>
+            <AceLineColored text={aceLineText} />
+            {phase === 1 && <span className="cursor-blink" style={{ color: '#a78bfa' }}>|</span>}
+          </h2>
 
           {/* AI Tutor for Everyone + Button — always reserves space */}
           <div style={{ minHeight: '120px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1.4rem' }}>
