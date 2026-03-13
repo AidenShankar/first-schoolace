@@ -48,7 +48,9 @@ const AuthenticatedApp = () => {
           <MainPage />
         </LayoutWrapper>
       } />
+      <Route path="/preview" element={<PageNotFound />} />
       {Object.entries(Pages).map(([path, Page]) => (
+        path.toLowerCase() === 'preview' ? null :
         <Route
           key={path}
           path={`/${path}`}
@@ -60,7 +62,6 @@ const AuthenticatedApp = () => {
         />
       ))}
       <Route path="/newai" element={<NewAI />} />
-      <Route path="/preview" element={<PageNotFound />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
