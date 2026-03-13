@@ -221,7 +221,7 @@ export default function AITutor() {
               disabled={transferring || !authChecked}
               style={{ opacity: showBottom ? 1 : 0, transition: 'opacity 0.5s ease 0.1s' }}
             >
-              {transferring ? 'Launching...' : "Let's Learn"}
+              {transferring ? 'Launching ACE...' : "Let's Learn"}
             </button> }
             /*<button
               className="learn-btn"
