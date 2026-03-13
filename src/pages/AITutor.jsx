@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
 import { transferToAITutor } from '@/functions/transferToAITutor';
 import { createPageUrl } from '@/utils';
@@ -7,7 +7,6 @@ import { GraduationCap } from 'lucide-react';
 const MEET_ACE = "MEET ACE";
 const ACE_LINE = "AI Learning Companion for Education";
 
-// Render the ACE line, coloring A (index 0), C (index 12), E (index 26)
 function AceLineColored({ text }) {
   const colored = { 0: '#a78bfa', 12: '#a78bfa', 26: '#a78bfa' };
   return (
@@ -25,18 +24,15 @@ export default function AITutor() {
   const [user, setUser] = useState(null);
   const [authChecked, setAuthChecked] = useState(false);
   const [transferring, setTransferring] = useState(false);
-
-  // Animation phases: 0 = typing MEET ACE, 1 = typing ACE line, 2 = show bottom
-  const [phase, setPhase] = useState(0);
   const [meetAceText, setMeetAceText] = useState('');
   const [aceLineText, setAceLineText] = useState('');
   const [showBottom, setShowBottom] = useState(false);
+  const doneRef = useRef(false);
 
   useEffect(() => {
     base44.auth.me()
       .then(u => {
         setUser(u || null);
-        // If returning from login with autoTransfer flag, auto-launch
         const params = new URLSearchParams(window.location.search);
         if (u && params.get('autoTransfer') === 'true') {
           doTransfer();
@@ -46,35 +42,29 @@ export default function AITutor() {
       .finally(() => setAuthChecked(true));
   }, []);
 
-  // Phase 0: type "MEET ACE"
+  // Single typing sequence: MEET ACE → ACE line → show bottom
   useEffect(() => {
-    if (phase !== 0) return;
-    let i = 0;
-    const interval = setInterval(() => {
-      i++;
-      setMeetAceText(MEET_ACE.slice(0, i));
-      if (i >= MEET_ACE.length) {
-        clearInterval(interval);
-        setTimeout(() => setPhase(1), 350);
+    let cancelled = false;
+    async function typeSequence() {
+      // Type MEET ACE
+      for (let i = 1; i <= MEET_ACE.length; i++) {
+        if (cancelled) return;
+        setMeetAceText(MEET_ACE.slice(0, i));
+        await new Promise(r => setTimeout(r, 90));
       }
-    }, 90);
-    return () => clearInterval(interval);
-  }, [phase]);
-
-  // Phase 1: type ACE line
-  useEffect(() => {
-    if (phase !== 1) return;
-    let i = 0;
-    const interval = setInterval(() => {
-      i++;
-      setAceLineText(ACE_LINE.slice(0, i));
-      if (i >= ACE_LINE.length) {
-        clearInterval(interval);
-        setTimeout(() => setShowBottom(true), 300);
+      await new Promise(r => setTimeout(r, 300));
+      // Type ACE line
+      for (let i = 1; i <= ACE_LINE.length; i++) {
+        if (cancelled) return;
+        setAceLineText(ACE_LINE.slice(0, i));
+        await new Promise(r => setTimeout(r, 40));
       }
-    }, 40);
-    return () => clearInterval(interval);
-  }, [phase]);
+      await new Promise(r => setTimeout(r, 200));
+      if (!cancelled) setShowBottom(true);
+    }
+    typeSequence();
+    return () => { cancelled = true; };
+  }, []);
 
   const doTransfer = async () => {
     setTransferring(true);
@@ -103,18 +93,16 @@ export default function AITutor() {
 
   const isAutoTransfer = new URLSearchParams(window.location.search).get('autoTransfer') === 'true';
 
-  // If returning from login for auto-transfer, show a minimal redirect screen — no animation
   if (isAutoTransfer) {
     return (
-      <div className="ace-root" style={{
+      <div style={{
         minHeight: '100vh',
         background: 'radial-gradient(ellipse at 60% 40%, #1a0a3e 0%, #0d0d20 55%, #080810 100%)',
         display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '1.2rem',
         fontFamily: 'Oxanium, sans-serif',
       }}>
-        <style>{`@import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@400;700&display=swap');`}</style>
+        <style>{`@import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@400;700&display=swap'); @keyframes spin { to { transform: rotate(360deg); } }`}</style>
         <div style={{ width: 48, height: 48, border: '3px solid rgba(167,139,250,0.3)', borderTop: '3px solid #a78bfa', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
-        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
         <p style={{ color: '#94a3b8', fontSize: '1rem', letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600 }}>Launching ACE...</p>
       </div>
     );
@@ -125,11 +113,6 @@ export default function AITutor() {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@400;600;700;800&display=swap');
         .ace-root { font-family: 'Oxanium', sans-serif; }
-        @keyframes fadeSlideUp {
-          from { opacity: 0; transform: translateY(24px); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
-        .fade-up { animation: fadeSlideUp 0.7s ease forwards; }
         .learn-btn {
           font-family: 'Oxanium', sans-serif;
           font-size: 1.1rem;
@@ -152,8 +135,6 @@ export default function AITutor() {
           transform: scale(1.04);
         }
         .learn-btn:disabled { opacity: 0.6; cursor: wait; }
-        .cursor-blink { animation: blink 0.9s step-start infinite; display: inline-block; }
-        @keyframes blink { 50% { opacity: 0; } }
       `}</style>
 
       <div className="ace-root" style={{
@@ -194,59 +175,54 @@ export default function AITutor() {
 
         <div style={{ position: 'relative', zIndex: 10, maxWidth: '860px', width: '100%' }}>
 
-          {/* MEET ACE */}
+          {/* MEET ACE — fixed height, no cursor */}
           <h1 style={{
             fontSize: 'clamp(3.5rem, 11vw, 8rem)',
             fontWeight: 800,
             letterSpacing: '0.06em',
             lineHeight: 1.05,
             marginBottom: '1.2rem',
-            minHeight: '1.15em',
+            height: '1.15em',
             background: 'linear-gradient(135deg, #c4b5fd 10%, #a78bfa 50%, #7c3aed 100%)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
           }}>
             {meetAceText}
-            {phase === 0 && <span className="cursor-blink" style={{ WebkitTextFillColor: '#a78bfa' }}>|</span>}
           </h1>
 
-          {/* AI Learning Companion for Education */}
+          {/* AI Learning Companion — fixed height, always present, no cursor */}
           <h2 style={{
             fontSize: 'clamp(1.1rem, 3vw, 1.75rem)',
             fontWeight: 600,
             color: '#cbd5e1',
             marginBottom: '1.5rem',
-            minHeight: '1.5em',
+            height: '1.5em',
             letterSpacing: '0.02em',
-            visibility: phase >= 1 ? 'visible' : 'hidden',
           }}>
             <AceLineColored text={aceLineText} />
-            {phase === 1 && <span className="cursor-blink" style={{ color: '#a78bfa' }}>|</span>}
           </h2>
 
-          {/* AI Tutor for Everyone + Button — always reserves space */}
-          <div style={{ minHeight: '120px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1.4rem' }}>
-            {showBottom && (
-              <>
-                <p className="fade-up" style={{
-                  fontSize: 'clamp(0.85rem, 1.8vw, 1.05rem)',
-                  color: '#94a3b8',
-                  fontWeight: 400,
-                  letterSpacing: '0.05em',
-                }}>
-                  AI Tutor for Everyone
-                </p>
+          {/* Bottom section — fixed height, always present, content fades in */}
+          <div style={{ height: '120px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1.4rem' }}>
+            <p style={{
+              fontSize: 'clamp(0.85rem, 1.8vw, 1.05rem)',
+              color: '#94a3b8',
+              fontWeight: 400,
+              letterSpacing: '0.05em',
+              opacity: showBottom ? 1 : 0,
+              transition: 'opacity 0.5s ease',
+            }}>
+              AI Tutor for Everyone
+            </p>
 
-                <button
-                  className="learn-btn fade-up"
-                  onClick={handleLearnClick}
-                  disabled={transferring || !authChecked}
-                  style={{ animationDelay: '0.15s' }}
-                >
-                  {transferring ? 'Launching...' : "Let's Learn"}
-                </button>
-              </>
-            )}
+            <button
+              className="learn-btn"
+              onClick={handleLearnClick}
+              disabled={transferring || !authChecked}
+              style={{ opacity: showBottom ? 1 : 0, transition: 'opacity 0.5s ease 0.1s' }}
+            >
+              {transferring ? 'Launching...' : "Let's Learn"}
+            </button>
           </div>
         </div>
       </div>
