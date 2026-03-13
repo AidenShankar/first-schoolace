@@ -60,6 +60,7 @@ const AuthenticatedApp = () => {
         />
       ))}
       <Route path="/newai" element={<NewAI />} />
+      <Route path="/preview" element={<PageNotFound />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
