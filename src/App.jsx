@@ -49,7 +49,6 @@ const AuthenticatedApp = () => {
         </LayoutWrapper>
       } />
       <Route path="/preview" element={<PageNotFound />} />
-      <Route path="/Preview" element={<PageNotFound />} />
       {Object.entries(Pages).map(([path, Page]) => (
         path.toLowerCase() === 'preview' ? null :
         <Route
