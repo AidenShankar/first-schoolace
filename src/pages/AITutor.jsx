@@ -215,21 +215,21 @@ export default function AITutor() {
               AI Tutor for Everyone
             </p>
 
-            <button
+            {/*<button
               className="learn-btn"
               onClick={handleLearnClick}
               disabled={transferring || !authChecked}
               style={{ opacity: showBottom ? 1 : 0, transition: 'opacity 0.5s ease 0.1s' }}
             >
               {transferring ? 'Launching ACE...' : "Let's Learn"}
-            </button>
-            {/* <button
+            </button>*/}
+            <button
               className="learn-btn"
               disabled
               style={{ opacity: showBottom ? 1 : 0, transition: 'opacity 0.5s ease 0.1s' }}
             >
               Coming Soon...
-            </button> */}
+            </button>
           </div>
         </div>
       </div>
