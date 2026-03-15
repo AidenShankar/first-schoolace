@@ -226,7 +226,7 @@ export default function AITutor() {
             <button
               className="learn-btn"
               disabled
-              style={{ opacity: showBottom ? 1 : 0, transition: 'opacity 0.5s ease 0.1s' }}
+             style={{ opacity: showBottom ? 1 : 0, transition: 'opacity 0.5s ease 0.1s' }}
             >
               Coming Soon...
             </button>
