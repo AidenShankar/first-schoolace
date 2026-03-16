@@ -89,8 +89,15 @@ export default function Setup() {
       
       // Small delay to ensure data is saved
       await new Promise(resolve => setTimeout(resolve, 500));
-      
-      window.location.href = createPageUrl('Dashboard');
+
+      // If user came from AITutor page and selected student, send them back to AITutor
+      const params = new URLSearchParams(window.location.search);
+      const fromAITutor = params.get('fromAITutor') === 'true';
+      if (fromAITutor && selectedRole === 'student') {
+        window.location.href = createPageUrl('AITutor') + '?autoTransfer=true';
+      } else {
+        window.location.href = createPageUrl('Dashboard');
+      }
     } catch (error) {
       console.error("Error completing setup:", error);
       alert(`Failed to complete setup: ${error.message || 'Please try again.'}`);

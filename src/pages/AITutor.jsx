@@ -87,7 +87,7 @@ export default function AITutor() {
       doTransfer();
     } else {
       const returnUrl = window.location.origin + createPageUrl('AITutor') + '?autoTransfer=true';
-      base44.auth.redirectToLogin(returnUrl);
+      base44.auth.redirectToLogin(returnUrl + '&fromAITutor=true');
     }
   };
 
