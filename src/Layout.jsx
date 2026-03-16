@@ -195,8 +195,11 @@ export default function Layout({ children, currentPageName }) {
         // FIX: If user is logged in but hasn't completed setup, redirect them.
         // BUT: Don't redirect if we're already on the Setup page to avoid infinite loop
         if (userData && !userData.setup_complete && currentPageName !== 'Setup') {
-            window.location.href = createPageUrl('Setup');
-            return; // Stop further execution to allow redirect to happen
+            const urlParams = new URLSearchParams(window.location.search);
+            const fromAITutor = urlParams.get('fromAITutor') === 'true' || currentPageName === 'AITutor';
+            const setupUrl = createPageUrl('Setup') + (fromAITutor ? '?fromAITutor=true' : '');
+            window.location.href = setupUrl;
+            return;
         }
 
         setUser(userData);
