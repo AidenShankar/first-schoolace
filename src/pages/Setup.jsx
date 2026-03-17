@@ -39,31 +39,12 @@ export default function Setup() {
   const handleComplete = async () => {
     setLoading(true);
     try {
-      // Retry auth check with backoff for Chrome's stricter token handling
-      let currentUser = null;
-      let lastError = null;
-      for (let i = 0; i < 3; i++) {
-        try {
-          currentUser = await base44.auth.me();
-          if (currentUser) break;
-        } catch (e) {
-          lastError = e;
-          if (i < 2) {
-            // Wait 500ms + exponential backoff before retrying
-            await new Promise(resolve => setTimeout(resolve, 500 * Math.pow(2, i)));
-          }
-        }
-      }
-      
-      if (!currentUser) {
-        throw lastError || new Error('Authentication required to update your profile');
-      }
-
       const updateData = { 
         app_role: selectedRole, 
         setup_complete: true 
       };
 
+      // Validate inputs first (before any auth calls)
       if (selectedRole === 'admin') {
         if (!schoolName.trim()) {
           alert('Please enter your school/district name');
@@ -73,7 +54,7 @@ export default function Setup() {
         updateData.admin_code = generateAdminCode();
         updateData.school_name = schoolName;
       } else if (selectedRole === 'teacher' && adminCode.trim()) {
-        // Validate admin code using backend function
+        // Only validate admin code if provided
         try {
           const { data, error } = await base44.functions.invoke('validateAdminCode', {
             admin_code: adminCode.trim().toUpperCase()
@@ -89,9 +70,7 @@ export default function Setup() {
             return;
           }
 
-          // Admin code is valid
           updateData.admin_id = data.admin_id;
-          
         } catch (error) {
           console.error("Error validating admin code:", error);
           alert('Could not validate admin code: ' + error.message + '. You can skip this step and continue without connecting to an admin.');
@@ -100,6 +79,7 @@ export default function Setup() {
         }
       }
 
+      // Now update user with validated data
       await base44.auth.updateMe(updateData);
       
       // Show success message for admin
