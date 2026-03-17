@@ -1,6 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.20';
 
-const GCP_AITUTOR_URL = "https://mimir-core-v3-p5ggf6mkrq-uc.a.run.app"
+const GCP_AITUTOR_URL = "https://api.schoolace.org"
 
 Deno.serve(async (req) => {
     try {
