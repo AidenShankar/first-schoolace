@@ -1257,7 +1257,11 @@ Output JSON with:
     const handleAssignmentClick = (assignment) => { if (user.app_role === "teacher") setSelectedAssignment(assignment) };
     const handleUploadClick = (assignment) => { setUploadingAssignment(assignment); setShowUploadModal(true); };
 
+    const isAITutorFlow = new URLSearchParams(window.location.search).get('fromAITutor') === 'true' ||
+        new URLSearchParams(window.location.search).get('autoTransfer') === 'true';
+
     if (pageLoading || (isLayoutLoading && !user)) {
+        if (isAITutorFlow) return null;
         return <AceTransition />;
     }
 
