@@ -102,8 +102,6 @@ export default function AITutor() {
     }
   };
 
-  const isAutoTransfer = new URLSearchParams(window.location.search).get('autoTransfer') === 'true';
-
   if (isAutoTransfer) {
     return (
       <div style={{
