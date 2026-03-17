@@ -192,8 +192,9 @@ export default function Layout({ children, currentPageName }) {
             localStorage.setItem('lastActive', now.toString());
         }
 
-        // FIX: If user is logged in but hasn't completed setup, redirect them.
-        // BUT: Don't redirect if we're already on the Setup page to avoid infinite loop
+        setUser(userData);
+
+        // CRITICAL: Check setup_complete FIRST, before any other redirects
         if (userData && !userData.setup_complete && currentPageName !== 'Setup') {
             const urlParams = new URLSearchParams(window.location.search);
             const fromAITutor = urlParams.get('fromAITutor') === 'true' || currentPageName === 'AITutor';
@@ -201,8 +202,6 @@ export default function Layout({ children, currentPageName }) {
             window.location.href = setupUrl;
             return;
         }
-
-        setUser(userData);
 
         // Auto-redirect to dashboard if user is already logged in and on the landing page
         if (userData?.id && currentPageName === 'Landing') {
