@@ -1,6 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.20';
 
-const GCP_AITUTOR_URL = "https://api.schoolace.org"
+const GCP_AITUTOR_URL = "https://api.schoolace.ai"
 
 Deno.serve(async (req) => {
     try {
