@@ -65,10 +65,6 @@ export default function AITutor() {
     }
 
     async function sequence() {
-      // Fade in MEET ACE
-      setMeetAceVisible(true);
-      await delay(900); // wait for fade-in + brief pause
-      if (cancelled) return;
       // Type ACE line
       await new Promise(resolve => smoothType(setAceLineText, ACE_LINE, 40, resolve));
       if (cancelled) return;
