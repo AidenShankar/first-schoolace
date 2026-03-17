@@ -35,7 +35,12 @@ export default function AITutor() {
         setUser(u || null);
         const params = new URLSearchParams(window.location.search);
         if (u && params.get('autoTransfer') === 'true') {
-          doTransfer();
+          // If user hasn't completed setup, redirect to setup instead of transferring
+          if (!u.setup_complete) {
+            window.location.href = createPageUrl('Setup') + '?fromAITutor=true';
+          } else {
+            doTransfer();
+          }
         }
       })
       .catch(() => setUser(null))
