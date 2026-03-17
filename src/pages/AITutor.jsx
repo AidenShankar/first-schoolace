@@ -21,6 +21,7 @@ function AceLineColored({ text }) {
 }
 
 export default function AITutor() {
+  const isAutoTransfer = new URLSearchParams(window.location.search).get('autoTransfer') === 'true';
   const [user, setUser] = useState(null);
   const [authChecked, setAuthChecked] = useState(false);
   const [transferring, setTransferring] = useState(false);
