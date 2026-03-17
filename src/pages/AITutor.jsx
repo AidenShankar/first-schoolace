@@ -43,6 +43,7 @@ export default function AITutor() {
 
   // Sequence: fade in MEET ACE → type ACE line → show bottom
   useEffect(() => {
+    if (isAutoTransfer) return;
     let cancelled = false;
     const delay = (ms) => new Promise(r => setTimeout(r, ms));
 
