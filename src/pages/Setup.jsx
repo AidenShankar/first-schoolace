@@ -11,7 +11,7 @@ import AceTransition, { LOADING_DURATION } from "@/components/common/AceTransiti
 
 export default function Setup() {
   const [selectedRole, setSelectedRole] = useState(null);
-  const [pageLoading, setPageLoading] = useState(true);
+  const [pageLoading, setPageLoading] = useState(false);
 
   useEffect(() => {
     // If coming from AITutor flow, auto-complete setup as student immediately
