@@ -208,17 +208,32 @@ export default function AITutor() {
             </h1>
           </div>
 
-          {/* AI Learning Companion — fixed height, always present, no cursor */}
-          <h2 style={{
-            fontSize: 'clamp(1.1rem, 3vw, 1.75rem)',
-            fontWeight: 600,
-            color: '#cbd5e1',
-            marginBottom: '1.5rem',
-            height: '1.5em',
-            letterSpacing: '0.02em',
-          }}>
-            <AceLineColored text={aceLineText} />
-          </h2>
+          {/* AI Learning Companion — fixed width holds space, typed text fills from left */}
+          <div style={{ display: 'inline-block', position: 'relative' }}>
+            <h2 style={{
+              fontSize: 'clamp(1.1rem, 3vw, 1.75rem)',
+              fontWeight: 600,
+              marginBottom: '1.5rem',
+              letterSpacing: '0.02em',
+              visibility: 'hidden',
+              userSelect: 'none',
+            }}>
+              {ACE_LINE}
+            </h2>
+            <h2 style={{
+              fontSize: 'clamp(1.1rem, 3vw, 1.75rem)',
+              fontWeight: 600,
+              color: '#cbd5e1',
+              marginBottom: '1.5rem',
+              letterSpacing: '0.02em',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              whiteSpace: 'nowrap',
+            }}>
+              <AceLineColored text={aceLineText} />
+            </h2>
+          </div>
 
           {/* Bottom section — fixed height, always present, content fades in */}
           <div style={{ height: '120px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1.4rem' }}>
