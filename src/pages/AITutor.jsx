@@ -42,45 +42,41 @@ export default function AITutor() {
       .finally(() => setAuthChecked(true));
   }, []);
 
-  // Single typing sequence using requestAnimationFrame for smooth rendering
+  // Sequence: fade in MEET ACE → type ACE line → show bottom
   useEffect(() => {
     let cancelled = false;
+    const delay = (ms) => new Promise(r => setTimeout(r, ms));
 
     function smoothType(setText, text, intervalMs, onDone) {
       let i = 0;
       let lastTime = null;
-
       function frame(timestamp) {
         if (cancelled) return;
         if (!lastTime) lastTime = timestamp;
-        const elapsed = timestamp - lastTime;
-        if (elapsed >= intervalMs) {
+        if (timestamp - lastTime >= intervalMs) {
           i++;
           setText(text.slice(0, i));
           lastTime = timestamp;
         }
-        if (i < text.length) {
-          requestAnimationFrame(frame);
-        } else {
-          onDone();
-        }
+        if (i < text.length) requestAnimationFrame(frame);
+        else onDone();
       }
       requestAnimationFrame(frame);
     }
 
-    const delay = (ms) => new Promise(r => { if (!cancelled) setTimeout(r, ms); else r(); });
-
-    async function typeSequence() {
-      await new Promise(resolve => smoothType(setMeetAceText, MEET_ACE, 200, resolve));
+    async function sequence() {
+      // Fade in MEET ACE
+      setMeetAceVisible(true);
+      await delay(900); // wait for fade-in + brief pause
       if (cancelled) return;
-      await delay(300);
+      // Type ACE line
       await new Promise(resolve => smoothType(setAceLineText, ACE_LINE, 40, resolve));
       if (cancelled) return;
       await delay(200);
       if (!cancelled) setShowBottom(true);
     }
 
-    typeSequence();
+    sequence();
     return () => { cancelled = true; };
   }, []);
 
