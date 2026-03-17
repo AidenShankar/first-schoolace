@@ -78,16 +78,19 @@ export default function AITutor() {
   }, []);
 
   const doTransfer = async () => {
+    sessionStorage.setItem('aceFlow', '1');
     setTransferring(true);
     try {
       const response = await transferToAITutor({});
       if (response?.data?.redirect_url) {
+        sessionStorage.removeItem('aceFlow');
         window.location.href = response.data.redirect_url;
       } else {
         throw new Error('No redirect URL');
       }
     } catch (e) {
       console.error('Transfer error:', e);
+      sessionStorage.removeItem('aceFlow');
       setTransferring(false);
     }
   };
