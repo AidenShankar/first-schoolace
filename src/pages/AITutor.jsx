@@ -150,7 +150,7 @@ export default function AITutor() {
         }
         .learn-btn:disabled { opacity: 0.6; cursor: wait; }
         .meet-ace-text {
-          will-change: contents;
+          transition: opacity 0.8s ease;
         }
         .meet-ace-meet { color: #cbd5e1; }
         .meet-ace-ace {
