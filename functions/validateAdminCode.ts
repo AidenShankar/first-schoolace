@@ -3,12 +3,6 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.7.1';
 Deno.serve(async (req) => {
     try {
         const base44 = createClientFromRequest(req);
-        const user = await base44.auth.me();
-        
-        if (!user) {
-            return Response.json({ error: 'Unauthorized' }, { status: 401 });
-        }
-
         const { admin_code } = await req.json();
 
         if (!admin_code || typeof admin_code !== 'string') {
@@ -18,7 +12,7 @@ Deno.serve(async (req) => {
             });
         }
 
-        // Use service role to query all users
+        // Use service role to query all users (no auth check needed for this public validation)
         const allUsers = await base44.asServiceRole.entities.User.list('-created_date', 1000);
         
         // Find admin with matching code
