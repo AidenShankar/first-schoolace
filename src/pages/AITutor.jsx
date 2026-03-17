@@ -24,10 +24,7 @@ export default function AITutor() {
   const [user, setUser] = useState(null);
   const [authChecked, setAuthChecked] = useState(false);
   const [transferring, setTransferring] = useState(false);
-  const [meetAceVisible, setMeetAceVisible] = useState(false);
-  const [aceLineText, setAceLineText] = useState('');
-  const [showBottom, setShowBottom] = useState(false);
-  const doneRef = useRef(false);
+  const [showBottom, setShowBottom] = useState(true);
 
   useEffect(() => {
     base44.auth.me()
