@@ -39,10 +39,24 @@ export default function Setup() {
   const handleComplete = async () => {
     setLoading(true);
     try {
-      // Ensure user is authenticated before attempting update
-      const currentUser = await base44.auth.me();
+      // Retry auth check with backoff for Chrome's stricter token handling
+      let currentUser = null;
+      let lastError = null;
+      for (let i = 0; i < 3; i++) {
+        try {
+          currentUser = await base44.auth.me();
+          if (currentUser) break;
+        } catch (e) {
+          lastError = e;
+          if (i < 2) {
+            // Wait 500ms + exponential backoff before retrying
+            await new Promise(resolve => setTimeout(resolve, 500 * Math.pow(2, i)));
+          }
+        }
+      }
+      
       if (!currentUser) {
-        throw new Error('Authentication required to update your profile');
+        throw lastError || new Error('Authentication required to update your profile');
       }
 
       const updateData = { 
