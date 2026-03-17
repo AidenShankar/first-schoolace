@@ -215,11 +215,8 @@ export default function Layout({ children, currentPageName }) {
         setUser(userData);
 
         // CRITICAL: Check setup_complete FIRST, before any other redirects
-        if (userData && !userData.setup_complete && currentPageName !== 'Setup') {
-            const urlParams = new URLSearchParams(window.location.search);
-            const fromAITutor = urlParams.get('fromAITutor') === 'true' || currentPageName === 'AITutor';
-            const setupUrl = createPageUrl('Setup') + (fromAITutor ? '?fromAITutor=true' : '');
-            window.location.href = setupUrl;
+        if (userData && !userData.setup_complete && currentPageName !== 'Setup' && currentPageName !== 'AITutor') {
+            window.location.href = createPageUrl('Setup');
             return;
         }
 

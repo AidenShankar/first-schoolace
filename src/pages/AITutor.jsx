@@ -35,12 +35,7 @@ export default function AITutor() {
         setUser(u || null);
         const params = new URLSearchParams(window.location.search);
         if (u && params.get('autoTransfer') === 'true') {
-          // If user hasn't completed setup, redirect to setup instead of transferring
-          if (!u.setup_complete) {
-            window.location.href = createPageUrl('Setup') + '?fromAITutor=true';
-          } else {
-            doTransfer();
-          }
+          doTransfer();
         }
       })
       .catch(() => setUser(null))
@@ -91,7 +86,7 @@ export default function AITutor() {
     if (user) {
       doTransfer();
     } else {
-      const returnUrl = window.location.origin + createPageUrl('AITutor') + '?autoTransfer=true&fromAITutor=true';
+      const returnUrl = window.location.origin + createPageUrl('AITutor') + '?autoTransfer=true';
       base44.auth.redirectToLogin(returnUrl);
     }
   };
