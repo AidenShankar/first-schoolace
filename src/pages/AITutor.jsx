@@ -173,7 +173,7 @@ export default function AITutor() {
           </a>
         </div>
 
-        <div style={{ position: 'relative', zIndex: 10, maxWidth: '860px', width: '100%' }}>
+        <div style={{ position: 'relative', zIndex: 10, maxWidth: '860px', width: '100%', textAlign: 'left' }}>
 
           {/* MEET ACE — fixed height, left-to-right reveal */}
           <h1 style={{
