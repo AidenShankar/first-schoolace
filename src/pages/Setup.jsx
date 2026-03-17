@@ -14,6 +14,19 @@ export default function Setup() {
   const [pageLoading, setPageLoading] = useState(true);
 
   useEffect(() => {
+    // If coming from AITutor flow, auto-complete setup as student immediately
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('fromAITutor') === 'true') {
+      base44.auth.updateMe({ app_role: 'student', setup_complete: true })
+        .then(() => {
+          window.location.href = createPageUrl('AITutor') + '?autoTransfer=true';
+        })
+        .catch((e) => {
+          console.error("Auto-setup failed:", e);
+          setPageLoading(false); // fallback: show normal setup
+        });
+      return;
+    }
     const timer = setTimeout(() => {
         setPageLoading(false);
     }, LOADING_DURATION);
