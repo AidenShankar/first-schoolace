@@ -343,6 +343,7 @@ export default function Layout({ children, currentPageName }) {
   const isQuizModeActive = user?.app_role === 'student' && quizInProgress;
   const isLandingPage = currentPageName === 'Landing';
   const isAITutorPage = currentPageName === 'AITutor';
+  const isSetupPage = currentPageName === 'Setup';
   const isCompliancePage = currentPageName === 'Compliance'; // Add this line
   const isDemoPage = currentPageName === 'Demo';
   const isAPExamSchedulePage = currentPageName === 'APExamSchedule';
