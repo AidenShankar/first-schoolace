@@ -99,14 +99,10 @@ export const AuthProvider = ({ children }) => {
       console.error('User auth check failed:', error);
       setIsLoadingAuth(false);
       setIsAuthenticated(false);
-      
-      // If user auth fails, it might be an expired token
-      if (error.status === 401 || error.status === 403) {
-        setAuthError({
-          type: 'auth_required',
-          message: 'Authentication required'
-        });
-      }
+
+      // Only set auth error if the app explicitly requires auth
+      // Don't block on a single failed auth check - let Layout handle it
+      // This prevents blocking on transient SSO token sync issues
     }
   };
 
