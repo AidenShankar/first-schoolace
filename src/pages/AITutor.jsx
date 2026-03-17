@@ -225,7 +225,7 @@ export default function AITutor() {
             <h2 style={{
               fontSize: 'clamp(1.1rem, 3vw, 1.75rem)',
               fontWeight: 600,
-              color: '#cbd5e1',
+              color: '#334155',
               marginBottom: '1.5rem',
               letterSpacing: '0.02em',
               position: 'absolute',
