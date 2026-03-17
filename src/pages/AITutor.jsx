@@ -103,11 +103,6 @@ export default function AITutor() {
 
   const isAutoTransfer = new URLSearchParams(window.location.search).get('autoTransfer') === 'true';
 
-  // Skip animation entirely when auto-transferring
-  useEffect(() => {
-    if (isAutoTransfer) return; // don't run animation in transfer mode
-  }, [isAutoTransfer]);
-
   if (isAutoTransfer) {
     return (
       <div style={{
