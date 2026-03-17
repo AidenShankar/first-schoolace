@@ -110,13 +110,13 @@ export default function AITutor() {
     return (
       <div style={{
         minHeight: '100vh',
-        background: 'radial-gradient(ellipse at 60% 40%, #1a0a3e 0%, #0d0d20 55%, #080810 100%)',
+        background: 'linear-gradient(135deg, #f8fafc 0%, #eef2ff 50%, #f0f9ff 100%)',
         display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '1.2rem',
-        fontFamily: 'Oxanium, sans-serif',
+        fontFamily: 'system-ui, sans-serif',
       }}>
-        <style>{`@import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@400;700&display=swap'); @keyframes spin { to { transform: rotate(360deg); } }`}</style>
-        <div style={{ width: 48, height: 48, border: '3px solid rgba(167,139,250,0.3)', borderTop: '3px solid #a78bfa', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
-        <p style={{ color: '#94a3b8', fontSize: '1rem', letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600 }}>Launching ACE...</p>
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+        <div style={{ width: 44, height: 44, border: '3px solid #e0e7ff', borderTop: '3px solid #6366f1', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+        <p style={{ color: '#6366f1', fontSize: '1rem', letterSpacing: '0.08em', textTransform: 'uppercase', fontWeight: 600 }}>Launching ACE...</p>
       </div>
     );
   }
@@ -134,26 +134,25 @@ export default function AITutor() {
           text-transform: uppercase;
           padding: 0.9rem 3rem;
           border-radius: 50px;
-          border: 2px solid rgba(139,92,246,0.5);
-          background: linear-gradient(135deg, rgba(109,40,217,0.25), rgba(139,92,246,0.15));
+          border: none;
+          background: linear-gradient(135deg, #6366f1, #818cf8);
           color: white;
           cursor: pointer;
-          backdrop-filter: blur(10px);
+          box-shadow: 0 4px 20px rgba(99,102,241,0.3);
           transition: all 0.3s ease;
         }
         .learn-btn:hover:not(:disabled) {
-          background: linear-gradient(135deg, rgba(109,40,217,0.55), rgba(139,92,246,0.45));
-          border-color: rgba(167,139,250,0.9);
-          box-shadow: 0 0 36px rgba(139,92,246,0.45);
+          background: linear-gradient(135deg, #4f46e5, #6366f1);
+          box-shadow: 0 6px 28px rgba(99,102,241,0.45);
           transform: scale(1.04);
         }
         .learn-btn:disabled { opacity: 0.6; cursor: wait; }
         .meet-ace-text {
           transition: opacity 0.8s ease;
         }
-        .meet-ace-meet { color: #cbd5e1; }
+        .meet-ace-meet { color: #1e293b; }
         .meet-ace-ace {
-          background: linear-gradient(135deg, #c4b5fd 10%, #a78bfa 50%, #7c3aed 100%);
+          background: linear-gradient(135deg, #6366f1 10%, #818cf8 50%, #a855f7 100%);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;
@@ -162,7 +161,7 @@ export default function AITutor() {
 
       <div className="ace-root" style={{
         minHeight: '100vh',
-        background: 'radial-gradient(ellipse at 60% 40%, #1a0a3e 0%, #0d0d20 55%, #080810 100%)',
+        background: 'linear-gradient(135deg, #f8fafc 0%, #eef2ff 60%, #f0f9ff 100%)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -173,8 +172,8 @@ export default function AITutor() {
       }}>
         {/* Subtle grid background */}
         <div style={{
-          position: 'fixed', inset: 0, pointerEvents: 'none', opacity: 0.12,
-          backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(167,139,250,0.5) 1px, transparent 0)',
+          position: 'fixed', inset: 0, pointerEvents: 'none', opacity: 0.4,
+          backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(99,102,241,0.2) 1px, transparent 0)',
           backgroundSize: '28px 28px',
         }} />
 
@@ -182,7 +181,7 @@ export default function AITutor() {
         <div style={{
           position: 'fixed', top: '30%', left: '50%', transform: 'translate(-50%, -50%)',
           width: '500px', height: '500px', borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(109,40,217,0.15) 0%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 70%)',
           pointerEvents: 'none',
         }} />
 
@@ -192,7 +191,7 @@ export default function AITutor() {
             <div style={{ width: 36, height: 36, borderRadius: 10, background: 'linear-gradient(135deg, #6d28d9, #a855f7)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <GraduationCap size={20} color="white" />
             </div>
-            <span style={{ fontFamily: 'Oxanium, sans-serif', fontWeight: 700, fontSize: '0.7rem', color: '#e2e8f0', letterSpacing: '0.05em' }}>School<span style={{ color: '#a78bfa' }}>ACE</span></span>
+            <span style={{ fontFamily: 'Oxanium, sans-serif', fontWeight: 700, fontSize: '0.7rem', color: '#475569', letterSpacing: '0.05em' }}>School<span style={{ color: '#6366f1' }}>ACE</span></span>
           </a>
         </div>
 
@@ -242,7 +241,7 @@ export default function AITutor() {
           <div style={{ height: '120px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1.4rem' }}>
             <p style={{
               fontSize: 'clamp(0.85rem, 1.8vw, 1.05rem)',
-              color: '#94a3b8',
+              color: '#64748b',
               fontWeight: 400,
               letterSpacing: '0.05em',
               opacity: showBottom ? 1 : 0,
