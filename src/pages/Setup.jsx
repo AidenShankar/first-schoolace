@@ -39,6 +39,12 @@ export default function Setup() {
   const handleComplete = async () => {
     setLoading(true);
     try {
+      // Ensure user is authenticated before attempting update
+      const currentUser = await base44.auth.me();
+      if (!currentUser) {
+        throw new Error('Authentication required to update your profile');
+      }
+
       const updateData = { 
         app_role: selectedRole, 
         setup_complete: true 
