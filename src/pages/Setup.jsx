@@ -11,23 +11,9 @@ import AceTransition, { LOADING_DURATION } from "@/components/common/AceTransiti
 
 export default function Setup() {
   const [selectedRole, setSelectedRole] = useState(null);
-  const isFromAITutor = new URLSearchParams(window.location.search).get('fromAITutor') === 'true';
-  const [pageLoading, setPageLoading] = useState(isFromAITutor);
+  const [pageLoading, setPageLoading] = useState(true);
 
   useEffect(() => {
-    // If coming from AITutor flow, auto-complete setup as student immediately
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('fromAITutor') === 'true') {
-      base44.auth.updateMe({ app_role: 'student', setup_complete: true })
-        .then(() => {
-          window.location.href = createPageUrl('AITutor') + '?autoTransfer=true';
-        })
-        .catch((e) => {
-          console.error("Auto-setup failed:", e);
-          setPageLoading(false); // fallback: show normal setup
-        });
-      return;
-    }
     const timer = setTimeout(() => {
         setPageLoading(false);
     }, LOADING_DURATION);
@@ -39,18 +25,7 @@ export default function Setup() {
   const [schoolName, setSchoolName] = useState('');
 
   if (pageLoading) {
-    return (
-      <div style={{
-        minHeight: '100vh',
-        background: 'linear-gradient(135deg, #f8fafc 0%, #eef2ff 50%, #f0f9ff 100%)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '1.2rem',
-        fontFamily: 'system-ui, sans-serif',
-      }}>
-        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-        <div style={{ width: 44, height: 44, border: '3px solid #e0e7ff', borderTop: '3px solid #6366f1', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
-        <p style={{ color: '#6366f1', fontSize: '1rem', letterSpacing: '0.08em', textTransform: 'uppercase', fontWeight: 600 }}>Launching ACE...</p>
-      </div>
-    );
+    return <AceTransition />;
   }
 
   const handleRoleSelect = async (role) => {

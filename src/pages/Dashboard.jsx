@@ -1258,7 +1258,6 @@ Output JSON with:
     const handleUploadClick = (assignment) => { setUploadingAssignment(assignment); setShowUploadModal(true); };
 
     if (pageLoading || (isLayoutLoading && !user)) {
-        if (sessionStorage.getItem('aceFlow')) return null;
         return <AceTransition />;
     }
 

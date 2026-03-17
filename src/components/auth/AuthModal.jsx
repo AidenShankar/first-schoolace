@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -17,7 +18,24 @@ export default function AuthModal({ onLogin }) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
+  // Check if user is already authenticated on component mount
+  useEffect(() => {
+    const checkAuthStatus = async () => {
+      try {
+        const user = await User.me();
+        if (user) {
+          // User is already authenticated, log them out first then redirect to base44 login page
+          await User.logout();
+          window.location.href = 'https://schoolace.org';
+        }
+      } catch (error) {
+        // User is not authenticated, redirect to main site
+        window.location.href = 'https://schoolace.org';
+      }
+    };
 
+    checkAuthStatus();
+  }, [onLogin]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

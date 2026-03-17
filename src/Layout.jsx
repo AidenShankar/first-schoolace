@@ -197,12 +197,8 @@ export default function Layout({ children, currentPageName }) {
         if (userData && !userData.setup_complete && currentPageName !== 'Setup') {
             const urlParams = new URLSearchParams(window.location.search);
             const fromAITutor = urlParams.get('fromAITutor') === 'true' || currentPageName === 'AITutor';
-            // If coming from AITutor flow, skip Setup screens and auto-complete as student
-            if (fromAITutor) {
-                window.location.href = createPageUrl('Setup') + '?fromAITutor=true';
-                return;
-            }
-            window.location.href = createPageUrl('Setup');
+            const setupUrl = createPageUrl('Setup') + (fromAITutor ? '?fromAITutor=true' : '');
+            window.location.href = setupUrl;
             return;
         }
 
@@ -343,7 +339,6 @@ export default function Layout({ children, currentPageName }) {
   const isQuizModeActive = user?.app_role === 'student' && quizInProgress;
   const isLandingPage = currentPageName === 'Landing';
   const isAITutorPage = currentPageName === 'AITutor';
-  const isSetupPage = currentPageName === 'Setup';
   const isCompliancePage = currentPageName === 'Compliance'; // Add this line
   const isDemoPage = currentPageName === 'Demo';
   const isAPExamSchedulePage = currentPageName === 'APExamSchedule';
@@ -898,7 +893,6 @@ export default function Layout({ children, currentPageName }) {
           isQuizModeActive={isQuizModeActive}
           isLandingPage={isLandingPage}
           isAITutorPage={isAITutorPage}
-          isSetupPage={isSetupPage}
           isCompliancePage={isCompliancePage}
           isDemoPage={isDemoPage}
           isExampleLearningTrackerPage={isExampleLearningTrackerPage}
@@ -921,7 +915,7 @@ export default function Layout({ children, currentPageName }) {
 
 function LayoutContent({ 
   user, allClasses, currentClass, currentClassId, quizInProgress, currentPageName,
-  isQuizModeActive, isLandingPage, isAITutorPage, isSetupPage, isCompliancePage, isDemoPage, isExampleLearningTrackerPage, isLearnerDashboard, isAPExamSchedulePage, isPersonalizedLearning,
+  isQuizModeActive, isLandingPage, isAITutorPage, isCompliancePage, isDemoPage, isExampleLearningTrackerPage, isLearnerDashboard, isAPExamSchedulePage, isPersonalizedLearning,
   location, handleNavClick, fetchUserAndClasses, isLayoutLoading, getNavLinks, filterNavLinks, children 
 }) {
   const { language } = useLanguage();
@@ -956,7 +950,7 @@ function LayoutContent({
       )}
 
       {/* Header - Conditionally render based on page */}
-      {!isLandingPage && !isAITutorPage && !isSetupPage && !isCompliancePage && !isDemoPage && !isAPExamSchedulePage && (
+      {!isLandingPage && !isAITutorPage && !isCompliancePage && !isDemoPage && !isAPExamSchedulePage && (
         <header className={
           isLearnerDashboard 
             ? "border-slate-800 backdrop-blur-xl border-b sticky top-0 z-40" 
@@ -1037,7 +1031,7 @@ function LayoutContent({
       </main>
 
       {/* Mobile Navigation - Conditionally render based on page */}
-      {!isLandingPage && !isAITutorPage && !isSetupPage && !isCompliancePage && !isDemoPage && !isLearnerDashboard && !isAPExamSchedulePage && (
+      {!isLandingPage && !isAITutorPage && !isCompliancePage && !isDemoPage && !isLearnerDashboard && !isAPExamSchedulePage && (
         <div className="md:hidden fixed bottom-0 left-0 right-0 backdrop-blur-xl border-t px-2 py-2 flex justify-around z-40" style={{ backgroundColor: 'rgba(var(--color-surface), 0.9)', borderColor: `rgb(var(--color-border))` }}>
           {filteredNavLinks.map((link) => {
             if (link.requiresClass && !currentClassId) return null;
