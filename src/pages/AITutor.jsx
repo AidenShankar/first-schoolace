@@ -206,7 +206,7 @@ export default function AITutor() {
           </h2>
 
           {/* Bottom section — fixed height, always present, content fades in */}
-          <div style={{ height: '120px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1.4rem' }}>
+          <div style={{ height: '120px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center', gap: '1.4rem' }}>
             <p style={{
               fontSize: 'clamp(0.85rem, 1.8vw, 1.05rem)',
               color: '#94a3b8',
