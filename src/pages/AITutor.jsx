@@ -173,25 +173,40 @@ export default function AITutor() {
           </a>
         </div>
 
-        <div style={{ position: 'relative', zIndex: 10, maxWidth: '860px', width: '100%', textAlign: 'left' }}>
+        <div style={{ position: 'relative', zIndex: 10, maxWidth: '860px', width: '100%', textAlign: 'center' }}>
 
-          {/* MEET ACE — fixed height, left-to-right reveal */}
-          <h1 style={{
-            fontSize: 'clamp(3.5rem, 11vw, 8rem)',
-            fontWeight: 800,
-            letterSpacing: '0.06em',
-            lineHeight: 1.05,
-            marginBottom: '1.2rem',
-            height: '1.15em',
-            background: 'linear-gradient(135deg, #c4b5fd 10%, #a78bfa 50%, #7c3aed 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            textAlign: 'left',
-            width: '100%',
-            whiteSpace: 'pre',
-          }}>
-            {meetAceText.padEnd(MEET_ACE.length, '\u00A0')}
-          </h1>
+          {/* MEET ACE — fixed width container so text types left-to-right without recentering */}
+          <div style={{ display: 'inline-block', position: 'relative' }}>
+            {/* Invisible full text to hold space */}
+            <h1 style={{
+              fontSize: 'clamp(3.5rem, 11vw, 8rem)',
+              fontWeight: 800,
+              letterSpacing: '0.06em',
+              lineHeight: 1.05,
+              marginBottom: '1.2rem',
+              visibility: 'hidden',
+              userSelect: 'none',
+            }}>
+              {MEET_ACE}
+            </h1>
+            {/* Visible typed text, absolutely positioned to fill from left */}
+            <h1 style={{
+              fontSize: 'clamp(3.5rem, 11vw, 8rem)',
+              fontWeight: 800,
+              letterSpacing: '0.06em',
+              lineHeight: 1.05,
+              marginBottom: '1.2rem',
+              background: 'linear-gradient(135deg, #c4b5fd 10%, #a78bfa 50%, #7c3aed 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              whiteSpace: 'nowrap',
+            }}>
+              {meetAceText}
+            </h1>
+          </div>
 
           {/* AI Learning Companion — fixed height, always present, no cursor */}
           <h2 style={{
@@ -206,7 +221,7 @@ export default function AITutor() {
           </h2>
 
           {/* Bottom section — fixed height, always present, content fades in */}
-          <div style={{ height: '120px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center', gap: '1.4rem' }}>
+          <div style={{ height: '120px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1.4rem' }}>
             <p style={{
               fontSize: 'clamp(0.85rem, 1.8vw, 1.05rem)',
               color: '#94a3b8',
