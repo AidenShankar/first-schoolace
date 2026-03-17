@@ -91,12 +91,14 @@ export const AuthProvider = ({ children }) => {
     try {
       // Now check if the user is authenticated
       setIsLoadingAuth(true);
+      console.log('[AuthContext] Calling base44.auth.me()');
       const currentUser = await base44.auth.me();
+      console.log('[AuthContext] Auth success, user:', currentUser?.email);
       setUser(currentUser);
       setIsAuthenticated(true);
       setIsLoadingAuth(false);
     } catch (error) {
-      console.error('User auth check failed:', error);
+      console.error('[AuthContext] Auth check failed:', error?.message || error);
       setIsLoadingAuth(false);
       setIsAuthenticated(false);
 
