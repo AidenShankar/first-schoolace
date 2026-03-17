@@ -50,7 +50,7 @@ export default function AITutor() {
       for (let i = 1; i <= MEET_ACE.length; i++) {
         if (cancelled) return;
         setMeetAceText(MEET_ACE.slice(0, i));
-        await new Promise(r => setTimeout(r, 90));
+        await new Promise(r => setTimeout(r, 160));
       }
       await new Promise(r => setTimeout(r, 300));
       // Type ACE line
