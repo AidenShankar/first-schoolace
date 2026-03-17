@@ -5,6 +5,7 @@ import { GraduationCap, MessageSquare, BookOpen, Sparkles, SlidersHorizontal, Bo
 import { LanguageProvider, useLanguage } from "./components/i18n/LanguageContext";
 import { t } from "./components/i18n/translations";
 import { ThemeProvider } from "./components/theme/ThemeContext";
+import { base44 } from '@/api/base44Client';
 import { User } from '@/entities/User';
 import { Class } from '@/entities/Class';
 import { ClassEnrollment } from '@/entities/ClassEnrollment';
@@ -172,10 +173,29 @@ export default function Layout({ children, currentPageName }) {
     }
   }, [retryWithBackoff]); // useCallback for memoization
 
+  const getAuthenticatedUser = useCallback(async () => {
+      let lastError;
+      for (let attempt = 1; attempt <= 4; attempt++) {
+        try {
+          console.log(`[Layout] auth sync attempt ${attempt}`);
+          const authUser = await base44.auth.me();
+          console.log('[Layout] auth sync success:', authUser?.email, authUser?.setup_complete, authUser?.app_role);
+          return authUser;
+        } catch (error) {
+          lastError = error;
+          console.warn(`[Layout] auth sync attempt ${attempt} failed:`, error?.message || error);
+          if (attempt < 4) {
+            await new Promise(resolve => setTimeout(resolve, attempt * 400));
+          }
+        }
+      }
+      throw lastError;
+    }, []);
+
   const fetchUserAndClasses = useCallback(async () => { // Make it a useCallback
       setIsLayoutLoading(true);
       try {
-        const userData = await retryWithBackoff(() => User.me());
+        const userData = await getAuthenticatedUser();
 
         // Session timeout check (24 hours)
         if (userData) {
@@ -235,7 +255,7 @@ export default function Layout({ children, currentPageName }) {
       } finally {
         setIsLayoutLoading(false);
       }
-    }, [checkQuizStatus, retryWithBackoff, currentPageName]); // Added currentPageName to dependencies
+    }, [checkQuizStatus, retryWithBackoff, currentPageName, getAuthenticatedUser]); // Added currentPageName to dependencies
 
 
   useEffect(() => {

@@ -107,6 +107,12 @@ export default function Dashboard({ user: layoutUser, allClasses: layoutAllClass
     }, [layoutUser]);
 
     useEffect(() => {
+        if (user && !user.setup_complete) {
+            window.location.replace(createPageUrl('Setup'));
+        }
+    }, [user]);
+
+    useEffect(() => {
         setAllClasses(layoutAllClasses || []); // Always sync allClasses state with prop
 
         if (!layoutAllClasses || layoutAllClasses.length === 0) {
@@ -1267,6 +1273,10 @@ Output JSON with:
 
     if (!user) {
         return <AuthModal onLogin={handleLogin} />;
+    }
+
+    if (!user.setup_complete) {
+        return <AceTransition />;
     }
 
     return (
