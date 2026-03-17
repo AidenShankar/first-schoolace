@@ -39,18 +39,7 @@ export default function Setup() {
   const [schoolName, setSchoolName] = useState('');
 
   if (pageLoading) {
-    return (
-      <div style={{
-        minHeight: '100vh',
-        background: 'radial-gradient(ellipse at 60% 40%, #1a0a3e 0%, #0d0d20 55%, #080810 100%)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '1.2rem',
-        fontFamily: 'Oxanium, sans-serif',
-      }}>
-        <style>{`@import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@400;700&display=swap'); @keyframes spin { to { transform: rotate(360deg); } }`}</style>
-        <div style={{ width: 48, height: 48, border: '3px solid rgba(167,139,250,0.3)', borderTop: '3px solid #a78bfa', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
-        <p style={{ color: '#94a3b8', fontSize: '1rem', letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600 }}>Launching ACE...</p>
-      </div>
-    );
+    return null;
   }
 
   const handleRoleSelect = async (role) => {
