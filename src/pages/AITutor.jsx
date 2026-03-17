@@ -154,11 +154,14 @@ export default function AITutor() {
         }
         .learn-btn:disabled { opacity: 0.6; cursor: wait; }
         .meet-ace-text {
+          will-change: contents;
+        }
+        .meet-ace-meet { color: #cbd5e1; }
+        .meet-ace-ace {
           background: linear-gradient(135deg, #c4b5fd 10%, #a78bfa 50%, #7c3aed 100%);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;
-          will-change: contents;
         }
       `}</style>
 
