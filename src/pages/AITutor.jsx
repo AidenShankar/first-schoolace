@@ -97,6 +97,7 @@ export default function AITutor() {
     if (user) {
       doTransfer();
     } else {
+      sessionStorage.setItem('aceFlow', '1');
       const returnUrl = window.location.origin + createPageUrl('AITutor') + '?autoTransfer=true&fromAITutor=true';
       base44.auth.redirectToLogin(returnUrl);
     }
