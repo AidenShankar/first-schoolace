@@ -955,7 +955,7 @@ function LayoutContent({
       )}
 
       {/* Header - Conditionally render based on page */}
-      {!isLandingPage && !isAITutorPage && !isCompliancePage && !isDemoPage && !isAPExamSchedulePage && (
+      {!isLandingPage && !isAITutorPage && !isSetupPage && !isCompliancePage && !isDemoPage && !isAPExamSchedulePage && (
         <header className={
           isLearnerDashboard 
             ? "border-slate-800 backdrop-blur-xl border-b sticky top-0 z-40" 
