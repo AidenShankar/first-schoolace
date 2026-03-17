@@ -199,15 +199,14 @@ export default function AITutor() {
 
         <div style={{ position: 'relative', zIndex: 10, maxWidth: '860px', width: '100%', textAlign: 'center' }}>
 
-          {/* MEET ACE — fades in */}
-          <h1 className="meet-ace-text" style={{
+          {/* MEET ACE — always visible */}
+          <h1 style={{
             fontSize: 'clamp(3.5rem, 11vw, 8rem)',
             fontWeight: 800,
             letterSpacing: '0.06em',
             lineHeight: 1.05,
             marginBottom: '1.2rem',
             whiteSpace: 'nowrap',
-            opacity: meetAceVisible ? 1 : 0,
           }}>
             <span className="meet-ace-meet">MEET </span>
             <span className="meet-ace-ace">ACE</span>
