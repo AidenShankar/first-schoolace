@@ -197,8 +197,18 @@ export default function Layout({ children, currentPageName }) {
         if (userData && !userData.setup_complete && currentPageName !== 'Setup') {
             const urlParams = new URLSearchParams(window.location.search);
             const fromAITutor = urlParams.get('fromAITutor') === 'true' || currentPageName === 'AITutor';
-            const setupUrl = createPageUrl('Setup') + (fromAITutor ? '?fromAITutor=true' : '');
-            window.location.href = setupUrl;
+            // If coming from AITutor flow, skip Setup screens and auto-complete as student
+            if (fromAITutor) {
+                try {
+                    await base44.auth.updateMe({ app_role: 'student', setup_complete: true });
+                    window.location.href = createPageUrl('AITutor') + '?autoTransfer=true';
+                } catch (e) {
+                    console.error("Auto-setup failed:", e);
+                    window.location.href = createPageUrl('Setup') + '?fromAITutor=true';
+                }
+                return;
+            }
+            window.location.href = createPageUrl('Setup');
             return;
         }
 
