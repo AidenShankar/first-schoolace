@@ -1,6 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.20';
 
-const GCP_AITUTOR_URL = "https://mimir-core-v3-7k6mnc7qga-uc.a.run.app";
+const GCP_AITUTOR_URL = "https://mimir-core-v3-p5ggf6mkrq-uc.a.run.app"
 
 Deno.serve(async (req) => {
     try {
@@ -36,12 +36,15 @@ Deno.serve(async (req) => {
         }
 
         const payload = {
-            id: user.id,
-            email: user.email,
-            full_name: user.full_name,
-            app_role: user.app_role || 'student',
-            exp: Date.now() + 5 * 60 * 1000
+          id: user.id,
+          email: user.email,
+          full_name: user.full_name,
+          app_role: user.app_role || 'student',
+          grade_level: user.grade_level || '9',
+          age: user.age || null,
+          exp: Date.now() + 5 * 60 * 1000
         };
+
 
         const payloadStr = JSON.stringify(payload);
         const encoder = new TextEncoder();
