@@ -1036,7 +1036,7 @@ function LayoutContent({
       </main>
 
       {/* Mobile Navigation - Conditionally render based on page */}
-      {!isLandingPage && !isAITutorPage && !isCompliancePage && !isDemoPage && !isLearnerDashboard && !isAPExamSchedulePage && (
+      {!isLandingPage && !isAITutorPage && !isSetupPage && !isCompliancePage && !isDemoPage && !isLearnerDashboard && !isAPExamSchedulePage && (
         <div className="md:hidden fixed bottom-0 left-0 right-0 backdrop-blur-xl border-t px-2 py-2 flex justify-around z-40" style={{ backgroundColor: 'rgba(var(--color-surface), 0.9)', borderColor: `rgb(var(--color-border))` }}>
           {filteredNavLinks.map((link) => {
             if (link.requiresClass && !currentClassId) return null;
