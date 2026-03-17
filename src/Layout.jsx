@@ -199,13 +199,7 @@ export default function Layout({ children, currentPageName }) {
             const fromAITutor = urlParams.get('fromAITutor') === 'true' || currentPageName === 'AITutor';
             // If coming from AITutor flow, skip Setup screens and auto-complete as student
             if (fromAITutor) {
-                try {
-                    await base44.auth.updateMe({ app_role: 'student', setup_complete: true });
-                    window.location.href = createPageUrl('AITutor') + '?autoTransfer=true';
-                } catch (e) {
-                    console.error("Auto-setup failed:", e);
-                    window.location.href = createPageUrl('Setup') + '?fromAITutor=true';
-                }
+                window.location.href = createPageUrl('Setup') + '?fromAITutor=true';
                 return;
             }
             window.location.href = createPageUrl('Setup');
