@@ -213,7 +213,7 @@ export default function AITutor() {
             <span className="meet-ace-ace">ACE</span>
           </h1>
 
-          {/* AI Learning Companion — fixed width holds space, typed text fills from left */}
+          {/* AI Learning Companion — typed */}
           <div style={{ display: 'inline-block', position: 'relative' }}>
             <h2 style={{
               fontSize: 'clamp(1.1rem, 3vw, 1.75rem)',
