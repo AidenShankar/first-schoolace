@@ -241,13 +241,13 @@ export default function AITutor() {
           <div style={{ height: '120px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1.4rem' }}>
             <p style={{
               fontSize: 'clamp(0.85rem, 1.8vw, 1.05rem)',
-              color: '#64748b',
+              color: '#0f172a',
               fontWeight: 400,
               letterSpacing: '0.05em',
               opacity: showBottom ? 1 : 0,
               transition: 'opacity 0.5s ease',
             }}>
-              AI Tutor for Everyone
+              AI Tutor for Every Student
             </p>
 
             <button
