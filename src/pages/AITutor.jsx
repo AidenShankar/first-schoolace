@@ -229,7 +229,8 @@ export default function AITutor() {
               left: 0,
               whiteSpace: 'nowrap',
             }}>
-              {meetAceText}
+              <span className="meet-ace-meet">{meetAceText.slice(0, Math.min(meetAceText.length, 5))}</span>
+              <span className="meet-ace-ace">{meetAceText.slice(5)}</span>
             </h1>
           </div>
 
