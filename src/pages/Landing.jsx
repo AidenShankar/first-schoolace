@@ -1167,14 +1167,12 @@ export default function LandingPage() {
   };
 
   const handleGetStartedClick = async () => {
-    // The redirect URL should be the dashboard. The dashboard page itself handles
-    // redirecting to the setup page if the user's setup is not complete.
-    const redirectUrl = window.location.origin + createPageUrl('Dashboard');
+    const redirectUrl = window.location.origin + createPageUrl('Setup');
     await base44.auth.redirectToLogin(redirectUrl);
   };
 
   const handleSignInClick = async () => {
-    const redirectUrl = window.location.origin + createPageUrl('Dashboard');
+    const redirectUrl = window.location.origin + createPageUrl('Setup');
     await base44.auth.redirectToLogin(redirectUrl);
   };
 

@@ -20,6 +20,16 @@ export default function Setup() {
     return () => clearTimeout(timer);
   }, []);
 
+  useEffect(() => {
+    base44.auth.me()
+      .then((currentUser) => {
+        if (currentUser?.setup_complete) {
+          window.location.replace(createPageUrl('Dashboard'));
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   const [loading, setLoading] = useState(false);
   const [adminCode, setAdminCode] = useState('');
   const [schoolName, setSchoolName] = useState('');
