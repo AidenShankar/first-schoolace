@@ -175,7 +175,7 @@ export default function AITutor() {
 
         <div style={{ position: 'relative', zIndex: 10, maxWidth: '860px', width: '100%' }}>
 
-          {/* MEET ACE — fixed height, no cursor */}
+          {/* MEET ACE — fixed height, left-to-right reveal */}
           <h1 style={{
             fontSize: 'clamp(3.5rem, 11vw, 8rem)',
             fontWeight: 800,
@@ -186,8 +186,11 @@ export default function AITutor() {
             background: 'linear-gradient(135deg, #c4b5fd 10%, #a78bfa 50%, #7c3aed 100%)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
+            textAlign: 'left',
+            width: '100%',
+            whiteSpace: 'pre',
           }}>
-            {meetAceText}
+            {meetAceText.padEnd(MEET_ACE.length, '\u00A0')}
           </h1>
 
           {/* AI Learning Companion — fixed height, always present, no cursor */}
