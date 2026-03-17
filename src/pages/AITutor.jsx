@@ -215,15 +215,12 @@ export default function AITutor() {
               {MEET_ACE}
             </h1>
             {/* Visible typed text, absolutely positioned to fill from left */}
-            <h1 style={{
+            <h1 className="meet-ace-text" style={{
               fontSize: 'clamp(3.5rem, 11vw, 8rem)',
               fontWeight: 800,
               letterSpacing: '0.06em',
               lineHeight: 1.05,
               marginBottom: '1.2rem',
-              background: 'linear-gradient(135deg, #c4b5fd 10%, #a78bfa 50%, #7c3aed 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
               position: 'absolute',
               top: 0,
               left: 0,
