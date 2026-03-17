@@ -25,6 +25,7 @@ export default function AITutor() {
   const [authChecked, setAuthChecked] = useState(false);
   const [transferring, setTransferring] = useState(false);
   const [meetAceVisible, setMeetAceVisible] = useState(false);
+  // eslint-disable-next-line no-unused-vars
   const [aceLineText, setAceLineText] = useState('');
   const [showBottom, setShowBottom] = useState(false);
   const doneRef = useRef(false);
