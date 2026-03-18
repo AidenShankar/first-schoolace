@@ -53,7 +53,7 @@ const FACTS = [
     "Got an idea? Use the feedback button to request features—you might see yours added next."
 ];
 
-export const LOADING_DURATION = 0;
+export const LOADING_DURATION = 2500;
 
 export default function AceTransition() {
     const [fact, setFact] = useState("");
