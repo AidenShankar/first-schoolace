@@ -79,7 +79,6 @@ import __Layout from './Layout.jsx';
 export const PAGES = {
     "AIPersonalAgent": AIPersonalAgent,
     "AITools": AITools,
-    "AITutor": AITutor,
     "APExamSchedule": APExamSchedule,
     "AceSpaceDetail": AceSpaceDetail,
     "AceSpaces": AceSpaces,
