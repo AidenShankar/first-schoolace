@@ -20,16 +20,6 @@ export default function Setup() {
     return () => clearTimeout(timer);
   }, []);
 
-  useEffect(() => {
-    base44.auth.me()
-      .then((currentUser) => {
-        if (currentUser?.setup_complete) {
-          window.location.replace(createPageUrl('Dashboard'));
-        }
-      })
-      .catch(() => {});
-  }, []);
-
   const [loading, setLoading] = useState(false);
   const [adminCode, setAdminCode] = useState('');
   const [schoolName, setSchoolName] = useState('');
@@ -54,7 +44,6 @@ export default function Setup() {
         setup_complete: true 
       };
 
-      // Validate inputs first (before any auth calls)
       if (selectedRole === 'admin') {
         if (!schoolName.trim()) {
           alert('Please enter your school/district name');
@@ -64,7 +53,7 @@ export default function Setup() {
         updateData.admin_code = generateAdminCode();
         updateData.school_name = schoolName;
       } else if (selectedRole === 'teacher' && adminCode.trim()) {
-        // Only validate admin code if provided
+        // Validate admin code using backend function
         try {
           const { data, error } = await base44.functions.invoke('validateAdminCode', {
             admin_code: adminCode.trim().toUpperCase()
@@ -80,7 +69,9 @@ export default function Setup() {
             return;
           }
 
+          // Admin code is valid
           updateData.admin_id = data.admin_id;
+          
         } catch (error) {
           console.error("Error validating admin code:", error);
           alert('Could not validate admin code: ' + error.message + '. You can skip this step and continue without connecting to an admin.');
@@ -89,7 +80,6 @@ export default function Setup() {
         }
       }
 
-      // Now update user with validated data
       await base44.auth.updateMe(updateData);
       
       // Show success message for admin
@@ -99,15 +89,8 @@ export default function Setup() {
       
       // Small delay to ensure data is saved
       await new Promise(resolve => setTimeout(resolve, 500));
-
-      // If user came from AITutor page and selected student, send them back to AITutor
-      const params = new URLSearchParams(window.location.search);
-      const fromAITutor = params.get('fromAITutor') === 'true';
-      if (fromAITutor && selectedRole === 'student') {
-        window.location.href = createPageUrl('AITutor') + '?autoTransfer=true';
-      } else {
-        window.location.href = createPageUrl('Dashboard');
-      }
+      
+      window.location.href = createPageUrl('Dashboard');
     } catch (error) {
       console.error("Error completing setup:", error);
       alert(`Failed to complete setup: ${error.message || 'Please try again.'}`);

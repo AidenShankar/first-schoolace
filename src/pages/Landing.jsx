@@ -1167,12 +1167,14 @@ export default function LandingPage() {
   };
 
   const handleGetStartedClick = async () => {
-    const redirectUrl = window.location.origin + createPageUrl('Setup');
+    // The redirect URL should be the dashboard. The dashboard page itself handles
+    // redirecting to the setup page if the user's setup is not complete.
+    const redirectUrl = window.location.origin + createPageUrl('Dashboard');
     await base44.auth.redirectToLogin(redirectUrl);
   };
 
   const handleSignInClick = async () => {
-    const redirectUrl = window.location.origin + createPageUrl('Setup');
+    const redirectUrl = window.location.origin + createPageUrl('Dashboard');
     await base44.auth.redirectToLogin(redirectUrl);
   };
 
@@ -1260,6 +1262,12 @@ export default function LandingPage() {
       name: "Kimoon Bae",
       role: t('roles.student'),
       imageUrl: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/754ea1c55_443E26B3-DC25-40FC-9A29-B1051EC523F5_1_201_a.jpg"
+    },
+    {
+      quote: t('landing.testimonial6'),
+      name: "Xiangting Ren",
+      role: t('roles.student'),
+      imageUrl: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/db05cdc6d_Screenshot2025-09-30at44716PM.png"
     },
     {
       quote: t('landing.testimonial7'),

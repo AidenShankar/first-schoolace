@@ -91,20 +91,22 @@ export const AuthProvider = ({ children }) => {
     try {
       // Now check if the user is authenticated
       setIsLoadingAuth(true);
-      console.log('[AuthContext] Calling base44.auth.me()');
       const currentUser = await base44.auth.me();
-      console.log('[AuthContext] Auth success, user:', currentUser?.email);
       setUser(currentUser);
       setIsAuthenticated(true);
       setIsLoadingAuth(false);
     } catch (error) {
-      console.error('[AuthContext] Auth check failed:', error?.message || error);
+      console.error('User auth check failed:', error);
       setIsLoadingAuth(false);
       setIsAuthenticated(false);
-
-      // Only set auth error if the app explicitly requires auth
-      // Don't block on a single failed auth check - let Layout handle it
-      // This prevents blocking on transient SSO token sync issues
+      
+      // If user auth fails, it might be an expired token
+      if (error.status === 401 || error.status === 403) {
+        setAuthError({
+          type: 'auth_required',
+          message: 'Authentication required'
+        });
+      }
     }
   };
 

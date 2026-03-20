@@ -49,6 +49,7 @@
  */
 import AIPersonalAgent from './pages/AIPersonalAgent';
 import AITools from './pages/AITools';
+import AITutor from './pages/AITutor';
 import APExamSchedule from './pages/APExamSchedule';
 import AceSpaceDetail from './pages/AceSpaceDetail';
 import AceSpaces from './pages/AceSpaces';
@@ -79,6 +80,7 @@ import __Layout from './Layout.jsx';
 export const PAGES = {
     "AIPersonalAgent": AIPersonalAgent,
     "AITools": AITools,
+    "AITutor": AITutor,
     "APExamSchedule": APExamSchedule,
     "AceSpaceDetail": AceSpaceDetail,
     "AceSpaces": AceSpaces,
