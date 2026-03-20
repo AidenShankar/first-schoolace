@@ -1262,12 +1262,6 @@ export default function LandingPage() {
       imageUrl: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/754ea1c55_443E26B3-DC25-40FC-9A29-B1051EC523F5_1_201_a.jpg"
     },
     {
-      quote: t('landing.testimonial6'),
-      name: "Xiangting Ren",
-      role: t('roles.student'),
-      imageUrl: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/db05cdc6d_Screenshot2025-09-30at44716PM.png"
-    },
-    {
       quote: t('landing.testimonial7'),
       name: "Lexi Liu",
       role: t('roles.student'),
