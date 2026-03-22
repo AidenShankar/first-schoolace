@@ -605,9 +605,7 @@ const getFormattedDate = () => {
   return new Date().toLocaleDateString('en-US', options);
 };
 
-// TermsContent and PrivacyContent are imported from components/landing/LegalContent
-const _unused = () => (
-  <div>
+// TermsContent and PrivacyContent imported from LegalContent.jsx
 
     <h2>1. Eligibility and School Authorization</h2>
     <ul>
