@@ -10,17 +10,8 @@ import { base44 } from '@/api/base44Client';
 import { useTranslation } from '../components/i18n/useTranslation';
 import LanguageSelector from '../components/i18n/LanguageSelector';
 import AIPreviewSection from '../components/landing/AIPreviewSection';
-import {
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  ResponsiveContainer,
-  Tooltip,
-  LineChart,
-  Line,
-  CartesianGrid
-} from "recharts";
+import { TermsContent, PrivacyContent } from '../components/landing/LegalContent';
+import { AreaChart, Area, XAxis, YAxis, ResponsiveContainer, Tooltip, LineChart, Line, CartesianGrid } from "recharts";
 
 // --- Enhanced Atmospheric Effects ---
 
