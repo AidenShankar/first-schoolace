@@ -605,17 +605,9 @@ const getFormattedDate = () => {
   return new Date().toLocaleDateString('en-US', options);
 };
 
-// Define specific dates for Terms and Privacy
-const specificDate = "September 1, 2025";
-const lastUpdated = "October 12, 2025";
-
-const TermsContent = () => (
-  <div className="prose prose-slate max-w-none text-slate-700">
-    <p className="text-sm text-slate-500 mb-6">
-      <strong>Effective Date:</strong> {specificDate}<br />
-      <strong>Last Updated:</strong> {lastUpdated}
-    </p>
-    <p>Welcome to SchoolAce, an all-in-one, AI-powered education platform that streamlines classroom management and enhances student learning. These Terms of Service ("Terms") govern your access to and use of SchoolAce ("Service" or "Platform"). By creating an account, accessing, or using the Service, you agree to be bound by these Terms. If you do not agree, do not use SchoolAce.</p>
+// TermsContent and PrivacyContent imported from components/landing/LegalContent
+const _placeholder_terms = () => (
+  <div>
 
     <h2>1. Eligibility and School Authorization</h2>
     <ul>
