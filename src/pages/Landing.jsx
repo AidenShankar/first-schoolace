@@ -600,14 +600,6 @@ const TestimonialCard = ({ testimonial }) => {
 };
 
 
-// TermsContent and PrivacyContent imported from LegalContent.jsx
-
-    <h2>1. Eligibility and School Authorization</h2>
-    <ul>
-      <li><strong>Teachers and School Staff:</strong> You must be at least 18 years old and authorized by your school or educational institution to use SchoolAce on behalf of students.</li>
-      <li><strong>Students:</strong> Student access must be authorized by the school. Students under 18 may only use the Platform under school supervision and with appropriate parental consent obtained by the school.</li>
-      <li><strong>School Authorization Model:</strong> SchoolAce operates under school authorization. Schools are responsible for obtaining necessary parental consents and ensuring compliance with applicable laws.</li>
-      <li>You are responsible for ensuring your use complies with all applicable laws, regulations, and school policies.</li>
 export default function LandingPage() {
   const { t } = useTranslation();
   const { scrollYProgress } = useScroll();
