@@ -771,6 +771,21 @@ export default function LandingPage() {
       <div className="relative z-20">
         <Header />
 
+        {/* ACE Tutor Launch Banner */}
+        <div className="w-full bg-gradient-to-r from-indigo-900/80 via-purple-900/80 to-indigo-900/80 border-b border-indigo-500/30 backdrop-blur-sm">
+          <div className="max-w-7xl mx-auto px-4 py-3 flex flex-col sm:flex-row items-center justify-center gap-2 text-center text-sm">
+            <span className="flex items-center gap-2 flex-wrap justify-center">
+              <span className="px-2 py-0.5 rounded-full bg-purple-500/30 border border-purple-400/50 text-purple-300 text-xs font-semibold">NEW</span>
+              <span className="text-white font-semibold">ACE Tutor:</span>
+              <span className="text-slate-300">Personalized AI tutor for every student. Invite-only Closed Beta.</span>
+            </span>
+            <a href="https://schoolace.ai/tutor?requestaccess" target="_blank" rel="noopener noreferrer"
+              className="flex items-center gap-1 text-indigo-300 hover:text-white font-semibold underline underline-offset-2 transition-colors whitespace-nowrap">
+              Request access <ArrowRight className="w-3.5 h-3.5" />
+            </a>
+          </div>
+        </div>
+
         <main>
           {/* Hero Section */}
           <section className="px-6 py-12 text-center max-w-6xl mx-auto">
