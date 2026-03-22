@@ -599,12 +599,6 @@ const TestimonialCard = ({ testimonial }) => {
 };
 
 
-// A function to get the formatted date
-const getFormattedDate = () => {
-  const options = { year: 'numeric', month: 'long', day: 'numeric' };
-  return new Date().toLocaleDateString('en-US', options);
-};
-
 // TermsContent and PrivacyContent imported from LegalContent.jsx
 
     <h2>1. Eligibility and School Authorization</h2>
