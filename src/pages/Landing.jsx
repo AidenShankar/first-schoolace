@@ -11,6 +11,7 @@ import { useTranslation } from '../components/i18n/useTranslation';
 import LanguageSelector from '../components/i18n/LanguageSelector';
 import AIPreviewSection from '../components/landing/AIPreviewSection';
 import { TermsContent, PrivacyContent } from '../components/landing/LegalContent';
+import { getTestimonialsData } from '../components/landing/testimonialsData';
 import { AreaChart, Area, XAxis, YAxis, ResponsiveContainer, Tooltip, LineChart, Line, CartesianGrid } from "recharts";
 
 // --- Enhanced Atmospheric Effects ---
