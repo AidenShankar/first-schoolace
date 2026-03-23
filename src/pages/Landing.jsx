@@ -622,9 +622,6 @@ const lastUpdated = "October 12, 2025";
 
 // PrivacyContent is now in components/landing/PrivacyContent.jsx
 
-import AIPreviewSectionImport from '../components/landing/AIPreviewSection';
-import AceTutorBanner from '../components/landing/AceTutorBanner';
-
 export default function LandingPage() {
   const { t } = useTranslation();
   const { scrollYProgress } = useScroll();
