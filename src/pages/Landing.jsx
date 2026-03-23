@@ -730,10 +730,6 @@ export default function LandingPage() {
       title: "ACE Spaces",
       description: "Experience the future of collaboration with AI-enhanced group chats where you can brainstorm, share files, and get instant tutoring together."}];
   
-  const studentFeatures = getStudentFeatures();
-
-
-
   const getAIToolkitFeatures = () => [
     { icon: <PenTool />, title: t('landing.worksheetGeneration') },
     { icon: <BarChart />, title: t('landing.rubricCreation') },
