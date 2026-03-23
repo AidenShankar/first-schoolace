@@ -625,13 +625,7 @@ const PrivacyContent = () => (
   <div className="prose prose-slate max-w-none text-slate-700">
     <p>See full privacy policy at schoolace.org/PrivacyPolicy</p>
 
-    <h2>1. Our Commitment to Student Privacy</h2>
-    <p>Schoolace takes student privacy seriously and complies with all applicable federal and state student privacy laws, including:</p>
-    <ul>
-      <li><strong>FERPA (Family Educational Rights and Privacy Act):</strong> We act as a "school official" under FERPA's school official exception (20 U.S.C. § 1232g; 34 CFR Part 99), performing institutional services that schools would otherwise perform themselves. Schools maintain direct control over our use of education records.</li>
-      <li><strong>COPPA (Children's Online Privacy Protection Act):</strong> We operate under the school authorization exception (16 CFR § 312.5(c)(3)). Schools are responsible for obtaining parental consent for students under 13. Schoolace does not collect personal information directly from children.</li>
-      <li><strong>State Laws:</strong> We comply with applicable state student privacy laws, including California SOPIPA and similar regulations.</li>
-    </ul>
+
 
     <h2>2. How Schoolace Operates</h2>
     <ul>
