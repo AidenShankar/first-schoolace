@@ -21,7 +21,7 @@ export default function AceTutorBanner() {
           </span>
         </div>
         <a
-          href="https://schoolace.ai/tutor?requestacess"
+          href="https://schoolace.ai/tutor?requestaccess"
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-bold text-purple-900 bg-white hover:bg-yellow-300 transition-all duration-200 shadow-lg whitespace-nowrap"
