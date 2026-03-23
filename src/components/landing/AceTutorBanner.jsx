@@ -14,10 +14,10 @@ export default function AceTutorBanner() {
       >
         <div className="flex items-center gap-2">
           <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-white/20 text-white border border-white/30 tracking-wide uppercase">
-            Closed Beta
+            Invite Only
           </span>
           <span className="text-white font-semibold text-sm sm:text-base">
-            <span className="font-extrabold text-yellow-300">ACE AI Tutor.</span> It learns how you learn.
+            <span className="font-extrabold text-yellow-300">ACE</span>, Your 24/7 AI Tutor, adapts in real time to your learning
           </span>
         </div>
         <a
