@@ -5,7 +5,7 @@ export default function AceTutorBanner() {
   return (
     <div className="relative z-30 w-full flex justify-center px-4 py-3">
       <div
-        className="w-full max-w-3xl rounded-2xl overflow-hidden px-4 py-3 flex flex-row items-center justify-center gap-3 text-center"
+        className="w-full max-w-4xl rounded-2xl overflow-hidden px-4 py-3 flex flex-row items-center justify-center gap-3 whitespace-nowrap"
         style={{
           background: "linear-gradient(90deg, #3b0764, #4c1d95, #6d28d9, #7c3aed, #6d28d9, #4c1d95, #3b0764)",
           backgroundSize: "200% 100%",
