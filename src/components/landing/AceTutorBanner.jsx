@@ -17,7 +17,7 @@ export default function AceTutorBanner() {
             Invite Only
           </span>
           <span className="text-white font-semibold text-sm sm:text-base">
-            <span className="font-extrabold text-yellow-300">MEET ACE</span> — Your 24/7 AI tutor that adapts in real time to how you learn.
+            <span className="font-extrabold text-yellow-300">MEET ACE</span> - Your 24/7 AI tutor that adapts in real time to how you learn.
           </span>
         </div>
         <a
