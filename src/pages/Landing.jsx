@@ -740,10 +740,6 @@ export default function LandingPage() {
     { icon: <Mail />, title: t('landing.emailDrafting') },
     { icon: <ShieldCheck />, title: t('landing.reportContent') }];
   
-  const aiToolkitFeatures = getAIToolkitFeatures();
-
-
-
   const getTestimonials = () => [
     {
       quote: t('landing.testimonial1'),
