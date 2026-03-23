@@ -4,12 +4,12 @@ import { createPageUrl } from '@/utils';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Bot, BookOpen, PenTool, BarChart, CheckCircle, GraduationCap, Brain, Sparkles, Users, Calendar, Activity, Crown, SlidersHorizontal, BrainCircuit, ShieldCheck, Mail, Edit, Linkedin, Shield, PlusCircle, Lock, Eye, Unlock } from 'lucide-react';
 import { Button } from "@/components/ui/button";
-import { User } from '@/entities/User';
 import { Contact } from '@/entities/Contact';
 import { base44 } from '@/api/base44Client';
 import { useTranslation } from '../components/i18n/useTranslation';
 import LanguageSelector from '../components/i18n/LanguageSelector';
 import AIPreviewSection from '../components/landing/AIPreviewSection';
+import AceTutorBanner from '../components/landing/AceTutorBanner';
 import {
   AreaChart,
   Area,
