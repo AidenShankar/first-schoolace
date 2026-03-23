@@ -620,13 +620,10 @@ const lastUpdated = "October 12, 2025";
 
 // TermsContent moved to components/landing/TermsContent.jsx
 
+// PrivacyContent moved to components/landing/PrivacyContent.jsx
 const PrivacyContent = () => (
   <div className="prose prose-slate max-w-none text-slate-700">
-    <p className="text-sm text-slate-500 mb-6">
-      <strong>Effective Date:</strong> {specificDate}<br />
-      <strong>Last Updated:</strong> {lastUpdated}
-    </p>
-    <p>Schoolace ("we," "our," or "us") is committed to protecting the privacy of teachers, students, and all users of our platform. This Privacy Policy explains how we collect, use, store, and protect your information when you use our services. By using Schoolace, you agree to this Privacy Policy. If you do not agree, please do not use our platform.</p>
+    <p>See full privacy policy at schoolace.org/PrivacyPolicy</p>
 
     <h2>1. Our Commitment to Student Privacy</h2>
     <p>Schoolace takes student privacy seriously and complies with all applicable federal and state student privacy laws, including:</p>
