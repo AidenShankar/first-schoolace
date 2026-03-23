@@ -608,19 +608,7 @@ const TestimonialCard = ({ testimonial }) => {
 };
 
 
-// A function to get the formatted date
-const getFormattedDate = () => {
-  const options = { year: 'numeric', month: 'long', day: 'numeric' };
-  return new Date().toLocaleDateString('en-US', options);
-};
-
-// Define specific dates for Terms and Privacy
-const specificDate = "September 1, 2025";
-const lastUpdated = "October 12, 2025";
-
-// TermsContent moved to components/landing/TermsContent.jsx
-
-// PrivacyContent is now in components/landing/PrivacyContent.jsx
+// Terms and Privacy content moved to components/landing/TermsContent.jsx and PrivacyContent.jsx
 
 export default function LandingPage() {
   const { t } = useTranslation();
