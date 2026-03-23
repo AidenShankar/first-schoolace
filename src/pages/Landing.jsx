@@ -837,9 +837,6 @@ export default function LandingPage() {
       imageUrl: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/f6585736b_Screenshot2026-01-03at120832PM.png"
     }];
   
-  const testimonials = getTestimonials();
-
-
   return (
     <div className="bg-gradient-to-br from-black via-slate-950 to-purple-950 text-white min-h-screen overflow-x-hidden relative">
       <AtmosphericBackground />
