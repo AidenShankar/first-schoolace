@@ -58,7 +58,9 @@ export default function Dashboard({ user: layoutUser, allClasses: layoutAllClass
     const [currentClass, setCurrentClass] = useState(null);
     const [allClasses, setAllClasses] = useState(layoutAllClasses || []);
     const [assignments, setAssignments] = useState([]);
+    const [assignmentsLoaded, setAssignmentsLoaded] = useState(false);
     const [submissions, setSubmissions] = useState([]);
+    const [submissionsLoaded, setSubmissionsLoaded] = useState(false);
     const [showAssignmentForm, setShowAssignmentForm] = useState(false);
     const [selectedAssignment, setSelectedAssignment] = useState(null);
     const [editingAssignment, setEditingAssignment] = useState(null); // New state for editing
@@ -146,12 +148,9 @@ export default function Dashboard({ user: layoutUser, allClasses: layoutAllClass
     }, [layoutAllClasses, currentClass]);
 
     const loadAssignments = useCallback(async () => {
-        if (!currentClass) return;
+        if (!currentClass || !user) return;
         
         try {
-            // Add a small delay before loading assignments
-            await new Promise(resolve => setTimeout(resolve, 200));
-            
             const data = await retryWithBackoff(() => 
                 Assignment.filter({ class_id: currentClass.id }, "-created_date", 100)
             );
@@ -174,30 +173,35 @@ export default function Dashboard({ user: layoutUser, allClasses: layoutAllClass
                 });
                 setAssignments(visibleAssignments);
             }
+            setAssignmentsLoaded(true);
         } catch (error) {
             console.error("Error loading assignments:", error);
             if (error.response?.status === 429) {
                 alert("Too many requests. Please wait a moment and refresh the page.");
             }
             setAssignments([]);
+            setAssignmentsLoaded(true);
         }
     }, [currentClass, user, retryWithBackoff]);
 
-    const loadSubmissions = useCallback(async () => {
+    const loadSubmissions = useCallback(async (assignmentsList) => {
         if (!currentClass || !user) return;
 
         try {
-            // Add a small delay before loading submissions
-            await new Promise(resolve => setTimeout(resolve, 300));
-            
-            // Fetch assignments for the current class to scope the submission query
-            const classAssignments = await retryWithBackoff(() => 
-                Assignment.filter({ class_id: currentClass.id }, "-created_date", 100)
-            );
-            const assignmentIds = classAssignments.map(a => a.id);
+            // Use passed-in assignments list, or fetch if not provided
+            let assignmentIds;
+            if (assignmentsList && assignmentsList.length > 0) {
+                assignmentIds = assignmentsList.map(a => a.id);
+            } else {
+                const classAssignments = await retryWithBackoff(() => 
+                    Assignment.filter({ class_id: currentClass.id }, "-created_date", 100)
+                );
+                assignmentIds = classAssignments.map(a => a.id);
+            }
 
             if (assignmentIds.length === 0) {
                 setSubmissions([]);
+                setSubmissionsLoaded(true);
                 return;
             }
 
@@ -217,21 +221,52 @@ export default function Dashboard({ user: layoutUser, allClasses: layoutAllClass
                 );
                 setSubmissions(userClassSubmissions);
             }
+            setSubmissionsLoaded(true);
         } catch (error) {
             console.error("Error loading submissions:", error);
             if (error.response?.status === 429) {
                 alert("Too many requests. Please wait a moment and refresh the page.");
             }
             setSubmissions([]);
+            setSubmissionsLoaded(true);
         }
     }, [currentClass, user, retryWithBackoff]);
 
     useEffect(() => {
-        if (currentClass) {
-            loadAssignments();
-            loadSubmissions();
+        if (currentClass && user) {
+            setAssignmentsLoaded(false);
+            setSubmissionsLoaded(false);
+            // Load assignments first, then use that result to load submissions
+            const loadData = async () => {
+                try {
+                    const data = await retryWithBackoff(() => 
+                        Assignment.filter({ class_id: currentClass.id }, "-created_date", 100)
+                    );
+                    let filteredData = data;
+                    if (user.app_role !== "teacher") {
+                        const now = new Date();
+                        filteredData = data.filter(a => {
+                            if (!a.is_visible || a.status !== "active") return false;
+                            if (a.open_date && new Date(a.open_date) > now) return false;
+                            if (a.close_date && new Date(a.close_date) < now) return false;
+                            return true;
+                        });
+                    }
+                    setAssignments(filteredData);
+                    setAssignmentsLoaded(true);
+                    // Now load submissions using the assignment IDs we already have
+                    await loadSubmissions(data); // pass ALL assignments (not filtered) so teacher submissions match
+                } catch (error) {
+                    console.error("Error loading data:", error);
+                    setAssignments([]);
+                    setAssignmentsLoaded(true);
+                    setSubmissions([]);
+                    setSubmissionsLoaded(true);
+                }
+            };
+            loadData();
         }
-    }, [currentClass, loadAssignments, loadSubmissions]);
+    }, [currentClass?.id, user?.id, user?.app_role, retryWithBackoff, loadSubmissions]);
 
     // Auto-process any newly disputed submissions that haven't been reviewed yet
     useEffect(() => {
@@ -247,6 +282,7 @@ export default function Dashboard({ user: layoutUser, allClasses: layoutAllClass
     }, [submissions, assignments, user?.app_role]);
 
     useEffect(() => {
+        // Show loading animation for minimum duration, but also wait for layout data
         const timer = setTimeout(() => {
             setPageLoading(false);
         }, LOADING_DURATION);
@@ -256,7 +292,9 @@ export default function Dashboard({ user: layoutUser, allClasses: layoutAllClass
     const handleClassSwitch = (selectedClass) => {
         setCurrentClass(selectedClass);
         setAssignments([]);
+        setAssignmentsLoaded(false);
         setSubmissions([]);
+        setSubmissionsLoaded(false);
         setSelectedAssignment(null);
         setShowAssignmentForm(false);
         setEditingAssignment(null); // Clear editing state on class switch
@@ -1257,7 +1295,9 @@ Output JSON with:
     const handleAssignmentClick = (assignment) => { if (user.app_role === "teacher") setSelectedAssignment(assignment) };
     const handleUploadClick = (assignment) => { setUploadingAssignment(assignment); setShowUploadModal(true); };
 
-    if (pageLoading || (isLayoutLoading && !user)) {
+    // Show loading screen until: animation done AND layout finished loading
+    const isDataReady = !isLayoutLoading && user && (allClasses.length > 0 || !isLayoutLoading);
+    if (pageLoading || isLayoutLoading) {
         return <AceTransition />;
     }
 
@@ -1637,7 +1677,11 @@ Output JSON with:
                                             className="space-y-6"
                                         >
                                             <h3 className="text-2xl font-bold" style={{ color: `rgb(var(--color-text))` }}>{t('dashboard.yourAssignments')}</h3>
-                                            {assignments.length === 0 ? (
+                                            {!assignmentsLoaded ? (
+                                                <div className="flex items-center justify-center py-16">
+                                                    <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div>
+                                                </div>
+                                            ) : assignments.length === 0 ? (
                                                 <div className="text-center py-16">
                                                     <BookOpen className="w-16 h-16 mx-auto mb-4" style={{ color: `rgb(var(--color-border))` }} />
                                                     <p className="font-medium text-lg" style={{ color: `rgb(var(--color-textSecondary))` }}>{t('dashboard.noAssignmentsYet')}</p>
