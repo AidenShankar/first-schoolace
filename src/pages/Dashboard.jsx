@@ -1296,7 +1296,6 @@ Output JSON with:
     const handleUploadClick = (assignment) => { setUploadingAssignment(assignment); setShowUploadModal(true); };
 
     // Show loading screen until: animation done AND layout finished loading
-    const isDataReady = !isLayoutLoading && user && (allClasses.length > 0 || !isLayoutLoading);
     if (pageLoading || isLayoutLoading) {
         return <AceTransition />;
     }
