@@ -330,12 +330,14 @@ export default function SubmissionsList({ submissions, assignment, onReleaseGrad
     if (!confirm("Are you sure you want to release all current grades? This will make grades visible to all students who have a grade assigned.")) return;
     
     setIsBulkReleasing(true);
+    let successCount = 0;
+    let skipCount = 0;
+    let failCount = 0;
     try {
-        const promises = studentsWithSubmissions.map(student => {
+        for (const student of studentsWithSubmissions) {
             const sub = student.submissions[0];
-            if (sub.is_released) return Promise.resolve(); // Already released
+            if (sub.is_released) { skipCount++; continue; }
             
-            // Determine grade to release: Teacher grade takes precedence over AI grade
             let gradeToRelease = sub.teacher_grade;
             let feedbackToRelease = sub.teacher_feedback;
             
@@ -344,26 +346,38 @@ export default function SubmissionsList({ submissions, assignment, onReleaseGrad
                     gradeToRelease = sub.ai_grade;
                     feedbackToRelease = sub.ai_feedback;
                 } else {
-                    return Promise.resolve(); // No grade to release
+                    skipCount++;
+                    continue;
                 }
             }
             
-            return Submission.update(sub.id, {
-                is_released: true,
-                released_at: new Date().toISOString(),
-                grading_status: 'released',
-                final_grade: gradeToRelease,
-                final_feedback: feedbackToRelease || ""
-            });
-        });
+            try {
+                await Submission.update(sub.id, {
+                    is_released: true,
+                    released_at: new Date().toISOString(),
+                    grading_status: 'released',
+                    final_grade: gradeToRelease,
+                    final_feedback: feedbackToRelease || ""
+                });
+                successCount++;
+            } catch (err) {
+                console.error(`Failed to release grade for ${student.student_name}:`, err);
+                failCount++;
+                // Small delay on error to avoid rate limits
+                await new Promise(r => setTimeout(r, 500));
+            }
+        }
         
-        await Promise.all(promises);
-        alert("All available grades released successfully!");
+        if (failCount > 0) {
+            alert(`Released ${successCount} grades. ${failCount} failed. ${skipCount} skipped (already released or no grade).`);
+        } else {
+            alert(`All available grades released successfully! (${successCount} released, ${skipCount} skipped)`);
+        }
         setShowBulkReleaseModal(false);
-        window.location.reload(); // Refresh to show changes
+        window.location.reload();
     } catch (e) {
         console.error("Error bulk releasing grades:", e);
-        alert("Failed to release some grades.");
+        alert(`Released ${successCount} grades before an error occurred. Please try again for remaining grades.`);
     } finally {
         setIsBulkReleasing(false);
     }
@@ -378,29 +392,40 @@ export default function SubmissionsList({ submissions, assignment, onReleaseGrad
     if (!confirm(`Are you sure you want to release a grade of ${bulkGradeValue} for ALL ${studentsWithSubmissions.length} submissions? This will overwrite existing final grades.`)) return;
 
     setIsBulkReleasing(true);
+    let successCount = 0;
+    let failCount = 0;
     try {
         const gradeNum = parseFloat(bulkGradeValue);
-        const promises = studentsWithSubmissions.map(student => {
+        for (const student of studentsWithSubmissions) {
             const sub = student.submissions[0];
-            return Submission.update(sub.id, {
-                is_released: true,
-                released_at: new Date().toISOString(),
-                grading_status: 'released',
-                final_grade: gradeNum,
-                teacher_grade: gradeNum, // Also update teacher grade to match
-                // Preserve existing feedback if any, or set default
-                final_feedback: sub.teacher_feedback || sub.ai_feedback || "Graded via bulk release."
-            });
-        });
+            try {
+                await Submission.update(sub.id, {
+                    is_released: true,
+                    released_at: new Date().toISOString(),
+                    grading_status: 'released',
+                    final_grade: gradeNum,
+                    teacher_grade: gradeNum,
+                    final_feedback: sub.teacher_feedback || sub.ai_feedback || "Graded via bulk release."
+                });
+                successCount++;
+            } catch (err) {
+                console.error(`Failed to release grade for ${student.student_name}:`, err);
+                failCount++;
+                await new Promise(r => setTimeout(r, 500));
+            }
+        }
         
-        await Promise.all(promises);
-        alert(`Released grade of ${gradeNum} for all submissions!`);
+        if (failCount > 0) {
+            alert(`Released ${successCount} grades. ${failCount} failed. Please try again for remaining.`);
+        } else {
+            alert(`Released grade of ${gradeNum} for all ${successCount} submissions!`);
+        }
         setShowBulkReleaseModal(false);
         setBulkGradeValue("");
-        window.location.reload(); // Refresh to show changes
+        window.location.reload();
     } catch (e) {
         console.error("Error bulk releasing fixed grades:", e);
-        alert("Failed to release grades.");
+        alert(`Released ${successCount} grades before an error occurred.`);
     } finally {
         setIsBulkReleasing(false);
     }
