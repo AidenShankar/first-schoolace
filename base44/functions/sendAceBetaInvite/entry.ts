@@ -43,8 +43,7 @@ function getEmailBody(firstName) {
             <p style="margin:0 0 14px;font-size:16px;font-weight:700;color:#1e293b;">🧠 Meet ACE</p>
             <p style="margin:0 0 8px;font-size:16px;font-weight:700;color:#1e293b;">AI Learning Companion for Education.</p>
             <p style="margin:0 0 8px;font-size:14px;color:#475569;line-height:1.7;">Built for <strong>Grades 6 through 12</strong> across <strong>Math, English, and Science</strong> including Physics, Chemistry, and Biology.</p>
-            <p style="margin:0 0 8px;font-size:14px;color:#475569;line-height:1.7;">Ask ACE anything. It can draw it, map it, show it, or break it down step by step.</p>
-            <p style="margin:0 0 24px;font-size:14px;color:#475569;line-height:1.7;">It can turn anything into graphs, diagrams, molecules, and interactive visuals so you can actually see how things work.</p>
+            <p style="margin:0 0 24px;font-size:14px;color:#475569;line-height:1.7;">Ask ACE anything. It can turn problems into graphs, diagrams, charts, and interactive visuals.</p>
 
             <div style="height:1px;background:#e2e8f0;margin:28px 0;"></div>
 
