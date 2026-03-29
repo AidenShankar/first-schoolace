@@ -219,7 +219,7 @@ Deno.serve(async (req) => {
     }
 
     try {
-      await base44.integrations.invoke('Core', 'SendEmail', {
+      await base44.integrations.Core.SendEmail({
         to: email,
         subject: EMAIL_SUBJECT,
         body: getEmailBody(firstName),
