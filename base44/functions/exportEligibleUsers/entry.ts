@@ -28,12 +28,11 @@ Deno.serve(async (req) => {
             console.log("Sample user data:", JSON.stringify(allUsers[0]));
         }
 
-        // Filter: is_verified=true AND setup_complete=true
-        // Check both top-level and nested data fields
+        // Include all users with valid emails
         const eligible = allUsers.filter(u => {
-            const isVerified = u.is_verified === true;
-            const setupComplete = u.setup_complete === true || u.data?.setup_complete === true;
-            return isVerified && setupComplete;
+            const email = u.email || '';
+            // Basic email validation
+            return email.includes('@') && email.includes('.');
         });
 
         // Build CSV
