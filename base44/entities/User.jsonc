@@ -1,0 +1,87 @@
+{
+  "name": "User",
+  "type": "object",
+  "properties": {
+    "app_role": {
+      "type": "string",
+      "enum": [
+        "teacher",
+        "student",
+        "admin"
+      ],
+      "description": "The user's selected role in the application."
+    },
+    "setup_complete": {
+      "type": "boolean",
+      "default": false,
+      "description": "Indicates if the user has completed the initial role setup."
+    },
+    "admin_id": {
+      "type": "string",
+      "description": "ID of the admin this teacher/student belongs to"
+    },
+    "admin_code": {
+      "type": "string",
+      "description": "Unique code for teachers to join this admin (only for admin role)"
+    },
+    "school_name": {
+      "type": "string",
+      "description": "Name of the school/district (for admin role)"
+    },
+    "pinned_ai_tools": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "List of pinned AI tool IDs"
+    },
+    "subscription_status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "canceled",
+        "past_due"
+      ],
+      "description": "Stripe subscription status"
+    },
+    "subscription_tier": {
+      "type": "string",
+      "enum": [
+        "supercharged"
+      ],
+      "description": "Subscription tier level"
+    },
+    "subscription_id": {
+      "type": "string",
+      "description": "Stripe subscription ID"
+    },
+    "customer_id": {
+      "type": "string",
+      "description": "Stripe customer ID"
+    },
+    "seen_barakat_reset_notice": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the teacher has seen the Anthony Barakat account reset notice"
+    },
+    "promo_popup_view_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of times the promo popup has been shown to the user"
+    },
+    "beta_email_sent": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the ACE beta invite email was sent to this user"
+    },
+    "beta_email_sent_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the beta invite email was sent"
+    }
+  },
+  "required": [
+    "app_role"
+  ]
+}
