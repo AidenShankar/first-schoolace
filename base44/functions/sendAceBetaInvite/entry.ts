@@ -58,13 +58,14 @@ function getEmailBody(firstName) {
               <div style="height:1px;background:#e2e8f0;margin:24px 0;"></div>
 
               <!-- What is ACE -->
-              <p style="margin:0 0 14px;font-size:16px;font-weight:700;color:#1e293b;">🧠 Meet ACE - AI Learning Companion for Education.</p>
-              <p style="margin:0 0 8px;font-size:14px;color:#475569;line-height:1.7;">
+              <p style="margin:0 0 14px;font-size:16px;font-weight:700;color:#1e293b;">🧠 Meet ACE - AI Learning
+                Companion for Education.</p>
+              <p style="margin:0 0 20px;font-size:14px;color:#475569;line-height:1.7;">
                 Built for <strong>Grades 6 through 12</strong> across <strong>Math, English, and Science</strong>
                 including Physics, Chemistry, and Biology.
               </p>
               <p style="margin:0 0 24px;font-size:14px;color:#475569;line-height:1.7;">
-                Ask ACE anything. It can turn your questions into graphs, diagrams, charts, and interactive visuals.
+                Ask ACE anything. It can turn problems into graphs, diagrams, charts, and interactive visuals.
               </p>
 
               <div style="height:1px;background:#e2e8f0;margin:28px 0;"></div>
@@ -81,7 +82,7 @@ function getEmailBody(firstName) {
                     <p style="margin:0 0 3px;font-size:14px;font-weight:700;color:#1e293b;">Instant feedback on your
                       work</p>
                     <p style="margin:0;font-size:13px;color:#475569;line-height:1.5;">
-                      Submit an assignment, get it graded in seconds with real feedback.
+                      Upload an assignment, get it graded in seconds with real feedback.
                     </p>
                   </td>
                 </tr>
@@ -264,13 +265,12 @@ function getEmailBody(firstName) {
               </table>
 
               <table width="100%" cellpadding="0" cellspacing="0" role="presentation"
-                style="margin-bottom:4px;background:#1e1b4b;border-radius:14px;">
+                style="margin-bottom:4px;background:#f1f5f9;border-radius:12px;border:1px solid #e2e8f0;">
                 <tr>
-                  <td style="padding:22px 24px;">
-                    <p style="margin:0 0 6px;font-size:22px;">🌌</p>
-                    <p style="margin:0 0 6px;font-size:15px;font-weight:800;color:#ffffff;">Your Learning Cosmos</p>
-                    <p style="margin:0;font-size:13px;color:rgba(255,255,255,0.75);line-height:1.6;">
-                      Your entire learning journey, mapped as a living universe of concepts you master.
+                  <td style="padding:16px 20px;">
+                    <p style="margin:0 0 4px;font-size:14px;font-weight:700;color:#1e293b;">🌌 Your Learning Cosmos</p>
+                    <p style="margin:0;font-size:13px;color:#475569;line-height:1.5;">
+                      Your learning journey, mapped as a universe of concepts you master.
                     </p>
                   </td>
                 </tr>
@@ -279,10 +279,16 @@ function getEmailBody(firstName) {
               <div style="height:1px;background:#e2e8f0;margin:28px 0;"></div>
 
               <!-- CTA -->
+              <div style="margin:0 0 20px;padding:16px;background:#fef3c7;border-radius:12px;border:1px solid #fde68a;">
+                <p style="margin:0 0 6px;font-size:14px;font-weight:700;color:#1e293b;">⏳ Early access perk</p>
+                <p style="margin:0;font-size:13px;color:#475569;line-height:1.6;">
+                  Join before Apr 2 and get 14 days free instead of 7. Enough time to upload assignments, explore your subjects, and see real results.
+                </p>
+              </div>
+
               <p style="margin:0 0 8px;font-size:15px;font-weight:700;color:#1e293b;">Ready?</p>
-              <p style="margin:0 0 20px;font-size:14px;color:#475569;">
-                Takes less than 30 seconds. Pick your grade, choose your subjects, and start exploring. ⚡
-              </p>
+              <p style="margin:0 0 20px;font-size:14px;color:#475569;">Under 30 seconds. Pick your grade, choose
+                subjects, start exploring.</p>
 
               <table cellpadding="0" cellspacing="0" role="presentation">
                 <tr>
