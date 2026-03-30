@@ -323,6 +323,9 @@ function getEmailBody(firstName) {
                 &nbsp;·&nbsp;
                 <a href="mailto:ace@schoolace.ai" style="color:#94a3b8;text-decoration:none;">ace@schoolace.ai</a>
               </p>
+              <p style="margin:8px 0 0;font-size:11px;color:#94a3b8;">
+                © 2026 SchoolACE LLC. All rights reserved.
+              </p>
             </td>
           </tr>
 
