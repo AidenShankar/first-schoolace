@@ -196,7 +196,7 @@ const Header = () => {
             <div className="w-10 h-10 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
               <GraduationCap className="w-6 h-6 text-white" />
             </div>
-            <span className="text-lg font-bold text-white">Schoolace</span>
+            <span className="text-lg font-bold text-white">SchoolACE</span>
           </div>
 
           <HeaderNav />
@@ -1826,7 +1826,7 @@ export default function LandingPage() {
                   <div className="w-10 h-10 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
                     <GraduationCap className="w-6 h-6 text-white" />
                   </div>
-                  <span className="text-xl font-bold text-white">Schoolace</span>
+                  <span className="text-xl font-bold text-white">SchoolACE</span>
                 </div>
                 <p className="text-slate-400 text-sm">Education, Supercharged by ACE AI</p>
               </div>
