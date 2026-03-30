@@ -52,7 +52,7 @@ function getEmailBody(firstName) {
               <!-- Intro -->
               <p style="margin:0 0 6px;font-size:16px;color:#1e293b;font-weight:600;">Hey ${firstName},</p>
               <p style="margin:0 0 8px;font-size:14px;color:#475569;line-height:1.6;">
-                We picked a small group of students to try something new.
+                We picked a group of SchoolACE users to try something new.
               </p>
 
               <div style="height:1px;background:#e2e8f0;margin:24px 0;"></div>
