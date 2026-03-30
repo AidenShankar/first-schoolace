@@ -1855,14 +1855,14 @@ export default function LandingPage() {
                 <h4 className="font-semibold text-white mb-4">{t('landing.legalTitle')}</h4>
                 <ul className="space-y-3">
                   <li>
-                    <Link to={createPageUrl('TermsOfService')} className="text-slate-400 hover:text-white transition-colors text-sm">
+                    <a href="https://schoolace.ai/TermsOfService" className="text-slate-400 hover:text-white transition-colors text-sm">
                       {t('landing.termsOfService')}
-                    </Link>
+                    </a>
                   </li>
                   <li>
-                    <Link to={createPageUrl('PrivacyPolicy')} className="text-slate-400 hover:text-white transition-colors text-sm">
+                    <a href="https://schoolace.ai/PrivacyPolicy" className="text-slate-400 hover:text-white transition-colors text-sm">
                       {t('landing.privacyPolicy')}
-                    </Link>
+                    </a>
                   </li>
                 </ul>
               </div>
