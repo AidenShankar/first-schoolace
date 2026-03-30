@@ -14,9 +14,7 @@ function getEmailBody(firstName) {
 
 <body
   style="margin:0;padding:0;background:#f1f5f9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
-  <div style="display:none;max-height:0;overflow:hidden;mso-hide:all;">Your AI tutor that adapts to you. Invite-only
-    access
-    inside.&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;
+  <div style="display:none;max-height:0;overflow:hidden;mso-hide:all;">Stuck on homework? Your AI study companion is here.&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;
   </div>
 
   <table width="100%" cellpadding="0" cellspacing="0" role="presentation"
