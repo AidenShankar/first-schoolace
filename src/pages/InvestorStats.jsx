@@ -4,7 +4,7 @@ import { investorStats } from "@/functions/investorStats";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
-import { Users, Brain, CheckCircle, Clock, FileText } from "lucide-react";
+import { Users, Brain, CheckCircle, Clock, FileText, MessageCircle, UserCheck } from "lucide-react";
 
 const MONTH_LABELS = {
   '2025-07': 'Jul 25', '2025-08': 'Aug 25', '2025-09': 'Sep 25', '2025-10': 'Oct 25',
@@ -33,6 +33,7 @@ function StatCard({ icon: Icon, label, value, subtitle, color }) {
 export default function InvestorStats() {
   const [userStats, setUserStats] = useState(null);
   const [submissionStats, setSubmissionStats] = useState(null);
+  const [aiTutorStats, setAiTutorStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -79,6 +80,68 @@ export default function InvestorStats() {
         total: filteredSubs.length,
         aiGraded: aiGraded.length,
         hoursSaved: Math.round((aiGraded.length * 5) / 60),
+      });
+
+      // Fetch AI tutor messages client-side
+      let allMessages = [];
+      page = 0;
+      hasMore = true;
+      while (hasMore) {
+        const batch = await base44.entities.AssignmentComment.filter(
+          { is_ai_tutor_message: true },
+          '-created_date', pageSize, page * pageSize
+        );
+        if (!batch || batch.length === 0) { hasMore = false; break; }
+        allMessages = allMessages.concat(batch);
+        if (batch.length < pageSize) hasMore = false;
+        page++;
+      }
+
+      // Filter out spam
+      const filteredMessages = allMessages.filter(m => {
+        const email = (m.student_email || m.created_by || '').toLowerCase();
+        const domain = email.split('@')[1] || '';
+        if (spamDomains.includes(domain)) return false;
+        const name = (m.user_name || '').toLowerCase();
+        if (name.includes('aiden') || name.includes('hari shankar')) return false;
+        return true;
+      });
+
+      // Group by month
+      const monthlyMap = {};
+      const uniqueStudents = new Set();
+      const monthlyStudents = {};
+      filteredMessages.forEach(m => {
+        const date = new Date(m.created_date);
+        const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+        monthlyMap[key] = (monthlyMap[key] || 0) + 1;
+        if (m.student_id) {
+          uniqueStudents.add(m.student_id);
+          if (!monthlyStudents[key]) monthlyStudents[key] = new Set();
+          monthlyStudents[key].add(m.student_id);
+        }
+      });
+
+      // Build cumulative monthly data
+      const allMonthKeys = Object.keys(monthlyMap).sort();
+      let cumTotal = 0;
+      const aiMonthlyData = allMonthKeys.map(month => {
+        cumTotal += monthlyMap[month];
+        return {
+          month,
+          label: MONTH_LABELS[month] || month,
+          newMessages: monthlyMap[month],
+          cumulativeTotal: cumTotal,
+          uniqueStudents: monthlyStudents[month]?.size || 0,
+        };
+      });
+
+      setAiTutorStats({
+        totalMessages: filteredMessages.length,
+        studentMessages: filteredMessages.filter(m => m.user_role === 'student').length,
+        aiResponses: filteredMessages.filter(m => m.user_id === 'ai_tutor').length,
+        uniqueStudents: uniqueStudents.size,
+        monthlyData: aiMonthlyData,
       });
     } catch (err) {
       console.error("Error loading stats:", err);
@@ -145,6 +208,57 @@ export default function InvestorStats() {
         </Card>
 
 
+
+        {/* AI Tutor Engagement */}
+        {aiTutorStats && (
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <StatCard icon={MessageCircle} label="AI Tutor Messages" value={aiTutorStats.totalMessages.toLocaleString()} subtitle={`${aiTutorStats.studentMessages} student · ${aiTutorStats.aiResponses} AI`} color="#f59e0b" />
+              <StatCard icon={UserCheck} label="Students Using AI Tutor" value={aiTutorStats.uniqueStudents} subtitle="Unique students engaged" color="#06b6d4" />
+              <StatCard icon={Brain} label="Avg Messages/Student" value={aiTutorStats.uniqueStudents ? (aiTutorStats.totalMessages / aiTutorStats.uniqueStudents).toFixed(1) : 0} subtitle="Depth of engagement" color="#8b5cf6" />
+            </div>
+
+            <Card className="border-0 shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-lg">AI Tutor Interactions (Cumulative)</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="h-80">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={aiTutorStats.monthlyData}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                      <XAxis dataKey="label" tick={{ fontSize: 12 }} />
+                      <YAxis tick={{ fontSize: 12 }} />
+                      <Tooltip />
+                      <Line type="monotone" dataKey="cumulativeTotal" stroke="#f59e0b" strokeWidth={3} dot={{ fill: '#f59e0b', r: 5 }} name="Cumulative Messages" />
+                      <Line type="monotone" dataKey="newMessages" stroke="#06b6d4" strokeWidth={2} dot={{ fill: '#06b6d4', r: 4 }} name="New Messages" />
+                      <Legend />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-0 shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-lg">Monthly Unique Students Using AI Tutor</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="h-64">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={aiTutorStats.monthlyData}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                      <XAxis dataKey="label" tick={{ fontSize: 12 }} />
+                      <YAxis tick={{ fontSize: 12 }} />
+                      <Tooltip />
+                      <Bar dataKey="uniqueStudents" fill="#06b6d4" radius={[6, 6, 0, 0]} name="Unique Students" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </CardContent>
+            </Card>
+          </>
+        )}
 
         {/* Role Breakdown */}
         <Card className="border-0 shadow-lg">
