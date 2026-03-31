@@ -227,14 +227,14 @@ export default function InvestorStats() {
         {aiTutorStats && (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <StatCard icon={MessageCircle} label="AI Tutor Messages" value={aiTutorStats.totalMessages.toLocaleString()} subtitle={`${aiTutorStats.studentMessages} student · ${aiTutorStats.aiResponses} AI`} color="#f59e0b" />
-              <StatCard icon={UserCheck} label="Students Using AI Tutor" value={aiTutorStats.uniqueStudents} subtitle="Unique students engaged" color="#06b6d4" />
+              <StatCard icon={MessageCircle} label="ACE Tutor Messages" value={aiTutorStats.totalMessages.toLocaleString()} subtitle={`${aiTutorStats.studentMessages} student · ${aiTutorStats.aiResponses} AI`} color="#f59e0b" />
+              <StatCard icon={UserCheck} label="Students Using ACE Tutor" value={aiTutorStats.uniqueStudents} subtitle="Unique students engaged" color="#06b6d4" />
               <StatCard icon={Brain} label="Avg Messages/Student" value={aiTutorStats.uniqueStudents ? (aiTutorStats.totalMessages / aiTutorStats.uniqueStudents).toFixed(1) : 0} subtitle="Depth of engagement" color="#8b5cf6" />
             </div>
 
             <Card className="border-0 shadow-lg bg-slate-900">
               <CardHeader>
-                <CardTitle className="text-lg text-white">AI Tutor Interactions (Cumulative)</CardTitle>
+                <CardTitle className="text-lg text-white">ACE Tutor Interactions (Cumulative)</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="h-80">
@@ -254,7 +254,7 @@ export default function InvestorStats() {
 
             <Card className="border-0 shadow-lg bg-slate-900">
               <CardHeader>
-                <CardTitle className="text-lg text-white">Monthly Unique Students Using AI Tutor</CardTitle>
+                <CardTitle className="text-lg text-white">Monthly Unique Students Using ACE Tutor</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="h-64">
