@@ -179,11 +179,25 @@ export default function InvestorStats() {
         </div>
 
         {/* Top-line KPIs */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <StatCard icon={Users} label="Total Users" value={userStats?.totalUsers?.toLocaleString() || 0} subtitle={`${growthPct}% growth since Nov '25`} color="#6366f1" />
-          <StatCard icon={FileText} label="Total Submissions" value={submissionStats?.total?.toLocaleString() || 0} subtitle="Student assignments submitted" color="#8b5cf6" />
-          <StatCard icon={Brain} label="AI-Graded" value={submissionStats?.aiGraded?.toLocaleString() || 0} subtitle={`of ${submissionStats?.total?.toLocaleString() || 0} total submissions`} color="#ec4899" />
-          <StatCard icon={Clock} label="Est. Teacher Hours Saved" value={`${submissionStats?.hoursSaved || 0}h`} subtitle="@ 5 min per manual grade" color="#10b981" />
+        <div className="space-y-4">
+          <Card className="border-0 shadow-lg">
+            <CardContent className="p-8">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground font-medium">Total Users</p>
+                  <p className="text-5xl font-bold mt-1" style={{ color: '#6366f1' }}>{userStats?.totalUsers?.toLocaleString() || 0}</p>
+                  <p className="text-sm text-muted-foreground mt-1">{growthPct}% growth since Nov '25</p>
+                </div>
+                <div className="p-4 rounded-xl" style={{ backgroundColor: '#6366f115' }}>
+                  <Users className="w-10 h-10" style={{ color: '#6366f1' }} />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <StatCard icon={FileText} label="Total Submissions" value={submissionStats?.total?.toLocaleString() || 0} subtitle="Student assignments submitted" color="#8b5cf6" />
+            <StatCard icon={Brain} label="AI-Graded" value={submissionStats?.aiGraded?.toLocaleString() || 0} subtitle={`of ${submissionStats?.total?.toLocaleString() || 0} total submissions`} color="#ec4899" />
+          </div>
         </div>
 
         {/* User Growth Chart */}
@@ -231,7 +245,6 @@ export default function InvestorStats() {
                       <YAxis tick={{ fontSize: 12 }} />
                       <Tooltip />
                       <Line type="monotone" dataKey="cumulativeTotal" stroke="#f59e0b" strokeWidth={3} dot={{ fill: '#f59e0b', r: 5 }} name="Cumulative Messages" />
-                      <Line type="monotone" dataKey="newMessages" stroke="#06b6d4" strokeWidth={2} dot={{ fill: '#06b6d4', r: 4 }} name="New Messages" />
                       <Legend />
                     </LineChart>
                   </ResponsiveContainer>
