@@ -60,7 +60,7 @@ export default function InvestorStats() {
       }
 
       // Filter out test account submissions
-      const testNames = ['aiden', 'hari', 'kraver'];
+      const testNames = ['aiden', 'hari'];
       const filteredSubs = allSubs.filter(s => {
         const name = (s.student_name || '').toLowerCase();
         return !testNames.some(t => name.includes(t));

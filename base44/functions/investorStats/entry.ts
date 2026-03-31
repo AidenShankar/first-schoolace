@@ -23,7 +23,7 @@ Deno.serve(async (req) => {
     }
 
     // Filter out test accounts
-    const testNames = ['aiden', 'hari', 'kraver'];
+    const testNames = ['aiden', 'hari'];
     const filteredUsers = allUsers.filter(u => {
       const name = (u.full_name || '').toLowerCase();
       return !testNames.some(t => name.includes(t));
