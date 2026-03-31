@@ -17,9 +17,9 @@ function StatCard({ icon: Icon, label, value, subtitle, color }) {
       <CardContent className="p-6">
         <div className="flex items-start justify-between">
           <div>
-            <p className="text-sm text-slate-400 font-medium">{label}</p>
+            <p className="text-sm text-slate-300 font-medium">{label}</p>
             <p className="text-4xl font-bold mt-1" style={{ color }}>{value}</p>
-            {subtitle && <p className="text-sm text-slate-500 mt-1">{subtitle}</p>}
+            {subtitle && <p className="text-sm text-slate-400 mt-1">{subtitle}</p>}
           </div>
           <div className="p-3 rounded-xl" style={{ backgroundColor: `${color}20` }}>
             <Icon className="w-6 h-6" style={{ color }} />
@@ -175,7 +175,7 @@ export default function InvestorStats() {
         {/* Header */}
         <div className="text-center mb-10">
           <h1 className="text-4xl font-bold text-white">SchoolACE — Investor Metrics</h1>
-          <p className="text-lg text-slate-400 mt-2">Nov 2025 – March 2026</p>
+          <p className="text-lg text-slate-300 mt-2">Nov 2025 – March 2026</p>
         </div>
 
         {/* Top-line KPIs */}
@@ -184,12 +184,12 @@ export default function InvestorStats() {
             <CardContent className="p-8">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-slate-400 font-medium">Total Users</p>
-                  <p className="text-5xl font-bold mt-1" style={{ color: '#818cf8' }}>{userStats?.totalUsers?.toLocaleString() || 0}</p>
-                  <p className="text-sm text-slate-500 mt-1">{growthPct}% growth since Nov '25</p>
+                  <p className="text-sm text-slate-300 font-medium">Total Users</p>
+                  <p className="text-5xl font-bold mt-1" style={{ color: '#a5b4fc' }}>{userStats?.totalUsers?.toLocaleString() || 0}</p>
+                  <p className="text-sm text-slate-400 mt-1">{growthPct}% growth since Nov '25</p>
                 </div>
-                <div className="p-4 rounded-xl" style={{ backgroundColor: '#818cf820' }}>
-                  <Users className="w-10 h-10" style={{ color: '#818cf8' }} />
+                <div className="p-4 rounded-xl" style={{ backgroundColor: '#a5b4fc20' }}>
+                  <Users className="w-10 h-10" style={{ color: '#a5b4fc' }} />
                 </div>
               </div>
             </CardContent>
@@ -210,10 +210,10 @@ export default function InvestorStats() {
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={userMonthlyData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-                  <XAxis dataKey="label" tick={{ fontSize: 12, fill: '#94a3b8' }} />
-                  <YAxis tick={{ fontSize: 12, fill: '#94a3b8' }} />
-                  <Tooltip />
-                  <Line type="monotone" dataKey="cumulativeTotal" stroke="#6366f1" strokeWidth={3} dot={{ fill: '#6366f1', r: 5 }} name="Total Users" />
+                  <XAxis dataKey="label" tick={{ fontSize: 12, fill: '#cbd5e1' }} />
+                  <YAxis tick={{ fontSize: 12, fill: '#cbd5e1' }} />
+                  <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #475569', borderRadius: 8, color: '#f1f5f9' }} />
+                  <Line type="monotone" dataKey="cumulativeTotal" stroke="#a5b4fc" strokeWidth={3} dot={{ fill: '#a5b4fc', r: 5 }} name="Total Users" />
                   <Legend />
                 </LineChart>
               </ResponsiveContainer>
@@ -241,10 +241,10 @@ export default function InvestorStats() {
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={aiTutorStats.monthlyData}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-                      <XAxis dataKey="label" tick={{ fontSize: 12, fill: '#94a3b8' }} />
-                      <YAxis tick={{ fontSize: 12, fill: '#94a3b8' }} />
-                      <Tooltip />
-                      <Line type="monotone" dataKey="cumulativeTotal" stroke="#f59e0b" strokeWidth={3} dot={{ fill: '#f59e0b', r: 5 }} name="Cumulative Messages" />
+                      <XAxis dataKey="label" tick={{ fontSize: 12, fill: '#cbd5e1' }} />
+                      <YAxis tick={{ fontSize: 12, fill: '#cbd5e1' }} />
+                      <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #475569', borderRadius: 8, color: '#f1f5f9' }} />
+                      <Line type="monotone" dataKey="cumulativeTotal" stroke="#fcd34d" strokeWidth={3} dot={{ fill: '#fcd34d', r: 5 }} name="Cumulative Messages" />
                       <Legend />
                     </LineChart>
                   </ResponsiveContainer>
@@ -261,10 +261,10 @@ export default function InvestorStats() {
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={aiTutorStats.monthlyData}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-                      <XAxis dataKey="label" tick={{ fontSize: 12, fill: '#94a3b8' }} />
-                      <YAxis tick={{ fontSize: 12, fill: '#94a3b8' }} />
-                      <Tooltip />
-                      <Bar dataKey="uniqueStudents" fill="#06b6d4" radius={[6, 6, 0, 0]} name="Unique Students" />
+                      <XAxis dataKey="label" tick={{ fontSize: 12, fill: '#cbd5e1' }} />
+                      <YAxis tick={{ fontSize: 12, fill: '#cbd5e1' }} />
+                      <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #475569', borderRadius: 8, color: '#f1f5f9' }} />
+                      <Bar dataKey="uniqueStudents" fill="#22d3ee" radius={[6, 6, 0, 0]} name="Unique Students" />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
@@ -282,21 +282,21 @@ export default function InvestorStats() {
             <div className="grid grid-cols-2 gap-6 text-center">
               <div>
                 <p className="text-3xl font-bold text-indigo-300">{userStats?.roleBreakdown?.teacher || 0}</p>
-                <p className="text-sm text-slate-400 mt-1">Teachers</p>
-                <p className="text-xs text-slate-500">Amber Kraver & Melissa Truong</p>
+                <p className="text-sm text-slate-300 mt-1">Teachers</p>
+                <p className="text-xs text-slate-400">Amber Kraver & Melissa Truong</p>
               </div>
               <div>
                 <p className="text-3xl font-bold text-purple-300">{userStats?.roleBreakdown?.student || 0}</p>
-                <p className="text-sm text-slate-400 mt-1">Students</p>
+                <p className="text-sm text-slate-300 mt-1">Students</p>
               </div>
             </div>
-            <div className="mt-4 text-center text-sm text-slate-500">
+            <div className="mt-4 text-center text-sm text-slate-400">
               Teacher-to-student ratio: 1:{Math.round((userStats?.roleBreakdown?.student || 0) / Math.max(userStats?.roleBreakdown?.teacher || 1, 1))}
             </div>
           </CardContent>
         </Card>
 
-        <p className="text-center text-xs text-slate-600">Data pulled live from SchoolACE database • {new Date().toLocaleDateString()}</p>
+        <p className="text-center text-xs text-slate-400">Data pulled live from SchoolACE database • {new Date().toLocaleDateString()}</p>
       </div>
     </div>
   );
