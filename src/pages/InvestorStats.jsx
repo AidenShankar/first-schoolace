@@ -13,15 +13,15 @@ const MONTH_LABELS = {
 
 function StatCard({ icon: Icon, label, value, subtitle, color }) {
   return (
-    <Card className="border-0 shadow-lg">
+    <Card className="border-0 shadow-lg bg-slate-900">
       <CardContent className="p-6">
         <div className="flex items-start justify-between">
           <div>
-            <p className="text-sm text-muted-foreground font-medium">{label}</p>
+            <p className="text-sm text-slate-400 font-medium">{label}</p>
             <p className="text-4xl font-bold mt-1" style={{ color }}>{value}</p>
-            {subtitle && <p className="text-sm text-muted-foreground mt-1">{subtitle}</p>}
+            {subtitle && <p className="text-sm text-slate-500 mt-1">{subtitle}</p>}
           </div>
-          <div className="p-3 rounded-xl" style={{ backgroundColor: `${color}15` }}>
+          <div className="p-3 rounded-xl" style={{ backgroundColor: `${color}20` }}>
             <Icon className="w-6 h-6" style={{ color }} />
           </div>
         </div>
@@ -152,8 +152,8 @@ export default function InvestorStats() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="w-8 h-8 border-4 border-slate-200 border-t-indigo-600 rounded-full animate-spin" />
+      <div className="flex items-center justify-center min-h-screen bg-black">
+        <div className="w-8 h-8 border-4 border-slate-700 border-t-indigo-500 rounded-full animate-spin" />
       </div>
     );
   }
@@ -170,25 +170,25 @@ export default function InvestorStats() {
     Math.round(((latestData.cumulativeTotal - (novData.cumulativeTotal - novData.newUsers)) / Math.max(novData.cumulativeTotal - novData.newUsers, 1)) * 100) : 0;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-indigo-50 p-6 md:p-10">
+    <div className="min-h-screen bg-black p-6 md:p-10">
       <div className="max-w-6xl mx-auto space-y-8">
         {/* Header */}
         <div className="text-center mb-10">
-          <h1 className="text-4xl font-bold text-slate-900">SchoolACE — Investor Metrics</h1>
-          <p className="text-lg text-slate-500 mt-2">Nov 2025 – March 2026</p>
+          <h1 className="text-4xl font-bold text-white">SchoolACE — Investor Metrics</h1>
+          <p className="text-lg text-slate-400 mt-2">Nov 2025 – March 2026</p>
         </div>
 
         {/* Top-line KPIs */}
         <div className="space-y-4">
-          <Card className="border-0 shadow-lg">
+          <Card className="border-0 shadow-lg bg-slate-900">
             <CardContent className="p-8">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground font-medium">Total Users</p>
+                  <p className="text-sm text-slate-400 font-medium">Total Users</p>
                   <p className="text-5xl font-bold mt-1" style={{ color: '#6366f1' }}>{userStats?.totalUsers?.toLocaleString() || 0}</p>
-                  <p className="text-sm text-muted-foreground mt-1">{growthPct}% growth since Nov '25</p>
+                  <p className="text-sm text-slate-500 mt-1">{growthPct}% growth since Nov '25</p>
                 </div>
-                <div className="p-4 rounded-xl" style={{ backgroundColor: '#6366f115' }}>
+                <div className="p-4 rounded-xl" style={{ backgroundColor: '#6366f120' }}>
                   <Users className="w-10 h-10" style={{ color: '#6366f1' }} />
                 </div>
               </div>
@@ -201,17 +201,17 @@ export default function InvestorStats() {
         </div>
 
         {/* User Growth Chart */}
-        <Card className="border-0 shadow-lg">
+        <Card className="border-0 shadow-lg bg-slate-900">
           <CardHeader>
-            <CardTitle className="text-lg">User Growth (Cumulative)</CardTitle>
+            <CardTitle className="text-lg text-white">User Growth (Cumulative)</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-80">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={userMonthlyData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                  <XAxis dataKey="label" tick={{ fontSize: 12 }} />
-                  <YAxis tick={{ fontSize: 12 }} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                  <XAxis dataKey="label" tick={{ fontSize: 12, fill: '#94a3b8' }} />
+                  <YAxis tick={{ fontSize: 12, fill: '#94a3b8' }} />
                   <Tooltip />
                   <Line type="monotone" dataKey="cumulativeTotal" stroke="#6366f1" strokeWidth={3} dot={{ fill: '#6366f1', r: 5 }} name="Total Users" />
                   <Legend />
@@ -232,17 +232,17 @@ export default function InvestorStats() {
               <StatCard icon={Brain} label="Avg Messages/Student" value={aiTutorStats.uniqueStudents ? (aiTutorStats.totalMessages / aiTutorStats.uniqueStudents).toFixed(1) : 0} subtitle="Depth of engagement" color="#8b5cf6" />
             </div>
 
-            <Card className="border-0 shadow-lg">
+            <Card className="border-0 shadow-lg bg-slate-900">
               <CardHeader>
-                <CardTitle className="text-lg">AI Tutor Interactions (Cumulative)</CardTitle>
+                <CardTitle className="text-lg text-white">AI Tutor Interactions (Cumulative)</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="h-80">
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={aiTutorStats.monthlyData}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                      <XAxis dataKey="label" tick={{ fontSize: 12 }} />
-                      <YAxis tick={{ fontSize: 12 }} />
+                      <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                      <XAxis dataKey="label" tick={{ fontSize: 12, fill: '#94a3b8' }} />
+                      <YAxis tick={{ fontSize: 12, fill: '#94a3b8' }} />
                       <Tooltip />
                       <Line type="monotone" dataKey="cumulativeTotal" stroke="#f59e0b" strokeWidth={3} dot={{ fill: '#f59e0b', r: 5 }} name="Cumulative Messages" />
                       <Legend />
@@ -252,17 +252,17 @@ export default function InvestorStats() {
               </CardContent>
             </Card>
 
-            <Card className="border-0 shadow-lg">
+            <Card className="border-0 shadow-lg bg-slate-900">
               <CardHeader>
-                <CardTitle className="text-lg">Monthly Unique Students Using AI Tutor</CardTitle>
+                <CardTitle className="text-lg text-white">Monthly Unique Students Using AI Tutor</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="h-64">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={aiTutorStats.monthlyData}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                      <XAxis dataKey="label" tick={{ fontSize: 12 }} />
-                      <YAxis tick={{ fontSize: 12 }} />
+                      <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                      <XAxis dataKey="label" tick={{ fontSize: 12, fill: '#94a3b8' }} />
+                      <YAxis tick={{ fontSize: 12, fill: '#94a3b8' }} />
                       <Tooltip />
                       <Bar dataKey="uniqueStudents" fill="#06b6d4" radius={[6, 6, 0, 0]} name="Unique Students" />
                     </BarChart>
@@ -274,29 +274,29 @@ export default function InvestorStats() {
         )}
 
         {/* Role Breakdown */}
-        <Card className="border-0 shadow-lg">
+        <Card className="border-0 shadow-lg bg-slate-900">
           <CardHeader>
-            <CardTitle className="text-lg">User Role Breakdown</CardTitle>
+            <CardTitle className="text-lg text-white">User Role Breakdown</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 gap-6 text-center">
               <div>
-                <p className="text-3xl font-bold text-indigo-600">{userStats?.roleBreakdown?.teacher || 0}</p>
-                <p className="text-sm text-muted-foreground mt-1">Teachers</p>
-                <p className="text-xs text-muted-foreground">Amber Kraver & Melissa Truong</p>
+                <p className="text-3xl font-bold text-indigo-400">{userStats?.roleBreakdown?.teacher || 0}</p>
+                <p className="text-sm text-slate-400 mt-1">Teachers</p>
+                <p className="text-xs text-slate-500">Amber Kraver & Melissa Truong</p>
               </div>
               <div>
-                <p className="text-3xl font-bold text-purple-600">{userStats?.roleBreakdown?.student || 0}</p>
-                <p className="text-sm text-muted-foreground mt-1">Students</p>
+                <p className="text-3xl font-bold text-purple-400">{userStats?.roleBreakdown?.student || 0}</p>
+                <p className="text-sm text-slate-400 mt-1">Students</p>
               </div>
             </div>
-            <div className="mt-4 text-center text-sm text-muted-foreground">
+            <div className="mt-4 text-center text-sm text-slate-500">
               Teacher-to-student ratio: 1:{Math.round((userStats?.roleBreakdown?.student || 0) / Math.max(userStats?.roleBreakdown?.teacher || 1, 1))}
             </div>
           </CardContent>
         </Card>
 
-        <p className="text-center text-xs text-slate-400">Data pulled live from SchoolACE database • {new Date().toLocaleDateString()}</p>
+        <p className="text-center text-xs text-slate-600">Data pulled live from SchoolACE database • {new Date().toLocaleDateString()}</p>
       </div>
     </div>
   );
