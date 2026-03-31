@@ -4,6 +4,8 @@ import AceTransition, { LOADING_DURATION } from "@/components/common/AceTransiti
 
 export default function ComplianceTable() {
   const [pageLoading, setPageLoading] = useState(true);
+  const [filterStatus, setFilterStatus] = useState('all');
+  const [filterLaw, setFilterLaw] = useState('all');
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -15,8 +17,6 @@ export default function ComplianceTable() {
   if (pageLoading) {
     return <AceTransition />;
   }
-  const [filterStatus, setFilterStatus] = useState('all');
-  const [filterLaw, setFilterLaw] = useState('all');
 
   const complianceItems = [
     // FERPA Items

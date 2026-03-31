@@ -185,18 +185,18 @@ export default function InvestorStats() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-slate-400 font-medium">Total Users</p>
-                  <p className="text-5xl font-bold mt-1" style={{ color: '#6366f1' }}>{userStats?.totalUsers?.toLocaleString() || 0}</p>
+                  <p className="text-5xl font-bold mt-1" style={{ color: '#818cf8' }}>{userStats?.totalUsers?.toLocaleString() || 0}</p>
                   <p className="text-sm text-slate-500 mt-1">{growthPct}% growth since Nov '25</p>
                 </div>
-                <div className="p-4 rounded-xl" style={{ backgroundColor: '#6366f120' }}>
-                  <Users className="w-10 h-10" style={{ color: '#6366f1' }} />
+                <div className="p-4 rounded-xl" style={{ backgroundColor: '#818cf820' }}>
+                  <Users className="w-10 h-10" style={{ color: '#818cf8' }} />
                 </div>
               </div>
             </CardContent>
           </Card>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <StatCard icon={FileText} label="Total Submissions" value={submissionStats?.total?.toLocaleString() || 0} subtitle="Student assignments submitted" color="#8b5cf6" />
-            <StatCard icon={Brain} label="AI-Graded" value={submissionStats?.aiGraded?.toLocaleString() || 0} subtitle={`of ${submissionStats?.total?.toLocaleString() || 0} total submissions`} color="#ec4899" />
+            <StatCard icon={FileText} label="Total Submissions" value={submissionStats?.total?.toLocaleString() || 0} subtitle="Student assignments submitted" color="#a78bfa" />
+            <StatCard icon={Brain} label="AI-Graded" value={submissionStats?.aiGraded?.toLocaleString() || 0} subtitle={`of ${submissionStats?.total?.toLocaleString() || 0} total submissions`} color="#f472b6" />
           </div>
         </div>
 
@@ -227,9 +227,9 @@ export default function InvestorStats() {
         {aiTutorStats && (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <StatCard icon={MessageCircle} label="ACE Tutor Messages" value={aiTutorStats.totalMessages.toLocaleString()} subtitle={`${aiTutorStats.studentMessages} student · ${aiTutorStats.aiResponses} AI`} color="#f59e0b" />
-              <StatCard icon={UserCheck} label="Students Using ACE Tutor" value={aiTutorStats.uniqueStudents} subtitle="Unique students engaged" color="#06b6d4" />
-              <StatCard icon={Brain} label="Avg Messages/Student" value={aiTutorStats.uniqueStudents ? (aiTutorStats.totalMessages / aiTutorStats.uniqueStudents).toFixed(1) : 0} subtitle="Depth of engagement" color="#8b5cf6" />
+              <StatCard icon={MessageCircle} label="ACE Tutor Messages" value={aiTutorStats.totalMessages.toLocaleString()} subtitle={`${aiTutorStats.studentMessages} student · ${aiTutorStats.aiResponses} AI`} color="#fbbf24" />
+              <StatCard icon={UserCheck} label="Students Using ACE Tutor" value={aiTutorStats.uniqueStudents} subtitle="Unique students engaged" color="#22d3ee" />
+              <StatCard icon={Brain} label="Avg Messages/Student" value={aiTutorStats.uniqueStudents ? (aiTutorStats.totalMessages / aiTutorStats.uniqueStudents).toFixed(1) : 0} subtitle="Depth of engagement" color="#a78bfa" />
             </div>
 
             <Card className="border-0 shadow-lg bg-slate-900">
@@ -281,12 +281,12 @@ export default function InvestorStats() {
           <CardContent>
             <div className="grid grid-cols-2 gap-6 text-center">
               <div>
-                <p className="text-3xl font-bold text-indigo-400">{userStats?.roleBreakdown?.teacher || 0}</p>
+                <p className="text-3xl font-bold text-indigo-300">{userStats?.roleBreakdown?.teacher || 0}</p>
                 <p className="text-sm text-slate-400 mt-1">Teachers</p>
                 <p className="text-xs text-slate-500">Amber Kraver & Melissa Truong</p>
               </div>
               <div>
-                <p className="text-3xl font-bold text-purple-400">{userStats?.roleBreakdown?.student || 0}</p>
+                <p className="text-3xl font-bold text-purple-300">{userStats?.roleBreakdown?.student || 0}</p>
                 <p className="text-sm text-slate-400 mt-1">Students</p>
               </div>
             </div>
