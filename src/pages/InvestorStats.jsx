@@ -59,13 +59,20 @@ export default function InvestorStats() {
         page++;
       }
 
+      // Filter out test account submissions
+      const testNames = ['aiden', 'hari', 'kraver'];
+      const filteredSubs = allSubs.filter(s => {
+        const name = (s.student_name || '').toLowerCase();
+        return !testNames.some(t => name.includes(t));
+      });
+
       // Process submissions
       const aiStatuses = ['ai_graded', 'released', 'graded', 'dispute_reviewed'];
-      const aiGraded = allSubs.filter(s => aiStatuses.includes(s.grading_status));
-      const teacherGraded = allSubs.filter(s => s.teacher_grade != null || s.teacher_feedback);
+      const aiGraded = filteredSubs.filter(s => aiStatuses.includes(s.grading_status));
+      const teacherGraded = filteredSubs.filter(s => s.teacher_grade != null || s.teacher_feedback);
       
       const monthlySubs = {};
-      for (const s of allSubs) {
+      for (const s of filteredSubs) {
         const date = new Date(s.created_date);
         const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
         if (!monthlySubs[monthKey]) monthlySubs[monthKey] = { total: 0, aiGraded: 0 };
@@ -82,7 +89,7 @@ export default function InvestorStats() {
       }));
 
       setSubmissionStats({
-        total: allSubs.length,
+        total: filteredSubs.length,
         aiGraded: aiGraded.length,
         teacherGraded: teacherGraded.length,
         hoursSaved: Math.round((aiGraded.length * 5) / 60),

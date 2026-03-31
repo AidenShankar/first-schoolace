@@ -22,11 +22,18 @@ Deno.serve(async (req) => {
       skip += pageSize;
     }
 
+    // Filter out test accounts
+    const testNames = ['aiden', 'hari', 'kraver'];
+    const filteredUsers = allUsers.filter(u => {
+      const name = (u.full_name || '').toLowerCase();
+      return !testNames.some(t => name.includes(t));
+    });
+
     // Monthly breakdown
     const monthlyGrowth = {};
     const roleBreakdown = { teacher: 0, student: 0, other: 0 };
     
-    for (const u of allUsers) {
+    for (const u of filteredUsers) {
       const date = new Date(u.created_date);
       const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
       monthlyGrowth[monthKey] = (monthlyGrowth[monthKey] || 0) + 1;
@@ -52,7 +59,7 @@ Deno.serve(async (req) => {
     }
 
     return Response.json({
-      totalUsers: allUsers.length,
+      totalUsers: filteredUsers.length,
       roleBreakdown,
       monthlyData
     });
