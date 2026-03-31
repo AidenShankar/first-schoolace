@@ -4,7 +4,7 @@ import { investorStats } from "@/functions/investorStats";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
-import { Users, Brain, CheckCircle, Clock, Download } from "lucide-react";
+import { Users, Brain, CheckCircle, Clock, FileText } from "lucide-react";
 
 const MONTH_LABELS = {
   '2025-07': 'Jul 25', '2025-08': 'Aug 25', '2025-09': 'Sep 25', '2025-10': 'Oct 25',
@@ -44,13 +44,16 @@ export default function InvestorStats() {
     try {
       // Fetch user stats from backend
       const userRes = await investorStats({});
-      setUserStats(userRes.data);
+      const data = userRes.data;
+      setUserStats(data);
 
-      // Fetch submissions directly from frontend SDK (bypasses service role issue)
+      const spamDomains = data.spamDomains || [];
+
+      // Fetch submissions client-side (admin has access)
       let allSubs = [];
       const pageSize = 200;
-      let hasMore = true;
       let page = 0;
+      let hasMore = true;
       while (hasMore) {
         const batch = await base44.entities.Submission.list('-created_date', pageSize, page * pageSize);
         if (!batch || batch.length === 0) { hasMore = false; break; }
@@ -59,41 +62,23 @@ export default function InvestorStats() {
         page++;
       }
 
-      // Filter out test account submissions
-      const testNames = ['aiden', 'hari'];
+      // Filter out test/spam submissions
       const filteredSubs = allSubs.filter(s => {
+        const email = (s.student_email || '').toLowerCase();
+        const domain = email.split('@')[1] || '';
+        if (spamDomains.includes(domain)) return false;
         const name = (s.student_name || '').toLowerCase();
-        return !testNames.some(t => name.includes(t));
+        if (name.includes('aiden') || name.includes('hari shankar')) return false;
+        return true;
       });
 
-      // Process submissions
       const aiStatuses = ['ai_graded', 'released', 'graded', 'dispute_reviewed'];
       const aiGraded = filteredSubs.filter(s => aiStatuses.includes(s.grading_status));
-      const teacherGraded = filteredSubs.filter(s => s.teacher_grade != null || s.teacher_feedback);
-      
-      const monthlySubs = {};
-      for (const s of filteredSubs) {
-        const date = new Date(s.created_date);
-        const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-        if (!monthlySubs[monthKey]) monthlySubs[monthKey] = { total: 0, aiGraded: 0 };
-        monthlySubs[monthKey].total++;
-        if (aiStatuses.includes(s.grading_status)) monthlySubs[monthKey].aiGraded++;
-      }
-
-      const sortedMonths = Object.keys(monthlySubs).sort().filter(m => m >= '2026-01');
-      const monthlySubData = sortedMonths.map(m => ({
-        month: m,
-        label: MONTH_LABELS[m] || m,
-        total: monthlySubs[m].total,
-        aiGraded: monthlySubs[m].aiGraded
-      }));
 
       setSubmissionStats({
         total: filteredSubs.length,
         aiGraded: aiGraded.length,
-        teacherGraded: teacherGraded.length,
         hoursSaved: Math.round((aiGraded.length * 5) / 60),
-        monthlyData: monthlySubData
       });
     } catch (err) {
       console.error("Error loading stats:", err);
@@ -133,8 +118,8 @@ export default function InvestorStats() {
         {/* Top-line KPIs */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <StatCard icon={Users} label="Total Users" value={userStats?.totalUsers?.toLocaleString() || 0} subtitle={`${growthPct}% growth since Nov '25`} color="#6366f1" />
-          <StatCard icon={CheckCircle} label="Teacher-Graded" value={submissionStats?.teacherGraded?.toLocaleString() || 0} subtitle="Submissions graded by teachers" color="#8b5cf6" />
-          <StatCard icon={Brain} label="AI-Graded Submissions" value={submissionStats?.aiGraded?.toLocaleString() || 0} subtitle={`of ${submissionStats?.total?.toLocaleString() || 0} total`} color="#ec4899" />
+          <StatCard icon={FileText} label="Total Submissions" value={submissionStats?.total?.toLocaleString() || 0} subtitle="Student assignments submitted" color="#8b5cf6" />
+          <StatCard icon={Brain} label="AI-Graded" value={submissionStats?.aiGraded?.toLocaleString() || 0} subtitle={`of ${submissionStats?.total?.toLocaleString() || 0} total submissions`} color="#ec4899" />
           <StatCard icon={Clock} label="Est. Teacher Hours Saved" value={`${submissionStats?.hoursSaved || 0}h`} subtitle="@ 5 min per manual grade" color="#10b981" />
         </div>
 
@@ -159,27 +144,7 @@ export default function InvestorStats() {
           </CardContent>
         </Card>
 
-        {/* Submissions Chart */}
-        <Card className="border-0 shadow-lg">
-          <CardHeader>
-            <CardTitle className="text-lg">AI Grading Activity (Monthly)</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="h-80">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={submissionStats?.monthlyData || []}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                  <XAxis dataKey="label" tick={{ fontSize: 12 }} />
-                  <YAxis tick={{ fontSize: 12 }} />
-                  <Tooltip />
-                  <Bar dataKey="total" fill="#c4b5fd" name="Total Submissions" radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="aiGraded" fill="#ec4899" name="AI-Graded" radius={[4, 4, 0, 0]} />
-                  <Legend />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
+
 
         {/* Role Breakdown */}
         <Card className="border-0 shadow-lg">
@@ -187,18 +152,15 @@ export default function InvestorStats() {
             <CardTitle className="text-lg">User Role Breakdown</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-3 gap-6 text-center">
+            <div className="grid grid-cols-2 gap-6 text-center">
               <div>
                 <p className="text-3xl font-bold text-indigo-600">{userStats?.roleBreakdown?.teacher || 0}</p>
                 <p className="text-sm text-muted-foreground mt-1">Teachers</p>
+                <p className="text-xs text-muted-foreground">Amber Kraver & Melissa Truong</p>
               </div>
               <div>
                 <p className="text-3xl font-bold text-purple-600">{userStats?.roleBreakdown?.student || 0}</p>
                 <p className="text-sm text-muted-foreground mt-1">Students</p>
-              </div>
-              <div>
-                <p className="text-3xl font-bold text-slate-400">{userStats?.roleBreakdown?.other || 0}</p>
-                <p className="text-sm text-muted-foreground mt-1">Other / Incomplete Setup</p>
               </div>
             </div>
             <div className="mt-4 text-center text-sm text-muted-foreground">

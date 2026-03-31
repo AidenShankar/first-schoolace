@@ -1,5 +1,24 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.23';
 
+// Spam email domains to exclude
+const SPAM_DOMAINS = ['nesopf.com', 'nespf.com', 'tempmail.sbs', 'coswz.com', 'xfavaj.com', 'fxavaj.com'];
+
+// Only these two are real external teachers
+const REAL_TEACHER_IDS = [
+  '68b21b0f2108eea4d6f61c6f', // Amber Kraver
+  '697007a8ec3d23eacca74108', // Melissa Truong
+];
+
+function isSpam(user) {
+  const email = (user.email || '').toLowerCase();
+  const domain = email.split('@')[1] || '';
+  if (SPAM_DOMAINS.includes(domain)) return true;
+  // Filter test accounts
+  const name = (user.full_name || '').toLowerCase();
+  if (name.includes('aiden') || name.includes('hari shankar')) return true;
+  return false;
+}
+
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
@@ -22,12 +41,8 @@ Deno.serve(async (req) => {
       skip += pageSize;
     }
 
-    // Filter out test accounts
-    const testNames = ['aiden', 'hari'];
-    const filteredUsers = allUsers.filter(u => {
-      const name = (u.full_name || '').toLowerCase();
-      return !testNames.some(t => name.includes(t));
-    });
+    // Filter out spam and test accounts
+    const filteredUsers = allUsers.filter(u => !isSpam(u));
 
     // Monthly breakdown
     const monthlyGrowth = {};
@@ -39,9 +54,18 @@ Deno.serve(async (req) => {
       monthlyGrowth[monthKey] = (monthlyGrowth[monthKey] || 0) + 1;
       
       const appRole = u.app_role || 'other';
-      if (appRole === 'teacher') roleBreakdown.teacher++;
-      else if (appRole === 'student') roleBreakdown.student++;
-      else roleBreakdown.other++;
+      // For teacher count, only count real external teachers
+      if (appRole === 'teacher') {
+        if (REAL_TEACHER_IDS.includes(u.id)) {
+          roleBreakdown.teacher++;
+        } else {
+          roleBreakdown.other++;
+        }
+      } else if (appRole === 'student') {
+        roleBreakdown.student++;
+      } else {
+        roleBreakdown.other++;
+      }
     }
 
     // Sort months
@@ -61,7 +85,8 @@ Deno.serve(async (req) => {
     return Response.json({
       totalUsers: filteredUsers.length,
       roleBreakdown,
-      monthlyData
+      monthlyData,
+      spamDomains: SPAM_DOMAINS,
     });
   } catch (error) {
     console.error('Error:', error);
