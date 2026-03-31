@@ -4,7 +4,7 @@ import { investorStats } from "@/functions/investorStats";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
-import { Users, Brain, TrendingUp, Clock, Download } from "lucide-react";
+import { Users, Brain, CheckCircle, Clock, Download } from "lucide-react";
 
 const MONTH_LABELS = {
   '2025-07': 'Jul 25', '2025-08': 'Aug 25', '2025-09': 'Sep 25', '2025-10': 'Oct 25',
@@ -62,6 +62,7 @@ export default function InvestorStats() {
       // Process submissions
       const aiStatuses = ['ai_graded', 'released', 'graded', 'dispute_reviewed'];
       const aiGraded = allSubs.filter(s => aiStatuses.includes(s.grading_status));
+      const teacherGraded = allSubs.filter(s => s.teacher_grade != null || s.teacher_feedback);
       
       const monthlySubs = {};
       for (const s of allSubs) {
@@ -72,7 +73,7 @@ export default function InvestorStats() {
         if (aiStatuses.includes(s.grading_status)) monthlySubs[monthKey].aiGraded++;
       }
 
-      const sortedMonths = Object.keys(monthlySubs).sort();
+      const sortedMonths = Object.keys(monthlySubs).sort().filter(m => m >= '2026-01');
       const monthlySubData = sortedMonths.map(m => ({
         month: m,
         label: MONTH_LABELS[m] || m,
@@ -83,6 +84,7 @@ export default function InvestorStats() {
       setSubmissionStats({
         total: allSubs.length,
         aiGraded: aiGraded.length,
+        teacherGraded: teacherGraded.length,
         hoursSaved: Math.round((aiGraded.length * 5) / 60),
         monthlyData: monthlySubData
       });
@@ -124,7 +126,7 @@ export default function InvestorStats() {
         {/* Top-line KPIs */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <StatCard icon={Users} label="Total Users" value={userStats?.totalUsers?.toLocaleString() || 0} subtitle={`${growthPct}% growth since Nov '25`} color="#6366f1" />
-          <StatCard icon={TrendingUp} label="Teachers" value={userStats?.roleBreakdown?.teacher || 0} subtitle={`${userStats?.roleBreakdown?.student || 0} students`} color="#8b5cf6" />
+          <StatCard icon={CheckCircle} label="Teacher-Graded" value={submissionStats?.teacherGraded?.toLocaleString() || 0} subtitle="Submissions graded by teachers" color="#8b5cf6" />
           <StatCard icon={Brain} label="AI-Graded Submissions" value={submissionStats?.aiGraded?.toLocaleString() || 0} subtitle={`of ${submissionStats?.total?.toLocaleString() || 0} total`} color="#ec4899" />
           <StatCard icon={Clock} label="Est. Teacher Hours Saved" value={`${submissionStats?.hoursSaved || 0}h`} subtitle="@ 5 min per manual grade" color="#10b981" />
         </div>
@@ -143,7 +145,6 @@ export default function InvestorStats() {
                   <YAxis tick={{ fontSize: 12 }} />
                   <Tooltip />
                   <Line type="monotone" dataKey="cumulativeTotal" stroke="#6366f1" strokeWidth={3} dot={{ fill: '#6366f1', r: 5 }} name="Total Users" />
-                  <Line type="monotone" dataKey="newUsers" stroke="#a5b4fc" strokeWidth={2} strokeDasharray="5 5" dot={{ fill: '#a5b4fc', r: 4 }} name="New Users" />
                   <Legend />
                 </LineChart>
               </ResponsiveContainer>
