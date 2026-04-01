@@ -185,7 +185,7 @@ const HeaderNav = () => {
       <a href="#testimonials" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">{t('landing.testimonials')}</a>
       <a href="#pricing" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">{t('landing.pricing')}</a>
       <a href="#contact" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">{t('landing.contact')}</a>
-      <a href="https://www.schoolace.ai/tutor/awards" className="text-sm font-medium text-amber-400 hover:text-amber-300 transition-colors">🏆 Awards</a>
+      <a href="https://www.schoolace.ai/tutor/awards" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">Awards</a>
     </nav>
   );
 };
@@ -846,7 +846,6 @@ export default function LandingPage() {
       <ShootingStars />
       <FloatingOrbs />
       <FloatingParticles />
-      <AwardsBanner />
 
       {/* Fixed Sign In Button and Language Selector - Outside Header */}
       <div className="fixed top-6 right-2 sm:right-4 lg:right-6 z-[100] flex items-center gap-3">
@@ -863,6 +862,7 @@ export default function LandingPage() {
       <div className="relative z-20">
         <Header />
         <AceTutorBanner />
+        <AwardsBanner />
         <main>
           {/* Hero Section */}
           <section className="px-6 py-12 text-center max-w-6xl mx-auto">

@@ -48,12 +48,11 @@ export default function AwardsBanner() {
     <AnimatePresence>
       {visible && (
         <motion.div
-          initial={{ opacity: 0, y: 60 }}
+          initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 60 }}
+          exit={{ opacity: 0, y: -10 }}
           transition={{ type: 'spring', damping: 20, stiffness: 200 }}
-          className="fixed bottom-6 left-1/2 z-[200]"
-          style={{ transform: 'translateX(-50%)', width: 'calc(100% - 48px)', maxWidth: '680px' }}
+          className="w-full flex justify-center px-6 py-2"
         >
           <div
             ref={bannerRef}
