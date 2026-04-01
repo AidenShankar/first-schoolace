@@ -10,79 +10,40 @@ export default function AwardsBanner() {
 
   useEffect(() => {
     if (!visible) return;
-
     const sweep = () => {
       const start = performance.now();
-      const duration = 8000;
-
       const animate = (now) => {
-        const t = Math.min((now - start) / duration, 1);
+        const t = Math.min((now - start) / 8000, 1);
         const eased = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
         setSpotlightX(-20 + eased * 140);
-        if (t < 1) {
-          rafRef.current = requestAnimationFrame(animate);
-        } else {
-          timerRef.current = setTimeout(sweep, 4000);
-        }
+        if (t < 1) rafRef.current = requestAnimationFrame(animate);
+        else timerRef.current = setTimeout(sweep, 4000);
       };
-
       rafRef.current = requestAnimationFrame(animate);
     };
-
     timerRef.current = setTimeout(sweep, 800);
-
-    return () => {
-      clearTimeout(timerRef.current);
-      cancelAnimationFrame(rafRef.current);
-    };
+    return () => { clearTimeout(timerRef.current); cancelAnimationFrame(rafRef.current); };
   }, [visible]);
 
   return (
     <AnimatePresence>
       {visible && (
         <motion.div
-          initial={{ opacity: 0, y: -6 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -6 }}
-          transition={{ duration: 0.3 }}
-          className="w-full flex justify-center px-4 py-2"
+          initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }}
+          transition={{ duration: 0.25 }}
+          className="flex justify-center px-4 py-2"
         >
           <div
-            className="relative overflow-hidden rounded-full flex items-center gap-2 text-sm px-5 py-2.5"
-            style={{
-              background: '#0a1f1a',
-              border: '1px solid rgba(52,211,153,0.35)',
-              maxWidth: '700px',
-              width: '100%',
-            }}
+            className="relative overflow-hidden rounded-full flex items-center gap-3 px-4 py-1.5 text-xs font-medium"
+            style={{ background: '#071510', border: '1px solid rgba(52,211,153,0.3)', boxShadow: '0 0 12px rgba(52,211,153,0.08)' }}
           >
-            {/* Spotlight sweep */}
-            <div
-              className="pointer-events-none absolute inset-0"
-              style={{
-                background: `radial-gradient(ellipse 180px 100% at ${spotlightX}% 50%, rgba(52,211,153,0.13) 0%, transparent 70%)`,
-              }}
-            />
-
-            <span className="relative text-emerald-100 flex-1 text-center">
-              SchoolACE is a 2026{' '}
-              <strong className="text-white font-bold">Conrad Challenge Finalist</strong>
-              , pitching Apr 23 at NASA Space Center, Houston.{'  '}
-              <a
-                href="https://www.schoolace.ai/tutor/awards"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-bold text-emerald-400 hover:text-emerald-300 transition-colors"
-              >
-                Learn more →
-              </a>
+            <div className="pointer-events-none absolute inset-0" style={{ background: `radial-gradient(ellipse 160px 100% at ${spotlightX}% 50%, rgba(52,211,153,0.1) 0%, transparent 70%)` }} />
+            <span className="relative text-emerald-200/80 whitespace-nowrap">
+              🏆 SchoolACE is a <strong className="text-white font-semibold">2026 Conrad Challenge Finalist</strong> — pitching Apr 23 at NASA Space Center, Houston.
+              <a href="https://www.schoolace.ai/tutor/awards" target="_blank" rel="noopener noreferrer" className="ml-2 text-emerald-400 hover:text-emerald-300 font-semibold transition-colors">Learn more →</a>
             </span>
-            <button
-              onClick={() => setVisible(false)}
-              className="relative text-emerald-500 hover:text-white transition-colors flex-shrink-0 ml-1"
-              aria-label="Dismiss"
-            >
-              <X className="w-3.5 h-3.5" />
+            <button onClick={() => setVisible(false)} className="relative text-emerald-600 hover:text-emerald-300 transition-colors ml-1" aria-label="Dismiss">
+              <X className="w-3 h-3" />
             </button>
           </div>
         </motion.div>
