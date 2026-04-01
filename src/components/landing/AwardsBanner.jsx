@@ -22,7 +22,6 @@ export default function AwardsBanner() {
         if (t < 1) {
           rafRef.current = requestAnimationFrame(animate);
         } else {
-          // 4s pause then repeat
           timerRef.current = setTimeout(sweep, 4000);
         }
       };
@@ -46,19 +45,26 @@ export default function AwardsBanner() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -6 }}
           transition={{ duration: 0.3 }}
-          className="relative w-full overflow-hidden"
-          style={{ background: '#0a1f1a', borderBottom: '1px solid rgba(52,211,153,0.25)' }}
+          className="w-full flex justify-center px-4 py-2"
         >
-          {/* Spotlight sweep */}
           <div
-            className="pointer-events-none absolute inset-0"
+            className="relative overflow-hidden rounded-full flex items-center gap-2 text-sm px-5 py-2.5"
             style={{
-              background: `radial-gradient(ellipse 180px 100% at ${spotlightX}% 50%, rgba(52,211,153,0.13) 0%, transparent 70%)`,
+              background: '#0a1f1a',
+              border: '1px solid rgba(52,211,153,0.35)',
+              maxWidth: '700px',
+              width: '100%',
             }}
-          />
+          >
+            {/* Spotlight sweep */}
+            <div
+              className="pointer-events-none absolute inset-0"
+              style={{
+                background: `radial-gradient(ellipse 180px 100% at ${spotlightX}% 50%, rgba(52,211,153,0.13) 0%, transparent 70%)`,
+              }}
+            />
 
-          <div className="relative max-w-7xl mx-auto px-4 py-2.5 flex items-center justify-center gap-2 text-sm">
-            <span className="text-emerald-100">
+            <span className="relative text-emerald-100 flex-1 text-center">
               SchoolACE is a 2026{' '}
               <strong className="text-white font-bold">Conrad Challenge Finalist</strong>
               , pitching Apr 23 at NASA Space Center, Houston.{'  '}
@@ -73,7 +79,7 @@ export default function AwardsBanner() {
             </span>
             <button
               onClick={() => setVisible(false)}
-              className="ml-3 text-emerald-500 hover:text-white transition-colors flex-shrink-0"
+              className="relative text-emerald-500 hover:text-white transition-colors flex-shrink-0 ml-1"
               aria-label="Dismiss"
             >
               <X className="w-3.5 h-3.5" />
