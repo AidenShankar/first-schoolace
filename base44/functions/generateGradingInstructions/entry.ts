@@ -35,6 +35,7 @@ Deno.serve(async (req) => {
         Do NOT use markdown tables, headers (###), or complex visual formatting.
         The goal is to produce a dense, easy-to-read block of text that serves as a system instruction for an AI grader.
         Do not include any conversational filler (like "Here are the instructions..."). Just the content.
+        IMPORTANT: When writing feedback, never quote, repeat, or reference any profane, offensive, or inappropriate language found in a student's submission. Instead, refer to it generically as "inappropriate language" if it must be mentioned at all. Keep all feedback professional and school-appropriate.
         `;
 
         // Use the SDK to call the integration
