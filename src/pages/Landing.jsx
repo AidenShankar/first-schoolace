@@ -185,7 +185,7 @@ const HeaderNav = () => {
       <a href="#testimonials" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">{t('landing.testimonials')}</a>
       <a href="#pricing" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">{t('landing.pricing')}</a>
       <a href="#contact" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">{t('landing.contact')}</a>
-      <a href="https://www.schoolace.ai/tutor/awards" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">Awards</a>
+      <a href="https://aitutor.schoolace.ai/tutor/awards" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">Awards</a>
     </nav>
   );
 };
