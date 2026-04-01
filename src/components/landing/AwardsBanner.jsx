@@ -38,10 +38,10 @@ export default function AwardsBanner() {
             style={{ background: '#071510', border: '1px solid rgba(52,211,153,0.3)', boxShadow: '0 0 12px rgba(52,211,153,0.08)' }}
           >
             <div className="pointer-events-none absolute inset-0" style={{ background: `radial-gradient(ellipse 160px 100% at ${spotlightX}% 50%, rgba(52,211,153,0.1) 0%, transparent 70%)` }} />
-            <span className="relative text-emerald-200/80 whitespace-nowrap">
-              SchoolACE is a <strong className="text-white font-semibold">2026 Conrad Challenge Finalist</strong>, pitching Apr 23 at NASA Space Center, Houston. <strong className="text-white font-semibold">2026 Conrad Challenge Finalist</strong>, pitching Apr 23 at NASA Space Center, Houston.
-              <a href="https://aitutor.schoolace.ai/tutor/awards" className="ml-2 text-emerald-400 hover:text-emerald-300 font-semibold transition-colors">Learn more →</a>
-            </span>
+            <a href="https://aitutor.schoolace.ai/tutor/awards" className="relative text-emerald-200/80 whitespace-nowrap hover:opacity-90 transition-opacity">
+              SchoolACE is a <strong className="text-white font-semibold">2026 Conrad Challenge Finalist</strong>, pitching Apr 23 at NASA Space Center, Houston.
+              <span className="ml-2 text-emerald-400 font-semibold">Learn more →</span>
+            </a>
             <button onClick={() => setVisible(false)} className="relative text-emerald-600 hover:text-emerald-300 transition-colors ml-1" aria-label="Dismiss">
               <X className="w-3 h-3" />
             </button>
