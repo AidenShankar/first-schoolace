@@ -1,7 +1,13 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Send, CheckCircle2 } from "lucide-react";
+import { Sparkles, Send, CheckCircle2, ChevronDown } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Dialog,
   DialogContent,
@@ -25,10 +31,19 @@ function BouncingDots() {
   );
 }
 
+const MOCK_STUDENTS = [
+  "Aiden Shankar",
+  "Brianna Torres",
+  "Carlos Mendez",
+  "Diana Chen",
+  "Ethan Park",
+];
+
 export default function AssignmentGeneratedPreview({ onBack }) {
   const [chatInput, setChatInput] = useState("");
   const [finalizeState, setFinalizeState] = useState("idle"); // idle | finalizing | released
   const [showReleasedDialog, setShowReleasedDialog] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState(MOCK_STUDENTS[0]);
 
   const handleFinalize = () => {
     setFinalizeState("finalizing");
@@ -45,20 +60,42 @@ export default function AssignmentGeneratedPreview({ onBack }) {
       className="space-y-6"
     >
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h3 className="text-xl font-bold text-slate-900">Generated Assignment</h3>
           <p className="text-sm text-slate-500 mt-0.5">Review the assignment below, request changes, or finalize.</p>
         </div>
-        <Button variant="outline" onClick={onBack} className="rounded-xl text-sm">
-          ← Back to Generator
-        </Button>
+        <div className="flex items-center gap-3">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="rounded-xl text-sm gap-2">
+                <span className="text-slate-500">Viewing:</span>
+                <span className="font-semibold text-slate-800">{selectedStudent}</span>
+                <ChevronDown className="w-4 h-4 text-slate-400" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {MOCK_STUDENTS.map((student) => (
+                <DropdownMenuItem
+                  key={student}
+                  onClick={() => setSelectedStudent(student)}
+                  className={selectedStudent === student ? "bg-indigo-50 font-semibold" : ""}
+                >
+                  {student}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <Button variant="outline" onClick={onBack} className="rounded-xl text-sm">
+            ← Back to Generator
+          </Button>
+        </div>
       </div>
 
       {/* Worksheet Preview */}
       <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
         <iframe
-          src="https://media.base44.com/files/public/687ed6bea54c832b17eb40bc/a2d94867b_ACEGeneratedAssignment.pdf"
+          src="https://media.base44.com/files/public/687ed6bea54c832b17eb40bc/dd53e3dd5_ACEGeneratedAssignment.pdf"
           className="w-full"
           style={{ height: 700 }}
           title="Generated Assignment"
