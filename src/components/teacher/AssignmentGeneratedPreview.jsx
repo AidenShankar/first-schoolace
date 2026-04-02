@@ -57,53 +57,12 @@ export default function AssignmentGeneratedPreview({ onBack }) {
 
       {/* Worksheet Preview */}
       <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
-        <div className="p-8 max-w-3xl mx-auto" style={{ fontFamily: "'Arial', sans-serif" }}>
-          {/* Header */}
-          <div className="flex justify-between items-start mb-6">
-            <div className="font-bold text-base">Circles, Ellipses, and Hyperbolas</div>
-            <div className="font-bold text-base">Name_________________________</div>
-          </div>
-
-          {/* Instructions */}
-          <p className="text-sm mb-8">Write the standard form equation of each conic section shown below.</p>
-
-          {/* Grid of problems */}
-          {[[1,2,3],[4,5,6],[7,8,9]].map((row, rowIdx) => (
-            <div key={rowIdx} className="mb-8">
-              <div className="grid grid-cols-3 gap-6">
-                {row.map((num) => (
-                  <div key={num} className="flex flex-col items-center">
-                    <div className="font-bold text-sm self-start mb-2">{num}.</div>
-                    {/* Graph placeholder */}
-                    <div className="w-full aspect-square border border-slate-300 rounded bg-slate-50 flex items-center justify-center relative" style={{ maxWidth: 160 }}>
-                      {/* Grid lines */}
-                      <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full opacity-20">
-                        {[10,20,30,40,50,60,70,80,90].map(v => (
-                          <g key={v}>
-                            <line x1={v} y1={0} x2={v} y2={100} stroke="#64748b" strokeWidth="0.5"/>
-                            <line x1={0} y1={v} x2={100} y2={v} stroke="#64748b" strokeWidth="0.5"/>
-                          </g>
-                        ))}
-                        {/* Axes */}
-                        <line x1={50} y1={0} x2={50} y2={100} stroke="#1e293b" strokeWidth="1"/>
-                        <line x1={0} y1={50} x2={100} y2={50} stroke="#1e293b" strokeWidth="1"/>
-                        {/* Arrows */}
-                        <polygon points="50,2 47,8 53,8" fill="#1e293b"/>
-                        <polygon points="50,98 47,92 53,92" fill="#1e293b"/>
-                        <polygon points="2,50 8,47 8,53" fill="#1e293b"/>
-                        <polygon points="98,50 92,47 92,53" fill="#1e293b"/>
-                      </svg>
-                    </div>
-                    {/* Answer line */}
-                    <div className="mt-3 w-full border-b border-black" style={{ maxWidth: 160 }}></div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-
-          <p className="text-xs text-slate-400 mt-6 text-center">©2011 InquiSoft. Reproduction for educational use permitted provided that this footer text is retained.</p>
-        </div>
+        <iframe
+          src="https://media.base44.com/files/public/687ed6bea54c832b17eb40bc/a2d94867b_ACEGeneratedAssignment.pdf"
+          className="w-full"
+          style={{ height: 700 }}
+          title="Generated Assignment"
+        />
       </div>
 
       {/* AI Chat Bubble */}
