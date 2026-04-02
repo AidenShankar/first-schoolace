@@ -35,6 +35,8 @@ import AuthModal from "../components/auth/AuthModal";
 import ClassSetup from "../components/teacher/ClassSetup";
 import ClassJoin from "../components/student/ClassJoin";
 import AssignmentForm from "../components/teacher/AssignmentForm";
+import AssignmentGenerator from "../components/teacher/AssignmentGenerator";
+import CreateAssignmentChoiceDialog from "../components/teacher/CreateAssignmentChoiceDialog";
 import AssignmentCard from "../components/teacher/AssignmentCard";
 import SubmissionsList from "../components/teacher/SubmissionsList";
 import AssignmentList from "../components/student/AssignmentList";
@@ -70,6 +72,8 @@ export default function Dashboard({ user: layoutUser, allClasses: layoutAllClass
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isCreating, setIsCreating] = useState(false);
     const [showCreateForm, setShowCreateForm] = useState(false); // For teacher to create new class
+    const [showChoiceDialog, setShowChoiceDialog] = useState(false);
+    const [showGenerator, setShowGenerator] = useState(false);
     const [isRedirecting, setIsRedirecting] = useState(false); // New state for safe redirects
     const [isUpgrading, setIsUpgrading] = useState(false);
     const [isSyncing, setIsSyncing] = useState(false);
@@ -1280,14 +1284,29 @@ Output JSON with:
     };
 
     const handleCreateNewAssignment = () => {
-        setSelectedAssignment(null); // Ensure submissions list is not showing
-        setEditingAssignment(null); // Clear any editing state
+        setShowChoiceDialog(true);
+    };
+
+    const handleChooseManual = () => {
+        setShowChoiceDialog(false);
+        setSelectedAssignment(null);
+        setEditingAssignment(null);
+        setShowGenerator(false);
         setShowAssignmentForm(true);
+    };
+
+    const handleChooseGenerate = () => {
+        setShowChoiceDialog(false);
+        setShowAssignmentForm(false);
+        setSelectedAssignment(null);
+        setEditingAssignment(null);
+        setShowGenerator(true);
     };
 
     const handleCancelForm = () => {
         setShowAssignmentForm(false);
-        setEditingAssignment(null); // Clear editing state
+        setEditingAssignment(null);
+        setShowGenerator(false);
     };
 
     const getSubmissionCount = (assignmentId) => submissions.filter(s => s.assignment_id === assignmentId).length;
@@ -1607,7 +1626,7 @@ Output JSON with:
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-2">
-                                            {!showAssignmentForm && !selectedAssignment && !showCreateForm && (
+                                            {!showAssignmentForm && !selectedAssignment && !showCreateForm && !showGenerator && (
                                                 <Button 
                                                     onClick={handleCreateNewAssignment} 
                                                     className="text-white px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
@@ -1618,18 +1637,18 @@ Output JSON with:
                                                     <Plus className="w-5 h-5 mr-2" /> {t('dashboard.createAssignment')}
                                                 </Button>
                                             )}
-                                            {!showAssignmentForm && !selectedAssignment && !showCreateForm && (
+                                            {!showAssignmentForm && !selectedAssignment && !showCreateForm && !showGenerator && (
                                                 <Button onClick={() => setShowCreateForm(true)} variant="outline" className="px-6 py-3 rounded-xl">
                                                     <Plus className="w-5 h-5 mr-2" /> {t('dashboard.createNewClass')}
                                                 </Button>
                                             )}
-                                            {!showAssignmentForm && !selectedAssignment && !showCreateForm && currentClass && (
+                                            {!showAssignmentForm && !selectedAssignment && !showCreateForm && !showGenerator && currentClass && (
                                                 <Button onClick={handleDeleteClass} variant="destructive" className="px-6 py-3 rounded-xl bg-red-100 text-red-600 hover:bg-red-200 border border-red-200">
                                                     <Trash2 className="w-5 h-5 mr-2" /> {t('classSetup.deleteClass') || "Delete Class"}
                                                 </Button>
                                             )}
-                                            {(showAssignmentForm || selectedAssignment || showCreateForm) && (
-                                                <Button variant="outline" onClick={() => { setShowAssignmentForm(false); setSelectedAssignment(null); setShowCreateForm(false); setEditingAssignment(null); }} className="rounded-xl border-slate-300 hover:bg-slate-50">
+                                            {(showAssignmentForm || selectedAssignment || showCreateForm || showGenerator) && (
+                                                <Button variant="outline" onClick={() => { setShowAssignmentForm(false); setSelectedAssignment(null); setShowCreateForm(false); setEditingAssignment(null); setShowGenerator(false); }} className="rounded-xl border-slate-300 hover:bg-slate-50">
                                                     ← {t('dashboard.backToDashboard')}
                                                 </Button>
                                             )}
@@ -1639,6 +1658,7 @@ Output JSON with:
                                     {showCreateForm && <ClassSetup onClassReady={() => { setShowCreateForm(false); handleClassJoined(); }} isFirstClass={false} />}
 
                                     {showAssignmentForm && ( <AssignmentForm onSubmit={handleAssignmentSubmit} onCancel={handleCancelForm} isSubmitting={isCreating} assignmentToEdit={editingAssignment} /> )}
+                                    {showGenerator && ( <AssignmentGenerator classId={currentClass?.id} onCancel={handleCancelForm} /> )}
                                     {selectedAssignment && (
                                         <div className="space-y-8">
                                             <div className="flex items-center justify-between gap-4">
@@ -1668,7 +1688,7 @@ Output JSON with:
                                             <SubmissionsList submissions={submissions.filter(s => s.assignment_id === selectedAssignment.id)} assignment={selectedAssignment} onReleaseGrade={handleReleaseGrade} onManualGrade={handleManualGrade} currentUser={user} onDisputeReleased={loadSubmissions} />
                                         </div>
                                     )}
-                                    {!showAssignmentForm && !selectedAssignment && !showCreateForm && (
+                                    {!showAssignmentForm && !selectedAssignment && !showCreateForm && !showGenerator && (
                                         <motion.div 
                                             initial={{ opacity: 0, y: 20 }} 
                                             animate={{ opacity: 1, y: 0 }}
@@ -1797,6 +1817,13 @@ Output JSON with:
                 isOpen={showPromo} 
                 onClose={() => setShowPromo(false)} 
                 userRole={user?.app_role}
+            />
+
+            <CreateAssignmentChoiceDialog
+                open={showChoiceDialog}
+                onOpenChange={setShowChoiceDialog}
+                onChooseManual={handleChooseManual}
+                onChooseGenerate={handleChooseGenerate}
             />
 
         </div>
