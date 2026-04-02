@@ -101,7 +101,7 @@ export default function AssignmentGenerator({ classId, onCancel }) {
         </div>
         <div className="text-center">
           <p className="text-base font-semibold text-slate-700">ACE AI is generating your assignment…</p>
-          <p className="text-sm text-slate-400 mt-1">This usually takes about 10 seconds</p>
+          <p className="text-sm text-slate-400 mt-1">This might take a while. Feel free to work on anything else, and ACE will work in the background and notify you when finished.</p>
         </div>
       </motion.div>
     );
