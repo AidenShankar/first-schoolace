@@ -20,7 +20,7 @@ export default function AssignmentGenerator({ classId, onCancel }) {
     gradeLevel: "",
     duration: [30],
     difficulty: [50],
-    distributionMode: "",
+    distributionMode: "whole_class",
     selectedStudentIds: [],
     files: [],
     links: [],
@@ -51,13 +51,6 @@ export default function AssignmentGenerator({ classId, onCancel }) {
     handleChange("files", formData.files.filter((_, i) => i !== index));
   };
 
-  const getDurationLabel = (minutes) => {
-    if (minutes < 60) return `${minutes} minutes`;
-    const hrs = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    return mins > 0 ? `${hrs}h ${mins}m` : `${hrs} hour${hrs > 1 ? "s" : ""}`;
-  };
-
   const getDifficultyLabel = (value) => {
     if (value <= 20) return "Very Easy";
     if (value <= 40) return "Easy";
@@ -66,7 +59,15 @@ export default function AssignmentGenerator({ classId, onCancel }) {
     return "Very Hard";
   };
 
+  const getDurationLabel = (minutes) => {
+    if (minutes < 60) return `${minutes} minutes`;
+    const hrs = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    return mins > 0 ? `${hrs}h ${mins}m` : `${hrs} hour${hrs > 1 ? "s" : ""}`;
+  };
+
   const handleGenerate = () => {
+    // Placeholder — generation logic will be added later
     alert("Generation will be implemented in a future update!");
   };
 
@@ -153,23 +154,44 @@ export default function AssignmentGenerator({ classId, onCancel }) {
             />
           </div>
 
-          {/* Duration Slider */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <Label className="text-sm font-semibold text-slate-700">Estimated Duration</Label>
-              <span className="text-sm font-medium text-indigo-600">{getDurationLabel(formData.duration[0])}</span>
+          {/* Duration & Difficulty Sliders */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <Label className="text-sm font-semibold text-slate-700">Estimated Duration</Label>
+                <span className="text-sm font-medium text-indigo-600">{getDurationLabel(formData.duration[0])}</span>
+              </div>
+              <Slider
+                value={formData.duration}
+                onValueChange={(v) => handleChange("duration", v)}
+                min={10}
+                max={180}
+                step={5}
+                className="py-2"
+              />
+              <div className="flex justify-between text-xs text-slate-400">
+                <span>10 min</span>
+                <span>3 hours</span>
+              </div>
             </div>
-            <Slider
-              value={formData.duration}
-              onValueChange={(v) => handleChange("duration", v)}
-              min={10}
-              max={180}
-              step={5}
-              className="py-2"
-            />
-            <div className="flex justify-between text-xs text-slate-400">
-              <span>10 min</span>
-              <span>3 hours</span>
+
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <Label className="text-sm font-semibold text-slate-700">Difficulty Level</Label>
+                <span className="text-sm font-medium text-purple-600">{getDifficultyLabel(formData.difficulty[0])}</span>
+              </div>
+              <Slider
+                value={formData.difficulty}
+                onValueChange={(v) => handleChange("difficulty", v)}
+                min={0}
+                max={100}
+                step={1}
+                className="py-2"
+              />
+              <div className="flex justify-between text-xs text-slate-400">
+                <span>Very Easy</span>
+                <span>Very Hard</span>
+              </div>
             </div>
           </div>
 
@@ -231,7 +253,7 @@ export default function AssignmentGenerator({ classId, onCancel }) {
           </div>
 
           {/* Student Distribution */}
-          <div className="pt-2 border-t border-slate-200 space-y-6">
+          <div className="pt-2 border-t border-slate-200">
             <AssignmentGeneratorStudentSelector
               classId={classId}
               distributionMode={formData.distributionMode}
@@ -239,27 +261,6 @@ export default function AssignmentGenerator({ classId, onCancel }) {
               selectedStudentIds={formData.selectedStudentIds}
               onSelectedStudentsChange={(ids) => handleChange("selectedStudentIds", ids)}
             />
-
-            {formData.distributionMode === "whole_class" && (
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <Label className="text-sm font-semibold text-slate-700">Difficulty Level</Label>
-                  <span className="text-sm font-medium text-purple-600">{getDifficultyLabel(formData.difficulty[0])}</span>
-                </div>
-                <Slider
-                  value={formData.difficulty}
-                  onValueChange={(v) => handleChange("difficulty", v)}
-                  min={0}
-                  max={100}
-                  step={1}
-                  className="py-2"
-                />
-                <div className="flex justify-between text-xs text-slate-400">
-                  <span>Very Easy</span>
-                  <span>Very Hard</span>
-                </div>
-              </div>
-            )}
           </div>
 
           {/* Actions */}
