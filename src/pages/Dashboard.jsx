@@ -1284,7 +1284,9 @@ Output JSON with:
     };
 
     const handleCreateNewAssignment = () => {
-        setShowChoiceDialog(true);
+        // COMMENTED OUT: choice dialog disabled, go straight to manual
+        // setShowChoiceDialog(true);
+        handleChooseManual();
     };
 
     const handleChooseManual = () => {
@@ -1658,7 +1660,9 @@ Output JSON with:
                                     {showCreateForm && <ClassSetup onClassReady={() => { setShowCreateForm(false); handleClassJoined(); }} isFirstClass={false} />}
 
                                     {showAssignmentForm && ( <AssignmentForm onSubmit={handleAssignmentSubmit} onCancel={handleCancelForm} isSubmitting={isCreating} assignmentToEdit={editingAssignment} /> )}
+                                    {/* COMMENTED OUT: Assignment Generator disabled
                                     {showGenerator && ( <AssignmentGenerator classId={currentClass?.id} onCancel={handleCancelForm} /> )}
+                                    */}
                                     {selectedAssignment && (
                                         <div className="space-y-8">
                                             <div className="flex items-center justify-between gap-4">
@@ -1819,12 +1823,14 @@ Output JSON with:
                 userRole={user?.app_role}
             />
 
+            {/* COMMENTED OUT: CreateAssignmentChoiceDialog disabled
             <CreateAssignmentChoiceDialog
                 open={showChoiceDialog}
                 onOpenChange={setShowChoiceDialog}
                 onChooseManual={handleChooseManual}
                 onChooseGenerate={handleChooseGenerate}
             />
+            */}
 
         </div>
     );
