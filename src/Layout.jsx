@@ -238,15 +238,6 @@ export default function Layout({ children, currentPageName }) {
 
   useEffect(() => {
     fetchUserAndClasses();
-    
-    // Refresh user data when page becomes visible (catches webhook updates)
-    const handleVisibilityChange = () => {
-      if (!document.hidden) {
-        fetchUserAndClasses();
-      }
-    };
-    
-    document.addEventListener('visibilitychange', handleVisibilityChange);
 
     const handleQuizStateChange = (event) => {
         setQuizInProgress(event.detail.quizInProgress);
@@ -255,7 +246,6 @@ export default function Layout({ children, currentPageName }) {
     window.addEventListener('quiz-state-change', handleQuizStateChange);
     return () => {
       window.removeEventListener('quiz-state-change', handleQuizStateChange);
-      document.removeEventListener('visibilitychange', handleVisibilityChange); // Cleanup visibilitychange listener
     };
   }, [fetchUserAndClasses]); // Use fetchUserAndClasses here
 
