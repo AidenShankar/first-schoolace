@@ -57,67 +57,52 @@ export default function AssignmentGeneratedPreview({ onBack }) {
 
       {/* Worksheet Preview */}
       <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
-        <div className="p-8 max-w-3xl mx-auto font-serif" style={{ fontFamily: "'Georgia', serif" }}>
-          {/* Name / Period header */}
-          <div className="flex justify-end mb-6 text-sm">
-            <div className="space-y-1 text-right">
-              <div>Name:__________________________________</div>
-              <div>Period:______________________________</div>
-            </div>
-          </div>
-
-          {/* Title */}
-          <div className="text-center mb-6">
-            <h1 className="text-3xl font-bold tracking-wide">Is it Alive?</h1>
-            <p className="text-sm mt-1 italic">Honors Biology</p>
+        <div className="p-8 max-w-3xl mx-auto" style={{ fontFamily: "'Arial', sans-serif" }}>
+          {/* Header */}
+          <div className="flex justify-between items-start mb-6">
+            <div className="font-bold text-base">Circles, Ellipses, and Hyperbolas</div>
+            <div className="font-bold text-base">Name_________________________</div>
           </div>
 
           {/* Instructions */}
-          <p className="text-sm text-center mb-6 leading-relaxed">
-            Observe the eight items around the room. For each item write down at least 8
-            observations/characteristics (not taste!) that you make for that item.
-          </p>
+          <p className="text-sm mb-8">Write the standard form equation of each conic section shown below.</p>
 
-          {/* Station Table */}
-          <table className="w-full border-collapse border border-black text-sm mb-8">
-            <thead>
-              <tr>
-                <th className="border border-black px-4 py-2 font-bold text-center w-24">Station</th>
-                <th className="border border-black px-4 py-2 font-bold text-center">Observations and Characteristics</th>
-              </tr>
-            </thead>
-            <tbody>
-              {[1,2,3,4,5,6,7,8].map((n) => (
-                <tr key={n}>
-                  <td className="border border-black px-4 text-center align-top" style={{ height: 80 }}>{n}</td>
-                  <td className="border border-black px-4" style={{ height: 80 }}></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          {/* Grid of problems */}
+          {[[1,2,3],[4,5,6],[7,8,9]].map((row, rowIdx) => (
+            <div key={rowIdx} className="mb-8">
+              <div className="grid grid-cols-3 gap-6">
+                {row.map((num) => (
+                  <div key={num} className="flex flex-col items-center">
+                    <div className="font-bold text-sm self-start mb-2">{num}.</div>
+                    {/* Graph placeholder */}
+                    <div className="w-full aspect-square border border-slate-300 rounded bg-slate-50 flex items-center justify-center relative" style={{ maxWidth: 160 }}>
+                      {/* Grid lines */}
+                      <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full opacity-20">
+                        {[10,20,30,40,50,60,70,80,90].map(v => (
+                          <g key={v}>
+                            <line x1={v} y1={0} x2={v} y2={100} stroke="#64748b" strokeWidth="0.5"/>
+                            <line x1={0} y1={v} x2={100} y2={v} stroke="#64748b" strokeWidth="0.5"/>
+                          </g>
+                        ))}
+                        {/* Axes */}
+                        <line x1={50} y1={0} x2={50} y2={100} stroke="#1e293b" strokeWidth="1"/>
+                        <line x1={0} y1={50} x2={100} y2={50} stroke="#1e293b" strokeWidth="1"/>
+                        {/* Arrows */}
+                        <polygon points="50,2 47,8 53,8" fill="#1e293b"/>
+                        <polygon points="50,98 47,92 53,92" fill="#1e293b"/>
+                        <polygon points="2,50 8,47 8,53" fill="#1e293b"/>
+                        <polygon points="98,50 92,47 92,53" fill="#1e293b"/>
+                      </svg>
+                    </div>
+                    {/* Answer line */}
+                    <div className="mt-3 w-full border-b border-black" style={{ maxWidth: 160 }}></div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
 
-          {/* Part 2 */}
-          <div className="space-y-5 text-sm">
-            <p>1. Once you have made your observations, classify each item as currently "dead" or "alive."</p>
-            <p>2. In the space below, list the common characteristics of dead and living things.</p>
-
-            <table className="w-full border-collapse border border-black">
-              <thead>
-                <tr>
-                  <th className="border border-black px-4 py-2 font-bold text-center w-1/2">Dead</th>
-                  <th className="border border-black px-4 py-2 font-bold text-center w-1/2">Alive</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td className="border border-black" style={{ height: 160 }}></td>
-                  <td className="border border-black" style={{ height: 160 }}></td>
-                </tr>
-              </tbody>
-            </table>
-
-            <p>3. When indicated by the teacher, write each characteristic listed above in the spaces provided on the white board.</p>
-          </div>
+          <p className="text-xs text-slate-400 mt-6 text-center">©2011 InquiSoft. Reproduction for educational use permitted provided that this footer text is retained.</p>
         </div>
       </div>
 
