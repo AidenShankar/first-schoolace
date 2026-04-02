@@ -4,8 +4,17 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Users, UserCheck, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Slider } from "@/components/ui/slider";
 
-export default function AssignmentGeneratorStudentSelector({ classId, distributionMode, onDistributionModeChange, selectedStudentIds, onSelectedStudentsChange }) {
+const getDifficultyLabel = (value) => {
+  if (value <= 20) return "Very Easy";
+  if (value <= 40) return "Easy";
+  if (value <= 60) return "Medium";
+  if (value <= 80) return "Hard";
+  return "Very Hard";
+};
+
+export default function AssignmentGeneratorStudentSelector({ classId, distributionMode, onDistributionModeChange, selectedStudentIds, onSelectedStudentsChange, difficulty, onDifficultyChange }) {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -81,6 +90,28 @@ export default function AssignmentGeneratorStudentSelector({ classId, distributi
           </div>
         </button>
       </div>
+
+      {/* Difficulty slider — only when whole class is selected */}
+      {distributionMode === "whole_class" && (
+        <div className="space-y-4 pt-2">
+          <div className="flex items-center justify-between">
+            <Label className="text-sm font-semibold text-slate-700">Difficulty Level</Label>
+            <span className="text-sm font-medium text-purple-600">{getDifficultyLabel(difficulty?.[0] ?? 50)}</span>
+          </div>
+          <Slider
+            value={difficulty ?? [50]}
+            onValueChange={onDifficultyChange}
+            min={0}
+            max={100}
+            step={1}
+            className="py-2"
+          />
+          <div className="flex justify-between text-xs text-slate-400">
+            <span>Very Easy</span>
+            <span>Very Hard</span>
+          </div>
+        </div>
+      )}
 
       {/* Student selector for choosing specific students */}
       <div className="space-y-3 pt-2">
