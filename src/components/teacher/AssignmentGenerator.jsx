@@ -19,7 +19,8 @@ export default function AssignmentGenerator({ classId, onCancel }) {
     description: "",
     gradeLevel: "",
     duration: [30],
-    distributionMode: "whole_class",
+    difficulty: [50],
+    distributionMode: "",
     selectedStudentIds: [],
     files: [],
     links: [],
@@ -55,6 +56,14 @@ export default function AssignmentGenerator({ classId, onCancel }) {
     const hrs = Math.floor(minutes / 60);
     const mins = minutes % 60;
     return mins > 0 ? `${hrs}h ${mins}m` : `${hrs} hour${hrs > 1 ? "s" : ""}`;
+  };
+
+  const getDifficultyLabel = (value) => {
+    if (value <= 20) return "Very Easy";
+    if (value <= 40) return "Easy";
+    if (value <= 60) return "Medium";
+    if (value <= 80) return "Hard";
+    return "Very Hard";
   };
 
   const handleGenerate = () => {
@@ -222,7 +231,7 @@ export default function AssignmentGenerator({ classId, onCancel }) {
           </div>
 
           {/* Student Distribution */}
-          <div className="pt-2 border-t border-slate-200">
+          <div className="pt-2 border-t border-slate-200 space-y-6">
             <AssignmentGeneratorStudentSelector
               classId={classId}
               distributionMode={formData.distributionMode}
@@ -230,6 +239,27 @@ export default function AssignmentGenerator({ classId, onCancel }) {
               selectedStudentIds={formData.selectedStudentIds}
               onSelectedStudentsChange={(ids) => handleChange("selectedStudentIds", ids)}
             />
+
+            {formData.distributionMode === "whole_class" && (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <Label className="text-sm font-semibold text-slate-700">Difficulty Level</Label>
+                  <span className="text-sm font-medium text-purple-600">{getDifficultyLabel(formData.difficulty[0])}</span>
+                </div>
+                <Slider
+                  value={formData.difficulty}
+                  onValueChange={(v) => handleChange("difficulty", v)}
+                  min={0}
+                  max={100}
+                  step={1}
+                  className="py-2"
+                />
+                <div className="flex justify-between text-xs text-slate-400">
+                  <span>Very Easy</span>
+                  <span>Very Hard</span>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Actions */}

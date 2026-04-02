@@ -63,11 +63,7 @@ export default function AssignmentGeneratorStudentSelector({ classId, distributi
         <button
           type="button"
           onClick={() => onDistributionModeChange("personalized")}
-          className={`flex items-center gap-3 p-4 rounded-xl border-2 transition-all text-left relative overflow-hidden ${
-            distributionMode === "personalized"
-              ? "border-purple-400 bg-purple-50"
-              : "border-slate-200 hover:border-slate-300"
-          }`}
+  
         >
           <div className="absolute top-1.5 right-1.5 px-1.5 py-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-[9px] font-bold rounded-full uppercase tracking-wider">
             AI
