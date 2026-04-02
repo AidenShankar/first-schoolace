@@ -39,7 +39,7 @@ export default function CreateAssignmentChoiceDialog({ open, onOpenChange, onCho
             className="group flex flex-col items-center gap-3 p-6 rounded-xl border-2 border-slate-200 hover:border-purple-400 hover:bg-purple-50/50 transition-all duration-200 text-center relative overflow-hidden"
           >
             <div className="absolute top-2 right-2 px-2 py-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-[10px] font-bold rounded-full uppercase tracking-wider">
-              AI
+              ACE AI
             </div>
             <div className="w-14 h-14 rounded-xl bg-purple-100 group-hover:bg-purple-200 flex items-center justify-center transition-colors">
               <Sparkles className="w-7 h-7 text-purple-600 transition-colors" />
