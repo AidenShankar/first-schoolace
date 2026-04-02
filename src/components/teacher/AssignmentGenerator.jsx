@@ -111,7 +111,7 @@ export default function AssignmentGenerator({ classId, onCancel }) {
     return (
       <Card className="bg-white/80 backdrop-blur-sm border-slate-200/60 shadow-xl">
         <CardContent className="p-8">
-          <AssignmentGeneratedPreview onBack={() => setGenState("form")} />
+          <AssignmentGeneratedPreview onBack={() => setGenState("form")} classId={classId} />
         </CardContent>
       </Card>
     );

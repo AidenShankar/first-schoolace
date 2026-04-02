@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Sparkles, Send, CheckCircle2, ChevronDown } from "lucide-react";
 import {
@@ -31,19 +32,21 @@ function BouncingDots() {
   );
 }
 
-const MOCK_STUDENTS = [
-  "Aiden Shankar",
-  "Brianna Torres",
-  "Carlos Mendez",
-  "Diana Chen",
-  "Ethan Park",
-];
-
-export default function AssignmentGeneratedPreview({ onBack }) {
+export default function AssignmentGeneratedPreview({ onBack, classId }) {
   const [chatInput, setChatInput] = useState("");
   const [finalizeState, setFinalizeState] = useState("idle"); // idle | finalizing | released
   const [showReleasedDialog, setShowReleasedDialog] = useState(false);
-  const [selectedStudent, setSelectedStudent] = useState(MOCK_STUDENTS[0]);
+  const [students, setStudents] = useState([]);
+  const [selectedStudent, setSelectedStudent] = useState(null);
+
+  useEffect(() => {
+    if (!classId) return;
+    base44.entities.ClassEnrollment.filter({ class_id: classId }).then((enrollments) => {
+      const names = enrollments.map(e => e.student_name).filter(Boolean);
+      setStudents(names);
+      if (names.length > 0) setSelectedStudent(names[0]);
+    });
+  }, [classId]);
 
   const handleFinalize = () => {
     setFinalizeState("finalizing");
@@ -75,7 +78,7 @@ export default function AssignmentGeneratedPreview({ onBack }) {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              {MOCK_STUDENTS.map((student) => (
+              {students.map((student) => (
                 <DropdownMenuItem
                   key={student}
                   onClick={() => setSelectedStudent(student)}
