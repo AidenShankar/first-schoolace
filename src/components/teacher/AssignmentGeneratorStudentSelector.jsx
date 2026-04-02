@@ -77,7 +77,7 @@ export default function AssignmentGeneratorStudentSelector({ classId, distributi
           </div>
           <div>
             <p className="font-medium text-slate-900 text-sm">Personalized per Student</p>
-            <p className="text-xs text-slate-500">Unique version based on each student's model</p>
+            <p className="text-xs text-slate-500">Unique version based on each student's ACE AI model</p>
           </div>
         </button>
       </div>
