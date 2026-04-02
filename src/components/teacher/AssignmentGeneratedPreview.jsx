@@ -2,6 +2,13 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Sparkles, Send, CheckCircle2 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 function BouncingDots() {
   return (
@@ -21,10 +28,14 @@ function BouncingDots() {
 export default function AssignmentGeneratedPreview({ onBack }) {
   const [chatInput, setChatInput] = useState("");
   const [finalizeState, setFinalizeState] = useState("idle"); // idle | finalizing | released
+  const [showReleasedDialog, setShowReleasedDialog] = useState(false);
 
   const handleFinalize = () => {
     setFinalizeState("finalizing");
-    setTimeout(() => setFinalizeState("released"), 2500);
+    setTimeout(() => {
+      setFinalizeState("idle");
+      setShowReleasedDialog(true);
+    }, 2500);
   };
 
   return (
@@ -142,36 +153,43 @@ export default function AssignmentGeneratedPreview({ onBack }) {
 
       {/* Finalize Button */}
       <div className="flex justify-end pt-2">
-        <AnimatePresence mode="wait">
-          {finalizeState === "released" ? (
-            <motion.div
-              key="released"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="flex items-center gap-2 px-8 py-3 bg-green-500 text-white rounded-xl font-semibold shadow-lg"
-            >
-              <CheckCircle2 className="w-5 h-5" />
-              Released!
-            </motion.div>
+        <Button
+          onClick={handleFinalize}
+          disabled={finalizeState === "finalizing"}
+          className="px-8 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 font-semibold text-sm min-w-[180px]"
+        >
+          {finalizeState === "finalizing" ? (
+            <span className="flex items-center">
+              Finalizing<BouncingDots />
+            </span>
           ) : (
-            <motion.div key="btn" initial={{ opacity: 1 }} exit={{ opacity: 0 }}>
-              <Button
-                onClick={handleFinalize}
-                disabled={finalizeState === "finalizing"}
-                className="px-8 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 font-semibold text-sm min-w-[180px]"
-              >
-                {finalizeState === "finalizing" ? (
-                  <span className="flex items-center">
-                    Finalizing<BouncingDots />
-                  </span>
-                ) : (
-                  "Finalize and Release"
-                )}
-              </Button>
-            </motion.div>
+            "Finalize and Release"
           )}
-        </AnimatePresence>
+        </Button>
       </div>
+
+      {/* Released Dialog */}
+      <Dialog open={showReleasedDialog} onOpenChange={setShowReleasedDialog}>
+        <DialogContent className="sm:max-w-sm text-center">
+          <DialogHeader>
+            <div className="flex justify-center mb-3">
+              <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center">
+                <CheckCircle2 className="w-9 h-9 text-green-500" />
+              </div>
+            </div>
+            <DialogTitle className="text-2xl font-bold text-slate-900 text-center">Released!</DialogTitle>
+          </DialogHeader>
+          <p className="text-slate-500 text-sm mt-1 mb-4">The assignment has been released to your students.</p>
+          <DialogFooter className="sm:justify-center">
+            <Button
+              onClick={() => setShowReleasedDialog(false)}
+              className="px-10 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-xl"
+            >
+              OK
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </motion.div>
   );
 }

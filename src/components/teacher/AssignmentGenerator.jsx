@@ -81,15 +81,27 @@ export default function AssignmentGenerator({ classId, onCancel }) {
         animate={{ opacity: 1 }}
         className="flex flex-col items-center justify-center py-32 gap-6"
       >
-        <div className="relative">
-          <div className="w-16 h-16 rounded-full border-4 border-indigo-200 border-t-indigo-600 animate-spin" />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <Sparkles className="w-6 h-6 text-indigo-600" />
+        <div className="flex flex-col items-start gap-2">
+          {/* AI bubble with bouncing dots */}
+          <div className="flex items-end gap-3">
+            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center flex-shrink-0 shadow-md">
+              <Sparkles className="w-4 h-4 text-white" />
+            </div>
+            <div className="bg-white border border-slate-200 rounded-2xl rounded-bl-sm shadow-sm px-5 py-3.5 flex items-center gap-1.5">
+              {[0, 1, 2].map((i) => (
+                <motion.span
+                  key={i}
+                  className="w-2.5 h-2.5 rounded-full bg-indigo-400 inline-block"
+                  animate={{ y: [0, -6, 0] }}
+                  transition={{ duration: 0.7, repeat: Infinity, delay: i * 0.18 }}
+                />
+              ))}
+            </div>
           </div>
         </div>
         <div className="text-center">
-          <p className="text-lg font-semibold text-slate-800">Generating your assignment…</p>
-          <p className="text-sm text-slate-500 mt-1">ACE AI is crafting a personalized worksheet for your class</p>
+          <p className="text-base font-semibold text-slate-700">ACE AI is generating your assignment…</p>
+          <p className="text-sm text-slate-400 mt-1">This usually takes about 10 seconds</p>
         </div>
       </motion.div>
     );
