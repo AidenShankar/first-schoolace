@@ -47,7 +47,7 @@ export default function CreateAssignmentChoiceDialog({ open, onOpenChange, onCho
             <div>
               <p className="font-semibold text-slate-900">Generate with AI</p>
               <p className="text-sm text-slate-500 mt-1">
-                Let ACE AI create a complete assignment for you
+                Let ACE AI create a complete assignment for your students
               </p>
             </div>
           </button>
