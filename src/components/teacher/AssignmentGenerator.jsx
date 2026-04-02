@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,8 +10,11 @@ import { Sparkles, X, Upload, Plus, Link2, Trash2 } from "lucide-react";
 import { motion } from "framer-motion";
 import AssignmentGeneratorTypeSelector from "./AssignmentGeneratorTypeSelector";
 import AssignmentGeneratorStudentSelector from "./AssignmentGeneratorStudentSelector";
+import AssignmentGeneratedPreview from "./AssignmentGeneratedPreview";
 
 export default function AssignmentGenerator({ classId, onCancel }) {
+  const [genState, setGenState] = useState("form"); // form | generating | preview
+
   const [formData, setFormData] = useState({
     topic: "",
     subject: "other",
@@ -67,9 +70,40 @@ export default function AssignmentGenerator({ classId, onCancel }) {
   };
 
   const handleGenerate = () => {
-    // Placeholder — generation logic will be added later
-    alert("Generation will be implemented in a future update!");
+    setGenState("generating");
+    setTimeout(() => setGenState("preview"), 10000);
   };
+
+  if (genState === "generating") {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="flex flex-col items-center justify-center py-32 gap-6"
+      >
+        <div className="relative">
+          <div className="w-16 h-16 rounded-full border-4 border-indigo-200 border-t-indigo-600 animate-spin" />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <Sparkles className="w-6 h-6 text-indigo-600" />
+          </div>
+        </div>
+        <div className="text-center">
+          <p className="text-lg font-semibold text-slate-800">Generating your assignment…</p>
+          <p className="text-sm text-slate-500 mt-1">ACE AI is crafting a personalized worksheet for your class</p>
+        </div>
+      </motion.div>
+    );
+  }
+
+  if (genState === "preview") {
+    return (
+      <Card className="bg-white/80 backdrop-blur-sm border-slate-200/60 shadow-xl">
+        <CardContent className="p-8">
+          <AssignmentGeneratedPreview onBack={() => setGenState("form")} />
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <motion.div
