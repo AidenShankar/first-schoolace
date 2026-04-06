@@ -90,6 +90,7 @@ const CommentThread = ({ assignment, currentUser, allClassStudents }) => {
             fetchStudentsWithComments();
         } catch (error) {
             console.error("Error posting comment:", error);
+            alert("Failed to post comment.");
         } finally {
             setIsPosting(false);
         }
@@ -233,6 +234,7 @@ export default function SubmissionsList({ submissions, assignment, onReleaseGrad
 
   const handleManualGrade = async () => {
     if (!selectedSubmission || !manualGrade.trim() || !manualFeedback.trim()) {
+      alert("Please provide both grade and feedback.");
       return;
     }
 
@@ -250,6 +252,7 @@ export default function SubmissionsList({ submissions, assignment, onReleaseGrad
       setFeedbackAttachment(null);
     } catch (error) {
       console.error("Error submitting manual grade:", error);
+      alert("Failed to save the grade. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -361,10 +364,12 @@ export default function SubmissionsList({ submissions, assignment, onReleaseGrad
             releasedCount++;
         }
         
+        alert(`Successfully released ${releasedCount} grades!${skippedCount > 0 ? ` ${skippedCount} skipped (already released or no grade).` : ''}`);
         setShowBulkReleaseModal(false);
         window.location.reload();
     } catch (e) {
         console.error("Error bulk releasing grades:", e);
+        alert(`Error after releasing ${releasedCount} grades: ${e.message || 'Unknown error'}. Please refresh and try again.`);
     } finally {
         setIsBulkReleasing(false);
     }
@@ -376,7 +381,7 @@ export default function SubmissionsList({ submissions, assignment, onReleaseGrad
         return;
     }
     
-
+    if (!confirm(`Are you sure you want to release a grade of ${bulkGradeValue} for ALL ${studentsWithSubmissions.length} submissions? This will overwrite existing final grades.`)) return;
 
     setIsBulkReleasing(true);
     try {
@@ -395,11 +400,13 @@ export default function SubmissionsList({ submissions, assignment, onReleaseGrad
         });
         
         await Promise.all(promises);
+        alert(`Released grade of ${gradeNum} for all submissions!`);
         setShowBulkReleaseModal(false);
         setBulkGradeValue("");
         window.location.reload(); // Refresh to show changes
     } catch (e) {
         console.error("Error bulk releasing fixed grades:", e);
+        alert("Failed to release grades.");
     } finally {
         setIsBulkReleasing(false);
     }

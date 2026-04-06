@@ -46,7 +46,7 @@ import ProcessingModal from "../components/common/ProcessingModal"; // New impor
 import ReactQuill from "react-quill"; // New import
 import LanguageSelector from "../components/i18n/LanguageSelector";
 import ThemeSelector from "../components/theme/ThemeSelector";
-
+import PromoPopup from "../components/dashboard/PromoPopup";
 import AceTransition, { LOADING_DURATION } from "@/components/common/AceTransition";
 
 import { Switch } from "@/components/ui/switch";
@@ -78,9 +78,18 @@ export default function Dashboard({ user: layoutUser, allClasses: layoutAllClass
     const [isUpgrading, setIsUpgrading] = useState(false);
     const [isSyncing, setIsSyncing] = useState(false);
     const [textSubmissionState, setTextSubmissionState] = useState({ show: false, status: 'processing', message: '' });
+    const [showPromo, setShowPromo] = useState(false);
 
-
-
+    useEffect(() => {
+        if (user) {
+            const viewCount = user.promo_popup_view_count || 0;
+            if (viewCount < 2) {
+                setShowPromo(true);
+                // Increment view count immediately so this session counts
+                retryWithBackoff(() => User.updateMyUserData({ promo_popup_view_count: viewCount + 1 })).catch(console.error);
+            }
+        }
+    }, [user]); // Only run when user loads
 
     // Add retry logic for rate-limited requests
     const retryWithBackoff = useCallback(async (fn, maxRetries = 3, delay = 1000) => {
@@ -171,6 +180,9 @@ export default function Dashboard({ user: layoutUser, allClasses: layoutAllClass
             setAssignmentsLoaded(true);
         } catch (error) {
             console.error("Error loading assignments:", error);
+            if (error.response?.status === 429) {
+                alert("Too many requests. Please wait a moment and refresh the page.");
+            }
             setAssignments([]);
             setAssignmentsLoaded(true);
         }
@@ -216,6 +228,9 @@ export default function Dashboard({ user: layoutUser, allClasses: layoutAllClass
             setSubmissionsLoaded(true);
         } catch (error) {
             console.error("Error loading submissions:", error);
+            if (error.response?.status === 429) {
+                alert("Too many requests. Please wait a moment and refresh the page.");
+            }
             setSubmissions([]);
             setSubmissionsLoaded(true);
         }
@@ -302,12 +317,15 @@ export default function Dashboard({ user: layoutUser, allClasses: layoutAllClass
         try {
             const classes = await retryWithBackoff(() => Class.filter({ class_code: classCode.trim().toUpperCase() }));
             if (classes.length === 0) {
+                alert("Class not found.");
                 return;
             }
             const targetClass = classes[0];
 
             const existingEnrollment = await retryWithBackoff(() => ClassEnrollment.filter({ class_id: targetClass.id, student_id: user.id }));
             if (existingEnrollment.length > 0) {
+                alert("You are already in this class.");
+                // Ensure the URL reflects the class they are already in
                 handleClassSwitch(targetClass);
                 return;
             }
@@ -320,11 +338,13 @@ export default function Dashboard({ user: layoutUser, allClasses: layoutAllClass
                 enrolled_at: new Date().toISOString()
             }));
 
+            alert(`Successfully joined ${targetClass.name}!`);
             // This needs a way to tell the Layout to refetch classes.
             // For now, a page reload is the simplest way.
             window.location.reload();
         } catch (error) {
             console.error("Error joining new class:", error);
+            alert("Failed to join the class. Please try again.");
         }
     };
 
@@ -355,10 +375,12 @@ export default function Dashboard({ user: layoutUser, allClasses: layoutAllClass
           if (error) {
             throw new Error(error.response?.data?.error || error.message);
           }
+          alert(data.message || "Sync successful!");
           // After a successful sync, refresh the user data by reloading
           window.location.reload();
         } catch (error) {
           console.error("Error syncing subscription:", error);
+          alert(`Sync Failed: ${error.message}`);
         } finally {
           setIsSyncing(false);
         }
@@ -367,6 +389,7 @@ export default function Dashboard({ user: layoutUser, allClasses: layoutAllClass
     const handleUpgradeClick = async () => {
         // Only allow teachers to upgrade
         if (!user || user.app_role !== 'teacher') {
+          alert('Only teachers can upgrade to Schoolace Supercharged.');
           return;
         }
     
@@ -393,6 +416,7 @@ export default function Dashboard({ user: layoutUser, allClasses: layoutAllClass
             }
         } catch (error) {
             console.error("Error creating checkout session:", error);
+            alert(error.message);
             setIsUpgrading(false);
         }
       };
@@ -763,6 +787,7 @@ Output your response as JSON with:
 
         } catch (error) {
             console.error("Error submitting assignment:", error);
+            alert("Failed to save assignment. Please check your connection and try again.");
         } finally {
             setIsCreating(false);
         }
@@ -790,6 +815,7 @@ Output your response as JSON with:
             
             // Check if assignment is hidden or inactive
             if (!currentAssignment.is_visible || currentAssignment.status !== "active") {
+                alert("This assignment is no longer accepting submissions.");
                 setShowUploadModal(false);
                 setUploadingAssignment(null);
                 setIsSubmitting(false);
@@ -799,6 +825,7 @@ Output your response as JSON with:
             
             // Check if assignment is outside open/close dates
             if (currentAssignment.open_date && new Date(currentAssignment.open_date) > now) {
+                alert("This assignment is not yet open for submissions.");
                 setShowUploadModal(false);
                 setUploadingAssignment(null);
                 setIsSubmitting(false);
@@ -807,6 +834,7 @@ Output your response as JSON with:
             }
             
             if (currentAssignment.close_date && new Date(currentAssignment.close_date) < now) {
+                alert("This assignment is closed and no longer accepting submissions.");
                 setShowUploadModal(false);
                 setUploadingAssignment(null);
                 setIsSubmitting(false);
@@ -873,6 +901,7 @@ Output your response as JSON with:
             setShowUploadModal(false);
             setUploadingAssignment(null);
             loadSubmissions();
+            alert("Failed to submit assignment. Please try again.");
         }
     };
     
@@ -1044,6 +1073,7 @@ Output JSON with:
             window.location.reload();
         } catch (error) {
             console.error("Error updating class settings:", error);
+            alert("Failed to update settings. Please try again.");
         }
     };
 
@@ -1059,6 +1089,7 @@ Output JSON with:
             window.location.reload();
         } catch (error) {
             console.error("Error updating class settings:", error);
+            alert("Failed to update settings. Please try again.");
         }
     };
 
@@ -1070,6 +1101,7 @@ Output JSON with:
 
         const confirmCode = prompt(`To confirm deletion, please type the class code: "${currentClass.class_code}"`);
         if (confirmCode !== currentClass.class_code) {
+            alert("Incorrect class code. Deletion cancelled.");
             return;
         }
 
@@ -1106,10 +1138,12 @@ Output JSON with:
             // 7. Delete Class
             await retryWithBackoff(() => Class.delete(currentClass.id));
 
+            alert(`Class "${currentClass.name}" has been deleted.`);
             window.location.reload(); 
 
         } catch (error) {
             console.error("Error deleting class:", error);
+            alert("Failed to delete class. Please try again.");
         } finally {
             setIsSubmitting(false);
         }
@@ -1156,6 +1190,7 @@ Output JSON with:
             setSelectedAssignment(null); // Deselect if it was selected
         } catch (error) {
             console.error("Error deleting assignment:", error);
+            alert("Failed to delete the assignment. Please try again.");
         }
     };
 
@@ -1206,9 +1241,11 @@ Output JSON with:
                 }
             }
 
-
+            const destinationClass = allClasses.find(c => c.id === destinationClassId);
+            alert(`Assignment "${assignment.title}" successfully duplicated to ${destinationClass?.name || 'the destination class'}!`);
         } catch (error) {
             console.error("Error duplicating assignment:", error);
+            alert("Failed to duplicate assignment. Please try again.");
         }
     };
     
@@ -1221,6 +1258,7 @@ Output JSON with:
             loadSubmissions(); // Refresh the submissions list for both student and teacher
         } catch (error) {
             console.error("Error deleting submission:", error);
+            alert("Failed to delete the submission. Please try again.");
         }
     };
 
@@ -1235,6 +1273,7 @@ Output JSON with:
             loadAssignments();
         } catch (error) {
             console.error("Error toggling assignment visibility:", error);
+            alert("Failed to update assignment visibility. Please try again.");
         }
     };
 
@@ -1774,7 +1813,11 @@ Output JSON with:
                 )}
             </AnimatePresence>
 
-
+            <PromoPopup 
+                isOpen={showPromo} 
+                onClose={() => setShowPromo(false)} 
+                userRole={user?.app_role}
+            />
 
             <CreateAssignmentChoiceDialog
                 open={showChoiceDialog}
