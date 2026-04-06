@@ -78,18 +78,9 @@ export default function Dashboard({ user: layoutUser, allClasses: layoutAllClass
     const [isUpgrading, setIsUpgrading] = useState(false);
     const [isSyncing, setIsSyncing] = useState(false);
     const [textSubmissionState, setTextSubmissionState] = useState({ show: false, status: 'processing', message: '' });
-    const [showPromo, setShowPromo] = useState(false);
 
-    useEffect(() => {
-        if (user) {
-            const viewCount = user.promo_popup_view_count || 0;
-            if (viewCount < 2) {
-                setShowPromo(true);
-                // Increment view count immediately so this session counts
-                retryWithBackoff(() => User.updateMyUserData({ promo_popup_view_count: viewCount + 1 })).catch(console.error);
-            }
-        }
-    }, [user]); // Only run when user loads
+
+
 
     // Add retry logic for rate-limited requests
     const retryWithBackoff = useCallback(async (fn, maxRetries = 3, delay = 1000) => {
@@ -1813,11 +1804,7 @@ Output JSON with:
                 )}
             </AnimatePresence>
 
-            <PromoPopup 
-                isOpen={showPromo} 
-                onClose={() => setShowPromo(false)} 
-                userRole={user?.app_role}
-            />
+
 
             <CreateAssignmentChoiceDialog
                 open={showChoiceDialog}

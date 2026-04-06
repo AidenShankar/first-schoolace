@@ -908,22 +908,11 @@ function LayoutContent({
   const { language } = useLanguage();
   const navLinks = getNavLinks(language);
   const filteredNavLinks = filterNavLinks(navLinks);
-  const [showResetNotice, setShowResetNotice] = useState(false);
 
-  useEffect(() => {
-    if (user && user.app_role === 'teacher' && !user.seen_barakat_reset_notice) {
-      setShowResetNotice(true);
-    }
-  }, [user]);
 
-  const handleCloseResetNotice = async () => {
-    setShowResetNotice(false);
-    try {
-        await User.updateMyUserData({ seen_barakat_reset_notice: true });
-    } catch (e) {
-        console.error("Failed to mark notice as seen", e);
-    }
-  };
+
+
+
 
   return (
     <div className="min-h-screen flex flex-col" style={{ background: `rgb(var(--color-background))` }}>
@@ -1057,21 +1046,7 @@ function LayoutContent({
         </div>
       )}
 
-      <AlertDialog open={showResetNotice} onOpenChange={setShowResetNotice}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Account Reset Notification</AlertDialogTitle>
-            <AlertDialogDescription>
-              Anthony Barakat's account has been reset as requested.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogAction onClick={handleCloseResetNotice}>
-              Okay
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+
 
     </div>
   );
