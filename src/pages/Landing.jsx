@@ -182,7 +182,7 @@ const HeaderNav = () => {
       <a href="#features" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">{t('landing.forTeachers')}</a>
       <a href="#student-features" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">{t('landing.forStudents')}</a>
       <a href="#co-pilot" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">{t('landing.aiCapabilities')}</a>
-      <a href="https://schoolace.ai/tutor" className="text-sm font-medium text-slate-300 hover:text-white transition-colors relative pr-1">Tutor<span className="absolute -top-2 -right-0 px-1 py-px text-[9px] font-bold rounded-full bg-indigo-500 text-white leading-tight">New</span></a>
+      <a href="https://schoolace.ai/tutor" className="text-sm font-medium text-slate-300 hover:text-white transition-colors relative inline-block pr-2">Tutor<span className="absolute -top-2.5 -right-3 px-1.5 py-px text-[8px] font-bold bg-indigo-500 text-white leading-tight rotate-12 rounded-sm shadow">NEW</span></a>
       <a href="#testimonials" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">{t('landing.testimonials')}</a>
       <a href="#pricing" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">{t('landing.pricing')}</a>
       <a href="#contact" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">{t('landing.contact')}</a>
