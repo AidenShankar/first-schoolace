@@ -6,6 +6,8 @@ import { pagesConfig } from './pages.config'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import NewAI from './pages/NewAI';
+import { useEffect } from 'react';
+const TutorRedirect = () => { useEffect(() => { window.location.href = 'https://schoolace.ai/tutor'; }, []); return null; };
 import AdminExport from './pages/AdminExport';
 import InvestorStats from './pages/InvestorStats';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
@@ -64,6 +66,7 @@ const AuthenticatedApp = () => {
         />
       ))}
       <Route path="/newai" element={<NewAI />} />
+      <Route path="/tutor" element={<TutorRedirect />} />
       <Route path="/admin-export" element={<AdminExport />} />
       <Route path="/investor-stats" element={<InvestorStats />} />
       <Route path="*" element={<PageNotFound />} />
