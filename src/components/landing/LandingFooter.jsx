@@ -24,7 +24,7 @@ export default function LandingFooter() {
               <li><a href="#features" className="text-slate-400 hover:text-white transition-colors text-sm">{t('landing.forTeachers')}</a></li>
               <li><a href="#student-features" className="text-slate-400 hover:text-white transition-colors text-sm">{t('landing.forStudents')}</a></li>
               <li><a href="#co-pilot" className="text-slate-400 hover:text-white transition-colors text-sm">{t('landing.aiCapabilities')}</a></li>
-              <li><a href="https://schoolace.ai/tutor" className="text-slate-400 hover:text-white transition-colors text-sm relative inline-block mr-4">Tutor<span className="absolute -top-3.5 -right-6 px-2 py-0.5 text-[10px] font-bold bg-indigo-500 text-white rounded-full shadow-lg -rotate-12 tracking-wide">NEW</span></a></li>
+              <li><a href="https://schoolace.ai/tutor" className="text-slate-400 hover:text-white transition-colors text-sm flex items-start gap-1">Tutor<span className="px-1.5 py-px text-[9px] font-bold bg-indigo-500 text-white rounded-full leading-tight mt-0.5">NEW</span></a></li>
             </ul>
           </div>
 
