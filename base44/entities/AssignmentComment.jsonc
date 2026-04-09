@@ -1,0 +1,151 @@
+{
+  "name": "AssignmentComment",
+  "type": "object",
+  "properties": {
+    "assignment_id": {
+      "type": "string",
+      "description": "ID of the assignment (null for general AI tutor messages)"
+    },
+    "student_id": {
+      "type": "string"
+    },
+    "user_id": {
+      "type": "string"
+    },
+    "user_name": {
+      "type": "string"
+    },
+    "user_role": {
+      "type": "string",
+      "enum": [
+        "teacher",
+        "student"
+      ]
+    },
+    "content": {
+      "type": "string"
+    },
+    "is_ai_tutor_message": {
+      "type": "boolean",
+      "default": false,
+      "description": "True for AI tutor messages, false for regular assignment comments"
+    },
+    "class_id": {
+      "type": "string",
+      "description": "Class ID (optional for regular comments, required for AI tutor messages)"
+    },
+    "student_email": {
+      "type": "string",
+      "description": "Student email (optional)"
+    },
+    "is_flagged": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the message was flagged as suspicious by the AI moderator."
+    },
+    "flag_reason": {
+      "type": "string",
+      "description": "The reason why the message was flagged."
+    }
+  },
+  "required": [
+    "student_id",
+    "user_id",
+    "user_name",
+    "user_role",
+    "content"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "data.app_role": "teacher"
+          }
+        },
+        {
+          "user_condition": {
+            "data.app_role": "student"
+          }
+        }
+      ]
+    },
+    "create": {
+      "$or": [
+        {
+          "user_condition": {
+            "data.app_role": "teacher"
+          }
+        },
+        {
+          "user_condition": {
+            "data.app_role": "student"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "user_condition": {
+            "data.app_role": "teacher"
+          }
+        },
+        {
+          "$and": [
+            {
+              "user_condition": {
+                "data.app_role": "student"
+              }
+            },
+            {
+              "user_id": "{{user.id}}"
+            }
+          ]
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "user_condition": {
+            "data.app_role": "teacher"
+          }
+        },
+        {
+          "$and": [
+            {
+              "user_condition": {
+                "data.app_role": "student"
+              }
+            },
+            {
+              "user_id": "{{user.id}}"
+            }
+          ]
+        }
+      ]
+    },
+    "write": {
+      "$or": [
+        {
+          "user_condition": {
+            "data.app_role": "teacher"
+          }
+        },
+        {
+          "$and": [
+            {
+              "user_condition": {
+                "data.app_role": "student"
+              }
+            },
+            {
+              "user_id": "{{user.id}}"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

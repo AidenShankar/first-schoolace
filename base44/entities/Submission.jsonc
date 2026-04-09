@@ -1,0 +1,232 @@
+{
+  "name": "Submission",
+  "type": "object",
+  "properties": {
+    "assignment_id": {
+      "type": "string",
+      "description": "ID of the assignment this submission belongs to"
+    },
+    "student_id": {
+      "type": "string",
+      "description": "ID of the student who submitted"
+    },
+    "student_name": {
+      "type": "string",
+      "description": "Name of the student who submitted"
+    },
+    "student_email": {
+      "type": "string",
+      "description": "Email of the student who submitted"
+    },
+    "file_url": {
+      "type": "string",
+      "description": "URL of the uploaded submission file"
+    },
+    "file_name": {
+      "type": "string",
+      "description": "Original filename of the submission"
+    },
+    "text_content": {
+      "type": "string",
+      "description": "Text content for text-based submissions"
+    },
+    "submission_type": {
+      "type": "string",
+      "enum": [
+        "file",
+        "text"
+      ],
+      "default": "file",
+      "description": "Type of submission"
+    },
+    "ai_grade": {
+      "type": "number",
+      "description": "AI-assigned grade"
+    },
+    "ai_feedback": {
+      "type": "string",
+      "description": "AI-generated feedback"
+    },
+    "teacher_grade": {
+      "type": "number",
+      "description": "Teacher-assigned grade"
+    },
+    "teacher_feedback": {
+      "type": "string",
+      "description": "Teacher-provided feedback"
+    },
+    "feedback_attachment_url": {
+      "type": "string",
+      "description": "URL of an optional file attached to the feedback"
+    },
+    "feedback_attachment_filename": {
+      "type": "string",
+      "description": "Filename of the optional feedback attachment"
+    },
+    "final_grade": {
+      "type": "number",
+      "description": "Final released grade (either AI or teacher grade)"
+    },
+    "final_feedback": {
+      "type": "string",
+      "description": "Final released feedback (either AI or teacher feedback)"
+    },
+    "grading_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "ai_grading",
+        "ai_graded",
+        "manual_review",
+        "graded",
+        "released",
+        "error",
+        "disputed",
+        "dispute_reviewing",
+        "dispute_reviewed"
+      ],
+      "default": "pending",
+      "description": "Status of the grading process"
+    },
+    "is_released": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether grades have been released to student"
+    },
+    "submitted_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the submission was made"
+    },
+    "released_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When grades were released to student"
+    },
+    "student_dispute": {
+      "type": "string",
+      "description": "Student's counter-argument to the AI feedback"
+    },
+    "student_dispute_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the student submitted their dispute"
+    },
+    "dispute_ai_response": {
+      "type": "string",
+      "description": "AI-generated response to the student's dispute"
+    },
+    "dispute_ai_grade": {
+      "type": "number",
+      "description": "AI-suggested grade after reviewing the dispute"
+    },
+    "dispute_response_released": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the teacher has released the dispute AI response to the student"
+    },
+    "dispute_response_released_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the dispute response was released"
+    }
+  },
+  "required": [
+    "assignment_id",
+    "student_id",
+    "student_name"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "data.app_role": "teacher"
+          }
+        },
+        {
+          "user_condition": {
+            "data.app_role": "student"
+          }
+        }
+      ]
+    },
+    "create": {
+      "$or": [
+        {
+          "user_condition": {
+            "data.app_role": "student"
+          }
+        },
+        {
+          "user_condition": {
+            "data.app_role": "teacher"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "user_condition": {
+            "data.app_role": "teacher"
+          }
+        },
+        {
+          "$and": [
+            {
+              "user_condition": {
+                "data.app_role": "student"
+              }
+            },
+            {
+              "student_id": "{{user.id}}"
+            }
+          ]
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "user_condition": {
+            "data.app_role": "teacher"
+          }
+        },
+        {
+          "$and": [
+            {
+              "user_condition": {
+                "data.app_role": "student"
+              }
+            },
+            {
+              "student_id": "{{user.id}}"
+            }
+          ]
+        }
+      ]
+    },
+    "write": {
+      "$or": [
+        {
+          "user_condition": {
+            "data.app_role": "teacher"
+          }
+        },
+        {
+          "$and": [
+            {
+              "user_condition": {
+                "data.app_role": "student"
+              }
+            },
+            {
+              "student_id": "{{user.id}}"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
