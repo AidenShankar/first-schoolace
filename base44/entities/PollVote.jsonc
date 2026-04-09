@@ -1,0 +1,113 @@
+{
+  "name": "PollVote",
+  "type": "object",
+  "properties": {
+    "poll_id": {
+      "type": "string"
+    },
+    "selected_option": {
+      "type": "string"
+    },
+    "student_id": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "poll_id",
+    "selected_option",
+    "student_id"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "data.app_role": "teacher"
+          }
+        },
+        {
+          "user_condition": {
+            "data.app_role": "student"
+          }
+        }
+      ]
+    },
+    "create": {
+      "$or": [
+        {
+          "user_condition": {
+            "data.app_role": "teacher"
+          }
+        },
+        {
+          "user_condition": {
+            "data.app_role": "student"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "user_condition": {
+            "data.app_role": "teacher"
+          }
+        },
+        {
+          "$and": [
+            {
+              "user_condition": {
+                "data.app_role": "student"
+              }
+            },
+            {
+              "student_id": "{{user.id}}"
+            }
+          ]
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "user_condition": {
+            "data.app_role": "teacher"
+          }
+        },
+        {
+          "$and": [
+            {
+              "user_condition": {
+                "data.app_role": "student"
+              }
+            },
+            {
+              "student_id": "{{user.id}}"
+            }
+          ]
+        }
+      ]
+    },
+    "write": {
+      "$or": [
+        {
+          "user_condition": {
+            "data.app_role": "teacher"
+          }
+        },
+        {
+          "$and": [
+            {
+              "user_condition": {
+                "data.app_role": "student"
+              }
+            },
+            {
+              "student_id": "{{user.id}}"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

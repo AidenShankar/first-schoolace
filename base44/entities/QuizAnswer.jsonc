@@ -1,0 +1,113 @@
+{
+  "name": "QuizAnswer",
+  "type": "object",
+  "properties": {
+    "quiz_submission_id": {
+      "type": "string"
+    },
+    "quiz_question_id": {
+      "type": "string"
+    },
+    "student_answer": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "quiz_submission_id",
+    "quiz_question_id",
+    "student_answer"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "data.app_role": "teacher"
+          }
+        },
+        {
+          "user_condition": {
+            "data.app_role": "student"
+          }
+        }
+      ]
+    },
+    "create": {
+      "$or": [
+        {
+          "user_condition": {
+            "data.app_role": "teacher"
+          }
+        },
+        {
+          "user_condition": {
+            "data.app_role": "student"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "user_condition": {
+            "data.app_role": "teacher"
+          }
+        },
+        {
+          "$and": [
+            {
+              "user_condition": {
+                "data.app_role": "student"
+              }
+            },
+            {
+              "created_by": "{{user.email}}"
+            }
+          ]
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "user_condition": {
+            "data.app_role": "teacher"
+          }
+        },
+        {
+          "$and": [
+            {
+              "user_condition": {
+                "data.app_role": "student"
+              }
+            },
+            {
+              "created_by": "{{user.email}}"
+            }
+          ]
+        }
+      ]
+    },
+    "write": {
+      "$or": [
+        {
+          "user_condition": {
+            "data.app_role": "teacher"
+          }
+        },
+        {
+          "$and": [
+            {
+              "user_condition": {
+                "data.app_role": "student"
+              }
+            },
+            {
+              "created_by": "{{user.email}}"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

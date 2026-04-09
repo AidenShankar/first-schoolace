@@ -22,6 +22,7 @@ export default function GradeDispute({ submission, assignment, onDisputed }) {
     if (!disputeText.trim()) return;
     setIsSubmitting(true);
     try {
+      // Only update student-owned dispute fields — never grade, feedback, or release fields
       await Submission.update(submission.id, {
         student_dispute: disputeText.trim(),
         student_dispute_at: new Date().toISOString(),

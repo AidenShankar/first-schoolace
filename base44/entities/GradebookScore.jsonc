@@ -1,0 +1,108 @@
+{
+  "name": "GradebookScore",
+  "type": "object",
+  "properties": {
+    "assignment_id": {
+      "type": "string",
+      "description": "ID of the assignment"
+    },
+    "student_id": {
+      "type": "string",
+      "description": "ID of the student"
+    },
+    "student_name": {
+      "type": "string",
+      "description": "Student name for display"
+    },
+    "points_earned": {
+      "type": "number",
+      "description": "Points earned by student"
+    },
+    "special_code": {
+      "type": "string",
+      "enum": [
+        "",
+        "MIS",
+        "ABS",
+        "INC",
+        "EXC",
+        "EXE"
+      ],
+      "default": "",
+      "description": "Special status codes: Missing, Absent, Incomplete, Excused, Exempt"
+    },
+    "is_late": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether submission was late"
+    },
+    "is_missing": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether assignment is missing"
+    },
+    "is_unreleased": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this grade is unreleased (awaiting category assignment)"
+    },
+    "comment": {
+      "type": "string",
+      "description": "Teacher comment for this score"
+    },
+    "is_overridden": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this score was manually overridden"
+    },
+    "original_score": {
+      "type": "number",
+      "description": "Original calculated score before override"
+    },
+    "scored_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the score was entered"
+    }
+  },
+  "required": [
+    "assignment_id",
+    "student_id"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "data.app_role": "teacher"
+          }
+        },
+        {
+          "user_condition": {
+            "data.app_role": "student"
+          }
+        }
+      ]
+    },
+    "create": {
+      "user_condition": {
+        "data.app_role": "teacher"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "data.app_role": "teacher"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "data.app_role": "teacher"
+      }
+    },
+    "write": {
+      "user_condition": {
+        "data.app_role": "teacher"
+      }
+    }
+  }
+}
