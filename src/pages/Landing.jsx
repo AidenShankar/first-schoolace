@@ -179,28 +179,28 @@ const HeaderNav = () => {
   const { t } = useTranslation();
   return (
     <nav className="hidden md:flex items-center gap-8">
-      <a href="#features" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">{t('landing.forTeachers')}</a>
-      <a href="#student-features" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">{t('landing.forStudents')}</a>
-      <a href="#co-pilot" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">{t('landing.aiCapabilities')}</a>
-      <a href="https://schoolace.ai/tutor" className="text-sm font-medium text-slate-300 hover:text-white transition-colors flex items-start gap-1">Tutor<span className="px-1.5 py-px text-[9px] font-bold bg-orange-500 text-white rounded-full leading-tight -mt-0.5 shadow-sm">NEW</span></a>
-      <a href="#testimonials" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">{t('landing.testimonials')}</a>
-      <a href="#pricing" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">{t('landing.pricing')}</a>
-      <a href="#contact" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">{t('landing.contact')}</a>
-      <a href="https://aitutor.schoolace.ai/tutor/awards" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">Awards</a>
+      <a href="#features" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">{t('landing.forTeachers')}</a>
+      <a href="#student-features" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">{t('landing.forStudents')}</a>
+      <a href="#co-pilot" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">{t('landing.aiCapabilities')}</a>
+      <a href="https://schoolace.ai/tutor" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors flex items-start gap-1">Tutor<span className="px-1.5 py-px text-[9px] font-bold bg-orange-500 text-white rounded-full leading-tight -mt-0.5 shadow-sm">NEW</span></a>
+      <a href="#testimonials" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">{t('landing.testimonials')}</a>
+      <a href="#pricing" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">{t('landing.pricing')}</a>
+      <a href="#contact" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">{t('landing.contact')}</a>
+      <a href="https://aitutor.schoolace.ai/tutor/awards" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">Awards</a>
     </nav>
   );
 };
 
 const Header = () => {
   return (
-    <header className="py-6 px-4 sm:px-6 lg:px-8 sticky top-0 z-50 backdrop-blur-sm bg-black/10">
+    <header className="py-6 px-4 sm:px-6 lg:px-8 sticky top-0 z-50 backdrop-blur-sm bg-white/90 border-b border-slate-200">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <div className="flex items-center gap-8">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
               <GraduationCap className="w-6 h-6 text-white" />
             </div>
-            <span className="text-lg font-bold text-white">SchoolACE</span>
+            <span className="text-lg font-bold text-slate-900">SchoolACE</span>
           </div>
 
           <HeaderNav />
