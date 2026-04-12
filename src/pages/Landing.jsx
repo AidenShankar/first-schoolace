@@ -842,7 +842,7 @@ export default function LandingPage() {
     }];
   
   return (
-    <div className="bg-gradient-to-br from-black via-slate-950 to-purple-950 text-white min-h-screen overflow-x-hidden relative">
+    <div className="bg-white text-slate-900 min-h-screen overflow-x-hidden relative">
       <AtmosphericBackground />
       <ShootingStars />
       <FloatingOrbs />
