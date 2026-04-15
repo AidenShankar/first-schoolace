@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { GraduationCap, Code, Brain, Lightbulb, Heart, ArrowLeft } from 'lucide-react';
+import { GraduationCap, Code, Brain, Lightbulb, Heart, ArrowLeft, Linkedin } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 
@@ -52,7 +52,16 @@ export default function About() {
             <div className="text-center md:text-left">
               <h2 className="text-3xl font-bold text-white mb-1">Aiden Shankar</h2>
               <p className="text-indigo-400 font-semibold text-lg mb-2">Founder & Developer, SchoolACE</p>
-              <p className="text-slate-400 text-sm">Building the future of education with AI</p>
+              <p className="text-slate-400 text-sm mb-3">Building the future of education with AI</p>
+              <a
+                href="https://www.linkedin.com/in/aidenshankar/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600/20 border border-blue-500/30 rounded-lg text-blue-400 hover:text-blue-300 hover:bg-blue-600/30 transition-all duration-200 text-sm font-medium"
+              >
+                <Linkedin className="w-4 h-4" />
+                LinkedIn
+              </a>
             </div>
           </div>
 
@@ -101,6 +110,34 @@ export default function About() {
             >
               I realized there was a real problem here, one that AI could genuinely solve. So I built SchoolACE: a platform that gives teachers back their time through AI-powered grading and tools, while giving every student the personalized learning companion they deserve. This isn't just a product — it's something I built because I care deeply about education and believe every student deserves the best support possible, regardless of class size or resources. That belief drives every feature we ship.
             </StorySection>
+          </div>
+        </motion.div>
+
+        {/* Advisor Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.7 }}
+          className="bg-slate-900/60 border border-slate-700/50 rounded-3xl p-8 md:p-10 backdrop-blur-xl mb-10"
+        >
+          <h2 className="text-2xl font-bold text-white mb-6">Advisors</h2>
+          <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
+            <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-600 flex items-center justify-center shadow-2xl shadow-emerald-500/30 flex-shrink-0">
+              <span className="text-3xl font-extrabold text-white">H</span>
+            </div>
+            <div className="text-center md:text-left">
+              <h3 className="text-xl font-bold text-white mb-1">Hari Shankar</h3>
+              <p className="text-emerald-400 font-semibold mb-2">Advisor</p>
+              <a
+                href="https://www.linkedin.com/in/haris-profile/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600/20 border border-blue-500/30 rounded-lg text-blue-400 hover:text-blue-300 hover:bg-blue-600/30 transition-all duration-200 text-sm font-medium"
+              >
+                <Linkedin className="w-4 h-4" />
+                LinkedIn
+              </a>
+            </div>
           </div>
         </motion.div>
 
