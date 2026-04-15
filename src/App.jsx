@@ -10,6 +10,7 @@ import { useEffect } from 'react';
 const TutorRedirect = () => { useEffect(() => { window.location.href = 'https://schoolace.ai/tutor'; }, []); return null; };
 import AdminExport from './pages/AdminExport';
 import InvestorStats from './pages/InvestorStats';
+import About from './pages/About';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 
@@ -69,6 +70,7 @@ const AuthenticatedApp = () => {
       <Route path="/tutor" element={<TutorRedirect />} />
       <Route path="/admin-export" element={<AdminExport />} />
       <Route path="/investor-stats" element={<InvestorStats />} />
+      <Route path="/about" element={<About />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

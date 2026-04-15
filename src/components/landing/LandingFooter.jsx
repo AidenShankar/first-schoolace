@@ -34,6 +34,7 @@ export default function LandingFooter() {
               <li><a href="#testimonials" className="text-slate-400 hover:text-white transition-colors text-sm">{t('landing.testimonials')}</a></li>
               <li><a href="mailto:contact@schoolace.org" className="text-slate-400 hover:text-white transition-colors text-sm">{t('landing.contact')}</a></li>
               <li><a href="https://aitutor.schoolace.ai/tutor/awards" className="text-slate-400 hover:text-white transition-colors text-sm">Awards</a></li>
+              <li><a href="/about" className="text-slate-400 hover:text-white transition-colors text-sm">About</a></li>
             </ul>
           </div>
 
