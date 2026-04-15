@@ -66,7 +66,7 @@ export default function About() {
               title="A Passion for Coding Since Age 8"
               delay={0.3}
             >
-              I've been coding since I was 8 years old. What started as curiosity — tinkering with simple programs and figuring out how things worked under the hood — quickly grew into a deep passion. Writing code wasn't just a hobby; it was a way of thinking, problem-solving, and creating things that didn't exist before.
+              I've been coding since I was 8 years old. What started as curiosity, tinkering with simple programs and figuring out how things worked under the hood, quickly grew into a deep passion. Writing code wasn't just a hobby; it was a way of thinking, problem-solving, and creating things that didn't exist before.
             </StorySection>
 
             <StorySection
@@ -77,7 +77,7 @@ export default function About() {
               title="Discovering AI & Machine Learning"
               delay={0.4}
             >
-              As I got older, I discovered the world of AI and machine learning — and it completely changed the way I saw technology. The idea that you could build systems that learn, adapt, and improve over time was incredible to me. I dove deep into it, studying algorithms, experimenting with models, and continuously expanding my knowledge. My passion for technology only grew stronger.
+              As I got older, I discovered the world of AI and machine learning, and it completely changed the way I saw technology. The idea that you could build systems that learn, adapt, and improve over time was incredible to me. I dove deep into it, studying algorithms, experimenting with models, and continuously expanding my knowledge. My passion for technology only grew stronger.
             </StorySection>
 
             <StorySection
@@ -88,7 +88,7 @@ export default function About() {
               title="The Spark That Started SchoolACE"
               delay={0.5}
             >
-              The idea for SchoolACE came during the summer when I took a step back and looked around me. I thought about my teachers — hardworking, dedicated people — spending countless hours on grading, lesson planning, and administrative tasks that pulled them away from actually teaching. And I thought about my friends, who were struggling in class, not because they weren't smart, but because they weren't getting personalized support or timely feedback.
+              The idea for SchoolACE came during the summer when I took a step back and looked around me. I thought about my teachers spending countless hours on grading, lesson planning, and administrative tasks that pulled them away from actually teaching. And I thought about my friends, who were struggling in class, not because they weren't smart, but because they weren't getting personalized support or timely feedback.
             </StorySection>
 
             <StorySection
@@ -99,7 +99,7 @@ export default function About() {
               title="Building Something That Matters"
               delay={0.6}
             >
-              I realized there was a real problem here — one that AI could genuinely solve. So I built SchoolACE: a platform that gives teachers back their time through AI-powered grading and tools, while giving every student the personalized learning companion they deserve. This isn't just a product — it's something I built because I care deeply about education and believe every student deserves the best support possible, regardless of class size or resources. That belief drives every feature we ship.
+              I realized there was a real problem here, one that AI could genuinely solve. So I built SchoolACE: a platform that gives teachers back their time through AI-powered grading and tools, while giving every student the personalized learning companion they deserve. This isn't just a product — it's something I built because I care deeply about education and believe every student deserves the best support possible, regardless of class size or resources. That belief drives every feature we ship.
             </StorySection>
           </div>
         </motion.div>
