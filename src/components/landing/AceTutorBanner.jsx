@@ -23,7 +23,7 @@ export default function AceTutorBanner() {
           rel="noopener noreferrer"
           className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-bold text-purple-900 bg-white hover:bg-yellow-300 transition-all duration-200 shadow-lg whitespace-nowrap"
         >
-          Get Access <ArrowRight className="w-3.5 h-3.5" />
+          Try It Free <ArrowRight className="w-3.5 h-3.5" />
         </a>
       </div>
     </div>
