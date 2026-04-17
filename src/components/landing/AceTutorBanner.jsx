@@ -13,9 +13,6 @@ export default function AceTutorBanner() {
         }}
       >
         <div className="flex items-center gap-2">
-          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-white/20 text-white border border-white/30 tracking-wide uppercase">
-            Invite Only
-          </span>
           <span className="text-white font-semibold text-sm sm:text-base">
             <span className="font-extrabold text-yellow-300">MEET ACE</span> - Your 24/7 AI tutor that adapts in real time to how you learn.
           </span>
