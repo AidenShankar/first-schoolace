@@ -113,34 +113,6 @@ export default function About() {
           </div>
         </motion.div>
 
-        {/* Advisor Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.7 }}
-          className="bg-slate-900/60 border border-slate-700/50 rounded-3xl p-8 md:p-10 backdrop-blur-xl mb-10">
-          
-          <h2 className="text-2xl font-bold text-white mb-6">Advisors</h2>
-          <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
-            <div className="w-20 h-20 rounded-2xl overflow-hidden shadow-2xl shadow-emerald-500/30 flex-shrink-0">
-              <img src="https://media.base44.com/images/public/687ed6bea54c832b17eb40bc/61225596b_image.png" alt="Hari Shankar" className="w-full h-full object-cover" />
-            </div>
-            <div className="text-center md:text-left">
-              <h3 className="text-xl font-bold text-white mb-1">Hari S</h3>
-              <p className="text-emerald-400 font-semibold mb-2">Advisor</p>
-              <a
-                href="https://www.linkedin.com/in/haris-profile/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600/20 border border-blue-500/30 rounded-lg text-blue-400 hover:text-blue-300 hover:bg-blue-600/30 transition-all duration-200 text-sm font-medium">
-                
-                <Linkedin className="w-4 h-4" />
-                LinkedIn
-              </a>
-            </div>
-          </div>
-        </motion.div>
-
         {/* CTA */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
