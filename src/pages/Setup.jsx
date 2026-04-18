@@ -233,7 +233,7 @@ export default function Setup() {
                         Our AI-powered tutoring experience lives at <strong>schoolace.ai</strong>. Head there to get personalized help, study smarter, and learn at your own pace.
                       </p>
                       <Button
-                        onClick={() => window.open('https://schoolace.ai', '_blank')}
+                        onClick={() => { window.location.href = 'https://schoolace.ai'; }}
                         className="w-full bg-indigo-600 hover:bg-indigo-700"
                       >
                         Take me there →
