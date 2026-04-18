@@ -250,7 +250,7 @@ export default function Setup() {
                         className="w-full border-slate-300 text-slate-700 hover:bg-slate-50"
                         disabled={loading}
                       >
-                        {loading ? 'Setting up...' : 'Continue with Teacher Login'}
+                        {loading ? 'Setting up...' : 'Continue'}
                       </Button>
                     </div>
 
