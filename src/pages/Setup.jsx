@@ -236,7 +236,7 @@ export default function Setup() {
                         onClick={() => window.open('https://schoolace.ai', '_blank')}
                         className="w-full bg-indigo-600 hover:bg-indigo-700"
                       >
-                        Take me to schoolace.ai →
+                        Take me there →
                       </Button>
                     </div>
 
