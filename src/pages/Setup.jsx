@@ -223,30 +223,68 @@ export default function Setup() {
                 )}
 
                 {selectedRole === 'student' && (
-                  <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                    <p className="text-sm text-green-900">
-                      <strong>Next Step:</strong> After setup, your teacher will provide you with a class code to join their classroom.
-                    </p>
+                  <div className="space-y-6">
+                    <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-6 text-center space-y-3">
+                      <div className="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center mx-auto">
+                        <GraduationCap className="w-6 h-6 text-white" />
+                      </div>
+                      <h3 className="text-lg font-semibold text-slate-900">Looking for the AI Tutor?</h3>
+                      <p className="text-sm text-slate-600">
+                        Our AI-powered tutoring experience lives at <strong>schoolace.ai</strong>. Head there to get personalized help, study smarter, and learn at your own pace.
+                      </p>
+                      <Button
+                        onClick={() => window.open('https://schoolace.ai', '_blank')}
+                        className="w-full bg-indigo-600 hover:bg-indigo-700"
+                      >
+                        Take me to schoolace.ai →
+                      </Button>
+                    </div>
+
+                    <div className="text-center">
+                      <p className="text-sm text-slate-500 mb-3">
+                        Already have a class code from your teacher? Continue setting up your student account below.
+                      </p>
+                      <Button
+                        onClick={handleComplete}
+                        variant="outline"
+                        className="w-full border-slate-300 text-slate-700 hover:bg-slate-50"
+                        disabled={loading}
+                      >
+                        {loading ? 'Setting up...' : 'Continue with Teacher Login'}
+                      </Button>
+                    </div>
+
+                    <div className="flex justify-center pt-2">
+                      <button
+                        onClick={() => setSelectedRole(null)}
+                        className="text-xs text-slate-400 hover:text-slate-600 underline"
+                        disabled={loading}
+                      >
+                        ← Go back
+                      </button>
+                    </div>
                   </div>
                 )}
 
-                <div className="flex gap-3 pt-4">
-                  <Button
-                    variant="outline"
-                    onClick={() => setSelectedRole(null)}
-                    className="flex-1"
-                    disabled={loading}
-                  >
-                    Back
-                  </Button>
-                  <Button
-                    onClick={handleComplete}
-                    className="flex-1 bg-indigo-600 hover:bg-indigo-700"
-                    disabled={loading}
-                  >
-                    {loading ? 'Setting up...' : 'Complete Setup'}
-                  </Button>
-                </div>
+                {selectedRole !== 'student' && (
+                  <div className="flex gap-3 pt-4">
+                    <Button
+                      variant="outline"
+                      onClick={() => setSelectedRole(null)}
+                      className="flex-1"
+                      disabled={loading}
+                    >
+                      Back
+                    </Button>
+                    <Button
+                      onClick={handleComplete}
+                      className="flex-1 bg-indigo-600 hover:bg-indigo-700"
+                      disabled={loading}
+                    >
+                      {loading ? 'Setting up...' : 'Complete Setup'}
+                    </Button>
+                  </div>
+                )}
               </motion.div>
             )}
           </CardContent>
