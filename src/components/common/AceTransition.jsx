@@ -13,8 +13,8 @@ export default function AceTransition() {
                 transition={{ duration: 0.4 }}
                 className="flex flex-col items-center gap-4"
             >
-                <div className="w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg" style={{ background: `linear-gradient(to right, rgb(var(--color-primary)), rgb(var(--color-secondary)))` }}>
-                    <GraduationCap className="w-9 h-9" style={{ color: 'rgb(var(--color-surface))' }} />
+                <div className="w-16 h-16 rounded-2xl overflow-hidden shadow-lg flex-shrink-0">
+                    <img src="https://media.base44.com/images/public/687ed6bea54c832b17eb40bc/36948c755_image.png" alt="SchoolACE" className="w-full h-full object-cover" />
                 </div>
                 <h1 className="text-2xl font-bold" style={{ color: 'rgb(var(--color-text))' }}>SchoolACE</h1>
                 <div className="w-6 h-6 border-2 border-slate-200 rounded-full animate-spin" style={{ borderTopColor: 'rgb(var(--color-primary))' }} />

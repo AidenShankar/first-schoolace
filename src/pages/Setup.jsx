@@ -132,8 +132,8 @@ export default function Setup() {
       >
         <Card className="bg-white/90 backdrop-blur-sm shadow-2xl">
           <CardHeader className="text-center pb-8">
-            <div className="w-16 h-16 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-4">
-              <GraduationCap className="w-8 h-8 text-white" />
+            <div className="w-16 h-16 rounded-xl overflow-hidden shadow-lg mx-auto mb-4 flex-shrink-0">
+              <img src="https://media.base44.com/images/public/687ed6bea54c832b17eb40bc/36948c755_image.png" alt="SchoolACE" className="w-full h-full object-cover" />
             </div>
             <CardTitle className="text-3xl font-bold text-slate-900">
               Welcome to SchoolACE
