@@ -942,7 +942,7 @@ function LayoutContent({
                   <GraduationCap className="w-6 h-6" style={{ color: 'rgb(var(--color-surface))' }} />
                 </div>
                 <div>
-                  <h1 className="text-xl font-bold" style={{ color: isLearnerDashboard ? 'rgb(255 255 255)' : `rgb(var(--color-text))` }}>Schoolace</h1>
+                  <h1 className="text-xl font-bold" style={{ color: isLearnerDashboard ? 'rgb(255 255 255)' : `rgb(var(--color-text))` }}>SchoolACE</h1>
                 </div>
               </Link>
               
