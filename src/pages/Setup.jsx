@@ -229,7 +229,7 @@ export default function Setup() {
                       <h3 className="text-lg font-semibold text-slate-900">Looking for the AI Tutor?</h3>
                       <p className="text-sm text-slate-600">
                         Our AI-powered tutoring experience lives at <strong>schoolace.ai</strong>. Head there to get personalized help, study smarter,
-                        <br />and ace your classes — no teacher or school account needed.
+                        <br />and ace your classes — no teacher or school needed.
                       </p>
                       <Button
                         onClick={() => { window.location.href = 'https://schoolace.ai'; }}
