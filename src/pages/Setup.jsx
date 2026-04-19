@@ -245,7 +245,7 @@ export default function Setup() {
                       </p>
                       <Button
                         onClick={handleComplete}
-                        className="w-full bg-indigo-600 hover:bg-indigo-700"
+                        className="w-full bg-black hover:bg-slate-800"
                         disabled={loading}
                       >
                         {loading ? 'Setting up...' : 'Continue'}
