@@ -225,9 +225,6 @@ export default function Setup() {
                 {selectedRole === 'student' && (
                   <div className="space-y-6">
                     <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-6 text-center space-y-3">
-                      <div className="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center mx-auto">
-                        <GraduationCap className="w-6 h-6 text-white" />
-                      </div>
                       <h3 className="text-lg font-semibold text-slate-900">Looking for the AI Tutor?</h3>
                       <p className="text-sm text-slate-600">
                         Our AI-powered tutoring experience lives at <strong>schoolace.ai</strong>. Head there to get personalized help, study smarter, and learn at your own pace.
