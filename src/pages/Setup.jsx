@@ -100,13 +100,6 @@ export default function Setup() {
 
   const roles = [
     {
-      id: 'admin',
-      title: 'School Admin',
-      description: 'Manage teachers, students, and schedules',
-      icon: Building,
-      color: 'from-purple-500 to-indigo-600'
-    },
-    {
       id: 'teacher',
       title: 'Teacher',
       description: 'Create assignments and manage your classroom',
@@ -183,26 +176,6 @@ export default function Setup() {
                 animate={{ opacity: 1 }}
                 className="space-y-6"
               >
-                {selectedRole === 'admin' && (
-                  <div className="space-y-4">
-                    <div>
-                      <Label htmlFor="schoolName">School/District Name *</Label>
-                      <Input
-                        id="schoolName"
-                        value={schoolName}
-                        onChange={(e) => setSchoolName(e.target.value)}
-                        placeholder="e.g., Lincoln High School"
-                        className="mt-2"
-                      />
-                    </div>
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                      <p className="text-sm text-blue-900">
-                        <strong>Next Step:</strong> After setup, you'll receive a unique 6-character admin code that teachers can use to join your school.
-                      </p>
-                    </div>
-                  </div>
-                )}
-
                 {selectedRole === 'teacher' && (
                   <div className="space-y-4">
                     <div>
