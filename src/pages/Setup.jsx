@@ -237,9 +237,10 @@ export default function Setup() {
                       </Button>
                     </div>
 
-                    <div className="text-center">
-                      <p className="text-sm text-slate-500 mb-3">
-                        Already have a class code from your teacher? Continue setting up your student account below.
+                    <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 text-center space-y-3">
+                      <h3 className="text-lg font-semibold text-slate-900">Already have a class code from your teacher?</h3>
+                      <p className="text-sm text-slate-600">
+                        Continue setting up your student account to join your class.
                       </p>
                       <Button
                         onClick={handleComplete}
