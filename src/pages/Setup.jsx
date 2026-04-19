@@ -136,7 +136,7 @@ export default function Setup() {
               <GraduationCap className="w-8 h-8 text-white" />
             </div>
             <CardTitle className="text-3xl font-bold text-slate-900">
-              Welcome to Schoolace
+              Welcome to SchoolACE
             </CardTitle>
             <p className="text-slate-600 mt-2">
               {!selectedRole ? 'Choose your role to get started' : 
