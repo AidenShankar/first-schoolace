@@ -224,10 +224,15 @@ export default function Setup() {
 
                 {selectedRole === 'student' && (
                   <div className="space-y-6">
-                    <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-6 text-center space-y-3">
+                    <div className="relative bg-indigo-50 border border-indigo-200 rounded-xl p-6 text-center space-y-3">
+                      <span className="absolute top-3 right-3 text-xs font-semibold bg-indigo-100 text-indigo-700 border border-indigo-300 rounded-full px-2.5 py-0.5">
+                        Independent of school/teacher
+                      </span>
                       <h3 className="text-lg font-semibold text-slate-900">Looking for the AI Tutor?</h3>
                       <p className="text-sm text-slate-600">
-                        Our AI-powered tutoring experience lives at <strong>schoolace.ai</strong>. Head there to get personalized help, study smarter, and learn at your own pace.
+                        Our AI-powered tutoring experience lives at <strong>schoolace.ai</strong>.<br />
+                        Head there to get personalized help,<br />
+                        study smarter, and learn at your own pace.
                       </p>
                       <Button
                         onClick={() => { window.location.href = 'https://schoolace.ai'; }}
@@ -243,8 +248,7 @@ export default function Setup() {
                       </p>
                       <Button
                         onClick={handleComplete}
-                        variant="outline"
-                        className="w-full border-slate-300 text-slate-700 hover:bg-slate-50"
+                        className="w-full bg-blue-600 hover:bg-blue-700 text-white"
                         disabled={loading}
                       >
                         {loading ? 'Setting up...' : 'Continue'}
