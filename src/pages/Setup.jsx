@@ -226,10 +226,9 @@ export default function Setup() {
                   <div className="space-y-6">
                     <div className="relative bg-indigo-50 border border-indigo-200 rounded-xl p-6 text-center space-y-3">
                       <span className="absolute top-3 right-3 text-xs bg-indigo-100 text-indigo-700 border border-indigo-300 rounded-full px-2 py-0.5 font-medium">Independent of school/teacher</span>
-                      <h3 className="text-lg font-semibold text-slate-900">Looking for the AI Tutor?</h3>
+                      <h3 className="text-lg font-semibold text-slate-900">Looking for an independent tutor outside school?</h3>
                       <p className="text-sm text-slate-600">
-                        Our AI-powered tutoring experience lives at <strong>schoolace.ai</strong>. Head there to get personalized help, study smarter,
-                        <br />and ace your classes — no teacher or school needed.
+                        Our AI-powered tutor is at <strong>schoolace.ai</strong> - get personalized help, study smarter, and ace your classes.
                       </p>
                       <Button
                         onClick={() => { window.location.href = 'https://schoolace.ai'; }}
