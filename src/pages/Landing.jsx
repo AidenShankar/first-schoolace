@@ -258,15 +258,15 @@ const PricingCard = ({ plan, price, features, cta, isFeatured, isPrimary, linkTo
       );
     }
 
-    // Pro tier: $21 / teacher / month
-    if (price.includes('$21')) {
+    // Pro tier: $10 / student / month
+    if (price.includes('$10')) {
       return (
         <>
           <div className="flex items-baseline gap-2 mb-1">
-            <span className="text-4xl font-extrabold text-white">$21</span>
+            <span className="text-4xl font-extrabold text-white">$10</span>
             <span className="text-sm font-normal text-slate-400">USD</span>
           </div>
-          <div className="text-base font-normal text-slate-300 mb-1">{price.replace('$21', '').trim()}</div>
+          <div className="text-base font-normal text-slate-300 mb-1">{price.replace('$10', '').trim()}</div>
         </>
       );
     }
