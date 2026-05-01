@@ -79,6 +79,16 @@
       "type": "string",
       "format": "date-time",
       "description": "When the beta invite email was sent"
+    },
+    "last_login": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp of the user's most recent login/session"
+    },
+    "login_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Total number of times the user has logged in"
     }
   },
   "required": [

@@ -95,6 +95,16 @@ export const AuthProvider = ({ children }) => {
       setUser(currentUser);
       setIsAuthenticated(true);
       setIsLoadingAuth(false);
+
+      // Track login - fire and forget, don't block auth flow
+      try {
+        await base44.auth.updateMe({
+          last_login: new Date().toISOString(),
+          login_count: (currentUser.login_count || 0) + 1
+        });
+      } catch (e) {
+        // Silently ignore tracking errors
+      }
     } catch (error) {
       console.error('User auth check failed:', error);
       setIsLoadingAuth(false);
