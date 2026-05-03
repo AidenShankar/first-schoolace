@@ -175,7 +175,7 @@ export default function InvestorStats() {
         {/* Header */}
         <div className="text-center mb-10">
           <h1 className="text-4xl font-bold text-white">SchoolACE — Investor Metrics</h1>
-          <p className="text-lg text-slate-300 mt-2">Nov 2025 – March 2026</p>
+
         </div>
 
         {/* Top-line KPIs */}
