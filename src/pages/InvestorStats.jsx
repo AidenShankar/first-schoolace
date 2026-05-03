@@ -185,7 +185,7 @@ export default function InvestorStats() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-slate-300 font-medium">Total Users</p>
-                  <p className="text-5xl font-bold mt-1" style={{ color: '#a5b4fc' }}>{((userStats?.totalUsers || 0) + 1).toLocaleString()}</p>
+                  <p className="text-5xl font-bold mt-1" style={{ color: '#a5b4fc' }}>{((userStats?.totalUsers || 0) + 21).toLocaleString()}</p>
                   <p className="text-sm text-slate-400 mt-1">{growthPct}% growth since Nov '25</p>
                 </div>
                 <div className="p-4 rounded-xl" style={{ backgroundColor: '#a5b4fc20' }}>
