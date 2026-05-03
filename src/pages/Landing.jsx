@@ -231,7 +231,7 @@ const PricingCard = ({ plan, price, features, cta, isFeatured, isPrimary, linkTo
 
   const handleContactSales = () => {
     setShowContactEmail(true);
-    const email = "contact@schoolace.org";
+    const email = "contact@schoolace.ai";
     let index = 0;
     const typewriter = setInterval(() => {
       if (index < email.length) {
@@ -680,7 +680,7 @@ export default function LandingPage() {
       setTimeout(() => setContactFormSuccess(false), 5000);
     } catch (error) {
       console.error('Error saving contact form:', error);
-      alert('Failed to send message. Please try again or email us directly, contact@schoolace.org');
+      alert('Failed to send message. Please try again or email us directly, contact@schoolace.ai');
     } finally {
       setContactFormSubmitting(false);
     }
@@ -1810,8 +1810,8 @@ export default function LandingPage() {
 
                   <p className="text-sm text-slate-400 text-center">
                     {t('landing.orEmailDirectly')} {' '}
-                    <a href="mailto:contact@schoolace.org" className="text-indigo-400 hover:text-indigo-300 underline">
-                      contact@schoolace.org
+                    <a href="mailto:contact@schoolace.ai" className="text-indigo-400 hover:text-indigo-300 underline">
+                      contact@schoolace.ai
                     </a>
                   </p>
                 </form>
