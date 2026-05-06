@@ -50,6 +50,17 @@ export default function InvestorStats() {
 
       const spamDomains = data.spamDomains || [];
 
+      // Count new users in last 3 days
+      const threeDaysAgo = new Date();
+      threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+      const recentUsers = await base44.entities.User.list('-created_date', 200);
+      const newUsersLast3Days = recentUsers.filter(u => {
+        const domain = (u.email || '').split('@')[1] || '';
+        if ((data.spamDomains || []).includes(domain)) return false;
+        return new Date(u.created_date) >= threeDaysAgo;
+      }).length;
+      data.newUsersLast3Days = newUsersLast3Days;
+
       // Fetch submissions client-side (admin has access)
       let allSubs = [];
       const pageSize = 200;
@@ -194,7 +205,8 @@ export default function InvestorStats() {
               </div>
             </CardContent>
           </Card>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <StatCard icon={Users} label="New Users (Last 3 Days)" value={userStats?.newUsersLast3Days ?? 0} subtitle="Recently joined" color="#34d399" />
             <StatCard icon={FileText} label="Total Submissions" value={submissionStats?.total?.toLocaleString() || 0} subtitle="Student assignments submitted" color="#a78bfa" />
             <StatCard icon={Brain} label="AI-Graded" value={submissionStats?.aiGraded?.toLocaleString() || 0} subtitle={`of ${submissionStats?.total?.toLocaleString() || 0} total submissions`} color="#f472b6" />
           </div>
