@@ -1,0 +1,79 @@
+{
+  "name": "CourseRequest",
+  "type": "object",
+  "properties": {
+    "student_id": {
+      "type": "string",
+      "description": "Student user ID"
+    },
+    "student_name": {
+      "type": "string",
+      "description": "Student name"
+    },
+    "course_id": {
+      "type": "string",
+      "description": "Requested course ID"
+    },
+    "priority": {
+      "type": "number",
+      "default": 1,
+      "description": "Request priority (1 = highest)"
+    },
+    "is_alternate": {
+      "type": "boolean",
+      "default": false,
+      "description": "Is this an alternate choice"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "scheduled",
+        "denied"
+      ],
+      "default": "pending",
+      "description": "Request status"
+    },
+    "school_year": {
+      "type": "string",
+      "description": "School year (e.g., '2024-2025')"
+    }
+  },
+  "required": [
+    "student_id",
+    "student_name",
+    "course_id",
+    "school_year"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "data.app_role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "data.app_role": "student"
+          }
+        }
+      ]
+    },
+    "write": {
+      "$or": [
+        {
+          "user_condition": {
+            "data.app_role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "data.app_role": "student"
+          }
+        }
+      ]
+    }
+  }
+}

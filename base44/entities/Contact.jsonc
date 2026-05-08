@@ -1,0 +1,57 @@
+{
+  "name": "Contact",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Name of the person contacting"
+    },
+    "email": {
+      "type": "string",
+      "description": "Email of the person contacting"
+    },
+    "subject": {
+      "type": "string",
+      "description": "Subject of the message"
+    },
+    "message": {
+      "type": "string",
+      "description": "Message content"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "new",
+        "read",
+        "responded",
+        "archived"
+      ],
+      "default": "new",
+      "description": "Status of the contact message"
+    }
+  },
+  "required": [
+    "name",
+    "email",
+    "message"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "data.app_role": "admin"
+      }
+    },
+    "write": {
+      "$or": [
+        {
+          "user_condition": {
+            "data.app_role": "admin"
+          }
+        },
+        {
+          "allow_anonymous": true
+        }
+      ]
+    }
+  }
+}

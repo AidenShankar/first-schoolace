@@ -1,0 +1,44 @@
+{
+  "name": "DayType",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Day name (e.g., Day A, Day 1, Monday)"
+    },
+    "day_index": {
+      "type": "number",
+      "description": "Index in the cycle (0-based)"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether this day is in the current rotation"
+    }
+  },
+  "required": [
+    "name",
+    "day_index"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "data.app_role": "teacher"
+          }
+        },
+        {
+          "user_condition": {
+            "data.app_role": "student"
+          }
+        }
+      ]
+    },
+    "write": {
+      "user_condition": {
+        "data.app_role": "teacher"
+      }
+    }
+  }
+}

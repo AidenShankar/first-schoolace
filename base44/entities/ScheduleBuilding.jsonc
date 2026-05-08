@@ -1,0 +1,43 @@
+{
+  "name": "ScheduleBuilding",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Building name"
+    },
+    "code": {
+      "type": "string",
+      "description": "Building code"
+    },
+    "address": {
+      "type": "string",
+      "description": "Building address"
+    }
+  },
+  "required": [
+    "name",
+    "code"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "data.app_role": "teacher"
+          }
+        },
+        {
+          "user_condition": {
+            "data.app_role": "student"
+          }
+        }
+      ]
+    },
+    "write": {
+      "user_condition": {
+        "data.app_role": "teacher"
+      }
+    }
+  }
+}

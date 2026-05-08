@@ -1,0 +1,66 @@
+{
+  "name": "DataAccessLog",
+  "type": "object",
+  "properties": {
+    "student_id": {
+      "type": "string",
+      "description": "ID of student whose data was accessed"
+    },
+    "accessed_by_user_id": {
+      "type": "string",
+      "description": "ID of user who accessed the data"
+    },
+    "accessed_by_name": {
+      "type": "string",
+      "description": "Name of user who accessed the data"
+    },
+    "access_type": {
+      "type": "string",
+      "enum": [
+        "view",
+        "edit",
+        "delete",
+        "export",
+        "share"
+      ],
+      "description": "Type of access"
+    },
+    "data_type": {
+      "type": "string",
+      "enum": [
+        "grades",
+        "assignments",
+        "submissions",
+        "messages",
+        "profile"
+      ],
+      "description": "Type of data accessed"
+    },
+    "purpose": {
+      "type": "string",
+      "description": "Educational purpose for access"
+    },
+    "ip_address": {
+      "type": "string",
+      "description": "IP address of accessor"
+    }
+  },
+  "required": [
+    "student_id",
+    "accessed_by_user_id",
+    "access_type",
+    "data_type"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "data.app_role": "admin"
+      }
+    },
+    "write": {
+      "user_condition": {
+        "data.app_role": "admin"
+      }
+    }
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "name": "CourseConstraint",
+  "type": "object",
+  "properties": {
+    "course_id": {
+      "type": "string",
+      "description": "ID of the course"
+    },
+    "constraint_type": {
+      "type": "string",
+      "enum": [
+        "requires_lab",
+        "requires_gym",
+        "requires_specific_room",
+        "department_only",
+        "consecutive_periods",
+        "avoid_first_period",
+        "avoid_last_period"
+      ],
+      "description": "Type of constraint"
+    },
+    "required_room_id": {
+      "type": "string",
+      "description": "Specific room required (if constraint_type is requires_specific_room)"
+    },
+    "required_facility": {
+      "type": "string",
+      "description": "Required facility (lab equipment, projector, etc.)"
+    },
+    "consecutive_with_course_id": {
+      "type": "string",
+      "description": "Course ID that must be scheduled consecutively"
+    },
+    "priority": {
+      "type": "number",
+      "default": 1,
+      "description": "Priority level (1=highest, 10=lowest)"
+    }
+  },
+  "required": [
+    "course_id",
+    "constraint_type"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "data.app_role": "admin"
+      }
+    },
+    "write": {
+      "user_condition": {
+        "data.app_role": "admin"
+      }
+    }
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "name": "ScheduleRoom",
+  "type": "object",
+  "properties": {
+    "room_number": {
+      "type": "string",
+      "description": "Room number"
+    },
+    "building_id": {
+      "type": "string",
+      "description": "Building ID"
+    },
+    "capacity": {
+      "type": "number",
+      "default": 30,
+      "description": "Room capacity"
+    },
+    "department_id": {
+      "type": "string",
+      "description": "Primary department using this room"
+    },
+    "is_lab": {
+      "type": "boolean",
+      "default": false,
+      "description": "Is this a lab room"
+    },
+    "is_gym": {
+      "type": "boolean",
+      "default": false,
+      "description": "Is this a gym"
+    },
+    "has_projector": {
+      "type": "boolean",
+      "default": false,
+      "description": "Has projector"
+    },
+    "has_computers": {
+      "type": "boolean",
+      "default": false,
+      "description": "Has computers"
+    },
+    "use_for_scheduling": {
+      "type": "boolean",
+      "default": true,
+      "description": "Should this room be used in scheduling"
+    }
+  },
+  "required": [
+    "room_number",
+    "building_id",
+    "capacity"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "data.app_role": "teacher"
+          }
+        },
+        {
+          "user_condition": {
+            "data.app_role": "student"
+          }
+        }
+      ]
+    },
+    "write": {
+      "user_condition": {
+        "data.app_role": "teacher"
+      }
+    }
+  }
+}

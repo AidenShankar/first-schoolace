@@ -1,0 +1,89 @@
+{
+  "name": "ScheduleSection",
+  "type": "object",
+  "properties": {
+    "course_id": {
+      "type": "string",
+      "description": "Course ID"
+    },
+    "section_number": {
+      "type": "number",
+      "description": "Section number"
+    },
+    "teacher_id": {
+      "type": "string",
+      "description": "Assigned teacher ID"
+    },
+    "teacher_name": {
+      "type": "string",
+      "description": "Assigned teacher name"
+    },
+    "room_id": {
+      "type": "string",
+      "description": "Assigned room ID"
+    },
+    "period_id": {
+      "type": "string",
+      "description": "Assigned period ID"
+    },
+    "capacity": {
+      "type": "number",
+      "default": 25,
+      "description": "Section capacity"
+    },
+    "enrolled_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of enrolled students"
+    },
+    "has_teacher_conflict": {
+      "type": "boolean",
+      "default": false,
+      "description": "Teacher is double-booked"
+    },
+    "has_room_conflict": {
+      "type": "boolean",
+      "default": false,
+      "description": "Room is double-booked"
+    },
+    "is_over_capacity": {
+      "type": "boolean",
+      "default": false,
+      "description": "Section is over capacity"
+    },
+    "school_year": {
+      "type": "string",
+      "description": "School year"
+    },
+    "scenario_id": {
+      "type": "string",
+      "description": "Scheduling scenario ID"
+    }
+  },
+  "required": [
+    "course_id",
+    "section_number",
+    "school_year"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "data.app_role": "teacher"
+          }
+        },
+        {
+          "user_condition": {
+            "data.app_role": "student"
+          }
+        }
+      ]
+    },
+    "write": {
+      "user_condition": {
+        "data.app_role": "teacher"
+      }
+    }
+  }
+}

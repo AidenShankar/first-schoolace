@@ -1,0 +1,66 @@
+{
+  "name": "SchedulingScenario",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Scenario name"
+    },
+    "school_year": {
+      "type": "string",
+      "description": "School year"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": false,
+      "description": "Is this the active scenario"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "setup",
+        "building",
+        "built",
+        "committed"
+      ],
+      "default": "setup",
+      "description": "Scenario status"
+    },
+    "build_started_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When build started"
+    },
+    "build_completed_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When build completed"
+    },
+    "total_conflicts": {
+      "type": "number",
+      "default": 0,
+      "description": "Total conflicts found"
+    },
+    "requests_satisfied_percent": {
+      "type": "number",
+      "default": 0,
+      "description": "Percentage of student requests satisfied"
+    }
+  },
+  "required": [
+    "name",
+    "school_year"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "data.app_role": "admin"
+      }
+    },
+    "write": {
+      "user_condition": {
+        "data.app_role": "admin"
+      }
+    }
+  }
+}

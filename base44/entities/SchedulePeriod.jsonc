@@ -1,0 +1,54 @@
+{
+  "name": "SchedulePeriod",
+  "type": "object",
+  "properties": {
+    "period_number": {
+      "type": "number",
+      "description": "Period number (1, 2, 3, etc.)"
+    },
+    "period_name": {
+      "type": "string",
+      "description": "Period name (e.g., 'Period 1', 'Homeroom')"
+    },
+    "start_time": {
+      "type": "string",
+      "description": "Start time (HH:MM format)"
+    },
+    "end_time": {
+      "type": "string",
+      "description": "End time (HH:MM format)"
+    },
+    "is_lunch": {
+      "type": "boolean",
+      "default": false,
+      "description": "Is this a lunch period"
+    }
+  },
+  "required": [
+    "period_number",
+    "period_name",
+    "start_time",
+    "end_time"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "data.app_role": "teacher"
+          }
+        },
+        {
+          "user_condition": {
+            "data.app_role": "student"
+          }
+        }
+      ]
+    },
+    "write": {
+      "user_condition": {
+        "data.app_role": "teacher"
+      }
+    }
+  }
+}

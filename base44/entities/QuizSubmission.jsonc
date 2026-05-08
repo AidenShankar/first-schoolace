@@ -1,0 +1,80 @@
+{
+  "name": "QuizSubmission",
+  "type": "object",
+  "properties": {
+    "quiz_id": {
+      "type": "string"
+    },
+    "student_id": {
+      "type": "string"
+    },
+    "student_name": {
+      "type": "string",
+      "description": "Name of the student at time of submission"
+    },
+    "student_email": {
+      "type": "string",
+      "description": "Email of the student at time of submission"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "not-started",
+        "in-progress",
+        "completed"
+      ],
+      "default": "not-started"
+    },
+    "score": {
+      "type": "number"
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "focus_loss_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Counts how many times the student switched tabs or lost focus during the quiz."
+    }
+  },
+  "required": [
+    "quiz_id",
+    "student_id",
+    "status"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "data.app_role": "student"
+          }
+        },
+        {
+          "user_condition": {
+            "data.app_role": "teacher"
+          }
+        }
+      ]
+    },
+    "write": {
+      "$or": [
+        {
+          "user_condition": {
+            "data.app_role": "student"
+          }
+        },
+        {
+          "user_condition": {
+            "data.app_role": "teacher"
+          }
+        }
+      ]
+    }
+  }
+}

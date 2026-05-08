@@ -1,0 +1,59 @@
+{
+  "name": "TeacherConstraint",
+  "type": "object",
+  "properties": {
+    "teacher_id": {
+      "type": "string",
+      "description": "ID of the teacher"
+    },
+    "teacher_name": {
+      "type": "string",
+      "description": "Name of the teacher for display"
+    },
+    "period_id": {
+      "type": "string",
+      "description": "Period ID that is blocked/preferred"
+    },
+    "day_type_id": {
+      "type": "string",
+      "description": "Optional: specific day type (for rotating schedules)"
+    },
+    "constraint_type": {
+      "type": "string",
+      "enum": [
+        "unavailable",
+        "preferred",
+        "lunch_free",
+        "planning_period"
+      ],
+      "default": "unavailable",
+      "description": "Type of constraint"
+    },
+    "reason": {
+      "type": "string",
+      "description": "Optional reason for the constraint"
+    },
+    "school_year": {
+      "type": "string",
+      "description": "School year this constraint applies to"
+    }
+  },
+  "required": [
+    "teacher_id",
+    "period_id",
+    "constraint_type",
+    "school_year"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "data.app_role": "admin"
+      }
+    },
+    "write": {
+      "user_condition": {
+        "data.app_role": "admin"
+      }
+    }
+  }
+}

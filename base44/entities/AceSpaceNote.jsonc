@@ -1,0 +1,47 @@
+{
+  "name": "AceSpaceNote",
+  "type": "object",
+  "properties": {
+    "space_id": {
+      "type": "string",
+      "description": "ID of the AceSpace"
+    },
+    "creator_id": {
+      "type": "string",
+      "description": "ID of the student who created the note"
+    },
+    "creator_name": {
+      "type": "string",
+      "description": "Name of the creator"
+    },
+    "title": {
+      "type": "string",
+      "description": "Title of the note"
+    },
+    "content": {
+      "type": "string",
+      "description": "Content of the note"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "space_id",
+    "title",
+    "content"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "data.app_role": "student"
+      }
+    },
+    "write": {
+      "user_condition": {
+        "data.app_role": "student"
+      }
+    }
+  }
+}

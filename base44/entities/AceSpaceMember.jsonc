@@ -1,0 +1,47 @@
+{
+  "name": "AceSpaceMember",
+  "type": "object",
+  "properties": {
+    "space_id": {
+      "type": "string",
+      "description": "ID of the AceSpace"
+    },
+    "student_id": {
+      "type": "string",
+      "description": "ID of the student"
+    },
+    "student_name": {
+      "type": "string",
+      "description": "Name of the student"
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "admin",
+        "member"
+      ],
+      "default": "member"
+    },
+    "joined_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "space_id",
+    "student_id",
+    "student_name"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "data.app_role": "student"
+      }
+    },
+    "write": {
+      "user_condition": {
+        "data.app_role": "student"
+      }
+    }
+  }
+}

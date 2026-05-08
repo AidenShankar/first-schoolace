@@ -1,0 +1,66 @@
+{
+  "name": "Class",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Name of the class"
+    },
+    "description": {
+      "type": "string",
+      "description": "Class description"
+    },
+    "class_code": {
+      "type": "string",
+      "description": "Unique code for students to join the class"
+    },
+    "teacher_id": {
+      "type": "string",
+      "description": "ID of the teacher who created the class"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether the class is active"
+    },
+    "use_category_weighting": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether to use category weighting for grade calculation"
+    },
+    "hide_ace_ai": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether to hide the ACE AI tab from students in this class"
+    },
+    "hide_ai_tools": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether to hide the AI Tools tab from students in this class"
+    }
+  },
+  "required": [
+    "name",
+    "class_code",
+    "teacher_id"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "data.app_role": "teacher"
+          }
+        },
+        {
+          "user_condition": {
+            "data.app_role": "student"
+          }
+        }
+      ]
+    },
+    "write": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

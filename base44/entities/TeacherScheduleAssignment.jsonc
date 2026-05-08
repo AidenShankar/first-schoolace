@@ -1,0 +1,75 @@
+{
+  "name": "TeacherScheduleAssignment",
+  "type": "object",
+  "properties": {
+    "teacher_id": {
+      "type": "string",
+      "description": "Teacher user ID"
+    },
+    "teacher_name": {
+      "type": "string",
+      "description": "Teacher name"
+    },
+    "course_id": {
+      "type": "string",
+      "description": "Course ID to teach"
+    },
+    "num_sections": {
+      "type": "number",
+      "default": 1,
+      "description": "Number of sections to teach"
+    },
+    "max_load": {
+      "type": "number",
+      "default": 6,
+      "description": "Maximum number of periods per day"
+    },
+    "preferred_periods": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "description": "Preferred period numbers"
+    },
+    "unavailable_periods": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "description": "Unavailable period numbers"
+    }
+  },
+  "required": [
+    "teacher_id",
+    "teacher_name",
+    "course_id",
+    "num_sections"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "data.app_role": "teacher"
+      }
+    },
+    "write": {
+      "user_condition": {
+        "data.app_role": "teacher"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "data.app_role": "teacher"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "data.app_role": "teacher"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "data.app_role": "teacher"
+      }
+    }
+  }
+}

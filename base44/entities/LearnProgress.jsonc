@@ -1,0 +1,32 @@
+{
+  "name": "LearnProgress",
+  "type": "object",
+  "properties": {
+    "study_set_id": {
+      "type": "string"
+    },
+    "user_id": {
+      "type": "string"
+    },
+    "mastery_data": {
+      "type": "object",
+      "description": "JSON object mapping card IDs to mastery levels (0=New, 1=Learning, 2=Reviewing, 3=Mastered)"
+    },
+    "last_studied_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "study_set_id",
+    "user_id"
+  ],
+  "rls": {
+    "read": {
+      "user_id": "{{user.id}}"
+    },
+    "write": {
+      "user_id": "{{user.id}}"
+    }
+  }
+}

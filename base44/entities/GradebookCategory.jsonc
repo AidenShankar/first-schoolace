@@ -1,0 +1,57 @@
+{
+  "name": "GradebookCategory",
+  "type": "object",
+  "properties": {
+    "class_id": {
+      "type": "string",
+      "description": "ID of the class this category belongs to"
+    },
+    "name": {
+      "type": "string",
+      "description": "Category name (e.g., Homework, Quiz, Test)"
+    },
+    "weight": {
+      "type": "number",
+      "default": 0,
+      "description": "Weight percentage for this category (0-100)"
+    },
+    "drop_lowest": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of lowest scores to drop in this category"
+    },
+    "color": {
+      "type": "string",
+      "default": "#6366f1",
+      "description": "Color for UI display"
+    },
+    "order": {
+      "type": "number",
+      "default": 0,
+      "description": "Display order"
+    }
+  },
+  "required": [
+    "class_id",
+    "name"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "data.app_role": "teacher"
+          }
+        },
+        {
+          "user_condition": {
+            "data.app_role": "student"
+          }
+        }
+      ]
+    },
+    "write": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

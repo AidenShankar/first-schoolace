@@ -1,0 +1,55 @@
+{
+  "name": "GradeLevelRequirement",
+  "type": "object",
+  "properties": {
+    "grade_level": {
+      "type": "string",
+      "description": "Grade level (9, 10, 11, 12)"
+    },
+    "school_year": {
+      "type": "string",
+      "description": "School year"
+    },
+    "required_courses": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Course IDs that are required for this grade"
+    },
+    "total_credits_required": {
+      "type": "number",
+      "default": 6,
+      "description": "Total credits student must take"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes or guidance"
+    }
+  },
+  "required": [
+    "grade_level",
+    "school_year"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "data.app_role": "teacher"
+          }
+        },
+        {
+          "user_condition": {
+            "data.app_role": "student"
+          }
+        }
+      ]
+    },
+    "write": {
+      "user_condition": {
+        "data.app_role": "teacher"
+      }
+    }
+  }
+}

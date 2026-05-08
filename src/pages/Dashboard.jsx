@@ -927,26 +927,18 @@ Output your response as JSON with:
                 s => s.student_id === primarySubmission.student_id && s.assignment_id === primarySubmission.assignment_id
             );
 
-            // Create a list of promises to update each submission accordingly
-            const updatePromises = allSubmissionsForAssignment.map(sub => {
-                if (sub.id === submissionId) {
-                    // This is the one we clicked, give it the full "released" status
-                    return retryWithBackoff(() => Submission.update(sub.id, primaryUpdateData));
-                } else {
-                    // These are the others, just sync the grade and lock them
-                    return retryWithBackoff(() => Submission.update(sub.id, sharedUpdateData));
-                }
-            });
-
-            // Execute all updates
-            await Promise.all(updatePromises);
+            // Update sequentially to avoid rate-limit / timeout issues
+            for (const sub of allSubmissionsForAssignment) {
+                const data = sub.id === submissionId ? primaryUpdateData : sharedUpdateData;
+                await retryWithBackoff(() => Submission.update(sub.id, data));
+            }
 
             // Refresh the data from the server
             loadSubmissions();
 
         } catch (error) {
             console.error("Error releasing grade:", error);
-            alert("Failed to release grade. Please try again.");
+            alert(`Failed to release grade: ${error?.message || 'Please try again.'}`);
         }
     };
 

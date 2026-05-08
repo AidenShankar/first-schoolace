@@ -1,0 +1,72 @@
+{
+  "name": "Quiz",
+  "type": "object",
+  "properties": {
+    "class_id": {
+      "type": "string"
+    },
+    "teacher_id": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "active",
+        "closed"
+      ],
+      "default": "draft"
+    },
+    "time_limit_minutes": {
+      "type": "number",
+      "description": "Time limit in minutes. 0 for no limit."
+    },
+    "show_results": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether students can see their results after completion."
+    }
+  },
+  "required": [
+    "class_id",
+    "teacher_id",
+    "title",
+    "status"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "data.app_role": "teacher"
+          }
+        },
+        {
+          "user_condition": {
+            "data.app_role": "student"
+          }
+        }
+      ]
+    },
+    "write": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    },
+    "create": {
+      "user_condition": {
+        "data.app_role": "teacher"
+      }
+    }
+  }
+}

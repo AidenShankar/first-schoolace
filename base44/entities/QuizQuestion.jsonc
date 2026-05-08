@@ -1,0 +1,54 @@
+{
+  "name": "QuizQuestion",
+  "type": "object",
+  "properties": {
+    "quiz_id": {
+      "type": "string"
+    },
+    "question_text": {
+      "type": "string"
+    },
+    "question_type": {
+      "type": "string",
+      "enum": [
+        "multiple-choice",
+        "true-false",
+        "free-response"
+      ]
+    },
+    "options": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": true,
+      "description": "JSON object for options, e.g., {\"A\": \"Option 1\", \"B\": \"Option 2\"}"
+    },
+    "correct_answer": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "quiz_id",
+    "question_text",
+    "question_type",
+    "correct_answer"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "data.app_role": "teacher"
+          }
+        },
+        {
+          "user_condition": {
+            "data.app_role": "student"
+          }
+        }
+      ]
+    },
+    "write": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

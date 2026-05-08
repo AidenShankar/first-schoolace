@@ -1,0 +1,94 @@
+{
+  "name": "GradebookAssignment",
+  "type": "object",
+  "properties": {
+    "class_id": {
+      "type": "string",
+      "description": "ID of the class"
+    },
+    "source_assignment_id": {
+      "type": "string",
+      "description": "ID of the original Dashboard Assignment entity (for sync)"
+    },
+    "category_id": {
+      "type": "string",
+      "description": "ID of the category this assignment belongs to"
+    },
+    "name": {
+      "type": "string",
+      "description": "Assignment name"
+    },
+    "description": {
+      "type": "string",
+      "description": "Assignment description"
+    },
+    "max_points": {
+      "type": "number",
+      "default": 100,
+      "description": "Maximum points possible"
+    },
+    "weight": {
+      "type": "number",
+      "default": 1,
+      "description": "Individual assignment weight multiplier"
+    },
+    "due_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Due date"
+    },
+    "term": {
+      "type": "string",
+      "enum": [
+        "Q1",
+        "Q2",
+        "Q3",
+        "Q4",
+        "S1",
+        "S2",
+        "Y1"
+      ],
+      "default": "Q1",
+      "description": "Reporting term"
+    },
+    "is_extra_credit": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this is extra credit"
+    },
+    "exclude_from_final": {
+      "type": "boolean",
+      "default": false,
+      "description": "Exclude from final grade calculation"
+    },
+    "publish_scores": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether scores are visible to students"
+    }
+  },
+  "required": [
+    "class_id",
+    "name",
+    "max_points"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "data.app_role": "teacher"
+          }
+        },
+        {
+          "user_condition": {
+            "data.app_role": "student"
+          }
+        }
+      ]
+    },
+    "write": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

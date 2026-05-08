@@ -1,0 +1,53 @@
+{
+  "name": "StudySet",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Title of the study set"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description of the study set"
+    },
+    "subject": {
+      "type": "string",
+      "description": "Subject category"
+    },
+    "is_public": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the set is visible to everyone"
+    },
+    "class_id": {
+      "type": "string",
+      "description": "Optional: Link to a specific class"
+    },
+    "owner_id": {
+      "type": "string",
+      "description": "ID of the user who created the set"
+    },
+    "owner_name": {
+      "type": "string",
+      "description": "Name of the creator"
+    }
+  },
+  "required": [
+    "title",
+    "owner_id"
+  ],
+  "rls": {
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

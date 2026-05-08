@@ -1,0 +1,78 @@
+{
+  "name": "FERPAConsent",
+  "type": "object",
+  "properties": {
+    "student_id": {
+      "type": "string",
+      "description": "ID of the student"
+    },
+    "parent_email": {
+      "type": "string",
+      "description": "Email of parent/guardian for minors"
+    },
+    "consent_type": {
+      "type": "string",
+      "enum": [
+        "directory_info",
+        "third_party_tools",
+        "data_sharing",
+        "research"
+      ],
+      "description": "Type of consent given"
+    },
+    "consent_given": {
+      "type": "boolean",
+      "description": "Whether consent was given"
+    },
+    "consent_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When consent was given"
+    },
+    "consent_expires": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When consent expires"
+    },
+    "withdrawal_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When consent was withdrawn"
+    }
+  },
+  "required": [
+    "student_id",
+    "consent_type",
+    "consent_given"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "data.app_role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "data.app_role": "teacher"
+          }
+        }
+      ]
+    },
+    "write": {
+      "$or": [
+        {
+          "user_condition": {
+            "data.app_role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "data.app_role": "teacher"
+          }
+        }
+      ]
+    }
+  }
+}

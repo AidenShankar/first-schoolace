@@ -1,0 +1,77 @@
+{
+  "name": "CourseGroup",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Name of the course group (e.g., Math Electives)"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description of the course group"
+    },
+    "school_year": {
+      "type": "string",
+      "description": "School year this group applies to"
+    },
+    "courses": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Course IDs in this group"
+    },
+    "grade_levels": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Grade levels that see this group"
+    },
+    "is_required": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether students must select from this group"
+    },
+    "min_selections": {
+      "type": "number",
+      "default": 0,
+      "description": "Minimum courses student must select from group"
+    },
+    "max_selections": {
+      "type": "number",
+      "default": 999,
+      "description": "Maximum courses student can select from group"
+    },
+    "order": {
+      "type": "number",
+      "default": 0,
+      "description": "Display order on request form"
+    }
+  },
+  "required": [
+    "name",
+    "school_year"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "data.app_role": "teacher"
+          }
+        },
+        {
+          "user_condition": {
+            "data.app_role": "student"
+          }
+        }
+      ]
+    },
+    "write": {
+      "user_condition": {
+        "data.app_role": "teacher"
+      }
+    }
+  }
+}

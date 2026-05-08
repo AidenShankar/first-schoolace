@@ -1,0 +1,58 @@
+{
+  "name": "StudentSchedule",
+  "type": "object",
+  "properties": {
+    "student_id": {
+      "type": "string",
+      "description": "Student user ID"
+    },
+    "student_name": {
+      "type": "string",
+      "description": "Student name"
+    },
+    "section_id": {
+      "type": "string",
+      "description": "Section ID"
+    },
+    "course_id": {
+      "type": "string",
+      "description": "Course ID"
+    },
+    "school_year": {
+      "type": "string",
+      "description": "School year"
+    },
+    "term": {
+      "type": "string",
+      "description": "Term"
+    }
+  },
+  "required": [
+    "student_id",
+    "student_name",
+    "section_id",
+    "course_id",
+    "school_year"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "data.app_role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "data.app_role": "student"
+          }
+        }
+      ]
+    },
+    "write": {
+      "user_condition": {
+        "data.app_role": "admin"
+      }
+    }
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "name": "AceSpace",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Name of the space"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description or topic of the space"
+    },
+    "creator_id": {
+      "type": "string",
+      "description": "ID of the student who created the space"
+    },
+    "join_code": {
+      "type": "string",
+      "description": "Unique code for others to join"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "name",
+    "creator_id",
+    "join_code"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "data.app_role": "student"
+      }
+    },
+    "write": {
+      "user_condition": {
+        "data.app_role": "student"
+      }
+    }
+  }
+}

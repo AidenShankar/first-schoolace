@@ -1,0 +1,66 @@
+{
+  "name": "ScheduleEvent",
+  "type": "object",
+  "properties": {
+    "class_id": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "event_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "Test/Quiz",
+        "Homework Due",
+        "Project Due",
+        "Holiday",
+        "Event",
+        "Other"
+      ]
+    }
+  },
+  "required": [
+    "class_id",
+    "title",
+    "event_date",
+    "event_type"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "data.app_role": "student"
+          }
+        },
+        {
+          "user_condition": {
+            "data.app_role": "teacher"
+          }
+        }
+      ]
+    },
+    "write": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    },
+    "create": {
+      "user_condition": {
+        "data.app_role": "teacher"
+      }
+    }
+  }
+}

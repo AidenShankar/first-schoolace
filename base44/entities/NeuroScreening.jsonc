@@ -1,0 +1,98 @@
+{
+  "name": "NeuroScreening",
+  "type": "object",
+  "properties": {
+    "class_id": {
+      "type": "string",
+      "description": "ID of the class"
+    },
+    "teacher_id": {
+      "type": "string",
+      "description": "ID of the teacher who assigned it"
+    },
+    "student_id": {
+      "type": "string",
+      "description": "ID of the student"
+    },
+    "student_name": {
+      "type": "string",
+      "description": "Name of the student"
+    },
+    "test_type": {
+      "type": "string",
+      "enum": [
+        "LearningProfile"
+      ],
+      "default": "LearningProfile",
+      "description": "Type of the screening test"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "assigned",
+        "processing",
+        "completed",
+        "error"
+      ],
+      "default": "assigned",
+      "description": "Status of the screening"
+    },
+    "answers": {
+      "type": "object",
+      "description": "JSON object containing question IDs and answers"
+    },
+    "result_summary": {
+      "type": "string",
+      "description": "Automated or teacher summary of the result"
+    },
+    "ai_feedback": {
+      "type": "string",
+      "description": "Detailed AI evaluation of the screening (JSON stringified)"
+    },
+    "teacher_notes": {
+      "type": "string",
+      "description": "Teacher's manual review notes"
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the student completed the test"
+    }
+  },
+  "required": [
+    "class_id",
+    "teacher_id",
+    "student_id",
+    "test_type"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "data.app_role": "teacher"
+          }
+        },
+        {
+          "user_condition": {
+            "data.app_role": "student"
+          }
+        }
+      ]
+    },
+    "write": {
+      "$or": [
+        {
+          "user_condition": {
+            "data.app_role": "teacher"
+          }
+        },
+        {
+          "user_condition": {
+            "data.app_role": "student"
+          }
+        }
+      ]
+    }
+  }
+}

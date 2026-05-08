@@ -1,0 +1,74 @@
+{
+  "name": "AceSpaceMessage",
+  "type": "object",
+  "properties": {
+    "space_id": {
+      "type": "string",
+      "description": "ID of the AceSpace"
+    },
+    "user_id": {
+      "type": "string",
+      "description": "ID of the sender (null if AI)"
+    },
+    "user_name": {
+      "type": "string",
+      "description": "Name of the sender (Ace AI if AI)"
+    },
+    "content": {
+      "type": "string",
+      "description": "Text content of the message"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "text",
+        "file",
+        "ai_request",
+        "ai_response"
+      ],
+      "default": "text"
+    },
+    "file_url": {
+      "type": "string",
+      "description": "URL of the uploaded file"
+    },
+    "file_name": {
+      "type": "string",
+      "description": "Name of the uploaded file"
+    },
+    "file_size": {
+      "type": "string",
+      "description": "Size of the uploaded file"
+    },
+    "related_message_id": {
+      "type": "string",
+      "description": "ID of the message this is responding to (e.g., AI response to a request)"
+    }
+  },
+  "required": [
+    "space_id",
+    "content",
+    "type"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "data.app_role": "student"
+      }
+    },
+    "write": {
+      "$or": [
+        {
+          "user_condition": {
+            "data.app_role": "student"
+          }
+        },
+        {
+          "user_condition": {
+            "data.app_role": "service_role"
+          }
+        }
+      ]
+    }
+  }
+}

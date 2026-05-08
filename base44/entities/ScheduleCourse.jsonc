@@ -1,0 +1,101 @@
+{
+  "name": "ScheduleCourse",
+  "type": "object",
+  "properties": {
+    "course_code": {
+      "type": "string",
+      "description": "Unique course code"
+    },
+    "course_name": {
+      "type": "string",
+      "description": "Name of the course"
+    },
+    "department_id": {
+      "type": "string",
+      "description": "Department ID"
+    },
+    "term": {
+      "type": "string",
+      "enum": [
+        "Full Year",
+        "Semester 1",
+        "Semester 2",
+        "Quarter 1",
+        "Quarter 2",
+        "Quarter 3",
+        "Quarter 4"
+      ],
+      "default": "Full Year",
+      "description": "When the course is offered"
+    },
+    "credits": {
+      "type": "number",
+      "default": 1,
+      "description": "Credit value"
+    },
+    "grade_levels": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Grade levels this course is available for"
+    },
+    "prerequisites": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Prerequisite course IDs"
+    },
+    "max_class_size": {
+      "type": "number",
+      "default": 25,
+      "description": "Maximum students per section"
+    },
+    "requires_lab": {
+      "type": "boolean",
+      "default": false,
+      "description": "Requires a lab room"
+    },
+    "requires_gym": {
+      "type": "boolean",
+      "default": false,
+      "description": "Requires a gym"
+    },
+    "is_elective": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether this is an elective course"
+    },
+    "description": {
+      "type": "string",
+      "description": "Course description"
+    }
+  },
+  "required": [
+    "course_code",
+    "course_name",
+    "term"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "data.app_role": "teacher"
+          }
+        },
+        {
+          "user_condition": {
+            "data.app_role": "student"
+          }
+        }
+      ]
+    },
+    "write": {
+      "user_condition": {
+        "data.app_role": "teacher"
+      }
+    }
+  }
+}

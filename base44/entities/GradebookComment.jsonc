@@ -1,0 +1,48 @@
+{
+  "name": "GradebookComment",
+  "type": "object",
+  "properties": {
+    "teacher_id": {
+      "type": "string",
+      "description": "ID of the teacher who created this comment"
+    },
+    "comment_text": {
+      "type": "string",
+      "description": "The comment template text"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "positive",
+        "concern",
+        "behavior",
+        "academic",
+        "general"
+      ],
+      "default": "general",
+      "description": "Comment category"
+    },
+    "is_favorite": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this is a favorited comment"
+    },
+    "use_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of times this comment has been used"
+    }
+  },
+  "required": [
+    "teacher_id",
+    "comment_text"
+  ],
+  "rls": {
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

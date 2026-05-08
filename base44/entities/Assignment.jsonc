@@ -1,0 +1,166 @@
+{
+  "name": "Assignment",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Assignment title"
+    },
+    "description": {
+      "type": "string",
+      "description": "Assignment description"
+    },
+    "instructions": {
+      "type": "string",
+      "description": "Detailed grading instructions for the AI"
+    },
+    "max_points": {
+      "type": "number",
+      "default": 100,
+      "description": "Maximum points for the assignment"
+    },
+    "due_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Assignment due date"
+    },
+    "open_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date and time when assignment becomes visible to students"
+    },
+    "close_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date and time when assignment is no longer visible to students"
+    },
+    "subject": {
+      "type": "string",
+      "enum": [
+        "math",
+        "english",
+        "science",
+        "history",
+        "art",
+        "other"
+      ],
+      "description": "Subject category"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "draft",
+        "completed"
+      ],
+      "default": "active",
+      "description": "Assignment status"
+    },
+    "is_visible": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether assignment is visible to students"
+    },
+    "allow_submissions": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether students can submit work for this assignment"
+    },
+    "use_ai_grading": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether to use AI for automatic grading"
+    },
+    "leniency": {
+      "type": "string",
+      "enum": [
+        "Strict",
+        "Neutral",
+        "Lenient"
+      ],
+      "default": "Neutral",
+      "description": "The leniency level for AI grading."
+    },
+    "grading_standards": {
+      "type": "object",
+      "properties": {
+        "standard_set": {
+          "type": "string"
+        },
+        "selected_codes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "default": null,
+      "description": "Selected grading standards configuration"
+    },
+    "answer_key_url": {
+      "type": "string",
+      "description": "URL of the uploaded answer key file"
+    },
+    "answer_key_filename": {
+      "type": "string",
+      "description": "Original filename of the answer key"
+    },
+    "attachment_urls": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "URLs of files attached to the assignment"
+    },
+    "attachment_filenames": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Filenames of the assignment attachments"
+    },
+    "class_id": {
+      "type": "string",
+      "description": "ID of the class this assignment belongs to"
+    },
+    "teacher_id": {
+      "type": "string",
+      "description": "ID of the teacher who created the assignment"
+    }
+  },
+  "required": [
+    "title",
+    "class_id",
+    "teacher_id"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "data.app_role": "student"
+          }
+        },
+        {
+          "user_condition": {
+            "data.app_role": "teacher"
+          }
+        }
+      ]
+    },
+    "write": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    },
+    "create": {
+      "user_condition": {
+        "data.app_role": "teacher"
+      }
+    }
+  }
+}

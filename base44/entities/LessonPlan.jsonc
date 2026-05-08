@@ -1,0 +1,189 @@
+{
+  "name": "LessonPlan",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Title of the lesson plan"
+    },
+    "class_id": {
+      "type": "string",
+      "description": "ID of the class this lesson belongs to"
+    },
+    "teacher_id": {
+      "type": "string",
+      "description": "ID of the teacher who created the lesson"
+    },
+    "lesson_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date when the lesson is scheduled"
+    },
+    "objectives": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Learning objectives for the lesson"
+    },
+    "hook": {
+      "type": "string",
+      "description": "Opening hook or warm-up activity"
+    },
+    "activities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "duration": {
+            "type": "number"
+          },
+          "materials": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "description": "Classroom activities"
+    },
+    "homework": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Homework assignments"
+    },
+    "resources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "file_url": {
+            "type": "string"
+          },
+          "file_name": {
+            "type": "string"
+          },
+          "file_mime_type": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Educational resources and materials"
+    },
+    "assessment": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "rubric": {
+          "type": "string"
+        }
+      },
+      "description": "Assessment information"
+    },
+    "differentiation": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Differentiation strategies"
+    },
+    "additional_information": {
+      "type": "string",
+      "description": "Additional information for students and parents (office hours, contact info, special instructions, etc.)"
+    },
+    "reflection_notes": {
+      "type": "string",
+      "description": "Teacher reflection notes after the lesson"
+    },
+    "is_template": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this lesson is saved as a template"
+    },
+    "template_category": {
+      "type": "string",
+      "description": "Category for template lessons"
+    },
+    "shared_with": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of teacher IDs this lesson is shared with"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "published",
+        "completed"
+      ],
+      "default": "draft",
+      "description": "Status of the lesson plan"
+    },
+    "is_released": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the lesson plan is released to students"
+    }
+  },
+  "required": [
+    "title",
+    "class_id",
+    "teacher_id",
+    "lesson_date"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "data.app_role": "teacher"
+          }
+        },
+        {
+          "user_condition": {
+            "data.app_role": "student"
+          }
+        }
+      ]
+    },
+    "write": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    },
+    "create": {
+      "user_condition": {
+        "data.app_role": "teacher"
+      }
+    }
+  }
+}

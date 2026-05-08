@@ -1,0 +1,46 @@
+{
+  "name": "Flashcard",
+  "type": "object",
+  "properties": {
+    "study_set_id": {
+      "type": "string",
+      "description": "ID of the study set this card belongs to"
+    },
+    "term": {
+      "type": "string",
+      "description": "The term or question"
+    },
+    "definition": {
+      "type": "string",
+      "description": "The definition or answer"
+    },
+    "image_url": {
+      "type": "string",
+      "description": "Optional image URL"
+    },
+    "rank": {
+      "type": "number",
+      "default": 0,
+      "description": "Order of the card in the set"
+    }
+  },
+  "required": [
+    "study_set_id",
+    "term",
+    "definition"
+  ],
+  "rls": {
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

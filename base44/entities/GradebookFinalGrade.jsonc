@@ -1,0 +1,86 @@
+{
+  "name": "GradebookFinalGrade",
+  "type": "object",
+  "properties": {
+    "class_id": {
+      "type": "string",
+      "description": "ID of the class"
+    },
+    "student_id": {
+      "type": "string",
+      "description": "ID of the student"
+    },
+    "term": {
+      "type": "string",
+      "enum": [
+        "Q1",
+        "Q2",
+        "Q3",
+        "Q4",
+        "S1",
+        "S2",
+        "Y1"
+      ],
+      "description": "Reporting term"
+    },
+    "calculated_percentage": {
+      "type": "number",
+      "description": "Automatically calculated percentage"
+    },
+    "calculated_letter": {
+      "type": "string",
+      "description": "Automatically calculated letter grade"
+    },
+    "override_percentage": {
+      "type": "number",
+      "description": "Manually entered override percentage"
+    },
+    "override_letter": {
+      "type": "string",
+      "description": "Manually entered override letter grade"
+    },
+    "is_overridden": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether grade was manually overridden"
+    },
+    "is_verified": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether teacher has verified this grade"
+    },
+    "verified_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When grade was verified"
+    },
+    "comment": {
+      "type": "string",
+      "description": "Teacher comment for final grade"
+    }
+  },
+  "required": [
+    "class_id",
+    "student_id",
+    "term"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "data.app_role": "teacher"
+          }
+        },
+        {
+          "user_condition": {
+            "data.app_role": "student"
+          }
+        }
+      ]
+    },
+    "write": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "name": "DataDisclosure",
+  "type": "object",
+  "properties": {
+    "student_id": {
+      "type": "string",
+      "description": "ID of student whose data was disclosed"
+    },
+    "disclosed_to": {
+      "type": "string",
+      "description": "Who the data was disclosed to"
+    },
+    "disclosure_type": {
+      "type": "string",
+      "enum": [
+        "parent_request",
+        "school_transfer",
+        "legal_compliance",
+        "emergency",
+        "research"
+      ],
+      "description": "Type of disclosure"
+    },
+    "data_disclosed": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Types of data disclosed"
+    },
+    "legal_basis": {
+      "type": "string",
+      "description": "Legal basis for disclosure"
+    },
+    "disclosure_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When disclosure occurred"
+    }
+  },
+  "required": [
+    "student_id",
+    "disclosed_to",
+    "disclosure_type",
+    "data_disclosed"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "data.app_role": "admin"
+      }
+    },
+    "write": {
+      "user_condition": {
+        "data.app_role": "admin"
+      }
+    }
+  }
+}
