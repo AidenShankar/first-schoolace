@@ -194,37 +194,9 @@
           }
         },
         {
-          "$and": [
-            {
-              "user_condition": {
-                "data.app_role": "student"
-              }
-            },
-            {
-              "student_id": "{{user.id}}"
-            }
-          ]
-        }
-      ]
-    },
-    "write": {
-      "$or": [
-        {
           "user_condition": {
-            "data.app_role": "teacher"
+            "data.app_role": "student"
           }
-        },
-        {
-          "$and": [
-            {
-              "user_condition": {
-                "data.app_role": "student"
-              }
-            },
-            {
-              "student_id": "{{user.id}}"
-            }
-          ]
         }
       ]
     }
