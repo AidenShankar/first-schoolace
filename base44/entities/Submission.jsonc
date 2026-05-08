@@ -145,9 +145,7 @@
           }
         },
         {
-          "user_condition": {
-            "data.app_role": "student"
-          }
+          "created_by": "{{user.email}}"
         }
       ]
     },
