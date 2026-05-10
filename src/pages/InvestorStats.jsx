@@ -205,8 +205,7 @@ export default function InvestorStats() {
               </div>
             </CardContent>
           </Card>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <StatCard icon={Users} label="New Users (Last 3 Days)" value={userStats?.newUsersLast3Days ?? 0} subtitle="Recently joined" color="#34d399" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <StatCard icon={FileText} label="Total Submissions" value={submissionStats?.total?.toLocaleString() || 0} subtitle="Student assignments submitted" color="#a78bfa" />
             <StatCard icon={Brain} label="AI-Graded" value={submissionStats?.aiGraded?.toLocaleString() || 0} subtitle={`of ${submissionStats?.total?.toLocaleString() || 0} total submissions`} color="#f472b6" />
           </div>
@@ -307,6 +306,10 @@ export default function InvestorStats() {
             </div>
           </CardContent>
         </Card>
+
+        <div className="grid grid-cols-1 gap-4">
+          <StatCard icon={Users} label="New Users (Last 3 Days)" value={userStats?.newUsersLast3Days ?? 0} subtitle="Recently joined" color="#34d399" />
+        </div>
 
         <p className="text-center text-xs text-slate-400">Data pulled live from SchoolACE database • {new Date().toLocaleDateString()}</p>
       </div>
