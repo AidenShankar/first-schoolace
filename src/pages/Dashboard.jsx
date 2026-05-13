@@ -902,43 +902,34 @@ Output your response as JSON with:
             const primarySubmission = submissions.find(s => s.id === submissionId);
             if (!primarySubmission) return;
 
-            // Data that will be synced across ALL submissions for this student/assignment
-            const sharedUpdateData = {
+            // Only update the specific submission being released.
+            // Do NOT touch other submissions for the same student/assignment — that corrupts history.
+            const updateData = {
                 grading_status: "released",
+                is_released: true,
+                released_at: new Date().toISOString(),
                 final_grade: gradeType === 'ai' ? primarySubmission.ai_grade : primarySubmission.teacher_grade,
                 final_feedback: gradeType === 'ai' ? primarySubmission.ai_feedback : primarySubmission.teacher_feedback,
             };
 
-            // Add feedback attachment URL to all if it exists
             if (gradeType !== 'ai' && primarySubmission.feedback_attachment_url) {
-                sharedUpdateData.feedback_attachment_url = primarySubmission.feedback_attachment_url;
-                sharedUpdateData.feedback_attachment_filename = primarySubmission.feedback_attachment_filename;
+                updateData.feedback_attachment_url = primarySubmission.feedback_attachment_url;
+                updateData.feedback_attachment_filename = primarySubmission.feedback_attachment_filename;
             }
 
-            // Specific data ONLY for the submission being released
-            const primaryUpdateData = {
-                ...sharedUpdateData,
-                is_released: true,
-                released_at: new Date().toISOString(),
-            };
+            // Optimistic local update so the UI reflects the release immediately
+            setSubmissions(prev => prev.map(s => s.id === submissionId ? { ...s, ...updateData } : s));
 
-            // Find all related submissions
-            const allSubmissionsForAssignment = submissions.filter(
-                s => s.student_id === primarySubmission.student_id && s.assignment_id === primarySubmission.assignment_id
-            );
+            await retryWithBackoff(() => Submission.update(submissionId, updateData));
 
-            // Update sequentially to avoid rate-limit / timeout issues
-            for (const sub of allSubmissionsForAssignment) {
-                const data = sub.id === submissionId ? primaryUpdateData : sharedUpdateData;
-                await retryWithBackoff(() => Submission.update(sub.id, data));
-            }
-
-            // Refresh the data from the server
+            // Refresh from server to ensure consistency
             loadSubmissions();
 
         } catch (error) {
             console.error("Error releasing grade:", error);
             alert(`Failed to release grade: ${error?.message || 'Please try again.'}`);
+            // Reload to restore correct state on failure
+            loadSubmissions();
         }
     };
 
@@ -1668,7 +1659,7 @@ Output JSON with:
                                                     <Trash2 className="w-5 h-5" />
                                                 </Button>
                                             </div>
-                                            <SubmissionsList submissions={submissions.filter(s => s.assignment_id === selectedAssignment.id)} assignment={selectedAssignment} onReleaseGrade={handleReleaseGrade} onManualGrade={handleManualGrade} currentUser={user} onDisputeReleased={loadSubmissions} />
+                                            <SubmissionsList submissions={submissions.filter(s => s.assignment_id === selectedAssignment.id)} assignment={selectedAssignment} onReleaseGrade={handleReleaseGrade} onManualGrade={handleManualGrade} currentUser={user} onDisputeReleased={loadSubmissions} onRefresh={loadSubmissions} />
                                         </div>
                                     )}
                                     {!showAssignmentForm && !selectedAssignment && !showCreateForm && !showGenerator && (

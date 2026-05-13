@@ -183,7 +183,7 @@ const CommentThread = ({ assignment, currentUser, allClassStudents }) => {
     );
 };
 
-export default function SubmissionsList({ submissions, assignment, onReleaseGrade, onManualGrade, currentUser, onDisputeReleased }) {
+export default function SubmissionsList({ submissions, assignment, onReleaseGrade, onManualGrade, currentUser, onDisputeReleased, onRefresh }) {
   const [selectedStudentId, setSelectedStudentId] = useState(null);
   const [selectedSubmission, setSelectedSubmission] = useState(null);
   const [showGradeModal, setShowGradeModal] = useState(false);
@@ -412,10 +412,11 @@ export default function SubmissionsList({ submissions, assignment, onReleaseGrad
       alert(msg);
 
       setShowBulkReleaseModal(false);
-      window.location.reload();
+      if (onRefresh) onRefresh();
     } catch (e) {
       console.error("Error bulk releasing grades:", e);
       alert(`Error releasing grades: ${e.message || 'Unknown error'}. Please refresh and try again.`);
+      if (onRefresh) onRefresh();
     } finally {
       setIsBulkReleasing(false);
     }
@@ -466,10 +467,11 @@ export default function SubmissionsList({ submissions, assignment, onReleaseGrad
 
       setShowBulkReleaseModal(false);
       setBulkGradeValue("");
-      window.location.reload();
+      if (onRefresh) onRefresh();
     } catch (e) {
       console.error("Error bulk releasing fixed grades:", e);
       alert(`Failed to release grades: ${e.message || 'Unknown error'}`);
+      if (onRefresh) onRefresh();
     } finally {
       setIsBulkReleasing(false);
     }
