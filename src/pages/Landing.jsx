@@ -1,741 +1,506 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { motion, useScroll, useTransform, useInView, animate } from 'framer-motion';
+import { motion, useInView, animate } from 'framer-motion';
 import { createPageUrl } from '@/utils';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Bot, BookOpen, PenTool, BarChart, CheckCircle, GraduationCap, Brain, Sparkles, Users, Calendar, Activity, Crown, SlidersHorizontal, BrainCircuit, ShieldCheck, Mail, Edit, Linkedin, Shield, PlusCircle, Lock, Eye, Unlock } from 'lucide-react';
-import { Button } from "@/components/ui/button";
+import {
+  ArrowRight, Bot, BookOpen, PenTool, BarChart, CheckCircle, GraduationCap,
+  Brain, Sparkles, Users, Calendar, Activity, Crown, SlidersHorizontal,
+  BrainCircuit, ShieldCheck, Mail, Edit, Shield, PlusCircle, Lock, Eye, Unlock
+} from 'lucide-react';
 import { Contact } from '@/entities/Contact';
 import { base44 } from '@/api/base44Client';
 import { useTranslation } from '../components/i18n/useTranslation';
 import LanguageSelector from '../components/i18n/LanguageSelector';
 import AIPreviewSection from '../components/landing/AIPreviewSection';
 import AceTutorBanner from '../components/landing/AceTutorBanner';
-import AwardsBanner from '../components/landing/AwardsBanner';
 import LandingFooter from '../components/landing/LandingFooter';
 import {
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  ResponsiveContainer,
-  Tooltip,
-  LineChart,
-  Line,
-  CartesianGrid
+  AreaChart, Area, XAxis, YAxis, ResponsiveContainer, Tooltip,
+  LineChart, Line, CartesianGrid
 } from "recharts";
 
-// --- Enhanced Atmospheric Effects ---
+// ─── Design tokens ────────────────────────────────────────────────────────────
+const EXPO = [0.16, 1, 0.3, 1];
+const CARD_HOVER = { scale: 1.015, y: -4, transition: { duration: 0.28, ease: EXPO } };
+const CARD_TAP   = { scale: 0.975 };
 
-const AtmosphericBackground = () =>
+const fadeUp = (delay = 0) => ({
+  hidden: { opacity: 0, y: 18 },
+  show:   { opacity: 1, y: 0, transition: { duration: 0.52, ease: EXPO, delay } },
+});
+const stagger = (s = 0.06) => ({
+  hidden: {},
+  show:   { transition: { staggerChildren: s } },
+});
+
+// ─── Background ───────────────────────────────────────────────────────────────
+const AmbientBlob = ({ style, delay = 0 }) => (
+  <motion.div
+    className="absolute rounded-full pointer-events-none"
+    style={{ filter: 'blur(120px)', ...style }}
+    animate={{ x: [0, 32, -18, 0], y: [0, -22, 16, 0] }}
+    transition={{ duration: 22 + delay * 4, repeat: Infinity, ease: 'easeInOut', delay }}
+  />
+);
+
+const Background = () => (
   <div className="fixed inset-0 z-0 overflow-hidden">
-    {/* Grid overlay */}
-    <div className="absolute inset-0 opacity-30">
-      <div className="h-full w-full bg-grid-pattern"></div>
-    </div>
-  </div>;
+    <div className="absolute inset-0 bg-[#07070a]" />
+    <div className="absolute inset-0 bg-grid-subtle" />
+    <AmbientBlob style={{ width: 680, height: 680, background: 'rgba(94,106,210,0.10)', top: -220, left: -160 }} delay={0} />
+    <AmbientBlob style={{ width: 500, height: 500, background: 'rgba(139,92,246,0.08)', top: '32%', right: -120 }} delay={6} />
+    <AmbientBlob style={{ width: 420, height: 420, background: 'rgba(94,106,210,0.07)', bottom: '8%', left: '26%' }} delay={12} />
+    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_35%,#07070a_100%)] pointer-events-none" />
+  </div>
+);
 
-
-const ShootingStars = () => {
-  const { scrollYProgress } = useScroll();
-  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.9, 1], [1, 0, 0, 1]);
-  const stars = Array.from({ length: 0 }, (_, i) =>
-    <motion.div
-      key={i}
-      className="absolute w-1 h-1 bg-white rounded-full shadow-[0_0_15px_5px_white]"
-      initial={{
-        x: Math.random() * -200,
-        y: Math.random() * window.innerHeight * 0.8,
-        opacity: 0,
-        scale: 0
-      }}
-      animate={{
-        x: window.innerWidth + 200,
-        y: Math.random() * window.innerHeight * 0.8 + 100,
-        opacity: [0, 1, 1, 0],
-        scale: [0, 1, 1, 0]
-      }}
-      transition={{
-        duration: Math.random() * 2 + 3,
-        delay: Math.random() * 5 + i * 0.3,
-        repeat: Infinity,
-        repeatType: 'loop',
-        ease: 'linear'
-      }} />);
-  return (
-    <motion.div
-      className="fixed inset-0 z-10 pointer-events-none"
-      style={{ opacity }}>
-      {stars}
-    </motion.div>);
-
-};
-
-const FloatingOrbs = () => {
-  const orbs = Array.from({ length: 0 }, (_, i) =>
-    <motion.div
-      key={i}
-      className="absolute w-2 h-2 bg-white/20 rounded-full blur-sm"
-      initial={{
-        x: Math.random() * window.innerWidth,
-        y: Math.random() * window.innerHeight
-      }}
-      animate={{
-        x: Math.random() * window.innerWidth,
-        y: Math.random() * window.innerHeight,
-        opacity: [0.2, 0.8, 0.2]
-      }}
-      transition={{
-        duration: Math.random() * 8 + 4,
-        repeat: Infinity,
-        ease: "easeInOut",
-        delay: Math.random() * 2
-      }} />);
-
-  return <div className="fixed inset-0 z-5 pointer-events-none">{orbs}</div>;
-};
-
-// New floating particles for more ambient animation
-const FloatingParticles = () => {
-  const particles = Array.from({ length: 0 }, (_, i) =>
-    <motion.div
-      key={i}
-      className="absolute w-0.5 h-0.5 bg-blue-300/30 rounded-full"
-      initial={{
-        x: Math.random() * window.innerWidth,
-        y: window.innerHeight + 20
-      }}
-      animate={{
-        y: -20,
-        x: Math.random() * window.innerWidth,
-        opacity: [0, 0.6, 0]
-      }}
-      transition={{
-        duration: Math.random() * 15 + 10,
-        repeat: Infinity,
-        delay: Math.random() * 10,
-        ease: "linear"
-      }} />);
-
-  return <div className="fixed inset-0 z-5 pointer-events-none">{particles}</div>;
-};
-
-// Animated counter
-const AnimatedCounter = ({ end, duration = 3, className, suffix = "" }) => {
+// ─── Animated counter ─────────────────────────────────────────────────────────
+const AnimatedCounter = ({ end, duration = 3, className, suffix = '' }) => {
   const [count, setCount] = useState(0);
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, amount: 0.3 });
-
+  const inView = useInView(ref, { once: true, amount: 0.3 });
   useEffect(() => {
-    if (isInView) {
-      // Use Framer Motion's animate function
-      const controls = animate(0, end, {
-        duration: duration,
-        ease: "easeIn", // This is the key change: starts slow, speeds up
-        onUpdate(value) {
-          setCount(Math.floor(value));
-        }
-      });
-
-      // Return a cleanup function to stop the animation
-      return () => controls.stop();
-    }
-  }, [isInView, end, duration]);
-
+    if (!inView) return;
+    const ctrl = animate(0, end, {
+      duration, ease: 'easeOut',
+      onUpdate: (v) => setCount(Math.floor(v)),
+    });
+    return () => ctrl.stop();
+  }, [inView, end, duration]);
   return <span ref={ref} className={className}>{count}{suffix}</span>;
 };
 
-// Typewriter effect component
+// ─── Typewriter ───────────────────────────────────────────────────────────────
 const TypewriterText = ({ text, className }) => {
-  const [displayedText, setDisplayedText] = useState("");
-  const [isComplete, setIsComplete] = useState(false);
-
+  const [shown, setShown] = useState('');
   useEffect(() => {
-    if (text) {
-      let i = 0;
-      setDisplayedText("");
-      setIsComplete(false);
-      const intervalId = setInterval(() => {
-        if (i < text.length) {
-          setDisplayedText(text.substring(0, i + 1));
-          i++;
-        } else {
-          clearInterval(intervalId);
-          setIsComplete(true);
-        }
-      }, 50);
-
-      return () => clearInterval(intervalId);
-    }
+    if (!text) return;
+    let i = 0; setShown('');
+    const id = setInterval(() => {
+      if (i < text.length) setShown(text.substring(0, ++i));
+      else clearInterval(id);
+    }, 44);
+    return () => clearInterval(id);
   }, [text]);
-
-  return (
-    <span className={className}>
-      {displayedText}
-    </span>
-  );
+  return <span className={className}>{shown}</span>;
 };
 
-const HeaderNav = () => {
-  const { t } = useTranslation();
-  return (
-    <nav className="hidden md:flex items-center gap-8">
-      <a href="#features" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">{t('landing.forTeachers')}</a>
-      <a href="#student-features" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">{t('landing.forStudents')}</a>
-      <a href="#co-pilot" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">{t('landing.aiCapabilities')}</a>
-      <a href="https://schoolace.ai/tutor" className="text-sm font-medium text-slate-300 hover:text-white transition-colors flex items-start gap-1">Tutor<span className="px-1.5 py-px text-[9px] font-bold bg-orange-500 text-white rounded-full leading-tight -mt-0.5 shadow-sm">NEW</span></a>
-      <a href="#testimonials" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">{t('landing.testimonials')}</a>
-      <a href="#pricing" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">{t('landing.pricing')}</a>
-      <a href="#contact" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">{t('landing.contact')}</a>
-      <a href="https://aitutor.schoolace.ai/tutor/awards" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">Awards</a>
-      <Link to="/about" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">About</Link>
-    </nav>
-  );
-};
-
+// ─── Navigation ───────────────────────────────────────────────────────────────
 const Header = () => {
+  const { t } = useTranslation();
+  const links = [
+    { href: '#features',        label: t('landing.forTeachers') },
+    { href: '#student-features',label: t('landing.forStudents') },
+    { href: '#co-pilot',        label: t('landing.aiCapabilities') },
+    { href: 'https://schoolace.ai/tutor', label: 'Tutor', badge: 'NEW' },
+    { href: '#testimonials',    label: t('landing.testimonials') },
+    { href: '#pricing',         label: t('landing.pricing') },
+    { href: '#contact',         label: t('landing.contact') },
+    { href: 'https://aitutor.schoolace.ai/tutor/awards', label: 'Awards' },
+  ];
   return (
-    <header className="py-6 px-4 sm:px-6 lg:px-8 sticky top-0 z-50 backdrop-blur-sm bg-black/10">
+    <header className="py-4 px-4 sm:px-6 lg:px-8 sticky top-0 z-50 backdrop-blur-xl"
+      style={{ background: 'rgba(7,7,10,0.6)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <div className="flex items-center gap-8">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl overflow-hidden shadow-lg flex-shrink-0">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg overflow-hidden flex-shrink-0"
+              style={{ boxShadow: '0 0 0 1px rgba(255,255,255,0.1)' }}>
               <img src="https://media.base44.com/images/public/687ed6bea54c832b17eb40bc/36948c755_image.png" alt="SchoolACE" className="w-full h-full object-cover" />
             </div>
-            <span className="text-lg font-bold text-white">SchoolACE</span>
+            <span className="text-sm font-semibold text-[#EDEDEF] tracking-tight">SchoolACE</span>
           </div>
-
-          <HeaderNav />
+          <nav className="hidden md:flex items-center gap-5">
+            {links.map((item) => (
+              <a key={item.href} href={item.href}
+                className="flex items-start gap-1 text-xs font-medium transition-colors duration-200"
+                style={{ color: '#8A8F98' }}
+                onMouseEnter={(e) => e.currentTarget.style.color = '#EDEDEF'}
+                onMouseLeave={(e) => e.currentTarget.style.color = '#8A8F98'}>
+                {item.label}
+                {item.badge && (
+                  <span className="px-1.5 py-px text-[8px] font-bold bg-orange-500 text-white rounded-full leading-tight -mt-0.5">
+                    {item.badge}
+                  </span>
+                )}
+              </a>
+            ))}
+            <Link to="/about" className="text-xs font-medium transition-colors duration-200"
+              style={{ color: '#8A8F98' }}
+              onMouseEnter={(e) => e.currentTarget.style.color = '#EDEDEF'}
+              onMouseLeave={(e) => e.currentTarget.style.color = '#8A8F98'}>
+              About
+            </Link>
+          </nav>
         </div>
       </div>
-    </header>);
-
+    </header>
+  );
 };
 
-// Enhanced pricing card with animated email reveal
-const PricingCard = ({ plan, price, features, cta, isFeatured, isPrimary, linkTo, onCtaClick }) => {
-  const cardRef = useRef(null);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [showContactEmail, setShowContactEmail] = useState(false);
-  const [typewriterText, setTypewriterText] = useState("");
+// ─── Feature card ─────────────────────────────────────────────────────────────
+const FeatureCard = ({ feature, index, accent = '#5E6AD2' }) => (
+  <motion.div
+    variants={fadeUp(index * 0.04)}
+    whileHover={CARD_HOVER} whileTap={CARD_TAP}
+    className="relative p-6 rounded-2xl overflow-hidden group cursor-default"
+    style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
+    <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+      style={{ background: `radial-gradient(circle at 50% 0%, ${accent}1a, transparent 65%)` }} />
+    <div className="relative z-10">
+      <div className="w-10 h-10 mb-4 rounded-xl flex items-center justify-center transition-colors duration-300"
+        style={{ background: `${accent}18`, color: accent }}>
+        {React.cloneElement(feature.icon, { className: 'w-5 h-5' })}
+      </div>
+      <h3 className="text-sm font-semibold text-[#EDEDEF] mb-1.5">{feature.title}</h3>
+      <p className="text-sm text-[#8A8F98] leading-relaxed">{feature.description}</p>
+    </div>
+  </motion.div>
+);
+
+// ─── Featured (large) student card ───────────────────────────────────────────
+const FeaturedCard = ({ feature }) => (
+  <motion.div
+    variants={fadeUp(0)}
+    whileHover={{ ...CARD_HOVER, scale: 1.01 }} whileTap={CARD_TAP}
+    className="relative py-10 px-10 rounded-2xl overflow-hidden group cursor-default mb-4"
+    style={{ background: 'rgba(94,106,210,0.06)', border: '1px solid rgba(94,106,210,0.22)' }}>
+    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+      style={{ background: 'radial-gradient(ellipse at 30% 50%, rgba(94,106,210,0.14), transparent 65%)' }} />
+    <div className="relative z-10 flex items-center gap-8">
+      <div className="w-14 h-14 flex-shrink-0 rounded-2xl flex items-center justify-center"
+        style={{ background: 'rgba(94,106,210,0.18)', color: '#7B8FE8' }}>
+        <Bot className="w-7 h-7" />
+      </div>
+      <div>
+        <h3 className="text-xl font-semibold text-[#EDEDEF] mb-2">{feature.title}</h3>
+        <p className="text-[#8A8F98] leading-relaxed max-w-2xl text-sm">{feature.description}</p>
+      </div>
+    </div>
+  </motion.div>
+);
+
+// ─── Pricing card ─────────────────────────────────────────────────────────────
+const PricingCard = ({ plan, price, features, cta, isFeatured, linkTo, onCtaClick }) => {
+  const [showEmail, setShowEmail] = useState(false);
+  const [emailText, setEmailText] = useState('');
   const { t } = useTranslation();
 
-  const handleMouseMove = (e) => {
-    if (cardRef.current) {
-      const rect = cardRef.current.getBoundingClientRect();
-      setMousePosition({
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top
-      });
-    }
+  const revealEmail = () => {
+    setShowEmail(true);
+    const email = 'contact@schoolace.ai';
+    let i = 0;
+    const id = setInterval(() => {
+      if (i < email.length) setEmailText(email.slice(0, ++i));
+      else clearInterval(id);
+    }, 48);
   };
 
-  const handleContactSales = () => {
-    setShowContactEmail(true);
-    const email = "contact@schoolace.ai";
-    let index = 0;
-    const typewriter = setInterval(() => {
-      if (index < email.length) {
-        setTypewriterText(email.slice(0, index + 1));
-        index++;
-      } else {
-        clearInterval(typewriter);
-      }
-    }, 50);
+  const priceDisplay = () => {
+    if (price === t('landing.freePrice')) return (
+      <>
+        <div className="flex items-baseline gap-2 mb-1">
+          <span className="text-4xl font-bold text-[#EDEDEF]">$0</span>
+          <span className="text-xs text-[#8A8F98]">USD</span>
+        </div>
+        <div className="text-xs text-[#8A8F98]">/ month</div>
+      </>
+    );
+    if (price.includes('$10')) return (
+      <>
+        <div className="flex items-baseline gap-2 mb-1">
+          <span className="text-4xl font-bold text-[#EDEDEF]">$10</span>
+          <span className="text-xs text-[#8A8F98]">USD</span>
+        </div>
+        <div className="text-xs text-[#8A8F98]">{price.replace('$10', '').trim()}</div>
+      </>
+    );
+    return <div className="text-3xl font-bold text-[#EDEDEF]">{price}</div>;
   };
 
-  // Split price into main and suffix
-  const getPriceDisplay = () => {
-    // Free tier: $0 USD \n / month
-    if (price === t('landing.freePrice')) {
-      return (
-        <>
-          <div className="flex items-baseline gap-2 mb-1">
-            <span className="text-4xl font-extrabold text-white">$0</span>
-            <span className="text-sm font-normal text-slate-400">USD</span>
-          </div>
-          <div className="text-base font-normal text-slate-300">/ month</div>
-        </>
-      );
-    }
+  const btnStyle = isFeatured
+    ? { background: 'linear-gradient(135deg,#5E6AD2,#7B8FE8)', color: '#fff', boxShadow: '0 4px 20px rgba(94,106,210,0.32)' }
+    : { background: 'rgba(255,255,255,0.06)', color: '#EDEDEF', border: '1px solid rgba(255,255,255,0.1)' };
 
-    // Pro tier: $10 / student / month
-    if (price.includes('$10')) {
-      return (
-        <>
-          <div className="flex items-baseline gap-2 mb-1">
-            <span className="text-4xl font-extrabold text-white">$10</span>
-            <span className="text-sm font-normal text-slate-400">USD</span>
-          </div>
-          <div className="text-base font-normal text-slate-300 mb-1">{price.replace('$10', '').trim()}</div>
-        </>
-      );
-    }
-
-    // School tier or any other
-    return <div className="text-3xl font-extrabold text-white">{price}</div>;
-  };
-
-
-  // Determine button style based on plan
-  const isGreyButton = plan === t('landing.freePlan') || plan === t('landing.schoolPlan');
-  const buttonClassName = isGreyButton
-    ? 'bg-slate-700 hover:bg-slate-600 text-white'
-    : 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white shadow-2xl shadow-indigo-500/30';
+  const cardStyle = isFeatured
+    ? { background: 'rgba(94,106,210,0.07)', border: '1px solid rgba(94,106,210,0.38)', boxShadow: '0 0 40px rgba(94,106,210,0.1), inset 0 1px 0 rgba(255,255,255,0.07)' }
+    : { background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' };
 
   return (
     <motion.div
-      ref={cardRef}
-      onMouseMove={isFeatured ? handleMouseMove : undefined}
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.3 }}
-      transition={{ type: 'spring' }}
-      className={`relative p-8 rounded-2xl backdrop-blur-xl border overflow-hidden group ${isFeatured ? 'bg-slate-900/60 border-slate-700/50' : 'bg-slate-900/40 border-slate-700/50'}`}>
-
-
+      initial={{ opacity: 0, y: 22 }} whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.52, ease: EXPO }}
+      whileHover={{ y: -4, transition: { duration: 0.24, ease: EXPO } }}
+      className="relative p-7 rounded-2xl flex flex-col overflow-hidden"
+      style={cardStyle}>
+      {isFeatured && (
+        <div className="absolute inset-0 opacity-25 pointer-events-none"
+          style={{ background: 'radial-gradient(ellipse at 50% -20%, rgba(94,106,210,0.5), transparent 55%)' }} />
+      )}
       <div className="relative z-10 flex flex-col h-full">
-        <div className="flex items-center justify-between mb-2">
-          <h3 className="text-2xl font-bold text-white">{plan}</h3>
-          {isFeatured &&
-            <span className="flex items-center gap-1.5 text-xs font-semibold text-orange-400 bg-orange-500/20 px-2.5 py-1 rounded-full">
-              <Crown className="w-3 h-3" />
-              {t('landing.mostPopular')}
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-base font-semibold text-[#EDEDEF]">{plan}</h3>
+          {isFeatured && (
+            <span className="flex items-center gap-1 text-[10px] font-semibold px-2.5 py-1 rounded-full"
+              style={{ color: '#A78BFA', background: 'rgba(167,139,250,0.12)', border: '1px solid rgba(167,139,250,0.22)' }}>
+              <Crown className="w-2.5 h-2.5" />{t('landing.mostPopular')}
             </span>
-          }
-        </div>
-
-        <div className="mb-6 min-h-[120px] flex flex-col justify-center">
-          {getPriceDisplay()}
-        </div>
-
-        {/* Features list - this will grow to fill available space */}
-        <ul className="space-y-4 mb-8 flex-grow">
-          {features.map((feature, i) =>
-            <li key={i} className="flex items-center gap-3 text-slate-300">
-              <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" />
-              <span>{feature}</span>
-            </li>
           )}
+        </div>
+        <div className="mb-5 min-h-[80px] flex flex-col justify-center">{priceDisplay()}</div>
+        <ul className="space-y-2.5 mb-7 flex-grow">
+          {features.map((f, i) => (
+            <li key={i} className="flex items-start gap-2.5 text-xs text-[#8A8F98]">
+              <CheckCircle className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" style={{ color: '#5E6AD2' }} />
+              <span>{f}</span>
+            </li>
+          ))}
         </ul>
-
-
         <div className="mt-auto">
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            {onCtaClick ?
-              <Button
-                onClick={onCtaClick}
-                className={`w-full py-6 text-lg font-semibold rounded-xl transition-all duration-300 flex items-center justify-center gap-2 ${buttonClassName}`}>
-                {cta}
-                <ArrowRight className="w-5 h-5" />
-              </Button> :
-              linkTo ?
-                <Link to={linkTo}>
-                  <Button className={`w-full py-6 text-lg font-semibold rounded-xl transition-all duration-300 flex items-center justify-center gap-2 ${buttonClassName}`}>
-                    {cta}
-                    <ArrowRight className="w-5 h-5" />
-                  </Button>
-                </Link> :
-
-                <Button
-                  onClick={handleContactSales}
-                  className={`w-full py-6 text-lg font-semibold rounded-xl transition-all duration-300 flex items-center justify-center gap-2 ${buttonClassName}`}>
-                  {cta}
-                  <ArrowRight className="w-5 h-5" />
-                </Button>
-            }
+          <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}>
+            {onCtaClick ? (
+              <button onClick={onCtaClick}
+                className="w-full py-3 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 cursor-pointer transition-shadow duration-200"
+                style={btnStyle}>
+                {cta} <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            ) : linkTo ? (
+              <Link to={linkTo}>
+                <button className="w-full py-3 rounded-xl text-sm font-semibold flex items-center justify-center gap-2" style={btnStyle}>
+                  {cta} <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </Link>
+            ) : (
+              <button onClick={revealEmail}
+                className="w-full py-3 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 cursor-pointer" style={btnStyle}>
+                {cta} <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            )}
           </motion.div>
-
-          {/* Contact email reveal - only for school tier, positioned below button */}
-          {showContactEmail &&
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mt-4 p-4 bg-slate-800/80 rounded-lg border border-slate-600/50">
-
-              <p className="text-sm text-slate-400 mb-2">Contact us at:</p>
-              <p className="font-mono text-cyan-400">{typewriterText}</p>
+          {showEmail && (
+            <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
+              className="mt-3 p-3 rounded-xl"
+              style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+              <p className="text-[10px] text-[#8A8F98] mb-1">Contact us at:</p>
+              <p className="font-mono text-sm" style={{ color: '#7B8FE8' }}>{emailText}</p>
             </motion.div>
-          }
+          )}
         </div>
       </div>
-    </motion.div>);
-
+    </motion.div>
+  );
 };
 
-
-
+// ─── Chart card ───────────────────────────────────────────────────────────────
 const ChartCard = ({ title, value, valueColor, data, color, gradientId, isLineChart = false, maxValue, ticks }) => {
-  const containerRef = useRef(null);
-  const isInView = useInView(containerRef, { once: true, amount: 0.4 });
-  const [animationProgress, setAnimationProgress] = useState(0);
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, amount: 0.4 });
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    if (isInView && data.length > 0) {
-
-      const duration = 6000;
-      const startTime = Date.now();
-
-      const animateProgress = () => {
-        const elapsed = Date.now() - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-
-        // Easing function for smooth animation (ease-out)
-        const easedProgress = 1 - Math.pow(1 - progress, 3);
-
-        setAnimationProgress(easedProgress);
-
-        if (progress < 1) {
-          requestAnimationFrame(animateProgress);
-        }
-      };
-
-      // Small delay before starting
-      const timeout = setTimeout(() => {
-        requestAnimationFrame(animateProgress);
-      }, 300);
-
-      return () => clearTimeout(timeout);
-    }
-  }, [isInView, data.length]); // Fix: Removed 'end' and 'duration' from dependencies
-
-  // Create animated data where values are interpolated based on progress
-  const animatedData = data.map((point, index) => {
-    const targetValue = point.val;
-    const animatedValue = targetValue * animationProgress;
-    return {
-      ...point,
-      val: animatedValue
+    if (!inView || !data.length) return;
+    const start = Date.now(), dur = 6000;
+    const tick = () => {
+      const p = Math.min((Date.now() - start) / dur, 1);
+      setProgress(1 - Math.pow(1 - p, 3));
+      if (p < 1) requestAnimationFrame(tick);
     };
-  });
+    const t = setTimeout(() => requestAnimationFrame(tick), 300);
+    return () => clearTimeout(t);
+  }, [inView, data.length]);
 
-  const match = value.match(/([+])?(\d+(\.\d+)?)(.*)/); // Modified regex to capture decimals
-  let prefix = '';
-  let number = 0;
-  let suffix = '';
+  const animated = data.map(pt => ({ ...pt, val: pt.val * progress }));
+  const m = value.match(/([+])?(\d+(\.\d+)?)(.*)/);
+  const prefix = m?.[1] || '', number = parseFloat(m?.[2] || 0), suffix = m?.[4] || '';
 
-  if (match) {
-    prefix = match[1] || '';
-    number = parseFloat(match[2]); // Use parseFloat for decimal numbers
-    suffix = match[4] || ''; // Adjusted index for suffix due to new capture group
-  }
+  const tooltipStyle = { backgroundColor: 'rgba(7,7,10,0.95)', borderColor: 'rgba(255,255,255,0.09)', borderRadius: '0.75rem', color: '#EDEDEF', fontSize: '11px' };
+  const axisProps = { tick: { fill: '#3a4050', fontSize: 11 }, tickLine: false, axisLine: false };
 
   return (
-    <div ref={containerRef} className="p-6 bg-slate-900/40 border border-slate-700/50 rounded-2xl backdrop-blur-md">
-      <div className="flex justify-between items-center mb-6">
-        <h4 className="font-semibold text-white text-lg">{title}</h4>
-        <p className={`font-bold text-3xl ${valueColor}`}>
-          {prefix}
-          <AnimatedCounter end={number} duration={4.5} />
-          {suffix}
+    <div ref={ref} className="p-6 rounded-2xl" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
+      <div className="flex justify-between items-center mb-5">
+        <h4 className="text-xs font-medium text-[#8A8F98]">{title}</h4>
+        <p className={`font-bold text-2xl tabular-nums ${valueColor}`}>
+          {prefix}<AnimatedCounter end={number} duration={4.5} />{suffix}
         </p>
       </div>
-
-      <div className="h-48">
+      <div className="h-44">
         <ResponsiveContainer width="100%" height="100%">
           {isLineChart ? (
-            <LineChart data={animatedData} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
+            <LineChart data={animated} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
               <defs>
                 <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor={color} stopOpacity={0.8} />
-                  <stop offset="95%" stopColor={color} stopOpacity={0.1} />
+                  <stop offset="5%" stopColor={color} stopOpacity={0.7} />
+                  <stop offset="95%" stopColor={color} stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.3} /> {/* Added CartesianGrid to AreaChart */}
-              <XAxis
-                dataKey="name"
-                tick={{ fill: '#94a3b8', fontSize: 12 }}
-                tickLine={false}
-                axisLine={false}
-                interval={0} />
-
-              <YAxis
-                tick={{ fill: '#94a3b8', fontSize: 12 }}
-                tickLine={false}
-                axisLine={false}
-                domain={[0, maxValue || 'dataMax + 5']}
-                ticks={ticks} />
-
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: 'rgba(15, 23, 42, 0.95)',
-                  borderColor: '#334155',
-                  borderRadius: '0.5rem',
-                  color: '#f1f5f9',
-                  fontSize: '12px'
-                }}
-                labelStyle={{ fontWeight: 'bold' }}
-                cursor={{ stroke: 'rgba(100, 116, 139, 0.3)', strokeWidth: 2 }}
-                formatter={(value) => [value.toFixed(2), '']} />
-
-              <Line
-                type="monotone"
-                dataKey="val"
-                stroke={color}
-                strokeWidth={3}
-                dot={{ stroke: color, strokeWidth: 2, r: 4, fill: color }}
-                isAnimationActive={true}
-                animationDuration={2000}
-                animationEasing="ease-out" />
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
+              <XAxis dataKey="name" {...axisProps} interval={0} />
+              <YAxis {...axisProps} domain={[0, maxValue || 'dataMax+5']} ticks={ticks} />
+              <Tooltip contentStyle={tooltipStyle} cursor={{ stroke: 'rgba(255,255,255,0.08)', strokeWidth: 2 }} formatter={(v) => [v.toFixed(1), '']} />
+              <Line type="monotone" dataKey="val" stroke={color} strokeWidth={2} dot={{ r: 3, fill: color }} isAnimationActive animationDuration={2000} animationEasing="ease-out" />
             </LineChart>
           ) : (
-            <AreaChart data={animatedData} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
+            <AreaChart data={animated} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
               <defs>
                 <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor={color} stopOpacity={0.8} />
-                  <stop offset="95%" stopColor={color} stopOpacity={0.1} />
+                  <stop offset="5%" stopColor={color} stopOpacity={0.5} />
+                  <stop offset="95%" stopColor={color} stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.3} /> {/* Added CartesianGrid to AreaChart */}
-              <XAxis
-                dataKey="name"
-                tick={{ fill: '#94a3b8', fontSize: 12 }}
-                tickLine={false}
-                axisLine={false}
-                interval={0} />
-
-              <YAxis
-                tick={{ fill: '#94a3b8', fontSize: 12 }}
-                tickLine={false}
-                axisLine={false}
-                domain={[0, maxValue || 'dataMax + 5']}
-                ticks={ticks} />
-
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: 'rgba(15, 23, 42, 0.95)',
-                  borderColor: '#334155',
-                  borderRadius: '0.5rem',
-                  color: '#f1f5f9',
-                  fontSize: '12px'
-                }}
-                labelStyle={{ fontWeight: 'bold' }}
-                cursor={{ stroke: 'rgba(100, 116, 139, 0.3)', strokeWidth: 2 }}
-                formatter={(value) => [value.toFixed(2), '']} />
-
-              <Area
-                type="monotone"
-                dataKey="val"
-                stroke={color}
-                strokeWidth={3}
-                fill={`url(#${gradientId})`}
-                dot={false} // Only dots for LineChart, not AreaChart
-                isAnimationActive={true}
-                animationDuration={2000}
-                animationEasing="ease-out" />
-
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
+              <XAxis dataKey="name" {...axisProps} interval={0} />
+              <YAxis {...axisProps} domain={[0, maxValue || 'dataMax+5']} ticks={ticks} />
+              <Tooltip contentStyle={tooltipStyle} cursor={{ stroke: 'rgba(255,255,255,0.08)', strokeWidth: 2 }} formatter={(v) => [v.toFixed(1), '']} />
+              <Area type="monotone" dataKey="val" stroke={color} strokeWidth={2} fill={`url(#${gradientId})`} dot={false} isAnimationActive animationDuration={2000} animationEasing="ease-out" />
             </AreaChart>
           )}
         </ResponsiveContainer>
       </div>
-    </div>);
-
+    </div>
+  );
 };
 
+const MetricCard = ({ title, value, color, delay }) => (
+  <motion.div initial={{ opacity: 0, scale: 0.94 }} whileInView={{ opacity: 1, scale: 1 }}
+    viewport={{ once: true, amount: 0.5 }} transition={{ duration: 0.4, ease: EXPO, delay }}
+    className="p-6 rounded-2xl text-center flex flex-col justify-center"
+    style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
+    <p className={`text-4xl font-bold tabular-nums mb-1.5 ${color}`}>{value}</p>
+    <p className="text-xs text-[#8A8F98] font-medium">{title}</p>
+  </motion.div>
+);
 
-
-const MetricCard = ({ title, value, color, delay }) => {
-  return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.9 }}
-      whileInView={{ opacity: 1, scale: 1 }}
-      viewport={{ once: true, amount: 0.5 }}
-      transition={{ duration: 0.5, delay: delay }}
-      className="p-6 bg-slate-900/40 border border-slate-700/50 rounded-2xl backdrop-blur-md text-center">
-
-      <p className={`text-4xl font-bold mb-2 ${color}`}>{value}</p>
-      <p className="text-white font-bold text-lg">{title}</p>
-    </motion.div>);
-
-};
-
-// Updated TestimonialCard component without individual entrance animations
-const TestimonialCard = ({ testimonial }) => {
-  const cardRef = useRef(null);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-
-  const handleMouseMove = (e) => {
-    if (cardRef.current) {
-      const rect = cardRef.current.getBoundingClientRect();
-      setMousePosition({
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top
-      });
-    }
-  };
-
-  return (
-    <motion.div
-      ref={cardRef}
-      onMouseMove={handleMouseMove}
-      whileHover={{
-        scale: 1.03,
-        y: -5,
-        boxShadow: "0 20px 40px rgba(0,0,0,0.4)"
-      }}
-      className="group/card relative h-full p-8 rounded-2xl backdrop-blur-xl border overflow-hidden flex flex-col bg-gradient-to-br from-slate-900/50 to-slate-800/50 border-slate-700/50">
-
-      {/* Mouse-following glow */}
-      <motion.div
-        className="absolute inset-0 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 pointer-events-none"
-        style={{
-          background: `radial-gradient(350px at ${mousePosition.x}px ${mousePosition.y}px, rgba(168, 85, 247, 0.15), transparent 80%)`
-        }} />
-
-      {/* Animated glowing border */}
-      <div className="absolute -inset-px bg-gradient-to-r from-indigo-500/0 via-purple-500/30 to-indigo-500/0 rounded-2xl opacity-0 group-hover/card:opacity-100 transition-opacity duration-500 blur-sm"></div>
-      <div className="absolute -inset-px bg-gradient-to-r from-indigo-500/0 via-purple-500/20 to-indigo-500/0 rounded-2xl opacity-0 group-hover/card:opacity-100 transition-opacity duration-500"></div>
-
-      <div className="relative z-10 flex flex-col h-full">
-        <div className="flex-grow mb-6">
-          <blockquote className="text-slate-200 leading-relaxed italic" style={{ textShadow: '0 0 4px #fff' }}>
-            "{testimonial.quote}"
-          </blockquote>
-        </div>
-        <div className="flex items-center gap-4 mt-auto pt-4 border-t border-slate-700/50">
-          {testimonial.imageUrl ?
-            <img src={testimonial.imageUrl} alt={testimonial.name} className="w-12 h-12 rounded-full object-cover shadow-lg" style={{ filter: 'drop-shadow(0 0 8px rgba(139, 92, 246, 0.4))' }} /> :
-
-            <div className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-xl
-                              ${testimonial.role === 'Teacher' ? 'bg-indigo-600' : 'bg-purple-600'}
-                              shadow-lg`}
-              style={{ filter: 'drop-shadow(0 0 8px rgba(139, 92, 246, 0.4))' }}>
-              {testimonial.name.charAt(0)}
-            </div>
-          }
-          <div>
-            <p className="font-semibold text-white text-lg">{testimonial.name}</p>
-            <p className="text-slate-400 text-sm">{testimonial.role}</p>
+// ─── Testimonial card ─────────────────────────────────────────────────────────
+const TestimonialCard = ({ testimonial }) => (
+  <motion.div
+    whileHover={{ scale: 1.015, y: -3, transition: { duration: 0.24, ease: EXPO } }}
+    className="relative h-full p-6 rounded-2xl flex flex-col overflow-hidden group"
+    style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
+    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-400 pointer-events-none"
+      style={{ background: 'radial-gradient(ellipse at 50% 110%, rgba(94,106,210,0.12), transparent 65%)' }} />
+    <div className="relative z-10 flex flex-col h-full">
+      <blockquote className="text-sm text-[#8A8F98] leading-relaxed italic flex-grow mb-5">
+        "{testimonial.quote}"
+      </blockquote>
+      <div className="flex items-center gap-3 pt-4" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+        {testimonial.imageUrl ? (
+          <img src={testimonial.imageUrl} alt={testimonial.name}
+            className="w-8 h-8 rounded-full object-cover"
+            style={{ boxShadow: '0 0 0 1px rgba(255,255,255,0.1)' }} />
+        ) : (
+          <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold text-xs"
+            style={{ background: testimonial.role === 'Teacher' ? 'rgba(94,106,210,0.35)' : 'rgba(139,92,246,0.35)' }}>
+            {testimonial.name.charAt(0)}
           </div>
+        )}
+        <div>
+          <p className="text-xs font-semibold text-[#EDEDEF]">{testimonial.name}</p>
+          <p className="text-[10px] text-[#8A8F98]">{testimonial.role}</p>
         </div>
       </div>
-    </motion.div>);
+    </div>
+  </motion.div>
+);
 
-};
+// ─── Section label ────────────────────────────────────────────────────────────
+const SectionLabel = ({ children, color = '#5E6AD2' }) => (
+  <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
+    transition={{ duration: 0.35 }}
+    className="text-[10px] font-bold uppercase tracking-[0.15em] mb-3"
+    style={{ color }}>
+    {children}
+  </motion.p>
+);
 
+const SectionHeading = ({ children, delay = 0 }) => (
+  <motion.h2 initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true }} transition={{ duration: 0.52, ease: EXPO, delay }}
+    className="text-3xl md:text-4xl font-bold tracking-tight text-[#EDEDEF] mb-4">
+    {children}
+  </motion.h2>
+);
 
-// Terms and Privacy content moved to components/landing/TermsContent.jsx and PrivacyContent.jsx
+const SectionSub = ({ children, delay = 0.07 }) => (
+  <motion.p initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true }} transition={{ duration: 0.52, ease: EXPO, delay }}
+    className="text-[#8A8F98] max-w-xl mx-auto text-sm leading-relaxed">
+    {children}
+  </motion.p>
+);
 
+const UnlockBadge = ({ label, color = '#5E6AD2' }) => (
+  <motion.div initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true }} transition={{ delay: 0.35 }}
+    className="flex justify-center mt-10">
+    <div className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs text-[#8A8F98]"
+      style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
+      <Unlock className="w-3.5 h-3.5" style={{ color }} />
+      {label}
+    </div>
+  </motion.div>
+);
+
+// ─── Main component ───────────────────────────────────────────────────────────
 export default function LandingPage() {
   const { t } = useTranslation();
-  const { scrollYProgress } = useScroll();
+  const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
+  const [submitting, setSubmitting] = useState(false);
+  const [success, setSuccess] = useState(false);
 
-  // Contact form state
-  const [contactForm, setContactForm] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: ''
-  });
-  const [contactFormSubmitting, setContactFormSubmitting] = useState(false);
-  const [contactFormSuccess, setContactFormSuccess] = useState(false);
-
-  // Google Analytics Integration
   useEffect(() => {
-    // Only run on client-side
-    if (typeof window !== 'undefined' && !window.gtag) {
-      // Add gtag.js script
-      const script = document.createElement('script');
-      script.async = true;
-      script.src = "https://www.googletagmanager.com/gtag/js?id=G-PPPFF547QK";
-      document.head.appendChild(script);
-
-      // Initialize dataLayer and gtag function
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){window.dataLayer.push(arguments);}
-      window.gtag = gtag;
-
-      gtag('js', new Date());
-      gtag('config', 'G-PPPFF547QK');
-    }
+    if (typeof window === 'undefined' || window.gtag) return;
+    const s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=G-PPPFF547QK';
+    document.head.appendChild(s);
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { window.dataLayer.push(arguments); }
+    window.gtag = gtag;
+    gtag('js', new Date());
+    gtag('config', 'G-PPPFF547QK');
   }, []);
 
-  const handleContactSubmit = async (e) => {
+  const toLogin = async () => {
+    const url = window.location.origin + createPageUrl('Dashboard');
+    await base44.auth.redirectToLogin(url);
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!contactForm.name || !contactForm.email || !contactForm.message) {
-      alert('Please fill in all required fields');
-      return;
-    }
-
-    setContactFormSubmitting(true);
+    if (!form.name || !form.email || !form.message) { alert('Please fill in all required fields'); return; }
+    setSubmitting(true);
     try {
-      // Save to Contact entity instead of sending email
-      await Contact.create({
-        name: contactForm.name,
-        email: contactForm.email,
-        subject: contactForm.subject || 'No subject provided',
-        message: contactForm.message,
-        status: 'new'
-      });
-
-      setContactFormSuccess(true);
-      setContactForm({
-        name: '',
-        email: '',
-        subject: '',
-        message: ''
-      });
-
-      // Reset success message after 5 seconds
-      setTimeout(() => setContactFormSuccess(false), 5000);
-    } catch (error) {
-      console.error('Error saving contact form:', error);
-      alert('Failed to send message. Please try again or email us directly, contact@schoolace.ai');
+      await Contact.create({ name: form.name, email: form.email, subject: form.subject || 'No subject', message: form.message, status: 'new' });
+      setSuccess(true);
+      setForm({ name: '', email: '', subject: '', message: '' });
+      setTimeout(() => setSuccess(false), 5000);
+    } catch {
+      alert('Failed to send. Please email contact@schoolace.ai directly.');
     } finally {
-      setContactFormSubmitting(false);
+      setSubmitting(false);
     }
   };
 
-  const handleGetStartedClick = async () => {
-    // The redirect URL should be the dashboard. The dashboard page itself handles
-    // redirecting to the setup page if the user's setup is not complete.
-    const redirectUrl = window.location.origin + createPageUrl('Dashboard');
-    await base44.auth.redirectToLogin(redirectUrl);
-  };
-
-  const handleSignInClick = async () => {
-    const redirectUrl = window.location.origin + createPageUrl('Dashboard');
-    await base44.auth.redirectToLogin(redirectUrl);
-  };
-
-  const getTeacherFeatures = () => [
+  const teacherFeatures = [
     { icon: <Bot />, title: t('landing.intelligentGrading'), description: t('landing.intelligentGradingDesc') },
     { icon: <BarChart />, title: t('landing.interactiveQuizzes'), description: t('landing.interactiveQuizzesDesc') },
     { icon: <BookOpen />, title: t('landing.dynamicAssignments'), description: t('landing.dynamicAssignmentsDesc') },
     { icon: <Calendar />, title: t('landing.smartScheduling'), description: t('landing.smartSchedulingDesc') },
     { icon: <Activity />, title: t('landing.realTimeProgress'), description: t('landing.realTimeProgressDesc') },
-    { icon: <Sparkles />, title: t('landing.proactiveAIAgent'), description: t('landing.proactiveAIAgentDesc') }];
+    { icon: <Sparkles />, title: t('landing.proactiveAIAgent'), description: t('landing.proactiveAIAgentDesc') },
+  ];
 
+  const studentFeatures = [
+    { icon: <Bot />, title: t('landing.individualizedStudyCompanion'), description: t('landing.individualizedStudyCompanionDesc'), isFeatured: true },
+    { icon: <PenTool />, title: t('landing.aceModels'), description: t('landing.aceModelsDesc') },
+    { icon: <Bot />, title: t('landing.longitudinalMemory'), description: t('landing.longitudinalMemoryDesc') },
+    { icon: <Brain />, title: t('landing.checkYourUnderstanding'), description: t('landing.checkYourUnderstandingDesc') },
+    { icon: <Users />, title: 'ACE Spaces', description: 'Experience the future of collaboration with AI-enhanced group chats where you can brainstorm, share files, and get instant tutoring together.' },
+  ];
 
-
-  const getStudentFeatures = () => [
-    {
-      icon: <Bot />,
-      title: t('landing.individualizedStudyCompanion'),
-      description: t('landing.individualizedStudyCompanionDesc'),
-      isFeatured: true
-    },
-    {
-      icon: <PenTool />,
-      title: t('landing.aceModels'),
-      description: t('landing.aceModelsDesc')
-    },
-    {
-      icon: <Bot />,
-      title: t('landing.longitudinalMemory'),
-      description: t('landing.longitudinalMemoryDesc')
-    },
-    {
-      icon: <Brain />,
-      title: t('landing.checkYourUnderstanding'),
-      description: t('landing.checkYourUnderstandingDesc')
-    },
-    {
-      icon: <Users />,
-      title: "ACE Spaces",
-      description: "Experience the future of collaboration with AI-enhanced group chats where you can brainstorm, share files, and get instant tutoring together."}];
-  
-  const getAIToolkitFeatures = () => [
+  const aiTools = [
     { icon: <PenTool />, title: t('landing.worksheetGeneration') },
     { icon: <BarChart />, title: t('landing.rubricCreation') },
     { icon: <BrainCircuit />, title: t('landing.quizGeneration') },
@@ -743,1074 +508,380 @@ export default function LandingPage() {
     { icon: <SlidersHorizontal />, title: t('landing.lessonPlanning') },
     { icon: <Edit />, title: t('landing.iepAssistance') },
     { icon: <Mail />, title: t('landing.emailDrafting') },
-    { icon: <ShieldCheck />, title: t('landing.reportContent') }];
-  
-  const getTestimonials = () => [
-    {
-      quote: t('landing.testimonial1'),
-      name: "Ethan Chen",
-      role: t('roles.student'),
-      imageUrl: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/a4476a942_Screenshot2025-10-14at74455PM.png"
-    },
-    {
-      quote: t('landing.testimonial2'),
-      name: "Jesse Alabi",
-      role: t('roles.student'),
-      imageUrl: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/c5f3f94c4_Screenshot2025-10-14at74303PM.png"
-    },
-    {
-      quote: t('landing.testimonial3'),
-      name: "Henry He",
-      role: t('roles.student'),
-      imageUrl: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/28d23dde8_Screenshot2025-10-14at74431PM.png"
-    },
-    {
-      quote: t('landing.testimonial4'),
-      name: "Dr. Kraver",
-      role: t('roles.teacher')
-    },
-    {
-      quote: t('landing.testimonial5'),
-      name: "Kimoon Bae",
-      role: t('roles.student'),
-      imageUrl: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/754ea1c55_443E26B3-DC25-40FC-9A29-B1051EC523F5_1_201_a.jpg"
-    },
-    {
-      quote: t('landing.testimonial6'),
-      name: "Xiangting Ren",
-      role: t('roles.student'),
-      imageUrl: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/db05cdc6d_Screenshot2025-09-30at44716PM.png"
-    },
-    {
-      quote: t('landing.testimonial7'),
-      name: "Lexi Liu",
-      role: t('roles.student'),
-      imageUrl: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/200f24820_Screenshot2025-10-01at10742PM.png"
-    },
-    {
-      quote: t('landing.testimonial8'),
-      name: "Sophie He",
-      role: t('roles.student'),
-      imageUrl: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/45f8f2cf8_Screenshot2025-10-01at10931PM.png"
-    },
-    {
-      quote: t('landing.testimonial9'),
-      name: "Johnny Zhao",
-      role: t('roles.student'),
-      imageUrl: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/76f9da2e7_Screenshot2025-10-01at10830PM.png"
-    },
-    {
-      quote: t('landing.testimonial10'),
-      name: "David He",
-      role: t('roles.student'),
-      imageUrl: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/a8cd04160_Screenshot2025-12-31at95757PM.png"
-    },
-    {
-      quote: t('landing.testimonial11'),
-      name: "Jefferson Chen",
-      role: t('roles.student'),
-      imageUrl: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/6daf7e7fa_Screenshot2025-12-31at103321PM.png"
-    },
-    {
-      quote: t('landing.testimonial12'),
-      name: "Ethan Wang",
-      role: t('roles.student'),
-      imageUrl: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/4e2cb0da4_Screenshot2026-01-03at105645AM.png"
-    },
-    {
-      quote: t('landing.testimonial13'),
-      name: "Xiyao Zhou",
-      role: t('roles.student'),
-      imageUrl: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/f6f20006c_Screenshot2026-01-03at105653AM.png"
-    },
-    {
-      quote: t('landing.testimonial14'),
-      name: "Yohaan Narayanan",
-      role: t('roles.student'),
-      imageUrl: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/cc92e6bb9_Screenshot2026-02-17at64039PM.png"
-    },
-    {
-      quote: t('landing.testimonial15'),
-      name: "Anish Sarangee",
-      role: t('roles.student'),
-      imageUrl: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/6ddd3f8a0_Screenshot2026-01-03at120548PM.png"
-    },
-    {
-      quote: t('landing.testimonial16'),
-      name: "Rey Sadhu",
-      role: t('roles.student'),
-      imageUrl: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/f6585736b_Screenshot2026-01-03at120832PM.png"
-    }];
-  
+    { icon: <ShieldCheck />, title: t('landing.reportContent') },
+  ];
+
+  const testimonials = [
+    { quote: t('landing.testimonial1'), name: 'Ethan Chen', role: t('roles.student'), imageUrl: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/a4476a942_Screenshot2025-10-14at74455PM.png' },
+    { quote: t('landing.testimonial2'), name: 'Jesse Alabi', role: t('roles.student'), imageUrl: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/c5f3f94c4_Screenshot2025-10-14at74303PM.png' },
+    { quote: t('landing.testimonial3'), name: 'Henry He', role: t('roles.student'), imageUrl: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/28d23dde8_Screenshot2025-10-14at74431PM.png' },
+    { quote: t('landing.testimonial4'), name: 'Dr. Kraver', role: t('roles.teacher') },
+    { quote: t('landing.testimonial5'), name: 'Kimoon Bae', role: t('roles.student'), imageUrl: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/754ea1c55_443E26B3-DC25-40FC-9A29-B1051EC523F5_1_201_a.jpg' },
+    { quote: t('landing.testimonial6'), name: 'Xiangting Ren', role: t('roles.student'), imageUrl: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/db05cdc6d_Screenshot2025-09-30at44716PM.png' },
+    { quote: t('landing.testimonial7'), name: 'Lexi Liu', role: t('roles.student'), imageUrl: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/200f24820_Screenshot2025-10-01at10742PM.png' },
+    { quote: t('landing.testimonial8'), name: 'Sophie He', role: t('roles.student'), imageUrl: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/45f8f2cf8_Screenshot2025-10-01at10931PM.png' },
+    { quote: t('landing.testimonial9'), name: 'Johnny Zhao', role: t('roles.student'), imageUrl: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/76f9da2e7_Screenshot2025-10-01at10830PM.png' },
+    { quote: t('landing.testimonial10'), name: 'David He', role: t('roles.student'), imageUrl: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/a8cd04160_Screenshot2025-12-31at95757PM.png' },
+    { quote: t('landing.testimonial11'), name: 'Jefferson Chen', role: t('roles.student'), imageUrl: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/6daf7e7fa_Screenshot2025-12-31at103321PM.png' },
+    { quote: t('landing.testimonial12'), name: 'Ethan Wang', role: t('roles.student'), imageUrl: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/4e2cb0da4_Screenshot2026-01-03at105645AM.png' },
+    { quote: t('landing.testimonial13'), name: 'Xiyao Zhou', role: t('roles.student'), imageUrl: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/f6f20006c_Screenshot2026-01-03at105653AM.png' },
+    { quote: t('landing.testimonial14'), name: 'Yohaan Narayanan', role: t('roles.student'), imageUrl: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/cc92e6bb9_Screenshot2026-02-17at64039PM.png' },
+    { quote: t('landing.testimonial15'), name: 'Anish Sarangee', role: t('roles.student'), imageUrl: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/6ddd3f8a0_Screenshot2026-01-03at120548PM.png' },
+    { quote: t('landing.testimonial16'), name: 'Rey Sadhu', role: t('roles.student'), imageUrl: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/687ed6bea54c832b17eb40bc/f6585736b_Screenshot2026-01-03at120832PM.png' },
+  ];
+
+  const inputClass = 'w-full px-4 py-3 rounded-xl text-sm text-[#EDEDEF] placeholder-[#3a4050] outline-none transition-all duration-200';
+  const inputStyle = { background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' };
+  const focusInput = (e) => { e.target.style.borderColor = 'rgba(94,106,210,0.5)'; };
+  const blurInput  = (e) => { e.target.style.borderColor = 'rgba(255,255,255,0.08)'; };
+
   return (
-    <div className="bg-gradient-to-br from-black via-slate-950 to-purple-950 text-white min-h-screen overflow-x-hidden relative">
-      <AtmosphericBackground />
-      <ShootingStars />
-      <FloatingOrbs />
-      <FloatingParticles />
+    <div className="text-[#EDEDEF] min-h-screen overflow-x-hidden relative" style={{ fontFamily: "'DM Sans', system-ui, sans-serif" }}>
+      <Background />
 
-      {/* Fixed Sign In Button and Language Selector - Outside Header */}
-      <div className="fixed top-6 right-2 sm:right-4 lg:right-6 z-[100] flex items-center gap-3">
+      {/* Fixed sign-in */}
+      <div className="fixed top-4 right-4 lg:right-6 z-[100] flex items-center gap-3">
         <LanguageSelector />
-        <Button
-          variant="default"
-          className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold px-6 py-3 shadow-2xl shadow-indigo-500/50 border-0 text-base rounded-xl"
-          onClick={handleSignInClick}>
-
+        <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} onClick={toLogin}
+          className="text-xs font-semibold px-5 py-2.5 rounded-xl cursor-pointer"
+          style={{ background: 'linear-gradient(135deg,#5E6AD2,#7B8FE8)', color: '#fff', boxShadow: '0 2px 16px rgba(94,106,210,0.32)' }}>
           {t('landing.signIn')}
-        </Button>
+        </motion.button>
       </div>
 
       <div className="relative z-20">
         <Header />
         <AceTutorBanner />
-        <main>
-          {/* Hero Section */}
-          <section className="px-6 py-12 text-center max-w-6xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              className="mb-8">
 
-              <h1 className="text-5xl md:text-7xl font-extrabold mb-6 leading-tight text-center">
+        <main>
+
+          {/* ── Hero ─────────────────────────────────────────── */}
+          <section className="px-6 pt-24 pb-20 text-center max-w-5xl mx-auto">
+            <motion.div initial="hidden" animate="show" variants={stagger(0.1)}>
+
+              <motion.div variants={fadeUp(0)} className="flex justify-center mb-8">
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold"
+                  style={{ background: 'rgba(94,106,210,0.12)', border: '1px solid rgba(94,106,210,0.28)', color: '#7B8FE8' }}>
+                  <Sparkles className="w-3.5 h-3.5" />
+                  AI-Powered Education Platform
+                </div>
+              </motion.div>
+
+              <motion.h1 variants={fadeUp(0.06)} className="text-5xl md:text-7xl font-bold mb-6 leading-[1.08] tracking-tight">
                 <TypewriterText
                   text={t('landing.heroTitle')}
-                  className="bg-clip-text text-transparent bg-gradient-to-r from-white via-blue-100 to-indigo-300 whitespace-nowrap" />
+                  className="bg-clip-text text-transparent"
+                  style={{ backgroundImage: 'linear-gradient(135deg, #ffffff 0%, rgba(255,255,255,0.75) 100%)' }}
+                />
+              </motion.h1>
 
-
-              </h1>
-
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1, duration: 0.8 }}
-                className="text-xl text-slate-400 max-w-3xl mx-auto leading-relaxed mb-2">
+              <motion.p variants={fadeUp(0.14)} className="text-base text-[#8A8F98] max-w-2xl mx-auto leading-relaxed mb-2">
                 {t('landing.heroSubtitle').split('{aceAI}')[0]}
-                <strong className="font-bold text-2xl text-white">ACE AI</strong>
+                <strong className="font-semibold text-[#EDEDEF]">ACE AI</strong>
                 {t('landing.heroSubtitle').split('{aceAI}')[1] || ''}
               </motion.p>
 
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1.2, duration: 0.8 }}
-                className="text-2xl font-bold text-white max-w-3xl mx-auto leading-relaxed mb-8">
+              <motion.p variants={fadeUp(0.18)} className="text-lg font-semibold text-[#EDEDEF] max-w-2xl mx-auto mb-10">
                 {t('landing.heroTagline')}
               </motion.p>
 
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1.5, duration: 0.8 }}
-                className="flex justify-center">
-                <Button
-                  onClick={handleGetStartedClick}
-                  className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white border-0 rounded-full px-10 py-6 text-lg font-semibold shadow-2xl shadow-indigo-500/30">
-                  {t('landing.getStartedFree')} <ArrowRight className="w-5 h-5 ml-2" />
-                </Button>
+              <motion.div variants={fadeUp(0.24)} className="flex justify-center">
+                <motion.button
+                  whileHover={{ scale: 1.04, boxShadow: '0 8px 32px rgba(94,106,210,0.50)' }}
+                  whileTap={{ scale: 0.97 }} onClick={toLogin}
+                  className="flex items-center gap-2 px-8 py-4 rounded-2xl text-sm font-semibold cursor-pointer"
+                  style={{ background: 'linear-gradient(135deg,#5E6AD2,#7B8FE8)', color: '#fff', boxShadow: '0 4px 24px rgba(94,106,210,0.38)' }}>
+                  {t('landing.getStartedFree')} <ArrowRight className="w-4 h-4" />
+                </motion.button>
               </motion.div>
             </motion.div>
-
           </section>
 
-
-
-          {/* 1. Teacher Features Section */}
-          <section id="features" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative">
-            <div className="text-center mb-16">
-              <motion.h2
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.5 }}
-                className="text-4xl md:text-5xl font-bold mb-4">
-
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400">
-                  {t('landing.coPilotForTeachers')}
-                </span>
-              </motion.h2>
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.5 }}
-                transition={{ delay: 0.2 }} className="text-slate-300 text-lg max-w-2xl mx-auto">{t('landing.coPilotDesc')}
-
-
-              </motion.p>
+          {/* ── Teacher features ─────────────────────────────── */}
+          <section id="features" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+            <div className="text-center mb-12">
+              <SectionLabel color="#5E6AD2">For Educators</SectionLabel>
+              <SectionHeading>{t('landing.coPilotForTeachers')}</SectionHeading>
+              <SectionSub>{t('landing.coPilotDesc')}</SectionSub>
             </div>
-
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {getTeacherFeatures().map((feature, index) =>
-                <motion.div
-                  key={feature.title}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.3 }}
-                  transition={{
-                    duration: 0.6,
-                    delay: index * 0.1
-                  }}
-                  // Keep only the hover animations fast
-                  whileHover={{
-                    scale: 1.05,
-                    y: -10,
-                    transition: {
-                      duration: 0.2, // Fast hover entry
-                      ease: "easeOut",
-                      type: "tween"
-                    }
-                  }}
-                  // Fast exit when not hovering
-                  animate={{
-                    scale: 1,
-                    y: 0,
-                    transition: {
-                      duration: 0.15, // Fast exit animation
-                      ease: "easeInOut",
-                      type: "tween"
-                    }
-                  }}
-                  whileTap={{
-                    scale: 0.98,
-                    transition: { duration: 0.1 }
-                  }}
-                  className="relative bg-slate-900/40 border border-slate-700/50 p-8 rounded-2xl backdrop-blur-xl overflow-hidden group"
-                  style={{
-                    transformOrigin: "center",
-                    willChange: "transform, opacity"
-                  }}>
-
-                  {/* Rest of your component stays the same */}
-                  <div className="absolute -inset-px bg-gradient-to-r from-indigo-500/0 via-indigo-500/50 to-purple-500/0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm"></div>
-
-                  <div className="absolute -inset-px bg-gradient-to-r from-indigo-500/0 via-indigo-500/20 to-purple-500/0 rounded-2xl opacity-0 group-hover/card:opacity-100 transition-opacity duration-500"></div>
-
-                  <div className="relative z-10">
-                    <motion.div
-                      className="flex items-center justify-center w-14 h-14 mb-5 bg-slate-800/80 rounded-xl text-purple-400 group-hover:text-purple-300 transition-all duration-300 backdrop-blur-sm"
-                      whileHover={{
-                        scale: 1.1,
-                        transition: {
-                          duration: 0.6,
-                          ease: "easeInOut"
-                        }
-                      }}
-                      animate={{
-                        rotate: 0,
-                        scale: 1,
-                        transition: {
-                          duration: 0.3, // Quick rotation back
-                          ease: "easeOut"
-                        }
-                      }}
-                      style={{
-                        transformOrigin: "center",
-                        filter: 'drop-shadow(0 0 6px rgba(99, 102, 241, 0.5))'
-                      }}>
-
-                      {React.cloneElement(feature.icon, { className: "w-7 h-7" })}
-                    </motion.div>
-
-                    <h3 className="text-xl font-bold text-slate-100 mb-3 group-hover:text-white transition-colors">
-                      {feature.title}
-                    </h3>
-
-                    <p className="text-white group-hover:text-white transition-colors" style={{ textShadow: '0 0 4px #fff' }}>
-                      {feature.description}
-                    </p>
-                  </div>
-                </motion.div>
-              )}
-            </div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.5 }}
-              transition={{ delay: 0.6 }}
-              className="flex justify-center mt-12">
-              <div className="bg-slate-900/60 border border-slate-700/50 rounded-2xl px-8 py-4 backdrop-blur-xl flex items-center gap-3">
-                <div className="flex items-center justify-center w-10 h-10 bg-slate-800/80 rounded-xl">
-                  <Unlock className="w-5 h-5 text-purple-400" />
-                </div>
-                <p className="text-slate-300 text-lg font-medium">
-                  {t('landing.signInToDiscover')}
-                </p>
-              </div>
+            <motion.div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+              initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.1 }} variants={stagger(0.055)}>
+              {teacherFeatures.map((f, i) => <FeatureCard key={f.title} feature={f} index={i} accent="#5E6AD2" />)}
             </motion.div>
+            <UnlockBadge label={t('landing.signInToDiscover')} color="#5E6AD2" />
           </section>
 
-          {/* 2. Student AI Toolkit Section */}
-          <section id="student-features" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-            <div className="text-center mb-16">
-              <motion.h2
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.5 }}
-                className="text-4xl md:text-5xl font-bold mb-4">
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-400">{t('landing.studyCompanionForStudents')}</span>
-              </motion.h2>
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.5 }}
-                transition={{ delay: 0.2 }}
-                className="text-slate-300 text-lg max-w-2xl mx-auto">
-                {t('landing.studyCompanionDesc')}
-              </motion.p>
+          {/* ── Student features ─────────────────────────────── */}
+          <section id="student-features" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+            <div className="text-center mb-12">
+              <SectionLabel color="#9D4EDD">For Students</SectionLabel>
+              <SectionHeading>{t('landing.studyCompanionForStudents')}</SectionHeading>
+              <SectionSub>{t('landing.studyCompanionDesc')}</SectionSub>
             </div>
-
-            {/* Large Horizontal Featured Card - Top */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 0.6 }}
-              whileHover={{
-                scale: 1.05, // Changed from 1.02
-                y: -10, // Changed from -5
-                transition: { duration: 0.2, ease: "easeOut", type: "tween" }
-              }}
-              animate={{
-                scale: 1,
-                y: 0,
-                transition: { duration: 0.15, ease: "easeInOut", type: "tween" }
-              }}
-              whileTap={{ scale: 0.98, transition: { duration: 0.1 } }}
-              className="relative bg-slate-900/40 border border-slate-700/50 py-16 px-12 rounded-2xl backdrop-blur-xl overflow-hidden group"
-              style={{ transformOrigin: "center", willChange: "transform, opacity" }}>
-
-              <div className="absolute -inset-px bg-gradient-to-r from-purple-500/0 via-purple-500/50 to-pink-500/0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm"></div>
-              <div className="absolute -inset-px bg-gradient-to-r from-purple-500/0 via-purple-500/20 to-pink-500/0 rounded-2xl opacity-0 group-hover/card:opacity-100 transition-opacity duration-500"></div>
-
-              <div className="relative z-10 flex items-center gap-8">
-                <motion.div
-                  className="flex items-center justify-center w-20 h-20 bg-slate-800/80 rounded-xl text-purple-400 group-hover:text-purple-300 transition-all duration-300 backdrop-blur-sm"
-                  style={{ filter: 'drop-shadow(0 0 6px rgba(168, 85, 247, 0.5))' }}
-                  whileHover={{ scale: 1.1, transition: { duration: 0.6, ease: "easeInOut" } }}
-                  animate={{ rotate: 0, scale: 1, transition: { duration: 0.3, ease: "easeOut" } }}>
-
-                  <Bot className="w-10 h-10" />
-                </motion.div>
-
-                <div className="flex-grow">
-                  <h3 className="text-3xl font-bold text-slate-100 mb-4 group-hover:text-white transition-colors">
-                    {t('landing.individualizedStudyCompanion')}
-                  </h3>
-                  <p className="text-white group-hover:text-white transition-colors text-lg leading-relaxed" style={{ textShadow: '0 0 4px #fff' }}>{t('landing.individualizedStudyCompanionDesc')}
-
-                  </p>
-                </div>
+            <motion.div initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.1 }} variants={stagger(0.06)}>
+              <FeaturedCard feature={studentFeatures[0]} />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {studentFeatures.slice(1).map((f, i) => <FeatureCard key={f.title} feature={f} index={i + 1} accent="#9D4EDD" />)}
               </div>
             </motion.div>
-
-            {/* 2x2 Grid of Smaller Cards - Bottom */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-              {getStudentFeatures().slice(1).map((feature, index) =>
-                <motion.div
-                  key={feature.title}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.3 }}
-                  transition={{ duration: 0.6, delay: (index + 1) * 0.1 }}
-                  whileHover={{
-                    scale: 1.05,
-                    y: -10,
-                    transition: { duration: 0.2, ease: "easeOut", type: "tween" }
-                  }}
-                  animate={{
-                    scale: 1,
-                    y: 0,
-                    transition: { duration: 0.15, ease: "easeInOut", type: "tween" }
-                  }}
-                  whileTap={{ scale: 0.98, transition: { duration: 0.1 } }}
-                  className="relative bg-slate-900/40 border border-slate-700/50 p-6 rounded-2xl backdrop-blur-xl overflow-hidden group"
-                  style={{ transformOrigin: "center", willChange: "transform, opacity" }}>
-
-                  <div className="absolute -inset-px bg-gradient-to-r from-purple-500/0 via-purple-500/50 to-pink-500/0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm"></div>
-                  <div className="absolute -inset-px bg-gradient-to-r from-purple-500/0 via-purple-500/20 to-pink-500/0 rounded-2xl opacity-0 group-hover/card:opacity-100 transition-opacity duration-500"></div>
-
-                  <div className="relative z-10">
-                    <motion.div
-                      className="flex items-center justify-center w-12 h-12 mb-4 bg-slate-800/80 rounded-xl text-purple-400 group-hover:text-purple-300 transition-all duration-300 backdrop-blur-sm"
-                      style={{ filter: 'drop-shadow(0 0 6px rgba(168, 85, 247, 0.5))' }}
-                      whileHover={{ scale: 1.1, transition: { duration: 0.6, ease: "easeInOut" } }}
-                      animate={{ rotate: 0, scale: 1, transition: { duration: 0.3, ease: "easeOut" } }}>
-
-                      {React.cloneElement(feature.icon, { className: "w-6 h-6" })}
-                    </motion.div>
-
-                    <h3 className="text-lg font-bold text-slate-100 mb-2 group-hover:text-white transition-colors">
-                      {feature.title}
-                    </h3>
-
-                    <p className="text-sm text-white group-hover:text-white transition-colors" style={{ textShadow: '0 0 4px #fff' }}>
-                      {feature.description}
-                    </p>
-                  </div>
-                </motion.div>
-              )}
-            </div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.5 }}
-              transition={{ delay: 0.6 }}
-              className="flex justify-center mt-12">
-              <div className="bg-slate-900/60 border border-slate-700/50 rounded-2xl px-8 py-4 backdrop-blur-xl flex items-center gap-3">
-                <div className="flex items-center justify-center w-10 h-10 bg-slate-800/80 rounded-xl">
-                  <Unlock className="w-5 h-5 text-purple-400" />
-                </div>
-                <p className="text-slate-300 text-lg font-medium">
-                  {t('landing.signInToDiscover')}
-                </p>
-              </div>
-            </motion.div>
+            <UnlockBadge label={t('landing.signInToDiscover')} color="#9D4EDD" />
           </section>
 
-          {/* AI Interface Preview Section */}
-          <section className="py-8 relative z-30 mb-16">
+          {/* ── AI preview ───────────────────────────────────── */}
+          <section className="py-8 relative z-30 mb-8">
             <AIPreviewSection />
           </section>
 
-          {/* 3. AI Co-Pilot Section */}
-          <section id="co-pilot" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          {/* ── 30+ Tools ────────────────────────────────────── */}
+          <section id="co-pilot" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
             <div className="grid md:grid-cols-2 gap-16 items-center">
               <div>
-                <motion.h2
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true, amount: 0.5 }}
-                  className="text-4xl md:text-5xl font-bold mb-6 flex items-center gap-3">
-
-                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-400 inline-block w-24">
+                <SectionLabel color="#06b6d4">AI Toolkit</SectionLabel>
+                <motion.h2 initial={{ opacity: 0, x: -14 }} whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }} transition={{ duration: 0.52, ease: EXPO }}
+                  className="text-3xl md:text-4xl font-bold tracking-tight text-[#EDEDEF] mb-4 flex items-center gap-3">
+                  <span className="tabular-nums" style={{ color: '#06b6d4' }}>
                     <AnimatedCounter end={30} duration={3} suffix="+" />
                   </span>
-                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-400">
-                    {t('landing.productivityTools')}
-                  </span>
+                  {t('landing.productivityTools')}
                 </motion.h2>
-
-                <motion.p
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true, amount: 0.5 }}
-                  transition={{ delay: 0.2 }} className="text-slate-300 mb-8 text-lg leading-relaxed">{t('landing.productivityToolsDesc')}
-
-
-              </motion.p>
+                <motion.p initial={{ opacity: 0, x: -14 }} whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }} transition={{ duration: 0.52, ease: EXPO, delay: 0.08 }}
+                  className="text-[#8A8F98] text-sm leading-relaxed">
+                  {t('landing.productivityToolsDesc')}
+                </motion.p>
               </div>
-
-              {/* Continuous Vertical Scroll for AI Tools */}
-              <div className="relative h-[400px] overflow-hidden">
-                <div className="animate-vertical-scroll-seamless-loop flex flex-col">
-                  {/* First complete set */}
-                  {getAIToolkitFeatures().map((tool, i) =>
-                    <motion.div
-                      key={`tool-1-${tool.title}`}
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      whileInView={{ opacity: 1, scale: 1 }}
-                      viewport={{ once: true, amount: 0.5 }}
-                      transition={{ delay: i * 0.1 }}
-                      whileHover={{
-                        scale: 1.05,
-                        y: -5,
-                        transition: { duration: 0.2, ease: "easeOut" }
-                      }}
-                      className="flex items-center gap-3 p-4 bg-slate-900/40 border border-slate-700/50 rounded-lg backdrop-blur-md hover:bg-slate-800/50 transition-all duration-300 flex-shrink-0 mb-4">
-
-                      <div
-                        className="text-white"
-                        style={{ filter: 'drop-shadow(0 0 6px rgba(255, 255, 255, 0.7))' }}>
-
-                        {tool.icon}
-                      </div>
-                      <p
-                        className="text-white font-medium text-sm"
-                        style={{ textShadow: '0 0 6px #fff' }}>
-
-                        {tool.title}
-                      </p>
-                    </motion.div>
-                  )}
-                  {/* Second complete set for seamless loop */}
-                  {getAIToolkitFeatures().map((tool, i) =>
-                    <div
-                      key={`tool-2-${tool.title}`}
-                      className="flex items-center gap-3 p-4 bg-slate-900/40 border border-slate-700/50 rounded-lg backdrop-blur-md hover:bg-slate-800/50 transition-all duration-300 hover:scale-105 hover:-translate-y-1 flex-shrink-0 mb-4">
-
-                      <div
-                        className="text-white"
-                        style={{ filter: 'drop-shadow(0 0 6px rgba(255, 255, 255, 0.7))' }}>
-
-                        {tool.icon}
-                      </div>
-                      <p
-                        className="text-white font-medium text-sm"
-                        style={{ textShadow: '0 0 6px #fff' }}>
-
-                        {tool.title}
-                      </p>
+              <div className="relative h-[400px] overflow-hidden"
+                style={{ maskImage: 'linear-gradient(to bottom, transparent, black 15%, black 85%, transparent)' }}>
+                <div className="animate-vertical-scroll flex flex-col">
+                  {[...aiTools, ...aiTools].map((tool, i) => (
+                    <div key={i} className="flex items-center gap-3 p-3.5 rounded-xl mb-3 flex-shrink-0"
+                      style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                      <div style={{ color: '#8A8F98' }}>{tool.icon}</div>
+                      <p className="text-sm font-medium text-[#EDEDEF]">{tool.title}</p>
                     </div>
-                  )}
+                  ))}
                 </div>
               </div>
             </div>
           </section>
 
-          {/* Getting Started Section */}
-          <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-            <div className="text-center mb-16">
-              <motion.h2
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.5 }}
-                className="text-4xl md:text-5xl font-bold mb-4">
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400">
-                  {t('landing.teachersGetStarted')}
-                </span>
-              </motion.h2>
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.5 }}
-                transition={{ delay: 0.2 }} className="text-slate-300 text-lg max-w-2xl mx-auto">{t('landing.teachersGetStartedDesc')}
-
-
-              </motion.p>
+          {/* ── Getting started ──────────────────────────────── */}
+          <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+            <div className="text-center mb-12">
+              <SectionLabel color="#5E6AD2">Get Started</SectionLabel>
+              <SectionHeading>{t('landing.teachersGetStarted')}</SectionHeading>
+              <SectionSub>{t('landing.teachersGetStartedDesc')}</SectionSub>
             </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            <motion.div className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-4xl mx-auto"
+              initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} variants={stagger(0.09)}>
               {[
-                {
-                  number: "1",
-                  title: t('landing.step1Title'),
-                  description: t('landing.step1Desc'),
-                  icon: <PlusCircle className="w-8 h-8" />
-                },
-                {
-                  number: "2",
-                  title: t('landing.step2Title'),
-                  description: t('landing.step2Desc'),
-                  icon: <BookOpen className="w-8 h-8" />
-                },
-                {
-                  number: "3",
-                  title: t('landing.step3Title'),
-                  description: t('landing.step3Desc'),
-                  icon: <Users className="w-8 h-8" />
-                }].
-                map((step, index) =>
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true, amount: 0.3 }}
-                    transition={{ delay: index * 0.15 }}
-                    whileHover={{ scale: 1.05, y: -5 }}
-                    className="relative flex flex-col items-center p-8 bg-slate-900/40 border border-slate-700/50 rounded-xl backdrop-blur-md hover:bg-slate-800/50 transition-all duration-300 group">
-
-                    {/* Blue gradient borders on hover */}
-                    <div className="absolute -inset-px bg-gradient-to-r from-indigo-500/0 via-indigo-500/50 to-purple-500/0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm"></div>
-                    <div className="absolute -inset-px bg-gradient-to-r from-indigo-500/0 via-indigo-500/20 to-purple-500/0 rounded-xl opacity-0 group-hover/card:opacity-100 transition-opacity duration-500"></div>
-
-                    <div className="relative z-10">
-                      <motion.div
-                        className="flex items-center justify-center w-16 h-16 mb-4 bg-slate-800/80 rounded-xl text-indigo-400 group-hover:text-indigo-300 transition-all duration-300 backdrop-blur-sm relative z-10"
-                        whileHover={{
-                          scale: 1.1,
-                          transition: {
-                            duration: 0.6,
-                            ease: "easeInOut"
-                          }
-                        }}
-                        animate={{
-                          rotate: 0,
-                          scale: 1,
-                          transition: {
-                            duration: 0.3,
-                            ease: "easeOut"
-                          }
-                        }}
-                        style={{
-                          transformOrigin: "center",
-                          filter: 'drop-shadow(0 0 8px rgba(99, 102, 241, 0.6))'
-                        }}>
-                        {React.cloneElement(step.icon, { className: "w-8 h-8" })}
-                      </motion.div>
-
-                      {/* Title */}
-                      <h3
-                        className="text-2xl mb-3 text-lg font-bold relative z-10"
-                        style={{ textShadow: '0 0 8px rgba(255, 255, 255, 0.3)' }}>
-                        {step.title}
-                      </h3>
-
-                      {/* Description */}
-                      <p className="text-slate-300 text-center text-sm leading-relaxed relative z-10">
-                        {step.description}
-                      </p>
+                { num: '01', title: t('landing.step1Title'), desc: t('landing.step1Desc'), icon: <PlusCircle className="w-5 h-5" /> },
+                { num: '02', title: t('landing.step2Title'), desc: t('landing.step2Desc'), icon: <BookOpen className="w-5 h-5" /> },
+                { num: '03', title: t('landing.step3Title'), desc: t('landing.step3Desc'), icon: <Users className="w-5 h-5" /> },
+              ].map((step, i) => (
+                <motion.div key={i} variants={fadeUp(i * 0.07)} whileHover={CARD_HOVER} whileTap={CARD_TAP}
+                  className="relative flex flex-col items-center p-8 rounded-2xl text-center overflow-hidden group cursor-default"
+                  style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                    style={{ background: 'radial-gradient(ellipse at 50% 0%, rgba(94,106,210,0.14), transparent 60%)' }} />
+                  <div className="relative z-10">
+                    <p className="text-[10px] font-bold tracking-widest mb-4" style={{ color: '#5E6AD2' }}>{step.num}</p>
+                    <div className="w-11 h-11 mb-5 rounded-xl flex items-center justify-center mx-auto"
+                      style={{ background: 'rgba(94,106,210,0.14)', color: '#7B8FE8' }}>
+                      {step.icon}
                     </div>
-                  </motion.div>
-                )}
-            </div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.5 }}
-              transition={{ delay: 0.6 }}
+                    <h3 className="text-sm font-semibold text-[#EDEDEF] mb-2">{step.title}</h3>
+                    <p className="text-xs text-[#8A8F98] leading-relaxed">{step.desc}</p>
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+            <motion.div initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.35 }}
               className="flex justify-center mt-12">
-              <Button
-                onClick={handleGetStartedClick}
-                className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white border-0 rounded-full px-12 py-6 text-xl font-semibold shadow-2xl shadow-indigo-500/30">
-                {t('landing.getStartedFree')} <ArrowRight className="w-6 h-6 ml-3" />
-              </Button>
+              <motion.button whileHover={{ scale: 1.04, boxShadow: '0 8px 32px rgba(94,106,210,0.50)' }} whileTap={{ scale: 0.97 }}
+                onClick={toLogin} className="flex items-center gap-2 px-10 py-4 rounded-2xl text-sm font-semibold cursor-pointer"
+                style={{ background: 'linear-gradient(135deg,#5E6AD2,#7B8FE8)', color: '#fff', boxShadow: '0 4px 24px rgba(94,106,210,0.38)' }}>
+                {t('landing.getStartedFree')} <ArrowRight className="w-4 h-4" />
+              </motion.button>
             </motion.div>
           </section>
 
-          {/* Measurable Results Section */}
-          <section id="impact" className="py-16 relative">
+          {/* ── Measurable results ───────────────────────────── */}
+          <section id="impact" className="py-20">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.5 }}
-                transition={{ duration: 0.5 }}
-                className="text-center">
-                <h2 className="text-4xl md:text-5xl font-bold mb-4 text-cyan-300">
-                  {t('landing.measurableResults')}<sup className="text-2xl text-white"></sup>
-                </h2>
-                <p className="text-lg text-slate-400 max-w-3xl mx-auto">
-                  {t('landing.measurableResultsDesc')}
-                </p>
-              </motion.div>
-
-              <div className="mt-16 space-y-8">
-                {/* First Row: Time Savings Chart + First Two Cards */}
-                <motion.div
-                  initial={{ opacity: 0, x: -50 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true, amount: 0.3 }}
-                  transition={{ duration: 0.7, delay: 0.2 }}
-                  className="grid grid-cols-1 lg:grid-cols-[1.5fr_1fr] gap-6">
-
-                  <ChartCard
-                    title={t('landing.teacherTimeSavings')}
-                    value="+180mins"
-                    valueColor="text-green-400"
-                    data={[
-                      { name: 'Day1', val: 22 }, { name: 'Day2', val: 50 },
-                      { name: 'Day3', val: 80 }, { name: 'Day4', val: 120 },
-                      { name: 'Day5', val: 160 }, { name: 'Day6', val: 175 },
-                      { name: 'Day7', val: 180 }, { name: 'Day8', val: 180 },
-                    ]}
-                    color="#10b981"
-                    gradientId="timeSavingsGradient"
-                    maxValue={180}
-                    ticks={[0, 30, 60, 90, 120, 150, 180]}
-                  />
-
-                  <div className="grid grid-rows-2 gap-6">
-                    <MetricCard
-                      title={t('landing.teacherSatisfaction')}
-                      value="95%"
-                      color="text-cyan-300"
-                      delay={0.3}
-                    />
-
-                    <MetricCard
-                      title={t('landing.lessonPrepReduction')}
-                      value="60%"
-                      color="text-blue-400"
-                      delay={0.4}
-                    />
+              <div className="text-center mb-14">
+                <SectionLabel color="#10b981">Impact</SectionLabel>
+                <SectionHeading>{t('landing.measurableResults')}</SectionHeading>
+                <SectionSub>{t('landing.measurableResultsDesc')}</SectionSub>
+              </div>
+              <div className="space-y-5">
+                <motion.div initial={{ opacity: 0, y: 22 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.55, ease: EXPO }}
+                  className="grid grid-cols-1 lg:grid-cols-[1.6fr_1fr] gap-5">
+                  <ChartCard title={t('landing.teacherTimeSavings')} value="+180mins" valueColor="text-emerald-400"
+                    data={[{ name: 'D1', val: 22 }, { name: 'D2', val: 50 }, { name: 'D3', val: 80 }, { name: 'D4', val: 120 }, { name: 'D5', val: 160 }, { name: 'D6', val: 175 }, { name: 'D7', val: 180 }, { name: 'D8', val: 180 }]}
+                    color="#10b981" gradientId="timeSavings" maxValue={180} ticks={[0, 60, 120, 180]} />
+                  <div className="grid grid-rows-2 gap-5">
+                    <MetricCard title={t('landing.teacherSatisfaction')} value="95%" color="text-cyan-400" delay={0.12} />
+                    <MetricCard title={t('landing.lessonPrepReduction')} value="60%" color="text-blue-400" delay={0.18} />
                   </div>
                 </motion.div>
-
-                {/* Second Row: Engagement Chart + Last Two Cards */}
-                <motion.div
-                  initial={{ opacity: 0, x: -50 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true, amount: 0.3 }}
-                  transition={{ duration: 0.7, delay: 0.4 }}
-                  className="grid grid-cols-1 lg:grid-cols-[1.5fr_1fr] gap-6">
-
-                  <ChartCard
-                    title={t('landing.studentEngagement')}
-                    value="+53%"
-                    valueColor="text-cyan-400"
-                    data={[
-                      { name: 'Day1', val: 10 }, { name: 'Day2', val: 15 },
-                      { name: 'Day3', val: 25 }, { name: 'Day4', val: 30 },
-                      { name: 'Day5', val: 40 }, { name: 'Day6', val: 45 },
-                      { name: 'Day7', val: 53 }, { name: 'Day38', val: 53 },
-                    ]}
-                    color="#06b6d4"
-                    gradientId="engagementGradient"
-                    maxValue={60}
-                    ticks={[0, 15, 30, 45, 60]}
-                  />
-
-                  <div className="grid grid-rows-2 gap-6">
-                    <MetricCard
-                      title={t('landing.gradingSpeedup')}
-                      value="5X"
-                      color="text-purple-400"
-                      delay={0.5}
-                    />
-
-                    <MetricCard
-                      title={t('landing.personalizationAccuracy')}
-                      value="91%"
-                      color="text-pink-400"
-                      delay={0.6}
-                    />
+                <motion.div initial={{ opacity: 0, y: 22 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.55, ease: EXPO, delay: 0.08 }}
+                  className="grid grid-cols-1 lg:grid-cols-[1.6fr_1fr] gap-5">
+                  <ChartCard title={t('landing.studentEngagement')} value="+53%" valueColor="text-cyan-400"
+                    data={[{ name: 'D1', val: 10 }, { name: 'D2', val: 15 }, { name: 'D3', val: 25 }, { name: 'D4', val: 30 }, { name: 'D5', val: 40 }, { name: 'D6', val: 45 }, { name: 'D7', val: 53 }, { name: 'D8', val: 53 }]}
+                    color="#06b6d4" gradientId="engagement" maxValue={60} ticks={[0, 20, 40, 60]} />
+                  <div className="grid grid-rows-2 gap-5">
+                    <MetricCard title={t('landing.gradingSpeedup')} value="5X" color="text-violet-400" delay={0.22} />
+                    <MetricCard title={t('landing.personalizationAccuracy')} value="91%" color="text-pink-400" delay={0.28} />
                   </div>
                 </motion.div>
               </div>
-
-              <motion.p
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true, amount: 0.5 }}
-                transition={{ duration: 0.5, delay: 0.8 }}
-                className="text-sm text-slate-500 italic text-left mt-8">
+              <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.5 }}
+                className="text-[10px] text-[#8A8F98]/50 italic mt-8">
                 {t('landing.estimatesDisclaimer')}
               </motion.p>
             </div>
           </section>
 
-          {/* Privacy & Security Section */}
-          <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-            <div className="text-center mb-16">
-              <motion.h2
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.5 }}
-                className="text-4xl md:text-5xl font-bold mb-4">
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-emerald-400">{t('landing.privacySecurity')}</span>
-              </motion.h2>
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.5 }}
-                transition={{ delay: 0.2 }}
-                className="text-slate-300 text-lg max-w-2xl mx-auto">
-                {t('landing.privacySecurityDesc')}
-              </motion.p>
+          {/* ── Privacy & security ───────────────────────────── */}
+          <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+            <div className="text-center mb-12">
+              <SectionLabel color="#10b981">Trust & Safety</SectionLabel>
+              <SectionHeading>{t('landing.privacySecurity')}</SectionHeading>
+              <SectionSub>{t('landing.privacySecurityDesc')}</SectionSub>
             </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <motion.div className="grid grid-cols-1 md:grid-cols-2 gap-4"
+              initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.1 }} variants={stagger(0.07)}>
               {[
-                {
-                  icon: <Shield />,
-                  title: t('landing.privacyFirstTitle'),
-                  description: t('landing.privacyFirstDesc')
-                },
-                {
-                  icon: <Lock />,
-                  title: t('landing.enterpriseSecurityTitle'),
-                  description: t('landing.enterpriseSecurityDesc')
-                },
-                {
-                  icon: <BrainCircuit />,
-                  title: t('landing.safeAITitle'),
-                  description: t('landing.safeAIDesc')
-                },
-                {
-                  icon: <Eye />,
-                  title: t('landing.transparencyTitle'),
-                  description: t('landing.transparencyDesc')
-                }
-              ].map((feature, index) => (
-                <motion.div
-                  key={feature.title}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.3 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  whileHover={{
-                    scale: 1.05,
-                    y: -10,
-                    transition: { duration: 0.2, ease: "easeOut", type: "tween" }
-                  }}
-                  animate={{
-                    scale: 1,
-                    y: 0,
-                    transition: { duration: 0.15, ease: "easeInOut", type: "tween" }
-                  }}
-                  whileTap={{ scale: 0.98, transition: { duration: 0.1 } }}
-                  className="relative bg-slate-900/40 border border-slate-700/50 p-6 rounded-2xl backdrop-blur-xl overflow-hidden group"
-                  style={{ transformOrigin: "center", willChange: "transform, opacity" }}
-                >
-                  <div className="absolute -inset-px bg-gradient-to-r from-green-500/0 via-green-500/50 to-emerald-500/0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm"></div>
-                  <div className="absolute -inset-px bg-gradient-to-r from-green-500/0 via-green-500/20 to-emerald-500/0 rounded-2xl opacity-0 group-hover/card:opacity-100 transition-opacity duration-500"></div>
-
-                  <div className="relative z-10">
-                    <motion.div
-                      className="flex items-center justify-center w-12 h-12 mb-4 bg-slate-800/80 rounded-xl text-green-400 group-hover:text-green-300 transition-all duration-300 backdrop-blur-sm"
-                      style={{ filter: 'drop-shadow(0 0 6px rgba(34, 197, 94, 0.5))' }}
-                      whileHover={{ scale: 1.1, transition: { duration: 0.6, ease: "easeInOut" } }}
-                      animate={{ rotate: 0, scale: 1, transition: { duration: 0.3, ease: "easeOut" } }}
-                    >
-                      {React.cloneElement(feature.icon, { className: "w-6 h-6" })}
-                    </motion.div>
-
-                    <h3 className="text-lg font-bold text-slate-100 mb-2 group-hover:text-white transition-colors">
-                      {feature.title}
-                    </h3>
-
-                    <p className="text-sm text-white group-hover:text-white transition-colors" style={{ textShadow: '0 0 4px #fff' }}>
-                      {feature.description}
-                    </p>
-                  </div>
-                </motion.div>
+                { icon: <Shield />, title: t('landing.privacyFirstTitle'), description: t('landing.privacyFirstDesc') },
+                { icon: <Lock />, title: t('landing.enterpriseSecurityTitle'), description: t('landing.enterpriseSecurityDesc') },
+                { icon: <BrainCircuit />, title: t('landing.safeAITitle'), description: t('landing.safeAIDesc') },
+                { icon: <Eye />, title: t('landing.transparencyTitle'), description: t('landing.transparencyDesc') },
+              ].map((f, i) => <FeatureCard key={f.title} feature={f} index={i} accent="#10b981" />)}
+            </motion.div>
+            <motion.div initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.35 }}
+              className="mt-10 flex justify-center gap-3 flex-wrap">
+              {[t('landing.ferpaCompliant'), t('landing.coppaCompliant')].map((badge) => (
+                <div key={badge} className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-semibold"
+                  style={{ background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.28)', color: '#34d399' }}>
+                  <CheckCircle className="w-3.5 h-3.5" />{badge}
+                </div>
               ))}
-            </div>
-
-            {/* FERPA & COPPA Compliance Badges */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.5 }}
-              transition={{ delay: 0.6, duration: 0.6 }}
-              className="mt-12 flex justify-center gap-4"
-            >
-              <div className="inline-flex items-center gap-2 px-6 py-3 bg-green-500/10 border border-green-500/30 rounded-full text-sm">
-                <CheckCircle className="w-6 h-6 text-green-400" />
-                <span className="font-bold text-green-300 text-xl">{t('landing.ferpaCompliant')}</span>
-              </div>
-              <div className="inline-flex items-center gap-2 px-6 py-3 bg-green-500/10 border border-green-500/30 rounded-full text-sm">
-                <CheckCircle className="w-6 h-6 text-green-400" />
-                <span className="font-bold text-green-300 text-xl">{t('landing.coppaCompliant')}</span>
-              </div>
             </motion.div>
           </section>
 
-          {/* Testimonials Section */}
-          <section id="testimonials" className="py-12">
+          {/* ── Testimonials ─────────────────────────────────── */}
+          <section id="testimonials" className="py-16">
             <div className="text-center mb-12 px-4">
-              <motion.h2
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.3, duration: 0.5 }}
-                className="text-4xl md:text-5xl font-bold mb-4">
-
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-400">
-                  {t('landing.lovedByTeachersStudents')}
-                </span>
-              </motion.h2>
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.5, duration: 0.5 }}
-                className="text-xl text-slate-400 max-w-3xl mx-auto">
-
-                {t('landing.lovedByDesc')}
-              </motion.p>
+              <SectionLabel color="#9D4EDD">Social Proof</SectionLabel>
+              <SectionHeading>{t('landing.lovedByTeachersStudents')}</SectionHeading>
+              <SectionSub>{t('landing.lovedByDesc')}</SectionSub>
             </div>
-
-            <div className="group w-full max-w-none overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
+            <div className="group w-full overflow-hidden"
+              style={{ maskImage: 'linear-gradient(to right, transparent, black 7%, black 93%, transparent)' }}>
               <div className="flex w-max animate-infinite-scroll">
-                {/* Render the testimonials twice for a seamless loop */}
-                {getTestimonials().map((testimonial, index) =>
-                  <div key={`testimonial-1-${index}`} className="w-[400px] flex-shrink-0 px-4">
+                {[...testimonials, ...testimonials].map((testimonial, i) => (
+                  <div key={i} className="w-[340px] flex-shrink-0 px-2.5">
                     <TestimonialCard testimonial={testimonial} />
                   </div>
-                )}
-                {getTestimonials().map((testimonial, index) =>
-                  <div key={`testimonial-2-${index}`} className="w-[400px] flex-shrink-0 px-4">
-                    <TestimonialCard testimonial={testimonial} />
-                  </div>
-                )}
+                ))}
               </div>
             </div>
           </section>
 
-          {/* 6. Pricing Section */}
-          <section id="pricing" className="px-6 py-16 max-w-6xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 0.8 }}
-              className="text-center mb-16">
-
-              <h2 className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent mb-6">
-                {t('landing.choosePlan')}
-              </h2>
-              <p className="text-xl text-slate-400 max-w-2xl mx-auto">
-                {t('landing.choosePlanDesc')}
-              </p>
-            </motion.div>
-
-            <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto items-stretch">
-              <PricingCard
-                plan={t('landing.freePlan')}
-                price={t('landing.freePrice')}
-                features={[
-                  t('landing.freeFeature1'),
-                  t('landing.freeFeature2'),
-                  t('landing.freeFeature3'),
-                  t('landing.freeFeature4'),
-                  t('landing.freeFeature5')]
-                }
-                cta={t('landing.startForFree')}
-                onCtaClick={handleGetStartedClick} />
-
-              <PricingCard
-                plan={t('landing.proPlan')}
-                price={t('landing.proPrice')}
-                features={[
-                  t('landing.proFeature1'),
-                  t('landing.proFeature2'),
-                  t('landing.proFeature3'),
-                  t('landing.proFeature4'),
-                  t('landing.proFeature5')]
-                }
-                cta={t('landing.getStarted')}
-                isFeatured
-                onCtaClick={handleGetStartedClick} />
-
-              <PricingCard
-                plan={t('landing.schoolPlan')}
-                price={t('landing.schoolPrice')}
-                features={[
-                  t('landing.schoolFeature1'),
-                  t('landing.schoolFeature2'),
-                  t('landing.schoolFeature3'),
-                  t('landing.schoolFeature4'),
-                  t('landing.schoolFeature5'),
-                  t('landing.schoolFeature6'),
-                  t('landing.schoolFeature7')]
-                }
+          {/* ── Pricing ──────────────────────────────────────── */}
+          <section id="pricing" className="px-4 py-20 max-w-5xl mx-auto">
+            <div className="text-center mb-12">
+              <SectionLabel color="#5E6AD2">Pricing</SectionLabel>
+              <SectionHeading>{t('landing.choosePlan')}</SectionHeading>
+              <SectionSub>{t('landing.choosePlanDesc')}</SectionSub>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-stretch">
+              <PricingCard plan={t('landing.freePlan')} price={t('landing.freePrice')}
+                features={[t('landing.freeFeature1'), t('landing.freeFeature2'), t('landing.freeFeature3'), t('landing.freeFeature4'), t('landing.freeFeature5')]}
+                cta={t('landing.startForFree')} onCtaClick={toLogin} />
+              <PricingCard plan={t('landing.proPlan')} price={t('landing.proPrice')} isFeatured
+                features={[t('landing.proFeature1'), t('landing.proFeature2'), t('landing.proFeature3'), t('landing.proFeature4'), t('landing.proFeature5')]}
+                cta={t('landing.getStarted')} onCtaClick={toLogin} />
+              <PricingCard plan={t('landing.schoolPlan')} price={t('landing.schoolPrice')}
+                features={[t('landing.schoolFeature1'), t('landing.schoolFeature2'), t('landing.schoolFeature3'), t('landing.schoolFeature4'), t('landing.schoolFeature5'), t('landing.schoolFeature6'), t('landing.schoolFeature7')]}
                 cta={t('landing.contactSales')} />
-
             </div>
           </section>
 
-          {/* Contact Form Section */}
-          <section id="contact" className="px-6 py-16 max-w-4xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 0.8 }}
-              className="text-center mb-12">
-              <h2 className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent mb-6">
-                {t('landing.getInTouch')}
-              </h2>
-              <p className="text-xl text-slate-400 max-w-2xl mx-auto">
-                {t('landing.getInTouchDesc')}
-              </p>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 0.8, delay: 0.2 }}>
-
-              <div className="bg-slate-900/60 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-8 shadow-2xl">
-                {contactFormSuccess && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="mb-6 p-4 bg-green-500/10 border border-green-500/30 rounded-lg flex items-center gap-3">
-                    <CheckCircle className="w-5 h-5 text-green-400" />
-                    <p className="text-green-300">{t('landing.thankYouMessage')}</p>
+          {/* ── Contact ──────────────────────────────────────── */}
+          <section id="contact" className="px-4 py-20 max-w-2xl mx-auto">
+            <div className="text-center mb-12">
+              <SectionLabel color="#5E6AD2">Contact</SectionLabel>
+              <SectionHeading>{t('landing.getInTouch')}</SectionHeading>
+              <SectionSub>{t('landing.getInTouchDesc')}</SectionSub>
+            </div>
+            <motion.div initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }} transition={{ duration: 0.52, ease: EXPO, delay: 0.1 }}>
+              <div className="p-8 rounded-2xl" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
+                {success && (
+                  <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
+                    className="mb-5 p-4 rounded-xl flex items-center gap-3"
+                    style={{ background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.25)' }}>
+                    <CheckCircle className="w-4 h-4 flex-shrink-0" style={{ color: '#34d399' }} />
+                    <p className="text-sm" style={{ color: '#34d399' }}>{t('landing.thankYouMessage')}</p>
                   </motion.div>
                 )}
-
-                <form onSubmit={handleContactSubmit} className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label htmlFor="name" className="block text-sm font-medium text-slate-300 mb-2">
-                        {t('landing.contactName')}
-                      </label>
-                      <input
-                        type="text"
-                        id="name"
-                        value={contactForm.name}
-                        onChange={(e) => setContactForm({...contactForm, name: e.target.value})}
-                        className="w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                        placeholder={t('landing.yourName')}
-                        required
-                      />
+                      <label htmlFor="name" className="block text-[10px] font-semibold uppercase tracking-wider text-[#8A8F98] mb-2">{t('landing.contactName')} *</label>
+                      <input type="text" id="name" value={form.name}
+                        onChange={(e) => setForm({ ...form, name: e.target.value })}
+                        className={inputClass} style={inputStyle}
+                        onFocus={focusInput} onBlur={blurInput}
+                        placeholder={t('landing.yourName')} required />
                     </div>
-
                     <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-slate-300 mb-2">
-                        {t('landing.contactEmail')}
-                      </label>
-                      <input
-                        type="email"
-                        id="email"
-                        value={contactForm.email}
-                        onChange={(e) => setContactForm({...contactForm, email: e.target.value})}
-                        className="w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                        placeholder={t('landing.yourEmail')}
-                        required
-                      />
+                      <label htmlFor="email" className="block text-[10px] font-semibold uppercase tracking-wider text-[#8A8F98] mb-2">{t('landing.contactEmail')} *</label>
+                      <input type="email" id="email" value={form.email}
+                        onChange={(e) => setForm({ ...form, email: e.target.value })}
+                        className={inputClass} style={inputStyle}
+                        onFocus={focusInput} onBlur={blurInput}
+                        placeholder={t('landing.yourEmail')} required />
                     </div>
                   </div>
-
                   <div>
-                    <label htmlFor="subject" className="block text-sm font-medium text-slate-300 mb-2">
-                      {t('landing.contactSubject')}
-                    </label>
-                    <input
-                      type="text"
-                      id="subject"
-                      value={contactForm.subject}
-                      onChange={(e) => setContactForm({...contactForm, subject: e.target.value})}
-                      className="w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                      placeholder={t('landing.contactSubjectPlaceholder')}
-                    />
+                    <label htmlFor="subject" className="block text-[10px] font-semibold uppercase tracking-wider text-[#8A8F98] mb-2">{t('landing.contactSubject')}</label>
+                    <input type="text" id="subject" value={form.subject}
+                      onChange={(e) => setForm({ ...form, subject: e.target.value })}
+                      className={inputClass} style={inputStyle}
+                      onFocus={focusInput} onBlur={blurInput}
+                      placeholder={t('landing.contactSubjectPlaceholder')} />
                   </div>
-
                   <div>
-                    <label htmlFor="message" className="block text-sm font-medium text-slate-300 mb-2">
-                      {t('landing.contactMessage')}
-                    </label>
-                    <textarea
-                      id="message"
-                      rows={6}
-                      value={contactForm.message}
-                      onChange={(e) => setContactForm({...contactForm, message: e.target.value})}
-                      className="w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
-                      placeholder={t('landing.contactMessagePlaceholder')}
-                      required
-                    />
+                    <label htmlFor="message" className="block text-[10px] font-semibold uppercase tracking-wider text-[#8A8F98] mb-2">{t('landing.contactMessage')} *</label>
+                    <textarea id="message" rows={5} value={form.message}
+                      onChange={(e) => setForm({ ...form, message: e.target.value })}
+                      className={`${inputClass} resize-none`} style={inputStyle}
+                      onFocus={focusInput} onBlur={blurInput}
+                      placeholder={t('landing.contactMessagePlaceholder')} required />
                   </div>
-
-                  <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                    <Button
-                      type="submit"
-                      disabled={contactFormSubmitting}
-                      className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white border-0 rounded-xl py-6 text-lg font-semibold shadow-2xl shadow-indigo-500/30 disabled:opacity-50 disabled:cursor-not-allowed">
-                      {contactFormSubmitting ? (
-                        <span className="flex items-center justify-center gap-2">
-                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                          {t('landing.sending')}
-                        </span>
-                      ) : (
-                        <span className="flex items-center justify-center gap-2">
-                          <Mail className="w-5 h-5" />
-                          {t('landing.sendMessage')}
-                        </span>
-                      )}
-                    </Button>
-                  </motion.div>
-
-                  <p className="text-sm text-slate-400 text-center">
-                    {t('landing.orEmailDirectly')} {' '}
-                    <a href="mailto:contact@schoolace.ai" className="text-indigo-400 hover:text-indigo-300 underline">
+                  <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
+                    type="submit" disabled={submitting}
+                    className="w-full py-3.5 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                    style={{ background: 'linear-gradient(135deg,#5E6AD2,#7B8FE8)', color: '#fff', boxShadow: '0 4px 20px rgba(94,106,210,0.3)' }}>
+                    {submitting ? (
+                      <span className="flex items-center gap-2">
+                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        {t('landing.sending')}
+                      </span>
+                    ) : (
+                      <span className="flex items-center gap-2">
+                        <Mail className="w-4 h-4" /> {t('landing.sendMessage')}
+                      </span>
+                    )}
+                  </motion.button>
+                  <p className="text-[11px] text-[#8A8F98]/60 text-center">
+                    {t('landing.orEmailDirectly')}{' '}
+                    <a href="mailto:contact@schoolace.ai" style={{ color: '#7B8FE8' }}
+                      className="underline underline-offset-2 hover:text-[#9DAFF0] transition-colors">
                       contact@schoolace.ai
                     </a>
                   </p>
@@ -1818,118 +889,40 @@ export default function LandingPage() {
               </div>
             </motion.div>
           </section>
-        </main>
 
+        </main>
         <LandingFooter />
       </div>
 
       <style>{`
-        @keyframes float-1 {
-          0%, 100% { transform: translate(0px, 0px) rotate(0deg); }
-          33% { transform: translate(30px, -30px) rotate(120deg); }
-          66% { transform: translate(-20px, 20px) rotate(240deg); }
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap');
+
+        .bg-grid-subtle {
+          background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.035) 1px, transparent 0);
+          background-size: 28px 28px;
         }
 
-        @keyframes float-2 {
-          0%, 100% { transform: translate(0px, 0px) rotate(0deg); }
-          33% { transform: translate(-30px, 30px) rotate(-120deg); }
-          66% { transform: translate(20px, -20px) rotate(-240deg); }
-        }
-
-        @keyframes float-3 {
-          0%, 100% { transform: translate(0px, 0px) rotate(0deg); }
-          33% { transform: translate(20px, 20px) rotate(90deg); }
-          66% { transform: translate(-30px, -10px) rotate(180deg); }
-        }
-
-        @keyframes float-4 {
-          0%, 100% { transform: translate(0px, 0px) rotate(0deg); }
-          33% { transform: translate(-20px, -20px) rotate(-90deg); }
-          66% { transform: translate(30px, 10px) rotate(180deg); }
-        }
-
-        @keyframes pulse-slow {
-          0%, 100% { opacity: 0.4; }
-          50% { opacity: 1; }
-        }
-
-        @keyframes pulse-slower {
-          0%, 100% { opacity: 0.2; }
-          50% { opacity: 0.8; }
-        }
-
-        @keyframes slide-diagonal {
-          0% { transform: translate(-100px) translateY(-100px) rotate(45deg); }
-          100% { transform: translateX(100px) translateY(100px) rotate(45deg); }
-        }
-
-        @keyframes gradient-x {
-          0%, 100% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-        }
-
-        @keyframes border-spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-
-        @keyframes border-comet {
-          0% { transform: translate(-50%, -110%) rotate(0deg); }
-          25% { transform: translate(calc(100% + 10px), -50%) rotate(90deg); }
-          50% { transform: translate(calc(50%), calc(100% + 10px)) rotate(180deg); }
-          75% { transform: translate(-110%, 50%) rotate(270deg); }
-          100% { transform: translate(-50%, -110%) rotate(360deg); }
-        }
-
-        .animate-float-1 { animation: float-1 20s ease-in-out infinite; }
-        .animate-float-2 { animation: float-2 25s ease-in-out infinite; }
-        .animate-float-3 { animation: float-3 18s ease-in-out infinite; }
-        .animate-float-4 { animation: float-4 22s ease-in-out infinite; }
-        .animate-pulse-slow { animation: pulse-slow 4s ease-in-out infinite; }
-        .animate-pulse-slower { animation: pulse-slower 6s ease-in-out infinite; }
-        .animate-slide-diagonal { animation: slide-diagonal 8s linear infinite; }
-        .animate-gradient-x { animation: gradient-x 3s ease infinite; background-size: 200% 200%; }
-        .animate-border-spin { animation: border-spin 3s linear infinite; }
-        .animate-border-comet { animation: border-comet 4s linear infinite; }
-
-        .bg-grid-pattern {
-          --grid-color: rgba(200, 200, 255, 0.07);
-          background-image: radial-gradient(circle at 1px 1px, var(--grid-color) 1px, transparent 0);
-          background-size: 20px 20px;
-        }
         @keyframes infinite-scroll {
           from { transform: translateX(0); }
-          to { transform: translateX(-50%); }
+          to   { transform: translateX(-50%); }
         }
+        .animate-infinite-scroll { animation: infinite-scroll 18s linear infinite; }
+        .group:hover .animate-infinite-scroll { animation-play-state: paused; }
 
-        .animate-infinite-scroll {
-          animation: infinite-scroll 13s linear infinite;
+        @keyframes vertical-scroll {
+          from { transform: translateY(0); }
+          to   { transform: translateY(-50%); }
         }
+        .animate-vertical-scroll { animation: vertical-scroll 22s linear infinite; }
+        .animate-vertical-scroll:hover { animation-play-state: paused; }
 
-        .group:hover .animate-infinite-scroll {
-            animation-play-state: paused;
-        }
+        html { scroll-behavior: smooth; color-scheme: dark; }
 
-        /* Updated vertical scroll for seamless loop */
-        @keyframes vertical-scroll-seamless-loop {
-          0% {
-            transform: translateY(0);
-          }
-          100% {
-            transform: translateY(-50%);
-          }
-        }
-
-        .animate-vertical-scroll-seamless-loop {
-          animation: vertical-scroll-seamless-loop 20s linear infinite;
-        }
-
-        .animate-vertical-scroll-seamless-loop:hover {
-          animation-play-state: paused;
-        }
-        html {
-            scroll-behavior: smooth;
+        @media (prefers-reduced-motion: reduce) {
+          .animate-infinite-scroll,
+          .animate-vertical-scroll { animation: none; }
         }
       `}</style>
-    </div>);
+    </div>
+  );
 }
