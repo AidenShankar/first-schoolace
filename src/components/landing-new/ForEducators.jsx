@@ -148,7 +148,7 @@ export function ForEducators() {
             Save hours every week. Focus on what matters.
           </h2>
           <p style={{ fontSize: 15, color: "var(--color-text-tertiary)", lineHeight: 1.65, margin: 0, maxWidth: 440 }}>
-            ACE AI handles grading, scheduling, and reporting — so you can spend more time with your students.
+            ACE AI acts as your co-pilot and handles grading, scheduling, and reporting — so you can spend more time with your students.
           </p>
         </motion.div>
 
