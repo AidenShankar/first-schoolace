@@ -135,7 +135,9 @@ function TypingSequence({ segments, startDelay = 0.2 }) {
         background: "currentColor",
         borderRadius: 2,
         marginLeft: "2px",
-        verticalAlign: "text-top",
+        verticalAlign: "text-bottom",
+        position: "relative",
+        top: "-0.1em",
       }}
     />
   );
