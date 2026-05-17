@@ -58,7 +58,9 @@ export function Problem() {
               <h3 style={{ fontSize: 15, fontWeight: 600, color: "var(--color-text-primary)", letterSpacing: "-0.02em", lineHeight: 1.3, margin: "0 0 10px" }}>
                 {p.heading}
               </h3>
-
+              <p style={{ fontSize: 13, color: "var(--color-text-tertiary)", lineHeight: 1.7, margin: 0 }}>
+                {p.body}
+              </p>
             </motion.div>
           ))}
         </div>
