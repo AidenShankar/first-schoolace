@@ -84,83 +84,101 @@ const backers = [
   },
 ];
 
-// Segments: [{text, pause}] — pause is extra delay after segment finishes before next char starts
-// showCursor: show a blinking cursor at end after all typing done
-function TypingSequence({ segments, startDelay = 0.2 }) {
-  // Build a flat timeline of characters with their reveal times
-  // Each segment has optional pause after it
-  const CHAR_INTERVAL = 0.048;
+const CHAR_INTERVAL = 0.048;
 
-  let timeline = []; // [{char, lineIndex, revealAt}]
+function buildTimeline(segments, startDelay) {
+  let items = [];
   let t = startDelay;
-
   segments.forEach(({ text, pause = 0, lineIndex }) => {
-    // Detect word boundaries for natural typing rhythm
-    let i = 0;
-    while (i < text.length) {
-      // Slight speed variation: spaces are instant (already handled visually)
-      timeline.push({ char: text[i], lineIndex, revealAt: t });
+    for (let i = 0; i < text.length; i++) {
+      items.push({ char: text[i], lineIndex, revealAt: t });
       t += CHAR_INTERVAL;
-      i++;
     }
-    t += pause; // pause after segment
+    t += pause;
+  });
+  return { items, totalTime: t };
+}
+
+function TypingSequence({ segments, startDelay = 0.2 }) {
+  const { items, totalTime } = buildTimeline(segments, startDelay);
+
+  // Group chars by line
+  const lineMap = {};
+  items.forEach((item, idx) => {
+    if (!lineMap[item.lineIndex]) lineMap[item.lineIndex] = [];
+    lineMap[item.lineIndex].push({ ...item, globalIdx: idx });
   });
 
-  const totalTypingTime = t;
-
-  // Group by lineIndex
-  const lines = {};
-  timeline.forEach((item) => {
-    if (!lines[item.lineIndex]) lines[item.lineIndex] = [];
-    lines[item.lineIndex].push(item);
-  });
+  const lineEntries = Object.entries(lineMap).sort((a, b) => +a[0] - +b[0]);
 
   return (
     <>
-      {Object.entries(lines).map(([lineIdx, chars]) => (
+      {lineEntries.map(([lineIdx, chars], li) => (
         <React.Fragment key={lineIdx}>
-          {parseInt(lineIdx) > 0 && <br />}
-          <span style={{ position: "relative", display: "inline" }}>
-            {chars.map((item, i) => (
-              <motion.span
-                key={i}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0, delay: item.revealAt }}
-                style={{
-                  display: "inline-block",
-                  whiteSpace: item.char === " " ? "pre" : undefined,
-                }}
-              >
-                {item.char}
-              </motion.span>
-            ))}
+          {li > 0 && <br />}
+          <span style={{ display: "inline", position: "relative" }}>
+            {chars.map((item, i) => {
+              const isLast = item.globalIdx === items.length - 1;
+              const nextReveal = items[item.globalIdx + 1]?.revealAt ?? totalTime;
+              // Cursor sits after this char from revealAt until the next char appears (or forever if last)
+              const cursorDelay = item.revealAt;
+              const cursorDuration = isLast ? undefined : nextReveal - item.revealAt;
+
+              return (
+                <span key={i} style={{ display: "inline", position: "relative" }}>
+                  <motion.span
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0, delay: item.revealAt }}
+                    style={{
+                      display: "inline-block",
+                      whiteSpace: item.char === " " ? "pre" : undefined,
+                    }}
+                  >
+                    {item.char}
+                  </motion.span>
+                  {/* Cursor after this char — visible only while it's the "current" position */}
+                  <motion.span
+                    initial={{ opacity: 0 }}
+                    animate={
+                      isLast
+                        ? { opacity: [0, 1, 1, 0, 0] }
+                        : { opacity: [0, 1, 1, 0] }
+                    }
+                    transition={
+                      isLast
+                        ? {
+                            duration: 1.1,
+                            delay: cursorDelay,
+                            times: [0, 0.02, 0.5, 0.7, 1],
+                            repeat: Infinity,
+                            repeatDelay: 0,
+                          }
+                        : {
+                            duration: cursorDuration,
+                            delay: cursorDelay,
+                            times: [0, 0.05, 0.8, 1],
+                            repeat: 0,
+                          }
+                    }
+                    style={{
+                      display: "inline-block",
+                      width: "0.055em",
+                      height: "0.78em",
+                      background: "currentColor",
+                      borderRadius: 1,
+                      marginLeft: "0.04em",
+                      verticalAlign: "middle",
+                      position: "relative",
+                      top: "-0.06em",
+                    }}
+                  />
+                </span>
+              );
+            })}
           </span>
         </React.Fragment>
       ))}
-      {/* Single cursor at the very end */}
-      <motion.span
-        initial={{ opacity: 0 }}
-        animate={{ opacity: [0, 0, 1, 1, 0] }}
-        transition={{
-          duration: 0.8,
-          delay: totalTypingTime - 0.1,
-          times: [0, 0.1, 0.15, 0.5, 1],
-          repeat: Infinity,
-          repeatDelay: 0.1,
-        }}
-        style={{
-          display: "inline-block",
-          width: "0.06em",
-          height: "0.82em",
-          background: "currentColor",
-          verticalAlign: "middle",
-          position: "relative",
-          top: "-0.04em",
-          marginLeft: "0.06em",
-          borderRadius: 1,
-        }}
-      />
     </>
   );
 }
