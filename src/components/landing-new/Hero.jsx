@@ -1,5 +1,5 @@
-import React from "react";
-import { motion, useAnimate, stagger } from "framer-motion";
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 
 const word = (delay) => ({
   initial: { opacity: 0, filter: "blur(10px)", y: "20%" },
@@ -84,7 +84,7 @@ const backers = [
   },
 ];
 
-const CHAR_INTERVAL = 0.048;
+const CHAR_INTERVAL = 0.05;
 
 function buildTimeline(segments, startDelay) {
   let items = [];
@@ -99,86 +99,78 @@ function buildTimeline(segments, startDelay) {
   return { items, totalTime: t };
 }
 
+// Cursor rendered as a React state-driven element so it moves with typing
 function TypingSequence({ segments, startDelay = 0.2 }) {
   const { items, totalTime } = buildTimeline(segments, startDelay);
+  const [visibleCount, setVisibleCount] = useState(0);
+  const [done, setDone] = useState(false);
 
-  // Group chars by line
+  useEffect(() => {
+    let timeouts = [];
+    items.forEach((item, idx) => {
+      const ms = item.revealAt * 1000;
+      const t = setTimeout(() => setVisibleCount(idx + 1), ms);
+      timeouts.push(t);
+    });
+    const doneT = setTimeout(() => setDone(true), totalTime * 1000);
+    timeouts.push(doneT);
+    return () => timeouts.forEach(clearTimeout);
+  }, []);
+
+  // Group by line
   const lineMap = {};
   items.forEach((item, idx) => {
     if (!lineMap[item.lineIndex]) lineMap[item.lineIndex] = [];
     lineMap[item.lineIndex].push({ ...item, globalIdx: idx });
   });
-
   const lineEntries = Object.entries(lineMap).sort((a, b) => +a[0] - +b[0]);
+
+  // Cursor: blinking when done, solid when typing
+  const Cursor = () => (
+    <motion.span
+      animate={done ? { opacity: [1, 1, 0, 0] } : { opacity: 1 }}
+      transition={done ? { duration: 1.0, repeat: Infinity, times: [0, 0.45, 0.55, 1] } : {}}
+      style={{
+        display: "inline-block",
+        width: "0.06em",
+        height: "0.8em",
+        background: "currentColor",
+        borderRadius: 1,
+        marginLeft: "0.05em",
+        verticalAlign: "text-top",
+        position: "relative",
+        top: "0.09em",
+      }}
+    />
+  );
 
   return (
     <>
-      {lineEntries.map(([lineIdx, chars], li) => (
-        <React.Fragment key={lineIdx}>
-          {li > 0 && <br />}
-          <span style={{ display: "inline", position: "relative" }}>
-            {chars.map((item, i) => {
-              const isLast = item.globalIdx === items.length - 1;
-              const nextReveal = items[item.globalIdx + 1]?.revealAt ?? totalTime;
-              // Cursor sits after this char from revealAt until the next char appears (or forever if last)
-              const cursorDelay = item.revealAt;
-              const cursorDuration = isLast ? undefined : nextReveal - item.revealAt;
+      {lineEntries.map(([lineIdx, chars], li) => {
+        const lineVisible = chars.filter(c => c.globalIdx < visibleCount);
+        const isActiveLine = !done && chars.some(c => c.globalIdx === visibleCount - 1);
+        const isLastLine = li === lineEntries.length - 1;
 
-              return (
-                <span key={i} style={{ display: "inline", position: "relative" }}>
-                  <motion.span
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0, delay: item.revealAt }}
-                    style={{
-                      display: "inline-block",
-                      whiteSpace: item.char === " " ? "pre" : undefined,
-                    }}
-                  >
-                    {item.char}
-                  </motion.span>
-                  {/* Cursor after this char — visible only while it's the "current" position */}
-                  <motion.span
-                    initial={{ opacity: 0 }}
-                    animate={
-                      isLast
-                        ? { opacity: [0, 1, 1, 0, 0] }
-                        : { opacity: [0, 1, 1, 0] }
-                    }
-                    transition={
-                      isLast
-                        ? {
-                            duration: 1.1,
-                            delay: cursorDelay,
-                            times: [0, 0.02, 0.5, 0.7, 1],
-                            repeat: Infinity,
-                            repeatDelay: 0,
-                          }
-                        : {
-                            duration: cursorDuration,
-                            delay: cursorDelay,
-                            times: [0, 0.05, 0.8, 1],
-                            repeat: 0,
-                          }
-                    }
-                    style={{
-                      display: "inline-block",
-                      width: "0.055em",
-                      height: "0.78em",
-                      background: "currentColor",
-                      borderRadius: 1,
-                      marginLeft: "0.04em",
-                      verticalAlign: "middle",
-                      position: "relative",
-                      top: "-0.06em",
-                    }}
-                  />
+        return (
+          <React.Fragment key={lineIdx}>
+            {li > 0 && <br />}
+            <span>
+              {chars.map((item) => (
+                <span
+                  key={item.globalIdx}
+                  style={{
+                    opacity: item.globalIdx < visibleCount ? 1 : 0,
+                    whiteSpace: item.char === " " ? "pre" : undefined,
+                  }}
+                >
+                  {item.char}
                 </span>
-              );
-            })}
-          </span>
-        </React.Fragment>
-      ))}
+              ))}
+              {(isActiveLine || (done && isLastLine)) && <Cursor />}
+            </span>
+          </React.Fragment>
+        );
+      })}
     </>
   );
 }
