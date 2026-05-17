@@ -2,9 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Barlow+Condensed:wght@700&family=Bebas+Neue&family=DM+Sans:wght@400&family=Outfit:wght@600&family=Plus+Jakarta+Sans:wght@500&display=swap");
-
 .landing-new-root {
+  font-family: 'Inter', sans-serif;
   --color-text-primary: rgba(255, 255, 255, 0.92);
   --color-text-secondary: rgba(255, 255, 255, 0.5);
   --color-text-tertiary: rgba(255, 255, 255, 0.32);
