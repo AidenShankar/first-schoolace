@@ -118,17 +118,18 @@ function TutorPanel() {
 }
 
 const features = [
-  { title: "Personal AI Tutor" },
-  { title: "Longitudinal Memory" },
-  { title: "Instant Feedback" },
-  { title: "ACE Spaces" },
-  { title: "Smart Study Plans" },
-  { title: "Knowledge Checks" },
+  { title: "Personal AI Tutor", desc: "Every student gets an AI tutor that knows their history, pace, and preferred style." },
+  { title: "Longitudinal Memory", desc: "ACE remembers what each student has learned, struggled with, and mastered." },
+  { title: "Instant Feedback", desc: "Get detailed feedback on any assignment before submitting." },
+  { title: "ACE Spaces", desc: "Interactive study environments for exploration and practice." },
+  { title: "Smart Study Plans", desc: "Tailored study plans based on upcoming tests and learning gaps." },
+  { title: "Knowledge Checks", desc: "Quick checks after lessons to surface gaps before they compound." },
 ];
 
 export function ForStudents() {
   const ref = React.useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
+  const [expanded, setExpanded] = React.useState(false);
 
   return (
     <section ref={ref} style={{ padding: "0 24px 96px", maxWidth: 1120, margin: "0 auto" }}>
@@ -156,7 +157,7 @@ export function ForStudents() {
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.1 }}
           >
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 0, border: "1px solid rgba(255,255,255,0.06)", borderRadius: 10, overflow: "hidden", marginBottom: 12 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 0, border: "1px solid rgba(255,255,255,0.06)", borderRadius: 10, overflow: "hidden" }}>
               {features.map((f, i) => (
                 <div
                   key={i}
@@ -165,13 +166,53 @@ export function ForStudents() {
                     background: "rgba(255,255,255,0.015)",
                     borderRight: i % 2 === 0 ? "1px solid rgba(255,255,255,0.06)" : undefined,
                     borderBottom: i < 4 ? "1px solid rgba(255,255,255,0.06)" : undefined,
+                    transition: "background 200ms",
                   }}
                 >
                   <div style={{ width: 6, height: 6, borderRadius: "50%", background: "rgba(94,106,210,0.55)", marginBottom: 16 }} />
-                  <div style={{ fontSize: 14, fontWeight: 600, color: "var(--color-text-primary)", letterSpacing: "-0.02em" }}>{f.title}</div>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: "var(--color-text-primary)", letterSpacing: "-0.02em", marginBottom: expanded ? 8 : 0 }}>{f.title}</div>
+                  <motion.div
+                    initial={false}
+                    animate={{ height: expanded ? "auto" : 0, opacity: expanded ? 1 : 0 }}
+                    transition={{ duration: 0.35, ease: [0.19, 1, 0.22, 1] }}
+                    style={{ overflow: "hidden" }}
+                  >
+                    <div style={{ fontSize: 12, color: "var(--color-text-tertiary)", lineHeight: 1.6 }}>{f.desc}</div>
+                  </motion.div>
                 </div>
               ))}
             </div>
+            <button
+              onClick={() => setExpanded(!expanded)}
+              style={{
+                marginTop: 12,
+                background: "none",
+                border: "1px solid rgba(255,255,255,0.08)",
+                borderRadius: 7,
+                padding: "8px 16px",
+                fontSize: 13,
+                color: "rgba(255,255,255,0.4)",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
+                fontFamily: "inherit",
+                transition: "color 150ms, border-color 150ms",
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.color = "rgba(255,255,255,0.75)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.18)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.color = "rgba(255,255,255,0.4)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)"; }}
+            >
+              {expanded ? "See less" : "See more"}
+              <motion.span
+                animate={{ rotate: expanded ? 180 : 0 }}
+                transition={{ duration: 0.3 }}
+                style={{ display: "inline-flex" }}
+              >
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+                  <path d="M6 8L1 3h10L6 8z" />
+                </svg>
+              </motion.span>
+            </button>
           </motion.div>
 
           <motion.div

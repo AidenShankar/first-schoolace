@@ -119,17 +119,18 @@ function GradingPanel() {
 }
 
 const features = [
-  { title: "AI Grading" },
-  { title: "Assessment Generation" },
-  { title: "Smart Scheduling" },
-  { title: "Real-Time Analytics" },
-  { title: "Parent Reports" },
-  { title: "ACE AI Agent" },
+  { title: "AI Grading", desc: "Grade essays and assignments in seconds with rubric-aligned feedback." },
+  { title: "Assessment Generation", desc: "Generate standards-aligned quizzes from any topic or document." },
+  { title: "Smart Scheduling", desc: "Auto-schedule lessons and assignments based on curriculum pacing." },
+  { title: "Real-Time Analytics", desc: "See exactly where each student is struggling before the test." },
+  { title: "Parent Reports", desc: "Auto-generate personalized progress reports in one click." },
+  { title: "ACE AI Agent", desc: "Your always-on teaching assistant that flags issues and suggests next steps." },
 ];
 
 export function ForEducators() {
   const ref = React.useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
+  const [expanded, setExpanded] = React.useState(false);
 
   return (
     <section ref={ref} style={{ padding: "0 24px 120px", maxWidth: 1120, margin: "0 auto" }}>
@@ -174,13 +175,53 @@ export function ForEducators() {
                     background: "rgba(255,255,255,0.015)",
                     borderRight: i % 2 === 0 ? "1px solid rgba(255,255,255,0.06)" : undefined,
                     borderBottom: i < 4 ? "1px solid rgba(255,255,255,0.06)" : undefined,
+                    transition: "background 200ms",
                   }}
                 >
                   <div style={{ width: 6, height: 6, borderRadius: "50%", background: "rgba(94,106,210,0.55)", marginBottom: 16 }} />
-                  <div style={{ fontSize: 14, fontWeight: 600, color: "var(--color-text-primary)", letterSpacing: "-0.02em" }}>{f.title}</div>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: "var(--color-text-primary)", letterSpacing: "-0.02em", marginBottom: expanded ? 8 : 0 }}>{f.title}</div>
+                  <motion.div
+                    initial={false}
+                    animate={{ height: expanded ? "auto" : 0, opacity: expanded ? 1 : 0 }}
+                    transition={{ duration: 0.35, ease: [0.19, 1, 0.22, 1] }}
+                    style={{ overflow: "hidden" }}
+                  >
+                    <div style={{ fontSize: 12, color: "var(--color-text-tertiary)", lineHeight: 1.6 }}>{f.desc}</div>
+                  </motion.div>
                 </div>
               ))}
             </div>
+            <button
+              onClick={() => setExpanded(!expanded)}
+              style={{
+                marginTop: 12,
+                background: "none",
+                border: "1px solid rgba(255,255,255,0.08)",
+                borderRadius: 7,
+                padding: "8px 16px",
+                fontSize: 13,
+                color: "rgba(255,255,255,0.4)",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
+                fontFamily: "inherit",
+                transition: "color 150ms, border-color 150ms",
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.color = "rgba(255,255,255,0.75)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.18)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.color = "rgba(255,255,255,0.4)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)"; }}
+            >
+              {expanded ? "See less" : "See more"}
+              <motion.span
+                animate={{ rotate: expanded ? 180 : 0 }}
+                transition={{ duration: 0.3 }}
+                style={{ display: "inline-flex" }}
+              >
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+                  <path d="M6 8L1 3h10L6 8z" />
+                </svg>
+              </motion.span>
+            </button>
 
             <div style={{ marginTop: 20, display: "flex", flexDirection: "column", gap: 8 }}>
               {["FERPA & COPPA compliant", "Works with any curriculum", "Free to get started"].map((item) => (
