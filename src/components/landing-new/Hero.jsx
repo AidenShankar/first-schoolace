@@ -219,7 +219,7 @@ export function Hero() {
                   startDelay={0.2}
                   segments={[
                     { text: "Education,", lineIndex: 0, pause: 0.18 },
-                    { text: " Supercharged", lineIndex: 0, pause: 0.32 },
+                    { text: " Supercharged", lineIndex: 0, pause: 0 },
                     { text: "by ACE AI", lineIndex: 1, pause: 0 },
                   ]}
                 />
