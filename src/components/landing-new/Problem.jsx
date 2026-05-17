@@ -8,7 +8,7 @@ const problems = [
   },
   {
     heading: "One-size-fits-all instruction fails students",
-    body: "Traditional classrooms can't adapt in real time to each student's pace, gaps, and strengths.",
+    body: "Every student learns differently.",
   },
   {
     heading: "Learning insights arrive too late",
