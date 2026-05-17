@@ -11,7 +11,6 @@ import { Pricing } from '@/components/landing-new/Pricing';
 import { Privacy } from '@/components/landing-new/Privacy';
 import { GettingStarted } from '@/components/landing-new/GettingStarted';
 import { FinalCTA } from '@/components/landing-new/FinalCTA';
-import { Contact } from '@/components/landing-new/Contact';
 import { Footer } from '@/components/landing-new/Footer';
 
 export default function Landing() {
@@ -29,7 +28,6 @@ export default function Landing() {
       <Privacy />
       <GettingStarted />
       <FinalCTA />
-      <Contact />
       <Footer />
     </div>
   );
