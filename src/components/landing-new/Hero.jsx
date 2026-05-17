@@ -99,21 +99,17 @@ function buildTimeline(segments, startDelay) {
   return { items, totalTime: t };
 }
 
-// Cursor rendered as a React state-driven element so it moves with typing
 function TypingSequence({ segments, startDelay = 0.2 }) {
   const { items, totalTime } = buildTimeline(segments, startDelay);
   const [visibleCount, setVisibleCount] = useState(0);
   const [done, setDone] = useState(false);
 
   useEffect(() => {
-    let timeouts = [];
+    const timeouts = [];
     items.forEach((item, idx) => {
-      const ms = item.revealAt * 1000;
-      const t = setTimeout(() => setVisibleCount(idx + 1), ms);
-      timeouts.push(t);
+      timeouts.push(setTimeout(() => setVisibleCount(idx + 1), item.revealAt * 1000));
     });
-    const doneT = setTimeout(() => setDone(true), totalTime * 1000);
-    timeouts.push(doneT);
+    timeouts.push(setTimeout(() => setDone(true), totalTime * 1000));
     return () => timeouts.forEach(clearTimeout);
   }, []);
 
@@ -125,52 +121,42 @@ function TypingSequence({ segments, startDelay = 0.2 }) {
   });
   const lineEntries = Object.entries(lineMap).sort((a, b) => +a[0] - +b[0]);
 
-  // Cursor: blinking when done, solid when typing
-  const Cursor = () => (
+  // The cursor goes right after the last revealed char (globalIdx === visibleCount - 1)
+  const cursorAfterGlobalIdx = visibleCount - 1;
+
+  const cursorEl = (
     <motion.span
       animate={done ? { opacity: [1, 1, 0, 0] } : { opacity: 1 }}
       transition={done ? { duration: 1.0, repeat: Infinity, times: [0, 0.45, 0.55, 1] } : {}}
       style={{
         display: "inline-block",
-        width: "0.06em",
-        height: "0.8em",
+        width: "3px",
+        height: "0.85em",
         background: "currentColor",
-        borderRadius: 1,
-        marginLeft: "0.05em",
-        verticalAlign: "text-top",
-        position: "relative",
-        top: "0.09em",
+        borderRadius: 2,
+        marginLeft: "2px",
+        verticalAlign: "middle",
       }}
     />
   );
 
   return (
     <>
-      {lineEntries.map(([lineIdx, chars], li) => {
-        const lineVisible = chars.filter(c => c.globalIdx < visibleCount);
-        const isActiveLine = !done && chars.some(c => c.globalIdx === visibleCount - 1);
-        const isLastLine = li === lineEntries.length - 1;
-
-        return (
-          <React.Fragment key={lineIdx}>
-            {li > 0 && <br />}
-            <span>
-              {chars.map((item) => (
-                <span
-                  key={item.globalIdx}
-                  style={{
-                    opacity: item.globalIdx < visibleCount ? 1 : 0,
-                    whiteSpace: item.char === " " ? "pre" : undefined,
-                  }}
-                >
+      {lineEntries.map(([lineIdx, chars], li) => (
+        <React.Fragment key={lineIdx}>
+          {li > 0 && <br />}
+          <span>
+            {chars.map((item) => (
+              <React.Fragment key={item.globalIdx}>
+                <span style={{ opacity: item.globalIdx < visibleCount ? 1 : 0 }}>
                   {item.char}
                 </span>
-              ))}
-              {(isActiveLine || (done && isLastLine)) && <Cursor />}
-            </span>
-          </React.Fragment>
-        );
-      })}
+                {item.globalIdx === cursorAfterGlobalIdx && cursorEl}
+              </React.Fragment>
+            ))}
+          </span>
+        </React.Fragment>
+      ))}
     </>
   );
 }
