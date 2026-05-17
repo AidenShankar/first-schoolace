@@ -1,5 +1,5 @@
 import React from "react";
-import { motion } from "framer-motion";
+import { motion, useAnimate, stagger } from "framer-motion";
 
 const word = (delay) => ({
   initial: { opacity: 0, filter: "blur(10px)", y: "20%" },
@@ -84,6 +84,39 @@ const backers = [
   },
 ];
 
+function TypingText({ text, delay = 0 }) {
+  const chars = text.split("");
+  return (
+    <span style={{ position: "relative" }}>
+      {chars.map((char, i) => (
+        <motion.span
+          key={i}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0, delay: delay + i * 0.045 }}
+          style={{ display: "inline-block", whiteSpace: char === " " ? "pre" : undefined }}
+        >
+          {char}
+        </motion.span>
+      ))}
+      <motion.span
+        initial={{ opacity: 1 }}
+        animate={{ opacity: 0 }}
+        transition={{ duration: 0.5, delay: delay + chars.length * 0.045 + 0.3, repeat: Infinity, repeatType: "reverse" }}
+        style={{
+          display: "inline-block",
+          width: 2,
+          height: "0.85em",
+          background: "currentColor",
+          verticalAlign: "text-bottom",
+          marginLeft: 2,
+          borderRadius: 1,
+        }}
+      />
+    </span>
+  );
+}
+
 export function Hero() {
   return (
     <main style={{ overflow: "hidden" }}>
@@ -136,13 +169,9 @@ export function Hero() {
               }}
             >
               <span aria-hidden="true" style={{ display: "block" }}>
-                <motion.span style={{ display: "inline-block" }} {...word(0.2)}>
-                  Education, Supercharged
-                </motion.span>
+                <TypingText text="Education, Supercharged" delay={0.2} />
                 <br />
-                <motion.span style={{ display: "inline-block" }} {...word(0.32)}>
-                  by ACE AI
-                </motion.span>
+                <TypingText text="by ACE AI" delay={0.2 + "Education, Supercharged".length * 0.045 + 0.15} />
               </span>
               <span style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0,0,0,0)" }}>
                 Education, Supercharged by ACE AI
