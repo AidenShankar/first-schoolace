@@ -84,36 +84,84 @@ const backers = [
   },
 ];
 
-function TypingText({ text, delay = 0 }) {
-  const chars = text.split("");
+// Segments: [{text, pause}] — pause is extra delay after segment finishes before next char starts
+// showCursor: show a blinking cursor at end after all typing done
+function TypingSequence({ segments, startDelay = 0.2 }) {
+  // Build a flat timeline of characters with their reveal times
+  // Each segment has optional pause after it
+  const CHAR_INTERVAL = 0.048;
+
+  let timeline = []; // [{char, lineIndex, revealAt}]
+  let t = startDelay;
+
+  segments.forEach(({ text, pause = 0, lineIndex }) => {
+    // Detect word boundaries for natural typing rhythm
+    let i = 0;
+    while (i < text.length) {
+      // Slight speed variation: spaces are instant (already handled visually)
+      timeline.push({ char: text[i], lineIndex, revealAt: t });
+      t += CHAR_INTERVAL;
+      i++;
+    }
+    t += pause; // pause after segment
+  });
+
+  const totalTypingTime = t;
+
+  // Group by lineIndex
+  const lines = {};
+  timeline.forEach((item) => {
+    if (!lines[item.lineIndex]) lines[item.lineIndex] = [];
+    lines[item.lineIndex].push(item);
+  });
+
   return (
-    <span style={{ position: "relative" }}>
-      {chars.map((char, i) => (
-        <motion.span
-          key={i}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0, delay: delay + i * 0.045 }}
-          style={{ display: "inline-block", whiteSpace: char === " " ? "pre" : undefined }}
-        >
-          {char}
-        </motion.span>
+    <>
+      {Object.entries(lines).map(([lineIdx, chars]) => (
+        <React.Fragment key={lineIdx}>
+          {parseInt(lineIdx) > 0 && <br />}
+          <span style={{ position: "relative", display: "inline" }}>
+            {chars.map((item, i) => (
+              <motion.span
+                key={i}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0, delay: item.revealAt }}
+                style={{
+                  display: "inline-block",
+                  whiteSpace: item.char === " " ? "pre" : undefined,
+                }}
+              >
+                {item.char}
+              </motion.span>
+            ))}
+          </span>
+        </React.Fragment>
       ))}
+      {/* Single cursor at the very end */}
       <motion.span
-        initial={{ opacity: 1 }}
-        animate={{ opacity: 0 }}
-        transition={{ duration: 0.5, delay: delay + chars.length * 0.045 + 0.3, repeat: Infinity, repeatType: "reverse" }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: [0, 0, 1, 1, 0] }}
+        transition={{
+          duration: 0.8,
+          delay: totalTypingTime - 0.1,
+          times: [0, 0.1, 0.15, 0.5, 1],
+          repeat: Infinity,
+          repeatDelay: 0.1,
+        }}
         style={{
           display: "inline-block",
-          width: 2,
-          height: "0.85em",
+          width: "0.06em",
+          height: "0.82em",
           background: "currentColor",
-          verticalAlign: "text-bottom",
-          marginLeft: 2,
+          verticalAlign: "middle",
+          position: "relative",
+          top: "-0.04em",
+          marginLeft: "0.06em",
           borderRadius: 1,
         }}
       />
-    </span>
+    </>
   );
 }
 
@@ -169,9 +217,14 @@ export function Hero() {
               }}
             >
               <span aria-hidden="true" style={{ display: "block" }}>
-                <TypingText text="Education, Supercharged" delay={0.2} />
-                <br />
-                <TypingText text="by ACE AI" delay={0.2 + "Education, Supercharged".length * 0.045 + 0.15} />
+                <TypingSequence
+                  startDelay={0.2}
+                  segments={[
+                    { text: "Education,", lineIndex: 0, pause: 0.18 },
+                    { text: " Supercharged", lineIndex: 0, pause: 0.32 },
+                    { text: "by ACE AI", lineIndex: 1, pause: 0 },
+                  ]}
+                />
               </span>
               <span style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0,0,0,0)" }}>
                 Education, Supercharged by ACE AI
