@@ -4,15 +4,15 @@ import { motion, useInView } from "framer-motion";
 const problems = [
   {
     heading: "Grading consumes hours every week",
-    body: "Teachers spend up to 40% of their time on administrative work — grading, feedback, paperwork. Time that should go to students.",
+    body: "Teachers spend up to 40% of their time on administrative work.",
   },
   {
     heading: "One-size-fits-all instruction fails students",
-    body: "Every student learns differently. Traditional classrooms can't adapt in real time to each student's pace, gaps, and strengths.",
+    body: "Traditional classrooms can't adapt in real time to each student's pace, gaps, and strengths.",
   },
   {
     heading: "Learning insights arrive too late",
-    body: "By the time assessments surface struggling students, weeks have passed. Early intervention is impossible without real-time data.",
+    body: "Early intervention is impossible without real-time data.",
   },
 ];
 
