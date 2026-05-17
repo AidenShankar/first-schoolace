@@ -144,7 +144,7 @@ export function ForStudents() {
             For students
           </p>
           <h2 style={{ fontSize: "clamp(28px, 4vw, 40px)", fontWeight: 600, letterSpacing: "-0.03em", color: "var(--color-text-primary)", lineHeight: 1.1, margin: "0 0 16px", maxWidth: 520 }}>
-            Every student gets a dedicated AI tutor.
+            Every student gets a dedicated tutor.
           </h2>
           <p style={{ fontSize: 15, color: "var(--color-text-tertiary)", lineHeight: 1.65, margin: 0, maxWidth: 440 }}>
             ACE learns each student&apos;s unique strengths and gaps — then adapts every explanation in real time.
