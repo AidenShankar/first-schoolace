@@ -34,7 +34,7 @@ const plans = [
   },
 ];
 
-export function Pricing() {
+export function Pricing({ onContactOpen, signinUrl = "/newai" }) {
   const ref = React.useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
 
@@ -91,34 +91,61 @@ export function Pricing() {
                 <div style={{ fontSize: 13, color: "var(--color-text-tertiary)", lineHeight: 1.5 }}>{plan.description}</div>
               </div>
 
-              <a
-                href={plan.href}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  height: 34,
-                  borderRadius: 6,
-                  fontSize: 13,
-                  fontWeight: 500,
-                  textDecoration: "none",
-                  marginBottom: 24,
-                  transition: "background 150ms, border-color 150ms",
-                  background: plan.highlight ? "rgba(255,255,255,0.92)" : "transparent",
-                  color: plan.highlight ? "#08090a" : "var(--color-text-secondary)",
-                  border: plan.highlight ? "none" : "1px solid rgba(255,255,255,0.1)",
-                }}
-                onMouseEnter={(e) => {
-                  if (plan.highlight) e.currentTarget.style.background = "#ffffff";
-                  else { e.currentTarget.style.borderColor = "rgba(255,255,255,0.2)"; e.currentTarget.style.color = "var(--color-text-primary)"; }
-                }}
-                onMouseLeave={(e) => {
-                  if (plan.highlight) e.currentTarget.style.background = "rgba(255,255,255,0.92)";
-                  else { e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; e.currentTarget.style.color = "var(--color-text-secondary)"; }
-                }}
-              >
-                {plan.cta}
-              </a>
+              {plan.name === "School" ? (
+                <button
+                  onClick={onContactOpen}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    height: 34,
+                    borderRadius: 6,
+                    fontSize: 13,
+                    fontWeight: 500,
+                    marginBottom: 24,
+                    transition: "background 150ms, border-color 150ms",
+                    background: "transparent",
+                    color: "var(--color-text-secondary)",
+                    border: "1px solid rgba(255,255,255,0.1)",
+                    cursor: "pointer",
+                    fontFamily: "inherit",
+                    width: "100%",
+                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.2)"; e.currentTarget.style.color = "var(--color-text-primary)"; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; e.currentTarget.style.color = "var(--color-text-secondary)"; }}
+                >
+                  {plan.cta}
+                </button>
+              ) : (
+                <a
+                  href={signinUrl}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    height: 34,
+                    borderRadius: 6,
+                    fontSize: 13,
+                    fontWeight: 500,
+                    textDecoration: "none",
+                    marginBottom: 24,
+                    transition: "background 150ms, border-color 150ms",
+                    background: plan.highlight ? "rgba(255,255,255,0.92)" : "transparent",
+                    color: plan.highlight ? "#08090a" : "var(--color-text-secondary)",
+                    border: plan.highlight ? "none" : "1px solid rgba(255,255,255,0.1)",
+                  }}
+                  onMouseEnter={(e) => {
+                    if (plan.highlight) e.currentTarget.style.background = "#ffffff";
+                    else { e.currentTarget.style.borderColor = "rgba(255,255,255,0.2)"; e.currentTarget.style.color = "var(--color-text-primary)"; }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (plan.highlight) e.currentTarget.style.background = "rgba(255,255,255,0.92)";
+                    else { e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; e.currentTarget.style.color = "var(--color-text-secondary)"; }
+                  }}
+                >
+                  {plan.cta}
+                </a>
+              )}
 
               <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: 10 }}>
                 {plan.features.map((f) => (

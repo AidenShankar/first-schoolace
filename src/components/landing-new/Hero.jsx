@@ -163,7 +163,7 @@ function TypingSequence({ segments, startDelay = 0.2 }) {
   );
 }
 
-export function Hero() {
+export function Hero({ onContactOpen, signinUrl = "/newai" }) {
   return (
     <main style={{ overflow: "hidden" }}>
       <section style={{ position: "relative", paddingTop: 160 }}>
@@ -248,7 +248,7 @@ export function Hero() {
               style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 12 }}
             >
               <a
-                href="#"
+                href={signinUrl}
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
@@ -268,8 +268,8 @@ export function Hero() {
               >
                 Get started for free
               </a>
-              <a
-                href="#"
+              <button
+                onClick={onContactOpen}
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
@@ -278,7 +278,10 @@ export function Hero() {
                   fontSize: 14,
                   fontWeight: 400,
                   color: "var(--color-text-secondary)",
-                  textDecoration: "none",
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  fontFamily: "inherit",
                   letterSpacing: "-0.005em",
                   transition: "color 150ms",
                 }}
@@ -286,7 +289,7 @@ export function Hero() {
                 onMouseLeave={(e) => (e.currentTarget.style.color = "var(--color-text-secondary)")}
               >
                 Request a demo →
-              </a>
+              </button>
             </motion.div>
           </div>
         </div>

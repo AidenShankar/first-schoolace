@@ -7,7 +7,7 @@ const steps = [
   { n: "03", title: "Let ACE do the work", body: "Start grading, generating content, and tutoring on day one." },
 ];
 
-export function GettingStarted() {
+export function GettingStarted({ signinUrl = "/newai" }) {
   const ref = React.useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
 
@@ -61,7 +61,7 @@ export function GettingStarted() {
           transition={{ duration: 0.5, delay: 0.4 }}
         >
           <a
-            href="#"
+            href={signinUrl}
             style={{
               display: "inline-flex",
               alignItems: "center",

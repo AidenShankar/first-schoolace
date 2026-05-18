@@ -1,7 +1,7 @@
 import React from "react";
 import { motion, useInView } from "framer-motion";
 
-export function FinalCTA() {
+export function FinalCTA({ onContactOpen, signinUrl = "/newai" }) {
   const ref = React.useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
 
@@ -22,7 +22,7 @@ export function FinalCTA() {
           </p>
           <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
             <a
-              href="#"
+              href={signinUrl}
               style={{
                 display: "inline-flex",
                 alignItems: "center",
@@ -41,8 +41,8 @@ export function FinalCTA() {
             >
               Get started for free
             </a>
-            <a
-              href="#contact"
+            <button
+              onClick={onContactOpen}
               style={{
                 display: "inline-flex",
                 alignItems: "center",
@@ -50,14 +50,17 @@ export function FinalCTA() {
                 padding: "0 22px",
                 fontSize: 14,
                 color: "var(--color-text-secondary)",
-                textDecoration: "none",
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                fontFamily: "inherit",
                 transition: "color 150ms",
               }}
               onMouseEnter={(e) => (e.currentTarget.style.color = "var(--color-text-primary)")}
               onMouseLeave={(e) => (e.currentTarget.style.color = "var(--color-text-secondary)")}
             >
               Talk to sales →
-            </a>
+            </button>
           </div>
           <div style={{ marginTop: 28, display: "flex", flexWrap: "wrap", gap: "8px 24px" }}>
             {["No credit card required", "Free forever plan", "FERPA & COPPA compliant", "Cancel anytime"].map((item) => (
