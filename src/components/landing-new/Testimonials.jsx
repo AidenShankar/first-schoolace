@@ -4,9 +4,9 @@ import { motion, useInView } from "framer-motion";
 const featured = [
   {
     quote: "I used to spend a full Sunday grading. With ACE, I'm done in an hour — and the feedback is genuinely better than what I wrote myself.",
-    name: "Sarah Mitchell",
-    role: "8th Grade English, Lincoln Middle School",
-    initials: "SM",
+    name: "Amber Kraver",
+    role: "8th Grade Science, Valley Christian Junior High School",
+    initials: "AK",
     bg: "#e4e8ff",
     textColor: "#08090a",
     accentColor: "#5e6ad2",
