@@ -85,42 +85,11 @@ export function Navbar({ onContactOpen, signinUrl = "/newai" }) {
             Get started
           </a>
 
-          <button onClick={() => setOpen(!open)} className="md:hidden"
-            style={{ background: "none", border: "none", cursor: "pointer", color: "rgba(255,255,255,0.45)", padding: 4, marginLeft: 4, display: "flex", alignItems: "center" }}
-            aria-label="Toggle menu">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-              <rect x="1" y="7.5" width="14" height="1" rx="0.5" style={{ transformOrigin: "center", transition: "160ms", transform: open ? "rotate(45deg)" : "translateY(-3.5px)" }} />
-              <rect x="1" y="7.5" width="14" height="1" rx="0.5" style={{ transformOrigin: "center", transition: "160ms", transform: open ? "rotate(-45deg)" : "translateY(3.5px)" }} />
-            </svg>
-          </button>
+
         </div>
       </nav>
 
-      {open && (
-        <div className="md:hidden" style={{ background: "rgba(8,9,10,0.97)", backdropFilter: "blur(12px)", borderTop: "1px solid rgba(255,255,255,0.07)", padding: "16px 24px 24px" }}>
-          <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
-            {navLinks.map((link) => (
-              <li key={link.label}>
-                {link.href ? (
-                  <a href={link.href} onClick={() => setOpen(false)}
-                    style={{ display: "block", padding: "11px 0", fontSize: 15, color: "rgba(255,255,255,0.45)", textDecoration: "none", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
-                    {link.label}
-                  </a>
-                ) : (
-                  <button onClick={() => { setOpen(false); onContactOpen(); }}
-                    style={{ display: "block", width: "100%", textAlign: "left", padding: "11px 0", fontSize: 15, color: "rgba(255,255,255,0.45)", background: "none", border: "none", borderBottom: "1px solid rgba(255,255,255,0.04)", cursor: "pointer", fontFamily: "inherit" }}>
-                    {link.label}
-                  </button>
-                )}
-              </li>
-            ))}
-          </ul>
-          <div style={{ marginTop: 16, display: "flex", gap: 8 }}>
-            <a href={signinUrl} style={{ flex: 1, textAlign: "center", padding: "8px", fontSize: 14, color: "rgba(255,255,255,0.45)", textDecoration: "none", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 6 }}>Log in</a>
-            <a href={signinUrl} style={{ flex: 1, textAlign: "center", padding: "8px", fontSize: 14, fontWeight: 500, color: "#08090a", background: "rgba(255,255,255,0.92)", textDecoration: "none", borderRadius: 6 }}>Get started</a>
-          </div>
-        </div>
-      )}
+
     </header>
   );
 }

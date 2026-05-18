@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 export function Footer() {
   return (
@@ -16,21 +17,21 @@ export function Footer() {
         </p>
 
         <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
-          {[
-            { label: "Terms", href: "#" },
-            { label: "Privacy", href: "#" },
-            { label: "contact@schoolace.ai", href: "mailto:contact@schoolace.ai" },
-          ].map((link) => (
-            <a
-              key={link.label}
-              href={link.href}
-              style={{ fontSize: 12, color: "var(--color-text-quaternary)", textDecoration: "none", transition: "color 150ms" }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "var(--color-text-secondary)")}
-              onMouseLeave={(e) => (e.currentTarget.style.color = "var(--color-text-quaternary)")}
-            >
-              {link.label}
-            </a>
-          ))}
+          <Link to="/landing-terms" style={{ fontSize: 12, color: "var(--color-text-quaternary)", textDecoration: "none", transition: "color 150ms" }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "var(--color-text-secondary)")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "var(--color-text-quaternary)")}>
+            Terms
+          </Link>
+          <Link to="/landing-privacy" style={{ fontSize: 12, color: "var(--color-text-quaternary)", textDecoration: "none", transition: "color 150ms" }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "var(--color-text-secondary)")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "var(--color-text-quaternary)")}>
+            Privacy
+          </Link>
+          <a href="mailto:contact@schoolace.ai" style={{ fontSize: 12, color: "var(--color-text-quaternary)", textDecoration: "none", transition: "color 150ms" }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "var(--color-text-secondary)")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "var(--color-text-quaternary)")}>
+            contact@schoolace.ai
+          </a>
         </div>
       </div>
     </footer>

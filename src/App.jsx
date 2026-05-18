@@ -11,6 +11,8 @@ const TutorRedirect = () => { useEffect(() => { window.location.href = 'https://
 import AdminExport from './pages/AdminExport';
 import InvestorStats from './pages/InvestorStats';
 import About from './pages/About';
+import LandingTerms from './pages/LandingTerms';
+import LandingPrivacy from './pages/LandingPrivacy';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 
@@ -71,6 +73,8 @@ const AuthenticatedApp = () => {
       <Route path="/admin-export" element={<AdminExport />} />
       <Route path="/investor-stats" element={<InvestorStats />} />
       <Route path="/about" element={<About />} />
+      <Route path="/landing-terms" element={<LandingTerms />} />
+      <Route path="/landing-privacy" element={<LandingPrivacy />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
