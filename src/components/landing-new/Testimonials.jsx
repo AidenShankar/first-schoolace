@@ -159,7 +159,7 @@ export function Testimonials() {
           style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}
         >
           <p style={{ fontSize: 13, color: "var(--color-text-tertiary)", margin: 0 }}>
-            SchoolACE powers over <strong style={{ fontWeight: 600, color: "var(--color-text-secondary)" }}>500+</strong> educators. From individual classrooms to entire districts.
+            SchoolACE powers over <strong style={{ fontWeight: 600, color: "var(--color-text-secondary)" }}>500+</strong> educators. From individual classrooms to schools.
           </p>
           <a
             href="#"
