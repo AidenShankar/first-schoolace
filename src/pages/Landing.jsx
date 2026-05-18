@@ -15,7 +15,7 @@ import { FinalCTA } from '@/components/landing-new/FinalCTA';
 import { Footer } from '@/components/landing-new/Footer';
 import { ContactModal } from '@/components/landing-new/ContactModal';
 
-const SIGNIN_URL = '/newai';
+const SIGNIN_URL = '/login?next=/Dashboard';
 
 export default function Landing() {
   const [contactOpen, setContactOpen] = React.useState(false);
