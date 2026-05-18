@@ -45,7 +45,7 @@ export function Navbar({ onContactOpen, signinUrl = "/newai" }) {
         }}
       >
         <Link to="/" style={{ display: "flex", alignItems: "center", gap: 8, textDecoration: "none", color: "rgba(255,255,255,0.88)" }}>
-          <img src="https://media.base44.com/images/public/687ed6bea54c832b17eb40bc/36948c755_image.png" alt="SchoolACE" style={{ width: 36, height: 36, borderRadius: 8, display: "block", objectFit: "cover" }} />
+          <img src="https://media.base44.com/images/public/687ed6bea54c832b17eb40bc/71eba0ef1_schoolacenewlogo.png" alt="SchoolACE" style={{ width: 36, height: 36, borderRadius: 8, display: "block", objectFit: "cover" }} />
           <span style={{ fontSize: 16, fontWeight: 600, letterSpacing: "-0.01em" }}>SchoolACE</span>
         </Link>
 

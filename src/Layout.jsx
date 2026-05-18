@@ -939,7 +939,7 @@ function LayoutContent({
             <div className="flex justify-between items-center h-16">
               <Link to={createPageUrl("Dashboard")} className="flex items-center space-x-3">
               <div className="w-10 h-10 rounded-xl overflow-hidden shadow-lg flex-shrink-0">
-                <img src="https://media.base44.com/images/public/687ed6bea54c832b17eb40bc/36948c755_image.png" alt="SchoolACE" className="w-full h-full object-cover" />
+                <img src="https://media.base44.com/images/public/687ed6bea54c832b17eb40bc/71eba0ef1_schoolacenewlogo.png" alt="SchoolACE" className="w-full h-full object-cover" />
               </div>
                 <div>
                   <h1 className="text-xl font-bold" style={{ color: isLearnerDashboard ? 'rgb(255 255 255)' : `rgb(var(--color-text))` }}>SchoolACE</h1>
