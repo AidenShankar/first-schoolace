@@ -560,7 +560,6 @@ export default function LandingPage() {
       <div className="relative z-20">
         <Header />
         <AceTutorBanner />
-        <AwardsBanner />
         <main>
           {/* Hero Section */}
           <section className="px-6 py-12 text-center max-w-6xl mx-auto">
