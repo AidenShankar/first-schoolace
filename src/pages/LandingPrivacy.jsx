@@ -11,6 +11,7 @@ const prose = {
 };
 
 export default function LandingPrivacy() {
+  React.useEffect(() => { window.scrollTo(0, 0); }, []);
   return (
     <div style={{ minHeight: "100vh", background: "#08090a", color: "rgba(255,255,255,0.88)", fontFamily: "Inter, sans-serif" }}>
       {/* Header */}
