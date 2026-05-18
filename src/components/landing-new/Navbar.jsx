@@ -78,8 +78,8 @@ export function Navbar({ onContactOpen, signinUrl = "/newai" }) {
             onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.4)")}>
             Log in
           </a>
-          <a href={signinUrl}
-            style={{ display: "inline-flex", alignItems: "center", height: 30, padding: "0 14px", fontSize: 13, fontWeight: 500, color: "#08090a", background: "rgba(255,255,255,0.92)", borderRadius: 6, textDecoration: "none", letterSpacing: "-0.005em", transition: "background 150ms", whiteSpace: "nowrap" }}
+          <a href={signinUrl} className="hidden md:inline-flex"
+            style={{ alignItems: "center", height: 30, padding: "0 14px", fontSize: 13, fontWeight: 500, color: "#08090a", background: "rgba(255,255,255,0.92)", borderRadius: 6, textDecoration: "none", letterSpacing: "-0.005em", transition: "background 150ms", whiteSpace: "nowrap" }}
             onMouseEnter={(e) => (e.currentTarget.style.background = "#ffffff")}
             onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.92)")}>
             Get started
@@ -97,27 +97,33 @@ export function Navbar({ onContactOpen, signinUrl = "/newai" }) {
       </nav>
 
       {open && (
-        <div className="md:hidden" style={{ background: "rgba(8,9,10,0.97)", backdropFilter: "blur(12px)", borderTop: "1px solid rgba(255,255,255,0.07)", padding: "16px 24px 24px" }}>
-          <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
+        <div className="md:hidden" style={{ background: "rgba(8,9,10,0.97)", backdropFilter: "blur(12px)", borderTop: "1px solid rgba(255,255,255,0.07)", padding: "16px 24px 28px" }}>
+          <ul style={{ listStyle: "none", margin: 0, padding: 0, marginBottom: 20 }}>
             {navLinks.map((link) => (
               <li key={link.label}>
                 {link.href ? (
                   <a href={link.href} onClick={() => setOpen(false)}
-                    style={{ display: "block", padding: "11px 0", fontSize: 15, color: "rgba(255,255,255,0.45)", textDecoration: "none", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
+                    style={{ display: "flex", alignItems: "center", padding: "14px 0", fontSize: 16, fontWeight: 500, color: "rgba(255,255,255,0.75)", textDecoration: "none", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
                     {link.label}
                   </a>
                 ) : (
                   <button onClick={() => { setOpen(false); onContactOpen(); }}
-                    style={{ display: "block", width: "100%", textAlign: "left", padding: "11px 0", fontSize: 15, color: "rgba(255,255,255,0.45)", background: "none", border: "none", borderBottom: "1px solid rgba(255,255,255,0.04)", cursor: "pointer", fontFamily: "inherit" }}>
+                    style={{ display: "flex", alignItems: "center", width: "100%", textAlign: "left", padding: "14px 0", fontSize: 16, fontWeight: 500, color: "rgba(255,255,255,0.75)", background: "none", border: "none", borderBottom: "1px solid rgba(255,255,255,0.06)", cursor: "pointer", fontFamily: "inherit" }}>
                     {link.label}
                   </button>
                 )}
               </li>
             ))}
           </ul>
-          <div style={{ marginTop: 16, display: "flex", gap: 8 }}>
-            <a href={signinUrl} style={{ flex: 1, textAlign: "center", padding: "8px", fontSize: 14, color: "rgba(255,255,255,0.45)", textDecoration: "none", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 6 }}>Log in</a>
-            <a href={signinUrl} style={{ flex: 1, textAlign: "center", padding: "8px", fontSize: 14, fontWeight: 500, color: "#08090a", background: "rgba(255,255,255,0.92)", textDecoration: "none", borderRadius: 6 }}>Get started</a>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            <a href={signinUrl} onClick={() => setOpen(false)}
+              style={{ display: "flex", alignItems: "center", justifyContent: "center", height: 44, fontSize: 15, fontWeight: 500, color: "rgba(255,255,255,0.75)", textDecoration: "none", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 8 }}>
+              Log in
+            </a>
+            <a href={signinUrl} onClick={() => setOpen(false)}
+              style={{ display: "flex", alignItems: "center", justifyContent: "center", height: 44, fontSize: 15, fontWeight: 600, color: "#08090a", background: "rgba(255,255,255,0.92)", textDecoration: "none", borderRadius: 8 }}>
+              Get started →
+            </a>
           </div>
         </div>
       )}
