@@ -254,37 +254,15 @@ export default function ChatTutor({ user, learningData, language = 'EN', isPerso
         document.head.appendChild(katexJS);
     }, []);
 
-    const getIntroMessage = useCallback(() => {
-        const allItems = [
-            ...(learningData?.assignments || []),
-            ...(learningData?.quizzes || [])
-        ];
-
-        const focusItems = allItems
-            .filter(item => item.percentage < 80)
-            .sort((a, b) => new Date(b.submitted_at) - new Date(a.submitted_at));
-
-        const recentFocus = focusItems.slice(0, 3);
-
-        let focusText = '';
-        if (recentFocus.length > 0) {
-            const titles = recentFocus.map(item => `"${item.title.trim()}"`);
-            const listFormatter = new Intl.ListFormat(language.toLowerCase(), { style: 'long', type: 'conjunction' });
-            const concepts = listFormatter.format(titles);
-            focusText = t('personalizedLearning.focusAreasIntro', language).replace('{concepts}', concepts);
-        }
-
-        return t('personalizedLearning.introMessage', language)
-            .replace('{name}', user.full_name.split(' ')[0])
-            .replace('{focusText}', focusText);
-    }, [user, learningData, language]);
-
+    // Show welcome message immediately when user is available
     useEffect(() => {
-        if (learningData && user) {
-            setConversation([{ role: 'assistant', content: getIntroMessage(), id: Date.now() }]);
+        if (user) {
+            const firstName = user.full_name ? user.full_name.split(' ')[0] : 'there';
+            const welcomeMsg = `Hi ${firstName}! 👋 I'm Ace, your AI tutor. What would you like help with today?`;
+            setConversation([{ role: 'assistant', content: welcomeMsg, id: Date.now() }]);
             prevConversationLengthRef.current = 1;
         }
-    }, [user, learningData, getIntroMessage]);
+    }, [user]);
 
     useEffect(() => {
         // Only scroll if conversation length increased (new message added)
@@ -498,7 +476,7 @@ export default function ChatTutor({ user, learningData, language = 'EN', isPerso
             const { data, error } = await base44.functions.invoke('chatWithAce', {
                 message: studentMessageContent,
                 learningData,
-                uploadedFiles, // Pass context of all uploaded files in session
+                uploadedFiles,
                 conversationHistory: [...conversation, userMessage],
                 isPersonalizedMode,
                 learningMode,
@@ -507,14 +485,17 @@ export default function ChatTutor({ user, learningData, language = 'EN', isPerso
 
             if (error) throw new Error(error.response?.data?.error || "Unknown error");
 
-            const { content: finalContent, quiz: finalQuiz } = data;
+            const finalContent = data.content;
 
             const assistantMessage = { role: 'assistant', content: finalContent, id: Date.now() };
             setConversation(prev => [...prev, assistantMessage]);
-            
-            if (finalQuiz && Array.isArray(finalQuiz.questions) && finalQuiz.questions.length > 0) {
-                setActiveQuiz({ quiz: finalQuiz });
-            }
+
+            // INTERACTIVE QUIZ RENDERING — PRESERVED FOR FUTURE RESTORATION
+            // To re-enable: restore quiz in backend response schema, then uncomment:
+            // const { content: finalContent, quiz: finalQuiz } = data;
+            // if (finalQuiz && Array.isArray(finalQuiz.questions) && finalQuiz.questions.length > 0) {
+            //     setActiveQuiz({ quiz: finalQuiz });
+            // }
 
         } catch (error) {
             console.error("AI Tutor Error:", error);
@@ -669,6 +650,7 @@ export default function ChatTutor({ user, learningData, language = 'EN', isPerso
                     ))}
                 </AnimatePresence>
 
+                {/* INTERACTIVE QUIZ UI — PRESERVED FOR FUTURE RESTORATION
                 {activeQuiz && (
                     <div ref={quizRef}>
                         <InteractiveQuiz
@@ -679,6 +661,7 @@ export default function ChatTutor({ user, learningData, language = 'EN', isPerso
                         />
                     </div>
                 )}
+                */}
 
                 {isLoading && (
                     <motion.div 
