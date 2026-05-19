@@ -285,6 +285,11 @@ export default function ChatTutor({ user, learningData, language = 'EN', isPerso
         if (uploadedFiles.length > 0) setShowUploadNotice(true);
     }, [uploadedFiles.length]);
 
+    // Reset learning mode to off when personalized mode is turned off
+    useEffect(() => {
+        if (!isPersonalizedMode) setLearningMode(false);
+    }, [isPersonalizedMode]);
+
     const handleFileUpload = async (input) => {
         const files = input.target ? Array.from(input.target.files) : Array.from(input);
         if (files.length === 0) return;
