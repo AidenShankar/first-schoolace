@@ -86,6 +86,30 @@ export function ThemeProvider({ children }) {
       root.style.setProperty(`--color-${key}`, value);
     });
 
+    // Sync shadcn --primary variable so Button and other shadcn components
+    // use the correct theme color instead of defaulting to white.
+    const primaryRgb = theme.colors.primary; // e.g. "99 102 241"
+    const [r, g, b] = primaryRgb.split(' ').map(Number);
+    // Convert RGB to HSL for shadcn's hsl(var(--primary)) format
+    const rn = r / 255, gn = g / 255, bn = b / 255;
+    const max = Math.max(rn, gn, bn), min = Math.min(rn, gn, bn);
+    const l = (max + min) / 2;
+    let h = 0, s = 0;
+    if (max !== min) {
+      const d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+      switch (max) {
+        case rn: h = ((gn - bn) / d + (gn < bn ? 6 : 0)) / 6; break;
+        case gn: h = ((bn - rn) / d + 2) / 6; break;
+        case bn: h = ((rn - gn) / d + 4) / 6; break;
+      }
+    }
+    const hDeg = Math.round(h * 360);
+    const sPct = Math.round(s * 100);
+    const lPct = Math.round(l * 100);
+    root.style.setProperty('--primary', `${hDeg} ${sPct}% ${lPct}%`);
+    root.style.setProperty('--primary-foreground', '0 0% 100%');
+
     // Save to localStorage
     localStorage.setItem('schoolace-theme', currentTheme);
   }, [currentTheme]);
