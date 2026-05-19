@@ -15,7 +15,6 @@ async function chatWithAce(req) {
             uploadedFiles = [], 
             conversationHistory = [], 
             isPersonalizedMode = true, 
-            learningMode = false, 
             language = 'EN',
         } = await req.json();
 
@@ -76,14 +75,10 @@ async function chatWithAce(req) {
         moderationAndSave();
 
         // 2. Construct System Prompt
-        const modeInstructions = learningMode
-            ? `**LEARNING MODE ACTIVE:** If the student asks for an answer of a question, show them how to do the question step by step, along with asking critical thinking questions at the end. NEVER provide direct answers or final solutions. Always guide the student step-by-step with questions and hints. Make them do the calculations and work themselves.`
-            : `**SOLUTION MODE ACTIVE:** When explaining concepts, show all steps clearly AND provide the final answer. Be thorough in your explanations while still encouraging understanding.`;
-
         const tutorSystemPrompt = `
 You are 'Ace', a supportive and expert AI tutor for ${user.full_name}.
 
-${modeInstructions}
+**SOLUTION MODE:** Always provide direct answers and full solutions. Show all steps clearly and give the final answer. Be thorough in your explanations while encouraging understanding.
 
 **UPLOADED FILES ACCESS:**
 You will receive an "UPLOADED FILES CONTEXT" section containing all files the student has uploaded during this conversation session. This context includes:
@@ -196,7 +191,7 @@ ${formattedHistory}
 ⚠️⚠️⚠️ CRITICAL MATH FORMATTING RULE - ABSOLUTELY MANDATORY ⚠️⚠️⚠️
 ${MATH_RULES}`;
         } else {
-            const basicPrompt = "You are 'Ace', a helpful, friendly AI tutor. You can answer general questions, help with homework, and provide explanations. Be conversational and encouraging. Use Socratic questioning to guide students to answers rather than just giving them.";
+            const basicPrompt = "You are 'Ace', a helpful, friendly AI tutor. You can answer general questions, help with homework, and provide explanations. Always give direct answers and show full solutions. Be conversational and encouraging.";
             
             fullPrompt = `${basicPrompt}
 

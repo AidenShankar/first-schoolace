@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, Loader2, Sparkles, CheckCircle, X, Plus, File, FileText, Image, BrainCircuit, Upload, GraduationCap } from 'lucide-react';
+import { Send, Loader2, Sparkles, CheckCircle, X, Plus, File, FileText, Image, BrainCircuit, Upload } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
 import { UploadFile, ExtractDataFromUploadedFile } from '@/integrations/Core';
 import ReactMarkdown from 'react-markdown';
@@ -8,7 +8,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Switch } from "@/components/ui/switch";
@@ -218,7 +217,6 @@ export default function ChatTutor({ user, learningData, language = 'EN', isPerso
     const [attachedFiles, setAttachedFiles] = useState([]);
     const [uploadedFiles, setUploadedFiles] = useState([]); 
     const [isUploadingFile, setIsUploadingFile] = useState(false);
-    const [learningMode, setLearningMode] = useState(false); // Default OFF (Solution Mode)
     const [isDragOver, setIsDragOver] = useState(false);
     const [showUploadNotice, setShowUploadNotice] = useState(false);
     const conversationEndRef = useRef(null);
@@ -285,10 +283,7 @@ export default function ChatTutor({ user, learningData, language = 'EN', isPerso
         if (uploadedFiles.length > 0) setShowUploadNotice(true);
     }, [uploadedFiles.length]);
 
-    // Reset learning mode to off when personalized mode is turned off
-    useEffect(() => {
-        if (!isPersonalizedMode) setLearningMode(false);
-    }, [isPersonalizedMode]);
+
 
     const handleFileUpload = async (input) => {
         const files = input.target ? Array.from(input.target.files) : Array.from(input);
@@ -484,8 +479,7 @@ export default function ChatTutor({ user, learningData, language = 'EN', isPerso
                 uploadedFiles,
                 conversationHistory: [...conversation, userMessage],
                 isPersonalizedMode,
-                learningMode,
-                language
+                    language
             });
 
             if (error) throw new Error(error.response?.data?.error || "Unknown error");
@@ -571,18 +565,6 @@ export default function ChatTutor({ user, learningData, language = 'EN', isPerso
                     </div>
                     
                     <div className="flex flex-col items-end gap-2">
-                        {/* Learning Mode Indicator - Only show in Personalized Mode */}
-                        {isPersonalizedMode && (
-                            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold ${
-                                learningMode 
-                                    ? 'bg-purple-100 text-purple-700' 
-                                    : 'bg-blue-100 text-blue-700'
-                            }`}>
-                                <GraduationCap className="w-3.5 h-3.5" />
-                                {learningMode ? t('personalizedLearning.learningMode', language) : t('personalizedLearning.solutionMode', language)}
-                            </div>
-                        )}
-                        
                         {/* Data Access Toggle */}
                         <div className={`flex items-center gap-2 pl-3 pr-1 py-1 rounded-full border transition-all duration-300 ${
                             isPersonalizedMode 
@@ -734,31 +716,7 @@ export default function ChatTutor({ user, learningData, language = 'EN', isPerso
                                 <Upload className="w-4 h-4 mr-2" />
                                 {t('personalizedLearning.uploadFile', language)}
                             </DropdownMenuItem>
-                            {isPersonalizedMode && (
-                                <>
-                                    <DropdownMenuSeparator />
-                                    <div className="px-2 py-3">
-                                        <div className="flex items-center justify-between">
-                                            <div className="flex items-center gap-2">
-                                                <GraduationCap className="w-4 h-4 text-purple-600" />
-                                                <Label htmlFor="learning-mode" className="text-sm font-medium cursor-pointer">
-                                                    {t('personalizedLearning.learningMode', language)}
-                                                </Label>
-                                            </div>
-                                            <Switch 
-                                                id="learning-mode"
-                                                checked={learningMode}
-                                                onCheckedChange={setLearningMode}
-                                            />
-                                        </div>
-                                        <p className="text-xs text-slate-500 mt-2 ml-6">
-                                            {learningMode 
-                                                ? t('personalizedLearning.learningModeDesc', language)
-                                                : t('personalizedLearning.solutionModeDesc', language)}
-                                        </p>
-                                    </div>
-                                </>
-                            )}
+
                         </DropdownMenuContent>
                     </DropdownMenu>
 
