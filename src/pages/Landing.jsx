@@ -792,7 +792,7 @@ export default function LandingPage() {
           <section id="testimonials" className="py-12">
             <div className="text-center mb-12 px-4">
               <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.3, duration: 0.5 }} className="text-4xl md:text-5xl font-bold mb-4">
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-400">{t('landing.lovedByTeachersStudents')}</span>
+                <span className="text-white">{t('landing.lovedByTeachersStudents')}</span>
               </motion.h2>
               <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.5, duration: 0.5 }} className="text-xl text-slate-400 max-w-3xl mx-auto">{t('landing.lovedByDesc')}</motion.p>
             </div>
