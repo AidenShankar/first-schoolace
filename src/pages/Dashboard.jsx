@@ -1258,7 +1258,7 @@ Output JSON with:
     };
 
     const handleCreateNewAssignment = () => {
-        setShowChoiceDialog(true);
+        handleChooseManual();
     };
 
     const handleChooseManual = () => {
@@ -1789,12 +1789,7 @@ Output JSON with:
 
 
 
-            <CreateAssignmentChoiceDialog
-                open={showChoiceDialog}
-                onOpenChange={setShowChoiceDialog}
-                onChooseManual={handleChooseManual}
-                onChooseGenerate={handleChooseGenerate}
-            />
+
 
         </div>
     );
