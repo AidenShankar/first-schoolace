@@ -56,7 +56,7 @@
     "content"
   ],
   "rls": {
-    "read": {
+    "create": {
       "$or": [
         {
           "user_condition": {
@@ -70,7 +70,7 @@
         }
       ]
     },
-    "create": {
+    "read": {
       "$or": [
         {
           "user_condition": {
@@ -99,7 +99,7 @@
               }
             },
             {
-              "user_id": "{{user.id}}"
+              "data.user_id": "{{user.id}}"
             }
           ]
         }
@@ -120,28 +120,7 @@
               }
             },
             {
-              "user_id": "{{user.id}}"
-            }
-          ]
-        }
-      ]
-    },
-    "write": {
-      "$or": [
-        {
-          "user_condition": {
-            "data.app_role": "teacher"
-          }
-        },
-        {
-          "$and": [
-            {
-              "user_condition": {
-                "data.app_role": "student"
-              }
-            },
-            {
-              "user_id": "{{user.id}}"
+              "data.user_id": "{{user.id}}"
             }
           ]
         }

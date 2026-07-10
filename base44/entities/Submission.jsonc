@@ -137,18 +137,6 @@
     "student_name"
   ],
   "rls": {
-    "read": {
-      "$or": [
-        {
-          "user_condition": {
-            "data.app_role": "teacher"
-          }
-        },
-        {
-          "created_by": "{{user.email}}"
-        }
-      ]
-    },
     "create": {
       "$or": [
         {
@@ -160,6 +148,18 @@
           "user_condition": {
             "data.app_role": "teacher"
           }
+        }
+      ]
+    },
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "data.app_role": "teacher"
+          }
+        },
+        {
+          "created_by": "{{user.email}}"
         }
       ]
     },
@@ -178,7 +178,7 @@
               }
             },
             {
-              "student_id": "{{user.id}}"
+              "data.student_id": "{{user.id}}"
             }
           ]
         }

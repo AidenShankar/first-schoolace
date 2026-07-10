@@ -36,22 +36,25 @@
     "message"
   ],
   "rls": {
+    "create": {
+      "user_condition": {
+        "data.app_role": "admin"
+      }
+    },
     "read": {
       "user_condition": {
         "data.app_role": "admin"
       }
     },
-    "write": {
-      "$or": [
-        {
-          "user_condition": {
-            "data.app_role": "admin"
-          }
-        },
-        {
-          "allow_anonymous": true
-        }
-      ]
+    "update": {
+      "user_condition": {
+        "data.app_role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "data.app_role": "admin"
+      }
     }
   }
 }

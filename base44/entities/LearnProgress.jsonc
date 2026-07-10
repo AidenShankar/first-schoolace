@@ -22,11 +22,19 @@
     "user_id"
   ],
   "rls": {
-    "read": {
-      "user_id": "{{user.id}}"
+    "create": {
+      "user_condition": {
+        "data.app_role": "student"
+      }
     },
-    "write": {
-      "user_id": "{{user.id}}"
+    "read": {
+      "data.user_id": "{{user.id}}"
+    },
+    "update": {
+      "data.user_id": "{{user.id}}"
+    },
+    "delete": {
+      "data.user_id": "{{user.id}}"
     }
   }
 }

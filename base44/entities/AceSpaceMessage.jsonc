@@ -51,22 +51,46 @@
     "type"
   ],
   "rls": {
+    "create": {
+      "user_condition": {
+        "data.app_role": "student"
+      }
+    },
     "read": {
       "user_condition": {
         "data.app_role": "student"
       }
     },
-    "write": {
+    "update": {
       "$or": [
+        {
+          "user_condition": {
+            "data.app_role": "service_role"
+          }
+        },
+        {
+          "$and": [
+            {
+              "user_condition": {
+                "data.app_role": "student"
+              }
+            },
+            {
+              "data.user_id": "{{user.id}}"
+            }
+          ]
+        }
+      ]
+    },
+    "delete": {
+      "$and": [
         {
           "user_condition": {
             "data.app_role": "student"
           }
         },
         {
-          "user_condition": {
-            "data.app_role": "service_role"
-          }
+          "data.user_id": "{{user.id}}"
         }
       ]
     }

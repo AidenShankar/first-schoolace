@@ -18,7 +18,7 @@
     "student_id"
   ],
   "rls": {
-    "read": {
+    "create": {
       "$or": [
         {
           "user_condition": {
@@ -32,7 +32,7 @@
         }
       ]
     },
-    "create": {
+    "read": {
       "$or": [
         {
           "user_condition": {
@@ -61,7 +61,7 @@
               }
             },
             {
-              "student_id": "{{user.id}}"
+              "data.student_id": "{{user.id}}"
             }
           ]
         }
@@ -82,28 +82,7 @@
               }
             },
             {
-              "student_id": "{{user.id}}"
-            }
-          ]
-        }
-      ]
-    },
-    "write": {
-      "$or": [
-        {
-          "user_condition": {
-            "data.app_role": "teacher"
-          }
-        },
-        {
-          "$and": [
-            {
-              "user_condition": {
-                "data.app_role": "student"
-              }
-            },
-            {
-              "student_id": "{{user.id}}"
+              "data.student_id": "{{user.id}}"
             }
           ]
         }
