@@ -4,12 +4,27 @@ Deno.serve(async (req) => {
     try {
         const base44 = createClientFromRequest(req);
         const user = await base44.auth.me();
-        
-        if (!user || user.app_role !== 'teacher') {
-            return Response.json({ error: 'Unauthorized' }, { status: 401 });
+
+        // Scheduling scenarios are admin-owned resources (see SchedulingScenario RLS).
+        if (!user || user.app_role !== 'admin') {
+            return Response.json({ error: 'Forbidden' }, { status: 403 });
         }
 
         const { scenario_id, school_year } = await req.json();
+
+        if (!scenario_id) {
+            return Response.json({ error: 'scenario_id is required' }, { status: 400 });
+        }
+
+        // Ownership check: verify the scenario exists and was created by this admin,
+        // so one admin cannot manipulate another school's scenario via asServiceRole.
+        const ownedScenarios = await base44.asServiceRole.entities.SchedulingScenario.filter({ id: scenario_id });
+        if (ownedScenarios.length === 0) {
+            return Response.json({ error: 'Scenario not found' }, { status: 404 });
+        }
+        if (ownedScenarios[0].created_by !== user.email) {
+            return Response.json({ error: 'Forbidden' }, { status: 403 });
+        }
 
         const sections = await base44.asServiceRole.entities.ScheduleSection.filter({
             scenario_id,
