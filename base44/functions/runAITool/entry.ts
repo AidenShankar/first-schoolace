@@ -1,4 +1,16 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.14';
+import createDOMPurify from 'npm:dompurify@3.1.7';
+import { JSDOM } from 'npm:jsdom@25.0.1';
+
+// Sanitize LLM-generated HTML (worksheet-generator) to prevent stored XSS.
+function sanitizeWorksheetHtml(html) {
+    const window = new JSDOM('').window;
+    const DOMPurify = createDOMPurify(window);
+    return DOMPurify.sanitize(String(html ?? ''), {
+        // Worksheets rely on inline SVG for diagrams, so allow SVG/MathML profiles.
+        USE_PROFILES: { html: true, svg: true, svgFilters: true, mathMl: true }
+    });
+}
 
 const TOOL_PROMPTS = {
   // TEACHER TOOLS
@@ -436,6 +448,12 @@ Deno.serve(async (req) => {
                 prompt: `Translate the following text to ${targetLang}. Keep all markdown formatting intact. Only translate, do not add any commentary or explanations:\n\n${result}`
             });
             result = translationResult;
+        }
+
+        // The worksheet-generator returns raw HTML that is rendered via dangerouslySetInnerHTML
+        // on the client. Sanitize it server-side to strip scripts/event handlers (stored XSS).
+        if (toolId === 'worksheet-generator' && typeof result === 'string') {
+            result = sanitizeWorksheetHtml(result);
         }
 
         return Response.json({ result });

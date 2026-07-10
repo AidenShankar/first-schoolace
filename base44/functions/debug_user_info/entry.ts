@@ -3,6 +3,16 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 Deno.serve(async (req) => {
     try {
         const base44 = createClientFromRequest(req);
+
+        // Require an authenticated admin — this endpoint exposes PII and academic data
+        const caller = await base44.auth.me();
+        if (!caller) {
+            return Response.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+        if (caller.app_role !== 'admin' && caller.role !== 'admin') {
+            return Response.json({ error: 'Forbidden' }, { status: 403 });
+        }
+
         // Use service role to ensure we can find the user regardless of current user context
         const users = await base44.asServiceRole.entities.User.filter({ full_name: "Melissa Truong" });
 

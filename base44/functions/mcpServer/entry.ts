@@ -22,7 +22,15 @@ Deno.serve(async (req) => {
             }, { status: 500 });
         }
 
-        if (!apiKey || apiKey !== expectedApiKey) {
+        // Constant-time comparison of the API key to avoid timing side-channels
+        const keysMatch = (a, b) => {
+            if (typeof a !== 'string' || typeof b !== 'string' || a.length !== b.length) return false;
+            let diff = 0;
+            for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+            return diff === 0;
+        };
+
+        if (!apiKey || !keysMatch(apiKey, expectedApiKey)) {
             return Response.json({ 
                 jsonrpc: '2.0',
                 error: { code: -32401, message: 'Invalid or missing API key' }
@@ -30,6 +38,25 @@ Deno.serve(async (req) => {
         }
 
         const base44 = createClientFromRequest(req);
+
+        // Second factor: require an authenticated caller who is the configured teacher (or an admin).
+        // The API key alone is not sufficient to access teacher-level data.
+        const caller = await base44.auth.me().catch(() => null);
+        if (!caller) {
+            return Response.json({
+                jsonrpc: '2.0',
+                error: { code: -32401, message: 'Authentication required' }
+            }, { status: 401 });
+        }
+        const isAuthorizedCaller = caller.id === teacherUserId
+            || caller.app_role === 'admin'
+            || caller.role === 'admin';
+        if (!isAuthorizedCaller) {
+            return Response.json({
+                jsonrpc: '2.0',
+                error: { code: -32403, message: 'Forbidden' }
+            }, { status: 403 });
+        }
         
         const body = await req.json().catch(() => ({}));
         const method = body.method;

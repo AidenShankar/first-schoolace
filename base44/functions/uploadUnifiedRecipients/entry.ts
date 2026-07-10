@@ -40,6 +40,15 @@ Deno.serve(async (req) => {
     try {
         const base44 = createClientFromRequest(req);
 
+        // Require an authenticated admin — this exports PII (names + emails) for every user
+        const caller = await base44.auth.me();
+        if (!caller) {
+            return Response.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+        if (caller.app_role !== 'admin' && caller.role !== 'admin') {
+            return Response.json({ error: 'Forbidden' }, { status: 403 });
+        }
+
         // 1. Fetch attached CSV
         const csvResp = await fetch(ATTACHED_CSV_URL);
         const csvText = await csvResp.text();
